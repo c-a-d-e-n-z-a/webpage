@@ -1,0 +1,1388 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<title>PLTR</title>
+<head>
+  <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <style>
+  * {
+    font-size: 12px;
+    font-family: Arial, Helvetica, sans-serif, Microsoft JhengHei;
+  }
+  
+  .is-negative {
+    color: #008000;
+  }
+  
+  .is-positive {
+    color: #ff0000;
+  }
+
+  .snapshot-td2
+  {
+    color:#000000;
+    text-decoration:none;
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3d3;
+    white-space:nowrap;
+  }
+
+  .snapshot-td2-cp
+  {
+    color:#000000;
+    text-decoration:none;
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3d3;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+
+  .fullview-ratings-outer
+  {
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3c3;
+  }
+
+  td.fullview-ratings-inner
+  {
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3c3;
+  }
+
+  .t3r1
+  {
+    color:#ff0000;
+  }
+
+  .body-table-rating-downgrade
+  {
+    color:#dd3333;
+    text-decoration:none;
+    background:#fff0f0;
+  }
+
+  .body-table-rating-upgrade
+  {
+    color:#009900;
+    text-decoration:none;
+    background:#f0fff0;
+  }
+
+  .body-table-rating-neutral
+  {
+    color:#333333;
+    text-decoration:none;
+    background:#f0f0f0;
+  }
+
+  table {
+    border-collapse: collapse;
+  }
+
+  td, th {
+    border: 1px solid #FDEBD2;
+    text-align: left;
+    padding: 5px;
+  }
+  </style>
+  <script>
+    function swap(img){
+      if (img.style.width === "100%"){
+        var realWidth = document.querySelector("#stock").naturalWidth;
+        img.style.width = realWidth + "px";
+        parent.postMessage("RP W=" + realWidth, "*");
+      }
+      else{
+        img.style.width = "100%";
+        parent.postMessage("RP W=" + 0, "*");
+      }
+    }
+
+    var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+    var eventer = window[eventMethod];
+    var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+
+    // Listen to message from child window
+    eventer(messageEvent,function(e) {
+      console.log (e.data);
+      if (typeof e.data == "string")
+      {
+        if (e.data.indexOf("SD H=") > -1)
+        {
+          document.getElementById("stockdog").height = e.data.substring(5) + 'px';
+          console.log("RP R:" + document.getElementById("stockdog").height)
+
+          actual_height = document.body.scrollHeight+100;
+          console.log("RP T:" + actual_height)
+          parent.postMessage("RP H=" + actual_height, "*");
+        }
+      }
+    }, false);
+  </script>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+</head>
+<body>
+  <hr color="#ff8000" align="center" size="5">
+  <p align="center"><b>Stock:</b>&emsp;<a href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=PLTR&type=pe-ratio&statement=price-ratios&freq=Q" target="_blank">PE Chart</a>&emsp;<a href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=PLTR&type=price-book&statement=price-ratios&freq=Q" target="_blank">PB Chart</a>&emsp;<a href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=PLTR&type=price-sales&statement=price-ratios&freq=Q" target="_blank">PS Chart</a>&emsp;<a href="https://www.wsj.com/market-data/quotes/PLTR/financials/quarter/cash-flow" target="_blank">Finance</a>&emsp;<a href="https://www.dataroma.com/m/stock.php?sym=PLTR" target="_blank">Ownership</a>&emsp;<a href="https://hedgefollow.com/stocks/PLTR" target="_blank">Institute</a>&emsp;<a href="https://www.ptt.cc/bbs/Stock/search?q=PLTR" target="_blank">PTT Search</a>&emsp;<a href="https://unusualwhales.com/stock/PLTR/greek-exposure" target="_blank">GEX</a></p>
+  <hr color="#ff8000" align="center" size="5">
+   <div align="center"><iframe id="stock" src="PLTR_EC.html" frameborder="0" width="100%" height="1600px" scrolling="no"></iframe></div>
+  <hr color="#ff8000" align="center">
+  <div align="center"><iframe id="stockdog" src="PLTR_SD.html" frameborder="0" width="100%" height="1000px" scrolling="no"></iframe></div>
+  <p><hr color="#ff8000" align="center"><p>
+<div align="center"><a href="https://www.marketwatch.com/investing/stock/PLTR/analystestimates" target="_blank"><img style="max-height:100%; max-width:100%; object-fit:contain" src=https://app.quotemedia.com/quotetools/getChart?webmasterId=91386&symbol=PLTR&chtype=FinancialLine&chcon=on&chdon=on&chfrmon=on&chscale=1d&chton=on&chwid=800&chhig=380&chln=ffa500&chfill=ffa500&chfnts=10&chbdr=000000&chbgch=ffffffff&chgrd=cccccc&svg=false&lang=en&locale=en></a></div>
+
+<hr color="#ff8000" align="center">
+
+
+<hr color="#ff8000" align="center">
+<table align="center" width="70%" class="js-table-ratings styled-table-new is-rounded is-small" cellpadding="0" cellspacing="0" border="0">
+<thead>&#13;
+                <tr>&#13;
+                    <th width="140" align="left">Date</th>&#13;
+                    <th width="320" align="left">Action</th>&#13;
+                    <th width="320" align="left">Analyst</th>&#13;
+                    <th width="320" align="left">Rating Change</th>&#13;
+                    <th width="320" align="left">Price Target Change</th>&#13;
+                </tr>&#13;
+            </thead><tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td title="Mar-28-24" width="140" align="left"><strong class="font-medium">Today</strong></td><td width="320" align="left"><span class="fv-label is-small is-negative-200">Downgrade</span></td>
+<td class="text-left color-text is-negative" width="320" align="left">Monness Crespi &amp; Hardt</td>
+<td class="text-left color-text is-negative" width="320" align="left">Neutral → Sell</td>
+<td class="text-left tabular-nums color-text is-negative" width="320" align="left">$20</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Feb-14-24</td><td width="320" align="left"><span class="fv-label is-small is-negative-200">Downgrade</span></td>
+<td class="text-left color-text is-negative" width="320" align="left">HSBC Securities</td>
+<td class="text-left color-text is-negative" width="320" align="left">Buy → Hold</td>
+<td class="text-left tabular-nums color-text is-negative" width="320" align="left">$22</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Feb-06-24</td><td width="320" align="left"><span class="fv-label is-small is-positive-200">Upgrade</span></td>
+<td class="text-left color-text is-positive" width="320" align="left">Jefferies</td>
+<td class="text-left color-text is-positive" width="320" align="left">Underperform → Hold</td>
+<td class="text-left tabular-nums color-text is-positive" width="320" align="left">$13 → $22</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Feb-06-24</td><td width="320" align="left"><span class="fv-label is-small is-positive-200">Upgrade</span></td>
+<td class="text-left color-text is-positive" width="320" align="left">Citigroup</td>
+<td class="text-left color-text is-positive" width="320" align="left">Sell → Neutral</td>
+<td class="text-left tabular-nums color-text is-positive" width="320" align="left">$10 → $20</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Jan-05-24</td><td width="320" align="left"><span class="fv-label is-small is-negative-200">Downgrade</span></td>
+<td class="text-left color-text is-negative" width="320" align="left">Jefferies</td>
+<td class="text-left color-text is-negative" width="320" align="left">Hold → Underperform</td>
+<td class="text-left tabular-nums color-text is-negative" width="320" align="left">$18 → $13</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Sep-15-23</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">HSBC Securities</td>
+<td class="text-left" width="320" align="left">Hold</td>
+<td class="text-left tabular-nums" width="320" align="left">$16</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Aug-31-23</td><td width="320" align="left"><span class="fv-label is-small is-negative-200">Downgrade</span></td>
+<td class="text-left color-text is-negative" width="320" align="left">Morgan Stanley</td>
+<td class="text-left color-text is-negative" width="320" align="left">Equal-Weight → Underweight</td>
+<td class="text-left tabular-nums color-text is-negative" width="320" align="left">$8 → $9</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Jul-28-23</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">Wedbush</td>
+<td class="text-left" width="320" align="left">Outperform</td>
+<td class="text-left tabular-nums" width="320" align="left">$25</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Jun-20-23</td><td width="320" align="left"><span class="fv-label is-small is-negative-200">Downgrade</span></td>
+<td class="text-left color-text is-negative" width="320" align="left">Raymond James</td>
+<td class="text-left color-text is-negative" width="320" align="left">Strong Buy → Outperform</td>
+<td class="text-left tabular-nums color-text is-negative" width="320" align="left">$15 → $18</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text is-last"><td width="140" align="left">Jun-12-23</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">BofA Securities</td>
+<td class="text-left" width="320" align="left">Buy</td>
+<td class="text-left tabular-nums" width="320" align="left">$13 → $18</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Mar-01-23</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">DA Davidson</td>
+<td class="text-left" width="320" align="left">Neutral</td>
+<td class="text-left tabular-nums" width="320" align="left">$8</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Jan-19-23</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">Mizuho</td>
+<td class="text-left" width="320" align="left">Neutral</td>
+<td class="text-left tabular-nums" width="320" align="left">$7</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Jan-18-23</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">Mizuho</td>
+<td class="text-left" width="320" align="left">Neutral</td>
+<td class="text-left tabular-nums" width="320" align="left">$7</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Jan-05-23</td><td width="320" align="left"><span class="fv-label is-small is-negative-200">Downgrade</span></td>
+<td class="text-left color-text is-negative" width="320" align="left">Jefferies</td>
+<td class="text-left color-text is-negative" width="320" align="left">Buy → Hold</td>
+<td class="text-left tabular-nums color-text is-negative" width="320" align="left">$9 → $7.50</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Dec-21-22</td><td width="320" align="left"><span class="fv-label is-small is-negative-200">Downgrade</span></td>
+<td class="text-left color-text is-negative" width="320" align="left">Wolfe Research</td>
+<td class="text-left color-text is-negative" width="320" align="left">Peer Perform → Underperform</td>
+<td class="text-left tabular-nums color-text is-negative" width="320" align="left">$4.50</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Aug-09-22</td><td width="320" align="left"><span class="fv-label is-small is-negative-200">Downgrade</span></td>
+<td class="text-left color-text is-negative" width="320" align="left">Deutsche Bank</td>
+<td class="text-left color-text is-negative" width="320" align="left">Hold → Sell</td>
+<td class="text-left tabular-nums color-text is-negative" width="320" align="left">$11 → $8</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Jul-22-22</td><td width="320" align="left"><span class="fv-label is-small is-negative-200">Downgrade</span></td>
+<td class="text-left color-text is-negative" width="320" align="left">Monness Crespi &amp; Hardt</td>
+<td class="text-left color-text is-negative" width="320" align="left">Buy → Neutral</td>
+<td class="text-left tabular-nums color-text is-negative" width="320" align="left"/>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Jul-21-22</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">Raymond James</td>
+<td class="text-left" width="320" align="left">Strong Buy</td>
+<td class="text-left tabular-nums" width="320" align="left">$20</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Jun-23-22</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">Goldman</td>
+<td class="text-left" width="320" align="left">Neutral</td>
+<td class="text-left tabular-nums" width="320" align="left">$10</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Jun-21-22</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">BofA Securities</td>
+<td class="text-left" width="320" align="left">Buy</td>
+<td class="text-left tabular-nums" width="320" align="left">$13</td>
+</tr>
+</table>
+
+
+
+<hr color="#ff8000" align="center">
+<table cellpadding="0" cellspacing="0" align="center" width="70%" class="body-table styled-table-new is-rounded p-0 mt-2">
+<thead>
+<tr>
+<th class="" align="left">Insider Trading</th>
+<th class="" align="left">Relationship</th>
+<th class="" align="left">Date</th>
+<th class="" align="center">Transaction</th>
+<th class="" align="right">Cost</th>
+<th class="" align="right">#Shares</th>
+<th class="" align="right">Value ($)</th>
+<th class="" align="right">#Shares Total</th>
+<th class="" align="center">SEC Form 4</th>
+</tr>
+</thead>
+<tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1840244&amp;tc=7" class="tab-link">Stat Lauren Elaina Friedman</a></td><td style="white-space:nowrap">Director</td><td>Mar 15 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">23.68</td><td class="value" align="right">6,000</td><td class="value" align="right">142,099</td><td class="value" align="right">175,830</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000040/xslF345X05/wk-form4_1710887962.xml" class="tab-link" target="_blank">Mar 19 06:39 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1211060&amp;tc=7" class="tab-link">THIEL PETER</a></td><td style="white-space:nowrap">Director</td><td>Mar 12 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">24.79</td><td class="value" align="right">7,044,756</td><td class="value" align="right">174,615,999</td><td class="value" align="right">70,806,432</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1211060/000141588924007747/xslF345X05/form4-03132024_010319.xml" class="tab-link" target="_blank">Mar 12 09:13 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1965681&amp;tc=7" class="tab-link">Planishek Heather A.</a></td><td style="white-space:nowrap">See Remarks</td><td>Mar 06 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">25.95</td><td class="value" align="right">32,828</td><td class="value" align="right">852,026</td><td class="value" align="right">662,006</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000039/xslF345X05/wk-form4_1709945967.xml" class="tab-link" target="_blank">Mar 08 07:59 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823952&amp;tc=7" class="tab-link">Moore Alexander D.</a></td><td style="white-space:nowrap">Director</td><td>Mar 01 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">24.96</td><td class="value" align="right">20,000</td><td class="value" align="right">499,234</td><td class="value" align="right">1,635,519</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000037/xslF345X05/wk-form4_1709688732.xml" class="tab-link" target="_blank">Mar 05 08:32 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823944&amp;tc=7" class="tab-link">Schiff Alexandra W.</a></td><td style="white-space:nowrap">Director</td><td>Mar 01 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">24.91</td><td class="value" align="right">5,000</td><td class="value" align="right">124,548</td><td class="value" align="right">191,783</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000038/xslF345X05/wk-form4_1709688843.xml" class="tab-link" target="_blank">Mar 05 08:34 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1824159&amp;tc=7" class="tab-link">Sankar Shyam</a></td><td style="white-space:nowrap">See Remarks</td><td>Feb 22 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">23.57</td><td class="value" align="right">50,000</td><td class="value" align="right">1,178,250</td><td class="value" align="right">752,786</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000029/xslF345X05/wk-form4_1708650509.xml" class="tab-link" target="_blank">Feb 22 08:08 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823951&amp;tc=7" class="tab-link">Karp Alexander C.</a></td><td style="white-space:nowrap">See Remarks</td><td>Feb 21 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">22.65</td><td class="value" align="right">213,846</td><td class="value" align="right">4,844,596</td><td class="value" align="right">6,432,258</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000027/xslF345X05/wk-form4_1708650339.xml" class="tab-link" target="_blank">Feb 22 08:06 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823920&amp;tc=7" class="tab-link">Cohen Stephen Andrew</a></td><td style="white-space:nowrap">See Remarks</td><td>Feb 21 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">22.65</td><td class="value" align="right">181,098</td><td class="value" align="right">4,102,703</td><td class="value" align="right">592</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000028/xslF345X05/wk-form4_1708650436.xml" class="tab-link" target="_blank">Feb 22 08:07 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1824159&amp;tc=7" class="tab-link">Sankar Shyam</a></td><td style="white-space:nowrap">See Remarks</td><td>Feb 21 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">22.65</td><td class="value" align="right">89,562</td><td class="value" align="right">2,028,991</td><td class="value" align="right">752,786</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000029/xslF345X05/wk-form4_1708650509.xml" class="tab-link" target="_blank">Feb 22 08:08 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1965681&amp;tc=7" class="tab-link">Planishek Heather A.</a></td><td style="white-space:nowrap">See Remarks</td><td>Feb 21 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">22.65</td><td class="value" align="right">8,651</td><td class="value" align="right">195,985</td><td class="value" align="right">694,834</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000030/xslF345X05/wk-form4_1708650574.xml" class="tab-link" target="_blank">Feb 22 08:09 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823951&amp;tc=7" class="tab-link">Karp Alexander C.</a></td><td style="white-space:nowrap">See Remarks</td><td>Feb 20 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">23.18</td><td class="value" align="right">860,638</td><td class="value" align="right">19,949,079</td><td class="value" align="right">6,432,258</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000027/xslF345X05/wk-form4_1708650339.xml" class="tab-link" target="_blank">Feb 22 08:06 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823920&amp;tc=7" class="tab-link">Cohen Stephen Andrew</a></td><td style="white-space:nowrap">See Remarks</td><td>Feb 20 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">23.27</td><td class="value" align="right">178,382</td><td class="value" align="right">4,150,329</td><td class="value" align="right">592</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000028/xslF345X05/wk-form4_1708650436.xml" class="tab-link" target="_blank">Feb 22 08:07 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1824159&amp;tc=7" class="tab-link">Sankar Shyam</a></td><td style="white-space:nowrap">See Remarks</td><td>Feb 20 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">23.27</td><td class="value" align="right">88,219</td><td class="value" align="right">2,052,549</td><td class="value" align="right">752,786</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000029/xslF345X05/wk-form4_1708650509.xml" class="tab-link" target="_blank">Feb 22 08:08 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1965681&amp;tc=7" class="tab-link">Planishek Heather A.</a></td><td style="white-space:nowrap">See Remarks</td><td>Feb 20 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">23.27</td><td class="value" align="right">8,521</td><td class="value" align="right">198,254</td><td class="value" align="right">703,485</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000030/xslF345X05/wk-form4_1708650574.xml" class="tab-link" target="_blank">Feb 22 08:09 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1824159&amp;tc=7" class="tab-link">Sankar Shyam</a></td><td style="white-space:nowrap">See Remarks</td><td>Feb 12 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">25.00</td><td class="value" align="right">29,168</td><td class="value" align="right">729,276</td><td class="value" align="right">752,786</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000019/xslF345X05/wk-form4_1707786498.xml" class="tab-link" target="_blank">Feb 12 08:08 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1824159&amp;tc=7" class="tab-link">Sankar Shyam</a></td><td style="white-space:nowrap">See Remarks</td><td>Feb 09 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">25.03</td><td class="value" align="right">89,184</td><td class="value" align="right">2,232,293</td><td class="value" align="right">752,786</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000019/xslF345X05/wk-form4_1707786498.xml" class="tab-link" target="_blank">Feb 12 08:08 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1840244&amp;tc=7" class="tab-link">Stat Lauren Elaina Friedman</a></td><td style="white-space:nowrap">Director</td><td>Feb 09 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">25.10</td><td class="value" align="right">5,000</td><td class="value" align="right">125,500</td><td class="value" align="right">181,830</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000020/xslF345X05/wk-form4_1707873703.xml" class="tab-link" target="_blank">Feb 13 08:22 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1823940&amp;tc=7" class="tab-link">Glazer David A.</a></td><td style="white-space:nowrap">See Remarks</td><td>Feb 08 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">4.72</td><td class="value" align="right">360,000</td><td class="value" align="right">1,699,200</td><td class="value" align="right">364,344</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000017/xslF345X05/wk-form4_1707786311.xml" class="tab-link" target="_blank">Feb 12 08:05 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1823923&amp;tc=7" class="tab-link">Taylor Ryan D.</a></td><td style="white-space:nowrap">See Remarks</td><td>Feb 08 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">4.72</td><td class="value" align="right">150,000</td><td class="value" align="right">708,000</td><td class="value" align="right">331,460</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000013/xslF345X05/wk-form4_1707441188.xml" class="tab-link" target="_blank">Feb 08 08:13 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1824159&amp;tc=7" class="tab-link">Sankar Shyam</a></td><td style="white-space:nowrap">See Remarks</td><td>Feb 08 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">25.00</td><td class="value" align="right">418,936</td><td class="value" align="right">10,475,411</td><td class="value" align="right">752,786</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000019/xslF345X05/wk-form4_1707786498.xml" class="tab-link" target="_blank">Feb 12 08:08 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823940&amp;tc=7" class="tab-link">Glazer David A.</a></td><td style="white-space:nowrap">See Remarks</td><td>Feb 08 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">24.74</td><td class="value" align="right">360,000</td><td class="value" align="right">8,904,888</td><td class="value" align="right">4,344</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000017/xslF345X05/wk-form4_1707786311.xml" class="tab-link" target="_blank">Feb 12 08:05 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823923&amp;tc=7" class="tab-link">Taylor Ryan D.</a></td><td style="white-space:nowrap">See Remarks</td><td>Feb 08 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">24.00</td><td class="value" align="right">150,000</td><td class="value" align="right">3,600,075</td><td class="value" align="right">181,460</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000013/xslF345X05/wk-form4_1707441188.xml" class="tab-link" target="_blank">Feb 08 08:13 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823951&amp;tc=7" class="tab-link">Karp Alexander C.</a></td><td style="white-space:nowrap">See Remarks</td><td>Feb 07 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">22.42</td><td class="value" align="right">975,000</td><td class="value" align="right">21,857,452</td><td class="value" align="right">6,432,258</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000014/xslF345X05/wk-form4_1707528617.xml" class="tab-link" target="_blank">Feb 09 08:30 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823920&amp;tc=7" class="tab-link">Cohen Stephen Andrew</a></td><td style="white-space:nowrap">See Remarks</td><td>Feb 07 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">23.67</td><td class="value" align="right">329,980</td><td class="value" align="right">7,811,716</td><td class="value" align="right">592</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000015/xslF345X05/wk-form4_1707528802.xml" class="tab-link" target="_blank">Feb 09 08:33 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1823923&amp;tc=7" class="tab-link">Taylor Ryan D.</a></td><td style="white-space:nowrap">See Remarks</td><td>Feb 06 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">4.72</td><td class="value" align="right">120,000</td><td class="value" align="right">566,400</td><td class="value" align="right">301,460</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000013/xslF345X05/wk-form4_1707441188.xml" class="tab-link" target="_blank">Feb 08 08:13 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823923&amp;tc=7" class="tab-link">Taylor Ryan D.</a></td><td style="white-space:nowrap">See Remarks</td><td>Feb 06 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">22.00</td><td class="value" align="right">120,000</td><td class="value" align="right">2,640,000</td><td class="value" align="right">181,460</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000013/xslF345X05/wk-form4_1707441188.xml" class="tab-link" target="_blank">Feb 08 08:13 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823952&amp;tc=7" class="tab-link">Moore Alexander D.</a></td><td style="white-space:nowrap">Director</td><td>Feb 01 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">16.25</td><td class="value" align="right">21,900</td><td class="value" align="right">355,895</td><td class="value" align="right">1,655,519</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000011/xslF345X05/wk-form4_1707181725.xml" class="tab-link" target="_blank">Feb 05 08:08 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1823944&amp;tc=7" class="tab-link">Schiff Alexandra W.</a></td><td style="white-space:nowrap">Director</td><td>Feb 01 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">16.20</td><td class="value" align="right">4,000</td><td class="value" align="right">64,800</td><td class="value" align="right">196,783</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000012/xslF345X05/wk-form4_1707181859.xml" class="tab-link" target="_blank">Feb 05 08:11 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1321655&amp;tc=7" class="tab-link">Palantir Technologies Inc.</a></td><td style="white-space:nowrap">10% Owner</td><td>Jan 10 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1.29</td><td class="value" align="right">19,700</td><td class="value" align="right">25,393</td><td class="value" align="right">5,365,794</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000008/xslF345X05/wk-form4_1705095775.xml" class="tab-link" target="_blank">Jan 12 04:43 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1321655&amp;tc=7" class="tab-link">Palantir Technologies Inc.</a></td><td style="white-space:nowrap">10% Owner</td><td>Jan 09 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1.38</td><td class="value" align="right">28,353</td><td class="value" align="right">39,005</td><td class="value" align="right">5,385,494</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000008/xslF345X05/wk-form4_1705095775.xml" class="tab-link" target="_blank">Jan 12 04:43 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1321655&amp;tc=7" class="tab-link">Palantir Technologies Inc.</a></td><td style="white-space:nowrap">10% Owner</td><td>Jan 08 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1.38</td><td class="value" align="right">42,106</td><td class="value" align="right">58,296</td><td class="value" align="right">5,413,847</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000008/xslF345X05/wk-form4_1705095775.xml" class="tab-link" target="_blank">Jan 12 04:43 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1321655&amp;tc=7" class="tab-link">Palantir Technologies Inc.</a></td><td style="white-space:nowrap">10% Owner</td><td>Jan 05 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1.52</td><td class="value" align="right">24,884</td><td class="value" align="right">37,727</td><td class="value" align="right">5,455,953</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000008/xslF345X05/wk-form4_1705095775.xml" class="tab-link" target="_blank">Jan 12 04:43 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1321655&amp;tc=7" class="tab-link">Palantir Technologies Inc.</a></td><td style="white-space:nowrap">10% Owner</td><td>Jan 04 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1.59</td><td class="value" align="right">12,500</td><td class="value" align="right">19,826</td><td class="value" align="right">5,480,837</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000008/xslF345X05/wk-form4_1705095775.xml" class="tab-link" target="_blank">Jan 12 04:43 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1823944&amp;tc=7" class="tab-link">Schiff Alexandra W.</a></td><td style="white-space:nowrap">Director</td><td>Jan 03 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">16.11</td><td class="value" align="right">4,000</td><td class="value" align="right">64,440</td><td class="value" align="right">200,783</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000003/xslF345X05/wk-form4_1704418385.xml" class="tab-link" target="_blank">Jan 04 08:33 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1321655&amp;tc=7" class="tab-link">Palantir Technologies Inc.</a></td><td style="white-space:nowrap">10% Owner</td><td>Jan 03 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1.65</td><td class="value" align="right">15,901</td><td class="value" align="right">26,246</td><td class="value" align="right">5,493,337</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000008/xslF345X05/wk-form4_1705095775.xml" class="tab-link" target="_blank">Jan 12 04:43 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823952&amp;tc=7" class="tab-link">Moore Alexander D.</a></td><td style="white-space:nowrap">Director</td><td>Jan 02 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">16.72</td><td class="value" align="right">21,900</td><td class="value" align="right">366,085</td><td class="value" align="right">1,677,419</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000001/xslF345X05/wk-form4_1704418234.xml" class="tab-link" target="_blank">Jan 04 08:30 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1840244&amp;tc=7" class="tab-link">Stat Lauren Elaina Friedman</a></td><td style="white-space:nowrap">Director</td><td>Jan 02 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">16.67</td><td class="value" align="right">6,000</td><td class="value" align="right">99,991</td><td class="value" align="right">186,830</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165524000002/xslF345X05/wk-form4_1704418279.xml" class="tab-link" target="_blank">Jan 04 08:31 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1965681&amp;tc=7" class="tab-link">Planishek Heather A.</a></td><td style="white-space:nowrap">See Remarks</td><td>Dec 06 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">17.43</td><td class="value" align="right">27,608</td><td class="value" align="right">481,103</td><td class="value" align="right">712,006</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000137/xslF345X05/wk-form4_1702083708.xml" class="tab-link" target="_blank">Dec 08 08:01 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823920&amp;tc=7" class="tab-link">Cohen Stephen Andrew</a></td><td style="white-space:nowrap">See Remarks</td><td>Dec 04 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">19.11</td><td class="value" align="right">156,100</td><td class="value" align="right">2,983,555</td><td class="value" align="right">592</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000134/xslF345X05/wk-form4_1701827562.xml" class="tab-link" target="_blank">Dec 05 08:52 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823920&amp;tc=7" class="tab-link">Cohen Stephen Andrew</a></td><td style="white-space:nowrap">See Remarks</td><td>Dec 01 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">20.02</td><td class="value" align="right">500,000</td><td class="value" align="right">10,009,050</td><td class="value" align="right">592</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000134/xslF345X05/wk-form4_1701827562.xml" class="tab-link" target="_blank">Dec 05 08:52 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823952&amp;tc=7" class="tab-link">Moore Alexander D.</a></td><td style="white-space:nowrap">Director</td><td>Dec 01 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">19.94</td><td class="value" align="right">21,900</td><td class="value" align="right">436,616</td><td class="value" align="right">1,699,319</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000135/xslF345X05/wk-form4_1701827609.xml" class="tab-link" target="_blank">Dec 05 08:53 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1823944&amp;tc=7" class="tab-link">Schiff Alexandra W.</a></td><td style="white-space:nowrap">Director</td><td>Dec 01 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">19.92</td><td class="value" align="right">4,000</td><td class="value" align="right">79,680</td><td class="value" align="right">204,783</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000136/xslF345X05/wk-form4_1701827689.xml" class="tab-link" target="_blank">Dec 05 08:54 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823923&amp;tc=7" class="tab-link">Taylor Ryan D.</a></td><td style="white-space:nowrap">See Remarks</td><td>Nov 24 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">19.27</td><td class="value" align="right">30,573</td><td class="value" align="right">589,084</td><td class="value" align="right">181,460</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000133/xslF345X05/wk-form4_1701219964.xml" class="tab-link" target="_blank">Nov 28 08:06 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1824159&amp;tc=7" class="tab-link">Sankar Shyam</a></td><td style="white-space:nowrap">See Remarks</td><td>Nov 22 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">19.76</td><td class="value" align="right">321,167</td><td class="value" align="right">6,345,457</td><td class="value" align="right">827,786</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000128/xslF345X05/wk-form4_1700703171.xml" class="tab-link" target="_blank">Nov 22 08:33 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823940&amp;tc=7" class="tab-link">Glazer David A.</a></td><td style="white-space:nowrap">See Remarks</td><td>Nov 22 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">19.73</td><td class="value" align="right">205,400</td><td class="value" align="right">4,052,586</td><td class="value" align="right">4,344</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000129/xslF345X05/wk-form4_1700703243.xml" class="tab-link" target="_blank">Nov 22 08:34 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823951&amp;tc=7" class="tab-link">Karp Alexander C.</a></td><td style="white-space:nowrap">See Remarks</td><td>Nov 21 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">20.21</td><td class="value" align="right">165,284</td><td class="value" align="right">3,340,867</td><td class="value" align="right">6,432,258</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000126/xslF345X05/wk-form4_1700703028.xml" class="tab-link" target="_blank">Nov 22 08:30 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823920&amp;tc=7" class="tab-link">Cohen Stephen Andrew</a></td><td style="white-space:nowrap">See Remarks</td><td>Nov 21 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">20.21</td><td class="value" align="right">140,175</td><td class="value" align="right">2,833,342</td><td class="value" align="right">592</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000127/xslF345X05/wk-form4_1700703111.xml" class="tab-link" target="_blank">Nov 22 08:32 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1824159&amp;tc=7" class="tab-link">Sankar Shyam</a></td><td style="white-space:nowrap">See Remarks</td><td>Nov 21 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">20.21</td><td class="value" align="right">108,483</td><td class="value" align="right">2,192,755</td><td class="value" align="right">942,850</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000128/xslF345X05/wk-form4_1700703171.xml" class="tab-link" target="_blank">Nov 22 08:33 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823940&amp;tc=7" class="tab-link">Glazer David A.</a></td><td style="white-space:nowrap">See Remarks</td><td>Nov 21 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">20.21</td><td class="value" align="right">70,138</td><td class="value" align="right">1,417,692</td><td class="value" align="right">209,744</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000129/xslF345X05/wk-form4_1700703243.xml" class="tab-link" target="_blank">Nov 22 08:34 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823923&amp;tc=7" class="tab-link">Taylor Ryan D.</a></td><td style="white-space:nowrap">See Remarks</td><td>Nov 21 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">20.21</td><td class="value" align="right">51,178</td><td class="value" align="right">1,034,455</td><td class="value" align="right">212,033</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000130/xslF345X05/wk-form4_1700703297.xml" class="tab-link" target="_blank">Nov 22 08:35 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1965681&amp;tc=7" class="tab-link">Planishek Heather A.</a></td><td style="white-space:nowrap">See Remarks</td><td>Nov 21 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">20.21</td><td class="value" align="right">9,196</td><td class="value" align="right">185,878</td><td class="value" align="right">739,614</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000131/xslF345X05/wk-form4_1700703378.xml" class="tab-link" target="_blank">Nov 22 08:36 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823951&amp;tc=7" class="tab-link">Karp Alexander C.</a></td><td style="white-space:nowrap">See Remarks</td><td>Nov 20 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">21.30</td><td class="value" align="right">562,194</td><td class="value" align="right">11,976,710</td><td class="value" align="right">6,432,258</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000126/xslF345X05/wk-form4_1700703028.xml" class="tab-link" target="_blank">Nov 22 08:30 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823920&amp;tc=7" class="tab-link">Cohen Stephen Andrew</a></td><td style="white-space:nowrap">See Remarks</td><td>Nov 20 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">21.27</td><td class="value" align="right">201,160</td><td class="value" align="right">4,278,739</td><td class="value" align="right">592</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000127/xslF345X05/wk-form4_1700703111.xml" class="tab-link" target="_blank">Nov 22 08:32 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1824159&amp;tc=7" class="tab-link">Sankar Shyam</a></td><td style="white-space:nowrap">See Remarks</td><td>Nov 20 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">21.27</td><td class="value" align="right">155,680</td><td class="value" align="right">3,311,365</td><td class="value" align="right">981,973</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000128/xslF345X05/wk-form4_1700703171.xml" class="tab-link" target="_blank">Nov 22 08:33 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823940&amp;tc=7" class="tab-link">Glazer David A.</a></td><td style="white-space:nowrap">See Remarks</td><td>Nov 20 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">21.27</td><td class="value" align="right">100,652</td><td class="value" align="right">2,140,901</td><td class="value" align="right">279,882</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000129/xslF345X05/wk-form4_1700703243.xml" class="tab-link" target="_blank">Nov 22 08:34 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823923&amp;tc=7" class="tab-link">Taylor Ryan D.</a></td><td style="white-space:nowrap">See Remarks</td><td>Nov 20 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">21.27</td><td class="value" align="right">73,445</td><td class="value" align="right">1,562,199</td><td class="value" align="right">263,211</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000130/xslF345X05/wk-form4_1700703297.xml" class="tab-link" target="_blank">Nov 22 08:35 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1965681&amp;tc=7" class="tab-link">Planishek Heather A.</a></td><td style="white-space:nowrap">See Remarks</td><td>Nov 20 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">21.27</td><td class="value" align="right">13,196</td><td class="value" align="right">280,683</td><td class="value" align="right">748,810</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000131/xslF345X05/wk-form4_1700703378.xml" class="tab-link" target="_blank">Nov 22 08:36 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1823944&amp;tc=7" class="tab-link">Schiff Alexandra W.</a></td><td style="white-space:nowrap">Director</td><td>Nov 16 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">19.81</td><td class="value" align="right">4,000</td><td class="value" align="right">79,240</td><td class="value" align="right">208,783</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000125/xslF345X05/wk-form4_1700183591.xml" class="tab-link" target="_blank">Nov 16 08:13 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1930526&amp;tc=7" class="tab-link">Woersching Eric H.</a></td><td style="white-space:nowrap">Director</td><td>Nov 14 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">20.00</td><td class="value" align="right">5,000</td><td class="value" align="right">100,000</td><td class="value" align="right">52,233</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000124/xslF345X05/wk-form4_1700183442.xml" class="tab-link" target="_blank">Nov 16 08:10 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823952&amp;tc=7" class="tab-link">Moore Alexander D.</a></td><td style="white-space:nowrap">Director</td><td>Nov 01 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">14.70</td><td class="value" align="right">21,900</td><td class="value" align="right">321,827</td><td class="value" align="right">1,721,219</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000119/xslF345X05/wk-form4_1699051671.xml" class="tab-link" target="_blank">Nov 03 06:48 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823952&amp;tc=7" class="tab-link">Moore Alexander D.</a></td><td style="white-space:nowrap">Director</td><td>Oct 02 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">16.02</td><td class="value" align="right">21,900</td><td class="value" align="right">350,847</td><td class="value" align="right">1,743,119</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000111/xslF345X05/wk-form4_1696462150.xml" class="tab-link" target="_blank">Oct 04 07:29 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1840244&amp;tc=7" class="tab-link">Stat Lauren Elaina Friedman</a></td><td style="white-space:nowrap">Director</td><td>Sep 15 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">15.31</td><td class="value" align="right">7,000</td><td class="value" align="right">107,184</td><td class="value" align="right">192,830</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000110/xslF345X05/wk-form4_1695171659.xml" class="tab-link" target="_blank">Sep 19 09:01 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1840244&amp;tc=7" class="tab-link">Stat Lauren Elaina Friedman</a></td><td style="white-space:nowrap">Director</td><td>Sep 12 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">15.71</td><td class="value" align="right">3,595</td><td class="value" align="right">56,487</td><td class="value" align="right">61,479</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000108/xslF345X05/wk-form4_1694736615.xml" class="tab-link" target="_blank">Sep 14 08:10 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1930526&amp;tc=7" class="tab-link">Woersching Eric H.</a></td><td style="white-space:nowrap">Director</td><td>Sep 05 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">15.17</td><td class="value" align="right">7,000</td><td class="value" align="right">106,169</td><td class="value" align="right">57,233</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000106/xslF345X05/wk-form4_1694129955.xml" class="tab-link" target="_blank">Sep 07 07:39 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823952&amp;tc=7" class="tab-link">Moore Alexander D.</a></td><td style="white-space:nowrap">Director</td><td>Sep 01 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">15.09</td><td class="value" align="right">21,900</td><td class="value" align="right">330,394</td><td class="value" align="right">1,765,019</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000105/xslF345X05/wk-form4_1694043310.xml" class="tab-link" target="_blank">Sep 06 07:35 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1965681&amp;tc=7" class="tab-link">Planishek Heather A.</a></td><td style="white-space:nowrap">See Remarks</td><td>Aug 29 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">15.30</td><td class="value" align="right">27,226</td><td class="value" align="right">416,656</td><td class="value" align="right">762,006</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000104/xslF345X05/wk-form4_1693523898.xml" class="tab-link" target="_blank">Aug 31 07:18 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823923&amp;tc=7" class="tab-link">Taylor Ryan D.</a></td><td style="white-space:nowrap">See Remarks</td><td>Aug 24 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">14.35</td><td class="value" align="right">30,049</td><td class="value" align="right">431,085</td><td class="value" align="right">336,656</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000103/xslF345X05/wk-form4_1693004959.xml" class="tab-link" target="_blank">Aug 25 07:09 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823951&amp;tc=7" class="tab-link">Karp Alexander C.</a></td><td style="white-space:nowrap">See Remarks</td><td>Aug 23 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">15.40</td><td class="value" align="right">325,000</td><td class="value" align="right">5,005,715</td><td class="value" align="right">6,432,258</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000102/xslF345X05/wk-form4_1692841964.xml" class="tab-link" target="_blank">Aug 23 09:52 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1824159&amp;tc=7" class="tab-link">Sankar Shyam</a></td><td style="white-space:nowrap">See Remarks</td><td>Aug 23 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">15.02</td><td class="value" align="right">316,602</td><td class="value" align="right">4,756,723</td><td class="value" align="right">1,103,116</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000098/xslF345X05/wk-form4_1692841816.xml" class="tab-link" target="_blank">Aug 23 09:50 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823940&amp;tc=7" class="tab-link">Glazer David A.</a></td><td style="white-space:nowrap">See Remarks</td><td>Aug 23 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">15.17</td><td class="value" align="right">202,647</td><td class="value" align="right">3,075,140</td><td class="value" align="right">380,534</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000100/xslF345X05/wk-form4_1692841900.xml" class="tab-link" target="_blank">Aug 23 09:51 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823951&amp;tc=7" class="tab-link">Karp Alexander C.</a></td><td style="white-space:nowrap">See Remarks</td><td>Aug 22 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">14.81</td><td class="value" align="right">176,588</td><td class="value" align="right">2,614,456</td><td class="value" align="right">6,432,258</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000095/xslF345X05/wk-form4_1692752944.xml" class="tab-link" target="_blank">Aug 22 09:09 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823920&amp;tc=7" class="tab-link">Cohen Stephen Andrew</a></td><td style="white-space:nowrap">See Remarks</td><td>Aug 22 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">14.81</td><td class="value" align="right">150,145</td><td class="value" align="right">2,222,957</td><td class="value" align="right">592</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000096/xslF345X05/wk-form4_1692753228.xml" class="tab-link" target="_blank">Aug 22 09:13 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1824159&amp;tc=7" class="tab-link">Sankar Shyam</a></td><td style="white-space:nowrap">See Remarks</td><td>Aug 22 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">14.81</td><td class="value" align="right">116,266</td><td class="value" align="right">1,721,365</td><td class="value" align="right">1,216,513</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000098/xslF345X05/wk-form4_1692841816.xml" class="tab-link" target="_blank">Aug 23 09:50 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823940&amp;tc=7" class="tab-link">Glazer David A.</a></td><td style="white-space:nowrap">See Remarks</td><td>Aug 22 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">14.81</td><td class="value" align="right">75,084</td><td class="value" align="right">1,111,649</td><td class="value" align="right">583,181</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000100/xslF345X05/wk-form4_1692841900.xml" class="tab-link" target="_blank">Aug 23 09:51 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823923&amp;tc=7" class="tab-link">Taylor Ryan D.</a></td><td style="white-space:nowrap">See Remarks</td><td>Aug 22 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">14.81</td><td class="value" align="right">54,793</td><td class="value" align="right">811,232</td><td class="value" align="right">366,705</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000101/xslF345X05/wk-form4_1692841933.xml" class="tab-link" target="_blank">Aug 23 09:52 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1965681&amp;tc=7" class="tab-link">Planishek Heather A.</a></td><td style="white-space:nowrap">See Remarks</td><td>Aug 22 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">14.81</td><td class="value" align="right">9,853</td><td class="value" align="right">145,878</td><td class="value" align="right">789,232</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000099/xslF345X05/wk-form4_1692841855.xml" class="tab-link" target="_blank">Aug 23 09:51 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823951&amp;tc=7" class="tab-link">Karp Alexander C.</a></td><td style="white-space:nowrap">See Remarks</td><td>Aug 21 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">14.55</td><td class="value" align="right">231,564</td><td class="value" align="right">3,368,700</td><td class="value" align="right">6,432,258</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000095/xslF345X05/wk-form4_1692752944.xml" class="tab-link" target="_blank">Aug 22 09:09 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823920&amp;tc=7" class="tab-link">Cohen Stephen Andrew</a></td><td style="white-space:nowrap">See Remarks</td><td>Aug 21 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">14.55</td><td class="value" align="right">196,888</td><td class="value" align="right">2,864,248</td><td class="value" align="right">592</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000096/xslF345X05/wk-form4_1692753228.xml" class="tab-link" target="_blank">Aug 22 09:13 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1824159&amp;tc=7" class="tab-link">Sankar Shyam</a></td><td style="white-space:nowrap">See Remarks</td><td>Aug 21 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">14.55</td><td class="value" align="right">152,462</td><td class="value" align="right">2,217,956</td><td class="value" align="right">1,258,451</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000098/xslF345X05/wk-form4_1692841816.xml" class="tab-link" target="_blank">Aug 23 09:50 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823940&amp;tc=7" class="tab-link">Glazer David A.</a></td><td style="white-space:nowrap">See Remarks</td><td>Aug 21 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">14.55</td><td class="value" align="right">98,459</td><td class="value" align="right">1,432,342</td><td class="value" align="right">658,265</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000100/xslF345X05/wk-form4_1692841900.xml" class="tab-link" target="_blank">Aug 23 09:51 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823923&amp;tc=7" class="tab-link">Taylor Ryan D.</a></td><td style="white-space:nowrap">See Remarks</td><td>Aug 21 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">14.55</td><td class="value" align="right">71,852</td><td class="value" align="right">1,045,274</td><td class="value" align="right">421,498</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000101/xslF345X05/wk-form4_1692841933.xml" class="tab-link" target="_blank">Aug 23 09:52 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1965681&amp;tc=7" class="tab-link">Planishek Heather A.</a></td><td style="white-space:nowrap">See Remarks</td><td>Aug 21 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">14.55</td><td class="value" align="right">12,921</td><td class="value" align="right">187,970</td><td class="value" align="right">799,085</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000099/xslF345X05/wk-form4_1692841855.xml" class="tab-link" target="_blank">Aug 23 09:51 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1965681&amp;tc=7" class="tab-link">Planishek Heather A.</a></td><td style="white-space:nowrap">See Remarks</td><td>Aug 17 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">14.44</td><td class="value" align="right">5,534</td><td class="value" align="right">79,901</td><td class="value" align="right">812,006</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000094/xslF345X05/wk-form4_1692657364.xml" class="tab-link" target="_blank">Aug 21 06:36 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1965681&amp;tc=7" class="tab-link">Planishek Heather A.</a></td><td style="white-space:nowrap">See Remarks</td><td>Aug 01 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">4.72</td><td class="value" align="right">20,000</td><td class="value" align="right">94,400</td><td class="value" align="right">837,540</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000081/xslF345X05/wk-form4_1691110053.xml" class="tab-link" target="_blank">Aug 03 08:47 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1824159&amp;tc=7" class="tab-link">Sankar Shyam</a></td><td style="white-space:nowrap">See Remarks</td><td>Aug 01 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">20.00</td><td class="value" align="right">1,967,500</td><td class="value" align="right">39,353,935</td><td class="value" align="right">1,313,446</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000084/xslF345X05/wk-form4_1691110346.xml" class="tab-link" target="_blank">Aug 03 08:52 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823952&amp;tc=7" class="tab-link">Moore Alexander D.</a></td><td style="white-space:nowrap">Director</td><td>Aug 01 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">19.84</td><td class="value" align="right">21,900</td><td class="value" align="right">434,531</td><td class="value" align="right">1,786,919</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000083/xslF345X05/wk-form4_1691110189.xml" class="tab-link" target="_blank">Aug 03 08:49 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1965681&amp;tc=7" class="tab-link">Planishek Heather A.</a></td><td style="white-space:nowrap">See Remarks</td><td>Aug 01 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">20.00</td><td class="value" align="right">20,000</td><td class="value" align="right">400,000</td><td class="value" align="right">817,540</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000081/xslF345X05/wk-form4_1691110053.xml" class="tab-link" target="_blank">Aug 03 08:47 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1840244&amp;tc=7" class="tab-link">Stat Lauren Elaina Friedman</a></td><td style="white-space:nowrap">Director</td><td>Aug 01 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">19.45</td><td class="value" align="right">3,595</td><td class="value" align="right">69,923</td><td class="value" align="right">65,074</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000082/xslF345X05/wk-form4_1691110138.xml" class="tab-link" target="_blank">Aug 03 08:49 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823952&amp;tc=7" class="tab-link">Moore Alexander D.</a></td><td style="white-space:nowrap">Director</td><td>Jul 03 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">15.38</td><td class="value" align="right">37,076</td><td class="value" align="right">570,170</td><td class="value" align="right">1,808,819</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000070/xslF345X04/wk-form4_1688679057.xml" class="tab-link" target="_blank">Jul 06 05:31 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1840244&amp;tc=7" class="tab-link">Stat Lauren Elaina Friedman</a></td><td style="white-space:nowrap">Director</td><td>Jun 15 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">16.39</td><td class="value" align="right">7,000</td><td class="value" align="right">114,717</td><td class="value" align="right">199,830</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000068/xslF345X04/wk-form4_1687299489.xml" class="tab-link" target="_blank">Jun 20 06:18 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1840244&amp;tc=7" class="tab-link">Stat Lauren Elaina Friedman</a></td><td style="white-space:nowrap">Director</td><td>Jun 15 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">16.38</td><td class="value" align="right">3,595</td><td class="value" align="right">58,879</td><td class="value" align="right">68,669</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000068/xslF345X04/wk-form4_1687299489.xml" class="tab-link" target="_blank">Jun 20 06:18 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823952&amp;tc=7" class="tab-link">Moore Alexander D.</a></td><td style="white-space:nowrap">Director</td><td>Jun 08 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">15.15</td><td class="value" align="right">32,679</td><td class="value" align="right">495,123</td><td class="value" align="right">1,845,895</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000063/xslF345X04/wk-form4_1686360112.xml" class="tab-link" target="_blank">Jun 09 09:22 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1965681&amp;tc=7" class="tab-link">Planishek Heather A.</a></td><td style="white-space:nowrap">See Remarks</td><td>Jun 07 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">15.50</td><td class="value" align="right">47,275</td><td class="value" align="right">732,740</td><td class="value" align="right">817,540</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000062/xslF345X04/wk-form4_1686360036.xml" class="tab-link" target="_blank">Jun 09 09:20 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823951&amp;tc=7" class="tab-link">Karp Alexander C.</a></td><td style="white-space:nowrap">See Remarks</td><td>Jun 05 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">15.40</td><td class="value" align="right">325,000</td><td class="value" align="right">5,005,488</td><td class="value" align="right">6,432,258</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000059/xslF345X04/wk-form4_1686182991.xml" class="tab-link" target="_blank">Jun 07 08:10 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1824159&amp;tc=7" class="tab-link">Sankar Shyam</a></td><td style="white-space:nowrap">See Remarks</td><td>May 30 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">15.00</td><td class="value" align="right">1,031,533</td><td class="value" align="right">15,472,995</td><td class="value" align="right">1,313,446</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000058/xslF345X04/wk-form4_1685666533.xml" class="tab-link" target="_blank">Jun 01 08:42 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823940&amp;tc=7" class="tab-link">Glazer David A.</a></td><td style="white-space:nowrap">See Remarks</td><td>May 24 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">12.15</td><td class="value" align="right">201,592</td><td class="value" align="right">2,449,907</td><td class="value" align="right">756,724</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000054/xslF345X04/wf-form4_168497352281842.xml" class="tab-link" target="_blank">May 24 08:12 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823923&amp;tc=7" class="tab-link">Taylor Ryan D.</a></td><td style="white-space:nowrap">See Remarks</td><td>May 24 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">12.15</td><td class="value" align="right">29,887</td><td class="value" align="right">363,211</td><td class="value" align="right">124,283</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000055/xslF345X04/wf-form4_168497361853005.xml" class="tab-link" target="_blank">May 24 08:13 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1824159&amp;tc=7" class="tab-link">Sankar Shyam</a></td><td style="white-space:nowrap">See Remarks</td><td>May 23 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">12.82</td><td class="value" align="right">50,000</td><td class="value" align="right">640,776</td><td class="value" align="right">1,553,950</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000053/xslF345X04/wf-form4_168488929234906.xml" class="tab-link" target="_blank">May 23 08:48 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823951&amp;tc=7" class="tab-link">Karp Alexander C.</a></td><td style="white-space:nowrap">See Remarks</td><td>May 22 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">11.76</td><td class="value" align="right">408,862</td><td class="value" align="right">4,809,975</td><td class="value" align="right">6,432,258</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000051/xslF345X04/wf-form4_168488852629501.xml" class="tab-link" target="_blank">May 23 08:35 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1823920&amp;tc=7" class="tab-link">Cohen Stephen Andrew</a></td><td style="white-space:nowrap">See Remarks</td><td>May 22 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">11.76</td><td class="value" align="right">348,807</td><td class="value" align="right">4,103,470</td><td class="value" align="right">592</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1321655/000132165523000052/xslF345X04/wf-form4_168488892630331.xml" class="tab-link" target="_blank">May 23 08:42 PM</a></td></tr></table>
+
+
+
+<hr color="#ff8000" align="center">
+<div class="body-table-news-wrapper news-table_wrapper"><table align="center" width="70%" cellpadding="1" cellspacing="0" border="0" id="news-table" class="fullview-news-outer news-table">
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/market360/2024/03/pltr-stock-will-keep-disproving-the-doubters/');">&#13;
+        <td width="130" align="right">&#13;
+            Today 06:40AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/market360/2024/03/pltr-stock-will-keep-disproving-the-doubters/" target="_blank" rel="nofollow">Palantir's AI Play: Why the Bears Are Wrong and PLTR Stock Could Soar</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://www.businesswire.com/news/home/20240328792625/en/');">&#13;
+        <td width="130" align="right">&#13;
+            05:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20240328792625/en/" target="_blank" rel="nofollow">Ministry of Education and Science of Ukraine and Palantir Partner to Create Safe Conditions for In-Person Education in Schools</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Business Wire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2246526/investors-heavily-search-palantir-technologies-inc-pltr-here-is-what-you-need-to-know');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-27-24 09:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2246526/investors-heavily-search-palantir-technologies-inc-pltr-here-is-what-you-need-to-know" target="_blank" rel="nofollow">Investors Heavily Search Palantir Technologies Inc. (PLTR): Here is What You Need to Know</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'GlobeNewswire', 'https://www.globenewswire.com/news-release/2024/03/27/2853229/0/en/Increased-Adoption-of-Artificial-Intelligence-Across-the-Healthcare-Industry-Driving-Strong-Market-Growth.html');">&#13;
+        <td width="130" align="right">&#13;
+            09:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.globenewswire.com/news-release/2024/03/27/2853229/0/en/Increased-Adoption-of-Artificial-Intelligence-Across-the-Healthcare-Industry-Driving-Strong-Market-Growth.html" target="_blank" rel="nofollow">Increased Adoption of Artificial Intelligence Across the Healthcare Industry Driving Strong Market Growth</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/03/pltr-stock-why-this-next-huge-catalyst-will-make-palantir-stock-soar/');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-26-24 09:37AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/03/pltr-stock-why-this-next-huge-catalyst-will-make-palantir-stock-soar/" target="_blank" rel="nofollow">PLTR Stock: Why This Next Huge Catalyst Will Make Palantir Stock Soar</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/05e69a7d-7ed5-323a-aeaf-33f514a89fcc/1-unstoppable-stock-that.html');">&#13;
+        <td width="130" align="right">&#13;
+            07:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/05e69a7d-7ed5-323a-aeaf-33f514a89fcc/1-unstoppable-stock-that.html" target="_blank" rel="nofollow">1 Unstoppable Stock That Could Join Microsoft, Apple, Nvidia, Alphabet, Amazon, and Meta in the $1 Trillion Club</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/a48efb3c-6434-330d-b24d-3779ba14f359/forget-nvidia%3A-here-are-3.html');">&#13;
+        <td width="130" align="right">&#13;
+            03:27AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/a48efb3c-6434-330d-b24d-3779ba14f359/forget-nvidia%3A-here-are-3.html" target="_blank" rel="nofollow">Forget Nvidia: Here Are 3 Other Artificial Intelligence (AI) Stocks to Buy Instead</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2245658/palantir-technologies-inc-pltr-advances-while-market-declines-some-information-for-investors');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-25-24 05:45PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2245658/palantir-technologies-inc-pltr-advances-while-market-declines-some-information-for-investors" target="_blank" rel="nofollow">Palantir Technologies Inc. (PLTR) Advances While Market Declines: Some Information for Investors</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investor\u0027s Business Daily', 'https://finance.yahoo.com/m/be729a4b-4be9-39c3-b232-f48bab2c5685/is-palantir-stock-a-buy-on.html');">&#13;
+        <td width="130" align="right">&#13;
+            07:55AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/be729a4b-4be9-39c3-b232-f48bab2c5685/is-palantir-stock-a-buy-on.html" target="_blank" rel="nofollow">Is Palantir Stock A Buy On Artificial Intelligence Outlook?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investor's Business Daily)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/should-you-hold-palantir-technologies-pltr-1279758/');">&#13;
+        <td width="130" align="right">&#13;
+            05:36AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/should-you-hold-palantir-technologies-pltr-1279758/" target="_blank" rel="nofollow">Should You Hold Palantir Technologies (PLTR)?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/f4b55297-870a-3daf-abbb-d799475f1fd0/you-won%27t-believe-my-shocking.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:35AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/f4b55297-870a-3daf-abbb-d799475f1fd0/you-won%27t-believe-my-shocking.html" target="_blank" rel="nofollow">You Won't Believe My Shocking Palantir Stock Prediction for 2030</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/e6707a06-3bb4-3847-8796-e252c7a8b778/could-investing-%2420%2C000-in.html');">&#13;
+        <td width="130" align="right">&#13;
+            03:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/e6707a06-3bb4-3847-8796-e252c7a8b778/could-investing-%2420%2C000-in.html" target="_blank" rel="nofollow">Could Investing $20,000 in BigBear.ai Make You a Millionaire?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/1480fc1a-8f81-3b34-aee4-564a743052d8/is-bigbear.ai-stock-a-buy-now%3F.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-24-24 01:13PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/1480fc1a-8f81-3b34-aee4-564a743052d8/is-bigbear.ai-stock-a-buy-now%3F.html" target="_blank" rel="nofollow">Is BigBear.ai Stock a Buy Now?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/b3b6e590-184c-3cc0-9bb9-175531095b7c/2-stocks-that-could-create.html');">&#13;
+        <td width="130" align="right">&#13;
+            07:09AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/b3b6e590-184c-3cc0-9bb9-175531095b7c/2-stocks-that-could-create.html" target="_blank" rel="nofollow">2 Stocks That Could Create Lasting Generational Wealth</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/db62e934-77e0-3b28-9dae-1a78c2e18f56/should-you-buy-palantir-stock.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-23-24 04:05AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/db62e934-77e0-3b28-9dae-1a78c2e18f56/should-you-buy-palantir-stock.html" target="_blank" rel="nofollow">Should You Buy Palantir Stock While It's Below $30 per Share?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/ca22162c-4122-3f26-afc8-cd83ac98de09/is-it-finally-time-to-take.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-22-24 05:52PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/ca22162c-4122-3f26-afc8-cd83ac98de09/is-it-finally-time-to-take.html" target="_blank" rel="nofollow">Is It Finally Time to Take Profits in Palantir Stock?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/corporate-insiders-are-dumping-these-11-tech-stocks-1278723/');">&#13;
+        <td width="130" align="right">&#13;
+            03:25PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/corporate-insiders-are-dumping-these-11-tech-stocks-1278723/" target="_blank" rel="nofollow">Corporate Insiders are Dumping These 11 Tech Stocks</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'GuruFocus.com', 'https://finance.yahoo.com/news/palantirs-ai-dominance-shaping-future-140002245.html');">&#13;
+        <td width="130" align="right">&#13;
+            10:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/palantirs-ai-dominance-shaping-future-140002245.html" target="_blank" rel="nofollow">Palantir's AI Dominance Is Shaping Its Future</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/8a0a0eae-f7ab-3394-ae7e-277998ca922c/palantir-co-founder-peter.html');">&#13;
+        <td width="130" align="right">&#13;
+            09:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/8a0a0eae-f7ab-3394-ae7e-277998ca922c/palantir-co-founder-peter.html" target="_blank" rel="nofollow">Palantir Co-Founder Peter Thiel Just Sold 7 Million Shares. Here's What Investors Should Know.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/60a29664-543e-35c5-8070-a07ab1980fb7/2-artificial-intelligence.html');">&#13;
+        <td width="130" align="right">&#13;
+            06:10AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/60a29664-543e-35c5-8070-a07ab1980fb7/2-artificial-intelligence.html" target="_blank" rel="nofollow">2 Artificial Intelligence (AI) Stocks Delivering Real-World Value That Should Remain Strong for Decades</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/d9a5bf75-e26b-3f5f-ab22-94b0ea1049a3/are-palantir%27s-short-sellers.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/d9a5bf75-e26b-3f5f-ab22-94b0ea1049a3/are-palantir%27s-short-sellers.html" target="_blank" rel="nofollow">Are Palantir's Short Sellers Giving Up?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/50ddba23-58b3-3d56-95b5-8d71f3e3da1b/is-nvidia-ai-foundry-a-threat.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-21-24 09:18AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/50ddba23-58b3-3d56-95b5-8d71f3e3da1b/is-nvidia-ai-foundry-a-threat.html" target="_blank" rel="nofollow">Is Nvidia AI Foundry a Threat to Palantir Stock?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/2b6753e5-ea02-31f5-80c6-310b7f7d71f6/better-artificial.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:26AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/2b6753e5-ea02-31f5-80c6-310b7f7d71f6/better-artificial.html" target="_blank" rel="nofollow">Better Artificial Intelligence (AI) Stock: Palantir Technologies vs. Snowflake</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'GuruFocus.com', 'https://finance.yahoo.com/news/palantir-technologies-looks-deeply-undervalued-140001664.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-20-24 10:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/palantir-technologies-looks-deeply-undervalued-140001664.html" target="_blank" rel="nofollow">Palantir Technologies Looks Deeply Undervalued</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/748fb209-0fa2-3286-85c1-7586bbd69b79/palantir-stock-soared-167%25-in.html');">&#13;
+        <td width="130" align="right">&#13;
+            07:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/748fb209-0fa2-3286-85c1-7586bbd69b79/palantir-stock-soared-167%25-in.html" target="_blank" rel="nofollow">Palantir Stock Soared 167% in 2023, and Dan Ives Says it Could Rise Another 40% This Year</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/26be6ef2-8946-328d-9671-0af6c8ec1d63/3-artificial-intelligence.html');">&#13;
+        <td width="130" align="right">&#13;
+            06:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/26be6ef2-8946-328d-9671-0af6c8ec1d63/3-artificial-intelligence.html" target="_blank" rel="nofollow">3 Artificial Intelligence (AI) Stocks to Buy With $1,150 and Hold for Decades</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/08df91f0-5e29-3db5-9964-0ee6b2d30027/think-it%27s-too-late-to-buy.html');">&#13;
+        <td width="130" align="right">&#13;
+            03:33AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/08df91f0-5e29-3db5-9964-0ee6b2d30027/think-it%27s-too-late-to-buy.html" target="_blank" rel="nofollow">Think It's Too Late to Buy Palantir Stock? Here's the Biggest Reason Why There's Still Time.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'TipRanks', 'https://finance.yahoo.com/news/ppa-defense-etf-outperforming-peers-040726743.html');">&#13;
+        <td width="130" align="right">&#13;
+            12:07AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/ppa-defense-etf-outperforming-peers-040726743.html" target="_blank" rel="nofollow">PPA: This Defense ETF Is Outperforming Its Peers</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(TipRanks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2243063/palantir-technologies-inc-pltr-stock-falls-amid-market-uptick-what-investors-need-to-know');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-19-24 05:45PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2243063/palantir-technologies-inc-pltr-stock-falls-amid-market-uptick-what-investors-need-to-know" target="_blank" rel="nofollow">Palantir Technologies Inc. (PLTR) Stock Falls Amid Market Uptick: What Investors Need to Know</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/680dfb49-e8ce-33fe-abd9-27c0e2b406ee/where-will-palantir-stock-be.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:12PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/680dfb49-e8ce-33fe-abd9-27c0e2b406ee/where-will-palantir-stock-be.html" target="_blank" rel="nofollow">Where Will Palantir Stock Be in 1 Year?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/market360/2024/03/palantirs-ai-powered-ascent-why-analysts-see-pltr-stock-hitting-35/');">&#13;
+        <td width="130" align="right">&#13;
+            06:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/market360/2024/03/palantirs-ai-powered-ascent-why-analysts-see-pltr-stock-hitting-35/" target="_blank" rel="nofollow">Palantir's AI-Powered Ascent: Why Analysts See PLTR Stock Hitting $35</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/ad2adb62-8c47-3255-8a1a-5824534decaa/prediction%3A-palantir-will-be.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:27AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/ad2adb62-8c47-3255-8a1a-5824534decaa/prediction%3A-palantir-will-be.html" target="_blank" rel="nofollow">Prediction: Palantir Will be Added to the S&amp;P 500 This Year. Here's Why.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Yahoo Finance Video', 'https://finance.yahoo.com/video/energy-companies-using-ai-boost-204509457.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-18-24 04:45PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/video/energy-companies-using-ai-boost-204509457.html" target="_blank" rel="nofollow">How energy companies are using AI to boost their bottom lines</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance Video)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/insiders-are-selling-these-10-stocks-in-2024-1275991/');">&#13;
+        <td width="130" align="right">&#13;
+            08:28AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/insiders-are-selling-these-10-stocks-in-2024-1275991/" target="_blank" rel="nofollow">Insiders are Selling These 10 Stocks in 2024</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/6777ecce-2e51-35d8-9c7c-b1dfff908dd1/you-won%27t-believe-what.html');">&#13;
+        <td width="130" align="right">&#13;
+            07:52AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/6777ecce-2e51-35d8-9c7c-b1dfff908dd1/you-won%27t-believe-what.html" target="_blank" rel="nofollow">You Won't Believe What Palantir CEO Alex Karp Just Said</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/d5133275-a61f-3618-8bf2-fb68ccfbb2f4/is-it-finally-time-to-take.html');">&#13;
+        <td width="130" align="right">&#13;
+            07:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/d5133275-a61f-3618-8bf2-fb68ccfbb2f4/is-it-finally-time-to-take.html" target="_blank" rel="nofollow">Is It Finally Time to Take Profits in Palantir Stock?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/720ba892-b340-3c41-b15f-8bce352919f7/could-c3.ai-become-the-next.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:10AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/720ba892-b340-3c41-b15f-8bce352919f7/could-c3.ai-become-the-next.html" target="_blank" rel="nofollow">Could C3.ai Become the Next Palantir Technologies?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/c1ad8db3-966d-3bf9-a7bb-4acb2b69097b/here-are-my-top-artificial.html');">&#13;
+        <td width="130" align="right">&#13;
+            03:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/c1ad8db3-966d-3bf9-a7bb-4acb2b69097b/here-are-my-top-artificial.html" target="_blank" rel="nofollow">Here Are My Top Artificial Intelligence (AI) Stocks to Buy in March</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/dff8e343-f37e-36eb-a5d9-3a8fe475006b/near-a-2-year-high%2C-is.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-17-24 02:05PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/dff8e343-f37e-36eb-a5d9-3a8fe475006b/near-a-2-year-high%2C-is.html" target="_blank" rel="nofollow">Near a 2-Year High, Is Palantir Technologies Stock Still a Buy?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/41a4d7c2-4795-3951-882c-514dbc01c186/dan-ives-just-called-palantir.html');">&#13;
+        <td width="130" align="right">&#13;
+            10:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/41a4d7c2-4795-3951-882c-514dbc01c186/dan-ives-just-called-palantir.html" target="_blank" rel="nofollow">Dan Ives Just Called Palantir the "Launching Pad of AI Use Cases." Here's What That Means.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/0f129b54-6eab-3117-aab5-c7a378580f18/better-artificial.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-16-24 02:35PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/0f129b54-6eab-3117-aab5-c7a378580f18/better-artificial.html" target="_blank" rel="nofollow">Better Artificial Intelligence (AI) Stock: Palantir vs. Nvidia</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/b3108824-57e7-3d20-8c85-34354d06c083/beyond-the-%22magnificent.html');">&#13;
+        <td width="130" align="right">&#13;
+            11:05AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/b3108824-57e7-3d20-8c85-34354d06c083/beyond-the-%22magnificent.html" target="_blank" rel="nofollow">Beyond the "Magnificent Seven": 3 Brilliant Artificial Intelligence (AI) Growth Stocks With Explosive Upside Potential</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/b2b92d44-767e-3b57-9008-8eff69c5c5c1/could-bigbear.ai-become-the.html');">&#13;
+        <td width="130" align="right">&#13;
+            07:25AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/b2b92d44-767e-3b57-9008-8eff69c5c5c1/could-bigbear.ai-become-the.html" target="_blank" rel="nofollow">Could BigBear.ai Become the Next Palantir?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/29a41d35-c19b-3a46-8d48-a50c2b92deaf/palantir%27s-ceo-just-said-%22we.html');">&#13;
+        <td width="130" align="right">&#13;
+            06:39AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/29a41d35-c19b-3a46-8d48-a50c2b92deaf/palantir%27s-ceo-just-said-%22we.html" target="_blank" rel="nofollow">Palantir's CEO Just Said "We Don't Play Golf, We Play Software." Here's My Interpretation.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Bloomberg', 'https://finance.yahoo.com/news/peter-thiel-unloads-175-million-184318091.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-15-24 02:43PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/peter-thiel-unloads-175-million-184318091.html" target="_blank" rel="nofollow">Peter Thiel Unloads $175 Million of Palantir in First Sale Since 2021</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Bloomberg)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2241260/palantir-technologies-inc-pltr-is-attracting-investor-attention-here-is-what-you-should-know');">&#13;
+        <td width="130" align="right">&#13;
+            09:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2241260/palantir-technologies-inc-pltr-is-attracting-investor-attention-here-is-what-you-should-know" target="_blank" rel="nofollow">Palantir Technologies Inc. (PLTR) is Attracting Investor Attention: Here is What You Should Know</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/12-best-artificial-intelligence-ai-stocks-to-buy-according-to-financial-media-1274249/');">&#13;
+        <td width="130" align="right">&#13;
+            08:57AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/12-best-artificial-intelligence-ai-stocks-to-buy-according-to-financial-media-1274249/" target="_blank" rel="nofollow">12 Best Artificial Intelligence (AI) Stocks To Buy According to Financial Media</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/46a8b2c4-fe51-332f-9a4f-fca72f692733/nvidia-is-an-investor-in.html');">&#13;
+        <td width="130" align="right">&#13;
+            07:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/46a8b2c4-fe51-332f-9a4f-fca72f692733/nvidia-is-an-investor-in.html" target="_blank" rel="nofollow">Nvidia Is an Investor in Artificial Intelligence (AI) Start-Up Databricks. Should Palantir Investors Worry?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/08690c11-fa2e-32c2-9982-68237cedd237/is-palantir-the-best.html');">&#13;
+        <td width="130" align="right">&#13;
+            07:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/08690c11-fa2e-32c2-9982-68237cedd237/is-palantir-the-best.html" target="_blank" rel="nofollow">Is Palantir the Best Artificial Intelligence (AI) Stock Available Right Now?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/03/palantirs-profitability-breakthrough-3-reasons-why-pltr-stock-is-a-screaming-buy/');">&#13;
+        <td width="130" align="right">&#13;
+            06:10AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/03/palantirs-profitability-breakthrough-3-reasons-why-pltr-stock-is-a-screaming-buy/" target="_blank" rel="nofollow">Palantir's Profitability Breakthrough: 3 Reasons Why PLTR Stock Is a Screaming Buy</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/hedge-fund-and-insider-trading-news-steve-cohen-john-paulson-carl-icahn-keystone-investors-millennium-management-schonfeld-strategic-advisors-gen-restaurant-group-inc-genk-palantir-technolog-1274330/');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-14-24 02:29PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/hedge-fund-and-insider-trading-news-steve-cohen-john-paulson-carl-icahn-keystone-investors-millennium-management-schonfeld-strategic-advisors-gen-restaurant-group-inc-genk-palantir-technolog-1274330/" target="_blank" rel="nofollow">Hedge Fund and Insider Trading News: Steve Cohen, John Paulson, Carl Icahn, Keystone Investors, Millennium Management, Schonfeld Strategic Advisors, GEN Restaurant Group Inc (GENK), Palantir Technologies Inc (PLTR), and More</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/03/palantir-ceo-alex-karp-is-ready-to-fight-pltr-stock-short-sellers/');">&#13;
+        <td width="130" align="right">&#13;
+            01:07PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/03/palantir-ceo-alex-karp-is-ready-to-fight-pltr-stock-short-sellers/" target="_blank" rel="nofollow">Palantir CEO Alex Karp Is Ready to Fight PLTR Stock Short Sellers</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/da2bd61e-464a-3b23-8d56-50884425309a/3-reasons-to-buy-palantir.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:05AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/da2bd61e-464a-3b23-8d56-50884425309a/3-reasons-to-buy-palantir.html" target="_blank" rel="nofollow">3 Reasons to Buy Palantir Technologies Stock Like There's No Tomorrow</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Fortune', 'https://finance.yahoo.com/news/palantir-ceo-alex-karp-knows-114712997.html');">&#13;
+        <td width="130" align="right">&#13;
+            07:47AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/palantir-ceo-alex-karp-knows-114712997.html" target="_blank" rel="nofollow">Palantir CEO Alex Karp knows staff will keep quitting over his pro-Israel views: Im not promising to tell you something you want to hear</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Fortune)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/c2f5ad54-d864-3ac1-900b-c1d5c506f84b/does-palantir-have-a-moat-in.html');">&#13;
+        <td width="130" align="right">&#13;
+            07:17AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/c2f5ad54-d864-3ac1-900b-c1d5c506f84b/does-palantir-have-a-moat-in.html" target="_blank" rel="nofollow">Does Palantir Have a Moat in Artificial Intelligence (AI)?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/03/palantirs-unstoppable-momentum-why-wall-streets-betting-big-on-this-ai-stock/');">&#13;
+        <td width="130" align="right">&#13;
+            06:10AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/03/palantirs-unstoppable-momentum-why-wall-streets-betting-big-on-this-ai-stock/" target="_blank" rel="nofollow">Palantir's Unstoppable Momentum: Why Wall Street's Betting Big on This AI Stock</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/8fc26dd1-3d57-3e62-9104-0eb799a3b8f2/is-palantir-technologies.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:56AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/8fc26dd1-3d57-3e62-9104-0eb799a3b8f2/is-palantir-technologies.html" target="_blank" rel="nofollow">Is Palantir Technologies Stock Set to Soar Higher After Securing a Huge Government Contract?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/db3e70f4-75ee-3ab9-a910-ae9d2749346b/3-millionaire-maker.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:17AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/db3e70f4-75ee-3ab9-a910-ae9d2749346b/3-millionaire-maker.html" target="_blank" rel="nofollow">3 Millionaire-Maker Artificial Intelligence (AI) Stocks</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'CNBC TV', 'https://www.youtube.com/watch?v=-q0pkVc-KOo');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-13-24 04:32PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.youtube.com/watch?v=-q0pkVc-KOo" target="_blank" rel="nofollow">Palantir CEO: Outspoken pro-Israel views led employees to leave the company</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(CNBC TV)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'CNBC TV', 'https://www.youtube.com/watch?v=Q4GI-unDE18');">&#13;
+        <td width="130" align="right">&#13;
+            01:31PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.youtube.com/watch?v=Q4GI-unDE18" target="_blank" rel="nofollow">Palantir CEO on generative AI and competition</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(CNBC TV)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/a856ca09-3469-3113-91a6-b1b08acdd6d8/great-news-for-palantir-stock.html');">&#13;
+        <td width="130" align="right">&#13;
+            09:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/a856ca09-3469-3113-91a6-b1b08acdd6d8/great-news-for-palantir-stock.html" target="_blank" rel="nofollow">Great News for Palantir Stock Investors</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/26eb5ae7-88ee-3f48-8772-931a011518ba/palantir-technologies-stock.html');">&#13;
+        <td width="130" align="right">&#13;
+            06:47AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/26eb5ae7-88ee-3f48-8772-931a011518ba/palantir-technologies-stock.html" target="_blank" rel="nofollow">Palantir Technologies Stock Has 42% Upside, According to 1 Wall Street Analyst. Is the Stock a Buy at a 2-Year High?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/d26fd061-a7c7-3d41-89e0-e15cdf819a86/where-will-palantir.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:25AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/d26fd061-a7c7-3d41-89e0-e15cdf819a86/where-will-palantir.html" target="_blank" rel="nofollow">Where Will Palantir Technologies Stock Be in 5 Years?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/ace08177-d7c4-362e-8ea2-bf7bf72ee1f4/2-data-analytics-stocks-to.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-12-24 02:03PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/ace08177-d7c4-362e-8ea2-bf7bf72ee1f4/2-data-analytics-stocks-to.html" target="_blank" rel="nofollow">2 Data Analytics Stocks to Buy Hand Over Fist in March</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/market360/2024/03/palantirs-all-star-lineup-why-pltr-belongs-alongside-nvda-and-msft-in-your-ai-portfolio/');">&#13;
+        <td width="130" align="right">&#13;
+            06:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/market360/2024/03/palantirs-all-star-lineup-why-pltr-belongs-alongside-nvda-and-msft-in-your-ai-portfolio/" target="_blank" rel="nofollow">Palantir's All-Star Lineup: Why PLTR Belongs Alongside NVDA and MSFT in Your AI Portfolio</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/20-largest-airlines-in-the-world-in-2024-1272455/');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-11-24 02:44PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/20-largest-airlines-in-the-world-in-2024-1272455/" target="_blank" rel="nofollow">20 Largest Airlines in the World in 2024</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/e1dd520f-0430-3cce-aa98-4fe45036a8d4/snowflake-isn%27t-palantir%27s.html');">&#13;
+        <td width="130" align="right">&#13;
+            11:37AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/e1dd520f-0430-3cce-aa98-4fe45036a8d4/snowflake-isn%27t-palantir%27s.html" target="_blank" rel="nofollow">Snowflake Isn't Palantir's Biggest Challenge in Artificial Intelligence (AI). Here Are 3 Other Companies to Keep an Eye On.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/9c127c63-a9d7-3d35-97f6-b7e8bb22a2ba/can-palantir-stock-join-the.html');">&#13;
+        <td width="130" align="right">&#13;
+            09:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/9c127c63-a9d7-3d35-97f6-b7e8bb22a2ba/can-palantir-stock-join-the.html" target="_blank" rel="nofollow">Can Palantir Stock Join the "Magnificent Seven" and the $1 Trillion Club?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/03/pltr-stock-soars-as-retail-investors-bet-big-on-palantirs-ai-future/');">&#13;
+        <td width="130" align="right">&#13;
+            04:59AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/03/pltr-stock-soars-as-retail-investors-bet-big-on-palantirs-ai-future/" target="_blank" rel="nofollow">PLTR Stock Soars as Retail Investors Bet Big on Palantir's AI Future</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/9a28aaba-fbd7-3d58-9575-42113469ad89/palantir-vs.-snowflake%3A-who%27s.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:48AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/9a28aaba-fbd7-3d58-9575-42113469ad89/palantir-vs.-snowflake%3A-who%27s.html" target="_blank" rel="nofollow">Palantir vs. Snowflake: Who's Winning in Artificial Intelligence (AI)?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/1eca892e-7afc-3b8b-8a0c-e7460d14f7d0/3-millionaire-maker.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-10-24 07:40AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/1eca892e-7afc-3b8b-8a0c-e7460d14f7d0/3-millionaire-maker.html" target="_blank" rel="nofollow">3 Millionaire-Maker Technology Stocks Worth a Closer Look</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/c77b2ead-f312-3542-9ba5-e58e86909040/should-you-buy-palantir-stock.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-09-24 07:35AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/c77b2ead-f312-3542-9ba5-e58e86909040/should-you-buy-palantir-stock.html" target="_blank" rel="nofollow">Should You Buy Palantir Stock Now or Wait for a Dip?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/03/wedbush-just-raised-its-price-target-on-palantir-pltr-stock-march-2024/');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-08-24 04:44PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/03/wedbush-just-raised-its-price-target-on-palantir-pltr-stock-march-2024/" target="_blank" rel="nofollow">Wedbush Just Raised Its Price Target on Palantir (PLTR) Stock</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investor\u0027s Business Daily', 'https://finance.yahoo.com/m/7e153586-3134-3cac-a28f-595c79c0a453/yes%2C-top-funds-adore-nvidia..html');">&#13;
+        <td width="130" align="right">&#13;
+            04:05PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/7e153586-3134-3cac-a28f-595c79c0a453/yes%2C-top-funds-adore-nvidia..html" target="_blank" rel="nofollow">Yes, Top Funds Adore Nvidia. But They Love This Non-AI Sector.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investor's Business Daily)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/e596b19b-aac7-32f1-9737-e035d756f78e/cathie-wood-goes-bargain.html');">&#13;
+        <td width="130" align="right">&#13;
+            10:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/e596b19b-aac7-32f1-9737-e035d756f78e/cathie-wood-goes-bargain.html" target="_blank" rel="nofollow">Cathie Wood Goes Bargain Hunting: 3 Stocks She Just Bought</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investor\u0027s Business Daily', 'https://finance.yahoo.com/m/7e153586-3134-3cac-a28f-595c79c0a453/top-funds-adore-nvidia%2C-meta%2C.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/7e153586-3134-3cac-a28f-595c79c0a453/top-funds-adore-nvidia%2C-meta%2C.html" target="_blank" rel="nofollow">Top Funds Adore Nvidia, Meta, Microsoft. But Wait, There's More.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investor's Business Daily)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'FX Empire', 'https://finance.yahoo.com/news/palantir-stock-one-big-reason-174301793.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-07-24 12:43PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/palantir-stock-one-big-reason-174301793.html" target="_blank" rel="nofollow">Palantir Stock | One Big Reason They Keep Surging</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(FX Empire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/92b604f6-a961-34a9-af9d-ab51fffc8f46/where-will-bigbear.ai-stock.html');">&#13;
+        <td width="130" align="right">&#13;
+            09:54AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/92b604f6-a961-34a9-af9d-ab51fffc8f46/where-will-bigbear.ai-stock.html" target="_blank" rel="nofollow">Where Will BigBear.ai Stock Be in 1 Year?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2237262/palantir-technologies-inc-pltr-just-flashed-golden-cross-signal-do-you-buy');">&#13;
+        <td width="130" align="right">&#13;
+            09:35AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2237262/palantir-technologies-inc-pltr-just-flashed-golden-cross-signal-do-you-buy" target="_blank" rel="nofollow">Palantir Technologies Inc. (PLTR) Just Flashed Golden Cross Signal: Do You Buy?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/03/mizuho-just-raised-its-price-target-on-palantir-pltr-stock/');">&#13;
+        <td width="130" align="right">&#13;
+            09:31AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/03/mizuho-just-raised-its-price-target-on-palantir-pltr-stock/" target="_blank" rel="nofollow">Mizuho Just Raised Its Price Target on Palantir (PLTR) Stock</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/e499fbd9-15be-3a55-8ce7-5931d11221fb/jpmorgan-ceo-jamie-dimon-says.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:41AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/e499fbd9-15be-3a55-8ce7-5931d11221fb/jpmorgan-ceo-jamie-dimon-says.html" target="_blank" rel="nofollow">JPMorgan CEO Jamie Dimon Says Artificial Intelligence (AI) "Can Do Things That the Human Mind Simply Cannot Do." 1 Stock to Buy if He's Right.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investor\u0027s Business Daily', 'https://finance.yahoo.com/m/fbf70986-52f8-3071-9014-74dadee3e7c6/palantir-sees-generative-ai.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/fbf70986-52f8-3071-9014-74dadee3e7c6/palantir-sees-generative-ai.html" target="_blank" rel="nofollow">Palantir Sees Generative AI Growth Coming From U.S., Not Europe</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investor's Business Daily)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Yahoo Finance Video', 'https://finance.yahoo.com/video/nycb-gets-big-investment-novo-123110749.html');">&#13;
+        <td width="130" align="right">&#13;
+            07:31AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/video/nycb-gets-big-investment-novo-123110749.html" target="_blank" rel="nofollow">NYCB gets big investment, Novo Nordisk jumps on weight loss trial: Yahoo Finance Live</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance Video)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/d39018ae-26ac-3c99-a70a-f6e78379a42d/think-palantir-technologies.html');">&#13;
+        <td width="130" align="right">&#13;
+            06:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/d39018ae-26ac-3c99-a70a-f6e78379a42d/think-palantir-technologies.html" target="_blank" rel="nofollow">Think Palantir Technologies Stock Is Expensive? Here's a Cheaper Artificial Intelligence (AI) Stock to Buy Before It Skyrockets</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/market360/2024/03/palantir-predictions-beyond-25-whats-next-for-pltr-stock/');">&#13;
+        <td width="130" align="right">&#13;
+            06:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/market360/2024/03/palantir-predictions-beyond-25-whats-next-for-pltr-stock/" target="_blank" rel="nofollow">Palantir Predictions: Beyond $25, What's Next for PLTR Stock?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/9cb2d6cc-bef0-3ebe-a987-caab2f1c3474/massive-news-for-palantir.html');">&#13;
+        <td width="130" align="right">&#13;
+            06:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/9cb2d6cc-bef0-3ebe-a987-caab2f1c3474/massive-news-for-palantir.html" target="_blank" rel="nofollow">Massive News for Palantir Stock Investors</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'CNBC TV', 'https://www.youtube.com/watch?v=yfZS25NF14U');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-06-24 08:59PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.youtube.com/watch?v=yfZS25NF14U" target="_blank" rel="nofollow">Lightning Round: Palantir can go higher from here, says Jim Cramer</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(CNBC TV)</span> <span class="body-table-news-gain fv-label is-positive-200">+9.87%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'CNBC TV', 'https://www.youtube.com/watch?v=7gHyK8yLEA4');">&#13;
+        <td width="130" align="right">&#13;
+            05:59PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.youtube.com/watch?v=7gHyK8yLEA4" target="_blank" rel="nofollow">Palantir CTO talks new contract with the U.S. Army to build AI enabled vehicle</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(CNBC TV)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investor\u0027s Business Daily', 'https://finance.yahoo.com/m/a738e413-e698-33fe-b8d6-608f2cdd595e/nvidia%2C-palantir-surf-wave-of.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/a738e413-e698-33fe-b8d6-608f2cdd595e/nvidia%2C-palantir-surf-wave-of.html" target="_blank" rel="nofollow">Nvidia, Palantir Surf Wave Of Breakouts, But Is The Tide Turning? Their Charts Say Not Yet.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investor's Business Daily)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Yahoo Finance Video', 'https://finance.yahoo.com/video/ai-palantir-may-something-pass-215341926.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:53PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/video/ai-palantir-may-something-pass-215341926.html" target="_blank" rel="nofollow">AI: Palantir may be something to pass on, analyst explains</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance Video)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investor\u0027s Business Daily', 'https://finance.yahoo.com/m/91cc4f68-9773-38fa-8e72-90ee0df1cd62/stocks-ease-from-day%27s-highs%3B.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:34PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/91cc4f68-9773-38fa-8e72-90ee0df1cd62/stocks-ease-from-day%27s-highs%3B.html" target="_blank" rel="nofollow">Stocks Ease From Day's Highs; Bank Stock Rebounds On $1 Billion Lifeline; Gold ETF In Buy Zone</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investor's Business Daily)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investor\u0027s Business Daily', 'https://finance.yahoo.com/m/3c5d922a-4c89-3bdc-bf9f-a234b2b425f1/palantir-surges-above-buy.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:30PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/3c5d922a-4c89-3bdc-bf9f-a234b2b425f1/palantir-surges-above-buy.html" target="_blank" rel="nofollow">Palantir Surges Above Buy Point After Winning U.S. Army Contract For Project TITAN</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investor's Business Daily)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'CNBC TV', 'https://www.youtube.com/watch?v=7fA6JFaouUk');">&#13;
+        <td width="130" align="right">&#13;
+            02:58PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.youtube.com/watch?v=7fA6JFaouUk" target="_blank" rel="nofollow">Final Trades: SL Green, Palantir and Dexcom</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(CNBC TV)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/e4ce14c8-d83b-3830-b099-e1d762db5f16/palantir-technologies-stock.html');">&#13;
+        <td width="130" align="right">&#13;
+            02:25PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/e4ce14c8-d83b-3830-b099-e1d762db5f16/palantir-technologies-stock.html" target="_blank" rel="nofollow">Palantir Technologies Stock Surged Again Today. Is It Too Late to Buy the Red-Hot Artificial Intelligence (AI) Growth Stock?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Yahoo Finance Video', 'https://finance.yahoo.com/video/powell-says-rate-cuts-likely-183121337.html');">&#13;
+        <td width="130" align="right">&#13;
+            01:31PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/video/powell-says-rate-cuts-likely-183121337.html" target="_blank" rel="nofollow">Powell says rate cuts are likely coming in 2024, NYCB announces capital raise: Yahoo Finance Live</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance Video)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Morningstar Research', 'https://finance.yahoo.com/m/b233a045-5189-3057-8c94-e9e16857d580/analyst-report%3A-palantir.html');">&#13;
+        <td width="130" align="right">&#13;
+            12:47PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/b233a045-5189-3057-8c94-e9e16857d580/analyst-report%3A-palantir.html" target="_blank" rel="nofollow">Analyst Report: Palantir Technologies Inc.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Morningstar Research)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investor\u0027s Business Daily', 'https://finance.yahoo.com/m/91cc4f68-9773-38fa-8e72-90ee0df1cd62/stocks-celebrate-powell%27s.html');">&#13;
+        <td width="130" align="right">&#13;
+            12:21PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/91cc4f68-9773-38fa-8e72-90ee0df1cd62/stocks-celebrate-powell%27s.html" target="_blank" rel="nofollow">Stocks Celebrate Powell's Comments; CrowdStrike Catapults As Foot Locker Stumbles</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investor's Business Daily)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investopedia', 'https://www.investopedia.com/palantir-stock-surges-on-usd178-4-million-us-army-contract-focused-on-ai-8604973');">&#13;
+        <td width="130" align="right">&#13;
+            11:39AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.investopedia.com/palantir-stock-surges-on-usd178-4-million-us-army-contract-focused-on-ai-8604973" target="_blank" rel="nofollow">Palantir Stock Surges on $178.4 Million US Army Contract Focused on AI</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investopedia)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investor\u0027s Business Daily', 'https://finance.yahoo.com/m/91cc4f68-9773-38fa-8e72-90ee0df1cd62/stocks-rise-after-powell%27s.html');">&#13;
+        <td width="130" align="right">&#13;
+            11:10AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/91cc4f68-9773-38fa-8e72-90ee0df1cd62/stocks-rise-after-powell%27s.html" target="_blank" rel="nofollow">Stocks Rise After Powell's Comments; CrowdStrike Soars As Palantir Surges</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investor's Business Daily)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'The Wall Street Journal', 'https://finance.yahoo.com/m/fbf159e3-0530-3bc1-aa70-48514f7b27e9/stocks-to-watch-wednesday%3A.html');">&#13;
+        <td width="130" align="right">&#13;
+            11:06AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/fbf159e3-0530-3bc1-aa70-48514f7b27e9/stocks-to-watch-wednesday%3A.html" target="_blank" rel="nofollow">Stocks to Watch Wednesday: JD.com, CrowdStrike, Nordstrom</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(The Wall Street Journal)</span></div></div></td></tr>
+</table>
+</div>
+
+
+  <script language="javascript">
+  function reSize(){
+    actual_height = document.body.scrollHeight+50;
+    console.log("RP T:" + actual_height)
+    parent.postMessage("RP H=" + actual_height, "*");
+  }
+  window.onload=reSize;
+  </script>
+</body>
+</html>

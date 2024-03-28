@@ -1,0 +1,1388 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<title>LVS</title>
+<head>
+  <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <style>
+  * {
+    font-size: 12px;
+    font-family: Arial, Helvetica, sans-serif, Microsoft JhengHei;
+  }
+  
+  .is-negative {
+    color: #008000;
+  }
+  
+  .is-positive {
+    color: #ff0000;
+  }
+
+  .snapshot-td2
+  {
+    color:#000000;
+    text-decoration:none;
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3d3;
+    white-space:nowrap;
+  }
+
+  .snapshot-td2-cp
+  {
+    color:#000000;
+    text-decoration:none;
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3d3;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+
+  .fullview-ratings-outer
+  {
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3c3;
+  }
+
+  td.fullview-ratings-inner
+  {
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3c3;
+  }
+
+  .t3r1
+  {
+    color:#ff0000;
+  }
+
+  .body-table-rating-downgrade
+  {
+    color:#dd3333;
+    text-decoration:none;
+    background:#fff0f0;
+  }
+
+  .body-table-rating-upgrade
+  {
+    color:#009900;
+    text-decoration:none;
+    background:#f0fff0;
+  }
+
+  .body-table-rating-neutral
+  {
+    color:#333333;
+    text-decoration:none;
+    background:#f0f0f0;
+  }
+
+  table {
+    border-collapse: collapse;
+  }
+
+  td, th {
+    border: 1px solid #FDEBD2;
+    text-align: left;
+    padding: 5px;
+  }
+  </style>
+  <script>
+    function swap(img){
+      if (img.style.width === "100%"){
+        var realWidth = document.querySelector("#stock").naturalWidth;
+        img.style.width = realWidth + "px";
+        parent.postMessage("RP W=" + realWidth, "*");
+      }
+      else{
+        img.style.width = "100%";
+        parent.postMessage("RP W=" + 0, "*");
+      }
+    }
+
+    var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+    var eventer = window[eventMethod];
+    var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+
+    // Listen to message from child window
+    eventer(messageEvent,function(e) {
+      console.log (e.data);
+      if (typeof e.data == "string")
+      {
+        if (e.data.indexOf("SD H=") > -1)
+        {
+          document.getElementById("stockdog").height = e.data.substring(5) + 'px';
+          console.log("RP R:" + document.getElementById("stockdog").height)
+
+          actual_height = document.body.scrollHeight+100;
+          console.log("RP T:" + actual_height)
+          parent.postMessage("RP H=" + actual_height, "*");
+        }
+      }
+    }, false);
+  </script>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+</head>
+<body>
+  <hr color="#ff8000" align="center" size="5">
+  <p align="center"><b>Stock:</b>&emsp;<a href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=LVS&type=pe-ratio&statement=price-ratios&freq=Q" target="_blank">PE Chart</a>&emsp;<a href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=LVS&type=price-book&statement=price-ratios&freq=Q" target="_blank">PB Chart</a>&emsp;<a href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=LVS&type=price-sales&statement=price-ratios&freq=Q" target="_blank">PS Chart</a>&emsp;<a href="https://www.wsj.com/market-data/quotes/LVS/financials/quarter/cash-flow" target="_blank">Finance</a>&emsp;<a href="https://www.dataroma.com/m/stock.php?sym=LVS" target="_blank">Ownership</a>&emsp;<a href="https://hedgefollow.com/stocks/LVS" target="_blank">Institute</a>&emsp;<a href="https://www.ptt.cc/bbs/Stock/search?q=LVS" target="_blank">PTT Search</a>&emsp;<a href="https://unusualwhales.com/stock/LVS/greek-exposure" target="_blank">GEX</a></p>
+  <hr color="#ff8000" align="center" size="5">
+   <div align="center"><iframe id="stock" src="LVS_EC.html" frameborder="0" width="100%" height="1600px" scrolling="no"></iframe></div>
+  <hr color="#ff8000" align="center">
+  <div align="center"><iframe id="stockdog" src="LVS_SD.html" frameborder="0" width="100%" height="1000px" scrolling="no"></iframe></div>
+  <p><hr color="#ff8000" align="center"><p>
+<div align="center"><a href="https://www.marketwatch.com/investing/stock/LVS/analystestimates" target="_blank"><img style="max-height:100%; max-width:100%; object-fit:contain" src=https://app.quotemedia.com/quotetools/getChart?webmasterId=91386&symbol=LVS&chtype=FinancialLine&chcon=on&chdon=on&chfrmon=on&chscale=1d&chton=on&chwid=800&chhig=380&chln=ffa500&chfill=ffa500&chfnts=10&chbdr=000000&chbgch=ffffffff&chgrd=cccccc&svg=false&lang=en&locale=en></a></div>
+
+<hr color="#ff8000" align="center">
+
+
+<hr color="#ff8000" align="center">
+<table align="center" width="70%" class="js-table-ratings styled-table-new is-rounded is-small" cellpadding="0" cellspacing="0" border="0">
+<thead>&#13;
+                <tr>&#13;
+                    <th width="140" align="left">Date</th>&#13;
+                    <th width="320" align="left">Action</th>&#13;
+                    <th width="320" align="left">Analyst</th>&#13;
+                    <th width="320" align="left">Rating Change</th>&#13;
+                    <th width="320" align="left">Price Target Change</th>&#13;
+                </tr>&#13;
+            </thead><tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Mar-26-24</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">Mizuho</td>
+<td class="text-left" width="320" align="left">Buy</td>
+<td class="text-left tabular-nums" width="320" align="left">$70</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Dec-15-23</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">Susquehanna</td>
+<td class="text-left" width="320" align="left">Positive</td>
+<td class="text-left tabular-nums" width="320" align="left">$59</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Jun-08-23</td><td width="320" align="left"><span class="fv-label is-small is-negative-200">Downgrade</span></td>
+<td class="text-left color-text is-negative" width="320" align="left">Jefferies</td>
+<td class="text-left color-text is-negative" width="320" align="left">Buy → Hold</td>
+<td class="text-left tabular-nums color-text is-negative" width="320" align="left">$69 → $65</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Apr-20-23</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">Wells Fargo</td>
+<td class="text-left" width="320" align="left">Overweight</td>
+<td class="text-left tabular-nums" width="320" align="left">$68 → $71</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Apr-20-23</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">Stifel</td>
+<td class="text-left" width="320" align="left">Buy</td>
+<td class="text-left tabular-nums" width="320" align="left">$66 → $73</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Apr-20-23</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">Morgan Stanley</td>
+<td class="text-left" width="320" align="left">Overweight</td>
+<td class="text-left tabular-nums" width="320" align="left">$64 → $69</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Apr-20-23</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">JP Morgan</td>
+<td class="text-left" width="320" align="left">Overweight</td>
+<td class="text-left tabular-nums" width="320" align="left">$69 → $71</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Apr-20-23</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">Jefferies</td>
+<td class="text-left" width="320" align="left">Buy</td>
+<td class="text-left tabular-nums" width="320" align="left">$66 → $69</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Apr-20-23</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">Deutsche Bank</td>
+<td class="text-left" width="320" align="left">Buy</td>
+<td class="text-left tabular-nums" width="320" align="left">$69 → $74</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text is-last"><td width="140" align="left">Apr-20-23</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">Credit Suisse</td>
+<td class="text-left" width="320" align="left">Outperform</td>
+<td class="text-left tabular-nums" width="320" align="left">$62 → $67</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Apr-20-23</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">Citigroup</td>
+<td class="text-left" width="320" align="left">Buy</td>
+<td class="text-left tabular-nums" width="320" align="left">$76 → $80.50</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Apr-20-23</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">Barclays</td>
+<td class="text-left" width="320" align="left">Overweight</td>
+<td class="text-left tabular-nums" width="320" align="left">$64 → $69</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Apr-12-23</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">ROTH MKM</td>
+<td class="text-left" width="320" align="left">Buy</td>
+<td class="text-left tabular-nums" width="320" align="left">$74</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Jan-27-23</td><td width="320" align="left"><span class="fv-label is-small is-positive-200">Upgrade</span></td>
+<td class="text-left color-text is-positive" width="320" align="left">Argus</td>
+<td class="text-left color-text is-positive" width="320" align="left">Hold → Buy</td>
+<td class="text-left tabular-nums color-text is-positive" width="320" align="left">$68</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Nov-21-22</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">Morgan Stanley</td>
+<td class="text-left" width="320" align="left">Overweight</td>
+<td class="text-left tabular-nums" width="320" align="left">$49</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Oct-13-22</td><td width="320" align="left"><span class="fv-label is-small is-positive-200">Upgrade</span></td>
+<td class="text-left color-text is-positive" width="320" align="left">BofA Securities</td>
+<td class="text-left color-text is-positive" width="320" align="left">Underperform → Neutral</td>
+<td class="text-left tabular-nums color-text is-positive" width="320" align="left">$37</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Sep-26-22</td><td width="320" align="left"><span class="fv-label is-small is-positive-200">Upgrade</span></td>
+<td class="text-left color-text is-positive" width="320" align="left">Jefferies</td>
+<td class="text-left color-text is-positive" width="320" align="left">Hold → Buy</td>
+<td class="text-left tabular-nums color-text is-positive" width="320" align="left"/>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Jul-21-22</td><td width="320" align="left"><span class="fv-label is-small is-positive-200">Upgrade</span></td>
+<td class="text-left color-text is-positive" width="320" align="left">Wells Fargo</td>
+<td class="text-left color-text is-positive" width="320" align="left">Equal Weight → Overweight</td>
+<td class="text-left tabular-nums color-text is-positive" width="320" align="left">$43 → $45</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Jun-29-22</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">Barclays</td>
+<td class="text-left" width="320" align="left">Overweight</td>
+<td class="text-left tabular-nums" width="320" align="left">$39</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Jan-27-22</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">Wells Fargo</td>
+<td class="text-left" width="320" align="left">Equal Weight</td>
+<td class="text-left tabular-nums" width="320" align="left">$41 → $45</td>
+</tr>
+</table>
+
+
+
+<hr color="#ff8000" align="center">
+<table cellpadding="0" cellspacing="0" align="center" width="70%" class="body-table styled-table-new is-rounded p-0 mt-2">
+<thead>
+<tr>
+<th class="" align="left">Insider Trading</th>
+<th class="" align="left">Relationship</th>
+<th class="" align="left">Date</th>
+<th class="" align="center">Transaction</th>
+<th class="" align="right">Cost</th>
+<th class="" align="right">#Shares</th>
+<th class="" align="right">Value ($)</th>
+<th class="" align="right">#Shares Total</th>
+<th class="" align="center">SEC Form 4</th>
+</tr>
+</thead>
+<tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1305337&amp;tc=7" class="tab-link">Goldstein Robert G</a></td><td style="white-space:nowrap">Chairman &amp; CEO</td><td>Mar 15 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">52.06</td><td class="value" align="right">100,000</td><td class="value" align="right">5,206,000</td><td class="value" align="right">172,801</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1300514/000162828024011984/xslF345X05/wk-form4_1710891084.xml" class="tab-link" target="_blank">Mar 19 07:31 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1667998&amp;tc=7" class="tab-link">Dumont Patrick</a></td><td style="white-space:nowrap">President &amp; COO</td><td>Jan 30 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">28,508</td><td class="value" align="right">0</td><td class="value" align="right">352,005</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1300514/000130051424000035/xslF345X05/wk-form4_1706750513.xml" class="tab-link" target="_blank">Jan 31 08:22 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1305337&amp;tc=7" class="tab-link">Goldstein Robert G</a></td><td style="white-space:nowrap">Chairman &amp; CEO</td><td>Jan 30 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">55,589</td><td class="value" align="right">0</td><td class="value" align="right">55,589</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1300514/000130051424000036/xslF345X05/wk-form4_1706750529.xml" class="tab-link" target="_blank">Jan 31 08:22 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1787180&amp;tc=7" class="tab-link">Hudson D. Zachary</a></td><td style="white-space:nowrap">EVP and Global General Counsel</td><td>Jan 30 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">7,840</td><td class="value" align="right">0</td><td class="value" align="right">23,026</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1300514/000130051424000033/xslF345X05/wk-form4_1706750484.xml" class="tab-link" target="_blank">Jan 31 08:21 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1456136&amp;tc=7" class="tab-link">Hyzak Randy</a></td><td style="white-space:nowrap">EVP &amp; CFO</td><td>Jan 30 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">8,552</td><td class="value" align="right">0</td><td class="value" align="right">25,118</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1300514/000130051424000034/xslF345X05/wk-form4_1706750500.xml" class="tab-link" target="_blank">Jan 31 08:21 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1309416&amp;tc=7" class="tab-link">Adelson Miriam</a></td><td style="white-space:nowrap">10% Owner</td><td>Dec 01 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">43.23</td><td class="value" align="right">34,010,540</td><td class="value" align="right">1,470,275,644</td><td class="value" align="right">0</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1300514/000120919123057435/xslF345X05/doc4.xml" class="tab-link" target="_blank">Dec 05 04:34 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1309416&amp;tc=7" class="tab-link">Adelson Miriam</a></td><td style="white-space:nowrap">10% Owner</td><td>Dec 01 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">43.23</td><td class="value" align="right">12,253,628</td><td class="value" align="right">529,724,338</td><td class="value" align="right">41,134,164</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1300514/000120919123057435/xslF345X05/doc4.xml" class="tab-link" target="_blank">Dec 05 04:34 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1305349&amp;tc=7" class="tab-link">Forman Charles D</a></td><td style="white-space:nowrap">Director</td><td>Apr 28 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">63.17</td><td class="value" align="right">15,000</td><td class="value" align="right">947,550</td><td class="value" align="right">205,984</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1300514/000130051423000054/xslF345X04/wf-form4_168297314660984.xml" class="tab-link" target="_blank">May 01 04:32 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1667998&amp;tc=7" class="tab-link">Dumont Patrick</a></td><td style="white-space:nowrap">President &amp; COO</td><td>Apr 26 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">27,610</td><td class="value" align="right">0</td><td class="value" align="right">323,497</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1300514/000130051423000052/xslF345X04/wf-form4_168271275901126.xml" class="tab-link" target="_blank">Apr 28 04:13 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1787180&amp;tc=7" class="tab-link">Hudson D. Zachary</a></td><td style="white-space:nowrap">EVP and Global General Counsel</td><td>Apr 26 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">7,593</td><td class="value" align="right">0</td><td class="value" align="right">15,186</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1300514/000130051423000051/xslF345X04/wf-form4_168271273180482.xml" class="tab-link" target="_blank">Apr 28 04:12 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1456136&amp;tc=7" class="tab-link">Hyzak Randy</a></td><td style="white-space:nowrap">EVP &amp; CFO</td><td>Apr 26 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">8,283</td><td class="value" align="right">0</td><td class="value" align="right">16,566</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1300514/000130051423000050/xslF345X04/wf-form4_168271270727796.xml" class="tab-link" target="_blank">Apr 28 04:12 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1305337&amp;tc=7" class="tab-link">Goldstein Robert G</a></td><td style="white-space:nowrap">Chairman &amp; CEO</td><td>Apr 26 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">49,500</td><td class="value" align="right">0</td><td class="value" align="right">99,000</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1300514/000130051423000053/xslF345X04/wf-form4_168271278995892.xml" class="tab-link" target="_blank">Apr 28 04:13 PM</a></td></tr></table>
+
+
+
+<hr color="#ff8000" align="center">
+<div class="body-table-news-wrapper news-table_wrapper"><table align="center" width="70%" cellpadding="1" cellspacing="0" border="0" id="news-table" class="fullview-news-outer news-table">
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/25-richest-billionaires-who-inherited-their-fortunes-1280474/');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-26-24 09:01PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/25-richest-billionaires-who-inherited-their-fortunes-1280474/" target="_blank" rel="nofollow">25 Richest Billionaires Who Inherited their Fortunes</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Yahoo Finance Video', 'https://finance.yahoo.com/video/mgm-resorts-hilton-hyatt-las-195611944.html');">&#13;
+        <td width="130" align="right">&#13;
+            03:56PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/video/mgm-resorts-hilton-hyatt-las-195611944.html" target="_blank" rel="nofollow">MGM Resorts, Hilton, Hyatt, Las Vegas Sands rated Buy: Mizuho</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance Video)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'PR Newswire', 'https://www.prweb.com/releases/auterion-names-scott-henry-as-its-first-ever-chief-financial-officer-302097493.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-25-24 07:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.prweb.com/releases/auterion-names-scott-henry-as-its-first-ever-chief-financial-officer-302097493.html" target="_blank" rel="nofollow">Auterion Names Scott Henry as its First-Ever Chief Financial Officer</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'ACCESSWIRE', 'https://www.accesswire.com/viewarticle.aspx?id=845875');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-22-24 11:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.accesswire.com/viewarticle.aspx?id=845875" target="_blank" rel="nofollow">Las Vegas Sands Announces $500,000 Donation to the WASH Foundation</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ACCESSWIRE)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'ACCESSWIRE', 'https://finance.yahoo.com/news/women-history-month-spotlight-sands-131500506.html');">&#13;
+        <td width="130" align="right">&#13;
+            09:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/women-history-month-spotlight-sands-131500506.html" target="_blank" rel="nofollow">Womens History Month Spotlight: For Sands Lipika Jensen, Having a Roadmap for Career Expansion Mirrors Her Experience in Business Development</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ACCESSWIRE)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'PR Newswire', 'https://www.prnewswire.com/news-releases/las-vegas-sands-announces-500-000-donation-to-the-wash-foundation-302096242.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-21-24 01:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.prnewswire.com/news-releases/las-vegas-sands-announces-500-000-donation-to-the-wash-foundation-302096242.html" target="_blank" rel="nofollow">Las Vegas Sands Announces $500,000 Donation to The WASH Foundation</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'ACCESSWIRE', 'https://finance.yahoo.com/news/women-history-month-spotlight-tracey-123000297.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/women-history-month-spotlight-tracey-123000297.html" target="_blank" rel="nofollow">Womens History Month Spotlight: Tracey Edwards Leads Corporate Social Responsibility for Sands New York</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ACCESSWIRE)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Morningstar Research', 'https://finance.yahoo.com/m/2f33657c-cc1d-3ce0-98cb-464d11038abb/analyst-report%3A-las-vegas.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-18-24 12:09PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/2f33657c-cc1d-3ce0-98cb-464d11038abb/analyst-report%3A-las-vegas.html" target="_blank" rel="nofollow">Analyst Report: Las Vegas Sands Corp.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Morningstar Research)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/top-25-richest-women-in-the-world-in-2024-1274627/');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-16-24 05:16PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/top-25-richest-women-in-the-world-in-2024-1274627/" target="_blank" rel="nofollow">Top 25 Richest Women in the World in 2024</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/20-largest-travel-companies-in-the-world-1272054/');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-11-24 02:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/20-largest-travel-companies-in-the-world-1272054/" target="_blank" rel="nofollow">20 Largest Travel Companies In The World</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'CNBC TV', 'https://www.youtube.com/watch?v=Kh3nK2VTgy4');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-08-24 02:07PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.youtube.com/watch?v=Kh3nK2VTgy4" target="_blank" rel="nofollow">Final Trades: Target, Las Vegas Sands, Apollo Global and the IYH</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(CNBC TV)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'ACCESSWIRE', 'https://finance.yahoo.com/news/women-history-month-spotlight-marina-134000774.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-07-24 07:40AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/women-history-month-spotlight-marina-134000774.html" target="_blank" rel="nofollow">Womens History Month Spotlight: Marina Bay Sands Val Chua Highlights the Importance of Finding Mentors and Having Clear Purpose in Career Development</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ACCESSWIRE)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investopedia', 'https://www.investopedia.com/s-and-p-500-gains-and-losses-today-reignited-tech-rally-lifts-index-to-record-high-8603252');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-01-24 05:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.investopedia.com/s-and-p-500-gains-and-losses-today-reignited-tech-rally-lifts-index-to-record-high-8603252" target="_blank" rel="nofollow">S&amp;P 500 Gains and Losses Today: Reignited Tech Rally Lifts Index to Record High</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investopedia)</span> <span class="body-table-news-loss fv-label is-negative-200">-5.94%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'ACCESSWIRE', 'https://finance.yahoo.com/news/advancing-hospitality-skills-careers-core-133000938.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-26-24 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/advancing-hospitality-skills-careers-core-133000938.html" target="_blank" rel="nofollow">Advancing Hospitality Skills and Careers Is a Core Focus of Sands Priority on Workforce Development</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ACCESSWIRE)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2231109/las-vegas-sands-lvs-up-7-since-last-earnings-report-can-it-continue');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-23-24 11:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2231109/las-vegas-sands-lvs-up-7-since-last-earnings-report-can-it-continue" target="_blank" rel="nofollow">Las Vegas Sands (LVS) Up 7% Since Last Earnings Report: Can It Continue?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://finance.yahoo.com/news/top-20-most-valuable-travel-182520641.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-22-24 01:25PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/top-20-most-valuable-travel-182520641.html" target="_blank" rel="nofollow">Top 20 Most Valuable Travel Companies in the World</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Yahoo Finance Video', 'https://finance.yahoo.com/video/us-casinos-becoming-more-recession-161838294.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-21-24 11:18AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/video/us-casinos-becoming-more-recession-161838294.html" target="_blank" rel="nofollow">US casinos are becoming more 'recession resilient': Analyst</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance Video)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'ACCESSWIRE', 'https://finance.yahoo.com/news/2023-100-black-men-las-141500571.html');">&#13;
+        <td width="130" align="right">&#13;
+            09:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/2023-100-black-men-las-141500571.html" target="_blank" rel="nofollow">The 2023 100 Black Men Las Vegas Impact Report Highlights the Nonprofit's Accomplishments, Including Programs Made Possible by Sands Cares</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ACCESSWIRE)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'ACCESSWIRE', 'https://finance.yahoo.com/news/sands-sands-china-listed-top-213500729.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-20-24 04:35PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/sands-sands-china-listed-top-213500729.html" target="_blank" rel="nofollow">Sands, Sands China Listed As the Top Two Companies in the S&amp;P Global Sustainability Yearbook 2024 Casinos and Gaming Category</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ACCESSWIRE)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://finance.yahoo.com/news/20-most-sustainable-companies-us-162111646.html');">&#13;
+        <td width="130" align="right">&#13;
+            11:21AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/20-most-sustainable-companies-us-162111646.html" target="_blank" rel="nofollow">20 Most Sustainable Companies in the US</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://finance.yahoo.com/news/25-most-valuable-entertainment-companies-120424183.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-17-24 07:04AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/25-most-valuable-entertainment-companies-120424183.html" target="_blank" rel="nofollow">25 Most Valuable Entertainment Companies in the World</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'GuruFocus.com', 'https://finance.yahoo.com/news/las-vegas-sands-set-ride-130203727.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-13-24 08:02AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/las-vegas-sands-set-ride-130203727.html" target="_blank" rel="nofollow">Las Vegas Sands Set to Ride Macao Recovery</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Morningstar Research', 'https://finance.yahoo.com/m/1378684a-4cae-3bfc-84c0-2bb8daaab6d0/analyst-report%3A-las-vegas.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-12-24 07:16PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/1378684a-4cae-3bfc-84c0-2bb8daaab6d0/analyst-report%3A-las-vegas.html" target="_blank" rel="nofollow">Analyst Report: Las Vegas Sands Corp.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Morningstar Research)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Morningstar Research', 'https://finance.yahoo.com/m/58fa447c-efe3-38f6-ac7a-bbe4c67c5cba/analyst-report%3A-las-vegas.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-08-24 08:08PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/58fa447c-efe3-38f6-ac7a-bbe4c67c5cba/analyst-report%3A-las-vegas.html" target="_blank" rel="nofollow">Analyst Report: Las Vegas Sands Corp.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Morningstar Research)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'PR Newswire', 'https://www.prnewswire.com/news-releases/las-vegas-sands-named-to-fortunes-worlds-most-admired-companies-list-for-its-10th-appearance-302049976.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-31-24 06:34PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.prnewswire.com/news-releases/las-vegas-sands-named-to-fortunes-worlds-most-admired-companies-list-for-its-10th-appearance-302049976.html" target="_blank" rel="nofollow">Las Vegas Sands Named to Fortune's World's Most Admired Companies List for its 10th Appearance</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'ACCESSWIRE', 'https://finance.yahoo.com/news/recapping-2023-nevada-youth-homelessness-142500154.html');">&#13;
+        <td width="130" align="right">&#13;
+            09:25AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/recapping-2023-nevada-youth-homelessness-142500154.html" target="_blank" rel="nofollow">Recapping the 2023 Nevada Youth Homelessness Summit Hosted by Nevada Partnership for Homeless Youth and Sands</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ACCESSWIRE)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'ACCESSWIRE', 'https://finance.yahoo.com/news/2023-sands-cares-global-hygiene-141500618.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-29-24 09:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/2023-sands-cares-global-hygiene-141500618.html" target="_blank" rel="nofollow">The 2023 Sands Cares Global Hygiene Kit Build Produces 57,000 Kits for Clean the World and People in Need</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ACCESSWIRE)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Barrons.com', 'https://finance.yahoo.com/m/c47a1d9a-775d-362e-89de-52dad11a8137/these-stocks-moved-the-most.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-25-24 04:17PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/c47a1d9a-775d-362e-89de-52dad11a8137/these-stocks-moved-the-most.html" target="_blank" rel="nofollow">These Stocks Moved the Most Today: Tesla, IBM, Humana, United Rentals, Boeing, American Airlines, PayPal, and More</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'CNBC TV', 'https://www.youtube.com/watch?v=VnJjLBh1bxU');">&#13;
+        <td width="130" align="right">&#13;
+            03:53PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.youtube.com/watch?v=VnJjLBh1bxU" target="_blank" rel="nofollow">Las Vegas Sands CEO on mixed Q4 results</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(CNBC TV)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Barrons.com', 'https://finance.yahoo.com/m/c47a1d9a-775d-362e-89de-52dad11a8137/these-stocks-are-moving-the.html');">&#13;
+        <td width="130" align="right">&#13;
+            12:58PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/c47a1d9a-775d-362e-89de-52dad11a8137/these-stocks-are-moving-the.html" target="_blank" rel="nofollow">These Stocks Are Moving the Most Today: Tesla, IBM, Humana, United Rentals, Boeing, American Airlines, PayPal, and More</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2215944/las-vegas-sands-lvs-q4-earnings-lag-estimates-revenues-top');">&#13;
+        <td width="130" align="right">&#13;
+            10:51AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2215944/las-vegas-sands-lvs-q4-earnings-lag-estimates-revenues-top" target="_blank" rel="nofollow">Las Vegas Sands' (LVS) Q4 Earnings Lag Estimates, Revenues Top</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://finance.yahoo.com/news/las-vegas-sands-corp-nyse-152930618.html');">&#13;
+        <td width="130" align="right">&#13;
+            10:29AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/las-vegas-sands-corp-nyse-152930618.html" target="_blank" rel="nofollow">Las Vegas Sands Corp. (NYSE:LVS) Q4 2023 Earnings Call Transcript</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/13dfd18e-27e9-36fa-bc02-4d363f5fefe8/las-vegas-sands-%28lvs%29-q4-2023.html');">&#13;
+        <td width="130" align="right">&#13;
+            02:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/13dfd18e-27e9-36fa-bc02-4d363f5fefe8/las-vegas-sands-%28lvs%29-q4-2023.html" target="_blank" rel="nofollow">Las Vegas Sands (LVS) Q4 2023 Earnings Call Transcript</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Morningstar Research', 'https://finance.yahoo.com/m/f2904105-5561-3672-8dea-4982b6a7c0be/analyst-report%3A-las-vegas.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-24-24 09:09PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/f2904105-5561-3672-8dea-4982b6a7c0be/analyst-report%3A-las-vegas.html" target="_blank" rel="nofollow">Analyst Report: Las Vegas Sands Corp.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Morningstar Research)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2215409/here-s-what-key-metrics-tell-us-about-las-vegas-sands-lvs-q4-earnings');">&#13;
+        <td width="130" align="right">&#13;
+            07:30PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2215409/here-s-what-key-metrics-tell-us-about-las-vegas-sands-lvs-q4-earnings" target="_blank" rel="nofollow">Here's What Key Metrics Tell Us About Las Vegas Sands (LVS) Q4 Earnings</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://finance.yahoo.com/news/las-vegas-sands-lvs-q4-221507576.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:15PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/las-vegas-sands-lvs-q4-221507576.html" target="_blank" rel="nofollow">Las Vegas Sands (LVS) Q4 Earnings Lag Estimates</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Yahoo Finance Video', 'https://finance.yahoo.com/video/visa-intel-earnings-q4-gdp-221406731.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:14PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/video/visa-intel-earnings-q4-gdp-221406731.html" target="_blank" rel="nofollow">Visa &amp; Intel earnings, Q4 GDP, housing data: What to Watch</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance Video)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'GuruFocus.com', 'https://finance.yahoo.com/news/las-vegas-sands-corp-reports-213835972.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:38PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/las-vegas-sands-corp-reports-213835972.html" target="_blank" rel="nofollow">Las Vegas Sands Corp. Reports Robust Earnings with Net Income Soaring to $469 Million</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Associated Press Finance', 'https://finance.yahoo.com/news/las-vegas-sands-q4-earnings-211719955.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:17PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/las-vegas-sands-q4-earnings-211719955.html" target="_blank" rel="nofollow">Las Vegas Sands: Q4 Earnings Snapshot</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Associated Press Finance)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'PR Newswire', 'https://www.prnewswire.com/news-releases/las-vegas-sands-reports-fourth-quarter-2023-results-302043789.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:05PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.prnewswire.com/news-releases/las-vegas-sands-reports-fourth-quarter-2023-results-302043789.html" target="_blank" rel="nofollow">Las Vegas Sands Reports Fourth Quarter 2023 Results</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'ACCESSWIRE', 'https://finance.yahoo.com/news/asian-community-development-council-strengthens-133000256.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-23-24 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/asian-community-development-council-strengthens-133000256.html" target="_blank" rel="nofollow">Asian Community Development Council Strengthens Access to Services for the AAPI Community With Sands Cares Support</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ACCESSWIRE)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2213347/robust-macao-visits-to-aid-las-vegas-sands-lvs-in-q4-earnings');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-22-24 08:55AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2213347/robust-macao-visits-to-aid-las-vegas-sands-lvs-in-q4-earnings" target="_blank" rel="nofollow">Robust Macao Visits to Aid Las Vegas Sands (LVS) in Q4 Earnings</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'PR Newswire', 'https://www.prnewswire.com/news-releases/sands-china-honours-suppliers-and-smes-at-sands-supplier-excellence-awards-and-sands-procurement-academy-graduation-302040645.html');">&#13;
+        <td width="130" align="right">&#13;
+            07:37AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.prnewswire.com/news-releases/sands-china-honours-suppliers-and-smes-at-sands-supplier-excellence-awards-and-sands-procurement-academy-graduation-302040645.html" target="_blank" rel="nofollow">Sands China Honours Suppliers and SMEs at Sands Supplier Excellence Awards and Sands Procurement Academy Graduation</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2213006/las-vegas-sands-lvs-q4-earnings-preview-what-you-should-know-beyond-the-headline-estimates');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-19-24 01:05PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2213006/las-vegas-sands-lvs-q4-earnings-preview-what-you-should-know-beyond-the-headline-estimates" target="_blank" rel="nofollow">Las Vegas Sands (LVS) Q4 Earnings Preview: What You Should Know Beyond the Headline Estimates</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2212840/las-vegas-sands-lvs-to-post-q4-earnings-what-s-in-store');">&#13;
+        <td width="130" align="right">&#13;
+            09:51AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2212840/las-vegas-sands-lvs-to-post-q4-earnings-what-s-in-store" target="_blank" rel="nofollow">Las Vegas Sands (LVS) to Post Q4 Earnings: What's in Store?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investor\u0027s Business Daily', 'https://finance.yahoo.com/m/17ea2f41-1e87-3941-a7a8-b6e5d74b1edd/11-companies-including-nvidia.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/17ea2f41-1e87-3941-a7a8-b6e5d74b1edd/11-companies-including-nvidia.html" target="_blank" rel="nofollow">11 Companies Including Nvidia Are Growing Like A House On Fire</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investor's Business Daily)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'PR Newswire', 'https://www.prnewswire.com/news-releases/sands-to-release-fourth-quarter-2023-financial-results-302037618.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-17-24 06:50PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.prnewswire.com/news-releases/sands-to-release-fourth-quarter-2023-financial-results-302037618.html" target="_blank" rel="nofollow">Sands to Release Fourth Quarter 2023 Financial Results</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2211491/las-vegas-sands-lvs-to-report-q4-results-wall-street-expects-earnings-growth');">&#13;
+        <td width="130" align="right">&#13;
+            10:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2211491/las-vegas-sands-lvs-to-report-q4-results-wall-street-expects-earnings-growth" target="_blank" rel="nofollow">Las Vegas Sands (LVS) to Report Q4 Results: Wall Street Expects Earnings Growth</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'ACCESSWIRE', 'https://finance.yahoo.com/news/international-volunteer-day-2023-sands-141500991.html');">&#13;
+        <td width="130" align="right">&#13;
+            09:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/international-volunteer-day-2023-sands-141500991.html" target="_blank" rel="nofollow">International Volunteer Day 2023: Sands Celebrates Team Member Efforts and Surpassing Its 2025 Volunteerism Target in Two Years</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ACCESSWIRE)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://finance.yahoo.com/news/why-earnings-season-could-great-133400576.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:34AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/why-earnings-season-could-great-133400576.html" target="_blank" rel="nofollow">Why Earnings Season Could Be Great for Las Vegas (LVS)</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'The Wall Street Journal', 'https://finance.yahoo.com/m/d4da1757-bb61-3760-ad79-c39ca7ab0d5e/the-%2465-million-perk-for.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-16-24 05:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/d4da1757-bb61-3760-ad79-c39ca7ab0d5e/the-%2465-million-perk-for.html" target="_blank" rel="nofollow">The $65 Million Perk for CEOs: Personal Use of the Corporate Jet Has Soared</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(The Wall Street Journal)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'ACCESSWIRE', 'https://finance.yahoo.com/news/las-vegas-sands-named-newsweek-133000865.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-15-24 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/las-vegas-sands-named-newsweek-133000865.html" target="_blank" rel="nofollow">Las Vegas Sands Named to Newsweeks Americas Most Responsible Companies 2024</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ACCESSWIRE)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'ACCESSWIRE', 'https://finance.yahoo.com/news/sands-regions-team-members-brightened-133000802.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-11-24 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/sands-regions-team-members-brightened-133000802.html" target="_blank" rel="nofollow">Sands' Regions and Team Members Brightened Communities This Past Holiday Season</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ACCESSWIRE)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'TipRanks', 'https://finance.yahoo.com/news/rcl-wh-lvs-travel-stock-033915786.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-10-24 10:39PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/rcl-wh-lvs-travel-stock-033915786.html" target="_blank" rel="nofollow">RCL, WH, LVS: Which Travel Stock is the Best Buy?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(TipRanks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'ACCESSWIRE', 'https://finance.yahoo.com/news/sands-china-launches-next-stage-171500826.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-09-24 12:15PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/sands-china-launches-next-stage-171500826.html" target="_blank" rel="nofollow">Sands China Launches Next Stage of Development of the Londoner Macao</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ACCESSWIRE)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://finance.yahoo.com/news/heres-why-investors-retain-las-152800861.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-08-24 10:28AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/heres-why-investors-retain-las-152800861.html" target="_blank" rel="nofollow">Here's Why Investors Should Retain Las Vegas Sands (LVS) Now</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://finance.yahoo.com/news/roll-dice-3-winning-casino-195024925.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-06-24 02:50PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/roll-dice-3-winning-casino-195024925.html" target="_blank" rel="nofollow">Roll the Dice: 3 Winning Casino Stocks to Bet On Now</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://finance.yahoo.com/news/las-vegas-sands-lvs-beat-171009848.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-05-24 12:10PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/las-vegas-sands-lvs-beat-171009848.html" target="_blank" rel="nofollow">Will Las Vegas Sands (LVS) Beat Estimates Again in Its Next Earnings Report?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investopedia', 'https://finance.yahoo.com/m/c4328680-b5bc-3f9a-92c3-1eecb81cdcef/s%26p-500-gains-and-losses%3A-an.html');">&#13;
+        <td width="130" align="right">&#13;
+            Dec-27-23 04:53PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/c4328680-b5bc-3f9a-92c3-1eecb81cdcef/s%26p-500-gains-and-losses%3A-an.html" target="_blank" rel="nofollow">S&amp;P 500 Gains and Losses: An Update to the Model Y Sends Tesla Shares Higher</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investopedia)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://finance.yahoo.com/news/3-most-attractively-priced-growth-200348030.html');">&#13;
+        <td width="130" align="right">&#13;
+            03:03PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/3-most-attractively-priced-growth-200348030.html" target="_blank" rel="nofollow">The 3 Most Attractively Priced Growth Stocks to Buy Before January</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Associated Press Finance', 'https://finance.yahoo.com/news/nba-approves-sale-dallas-mavericks-170305231.html');">&#13;
+        <td width="130" align="right">&#13;
+            12:03PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/nba-approves-sale-dallas-mavericks-170305231.html" target="_blank" rel="nofollow">Mark Cuban says the changing NBA landscape led to his sale of the Mavs to casino families</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Associated Press Finance)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'ACCESSWIRE', 'https://finance.yahoo.com/news/hbcu-students-reflect-inaugural-sands-132000814.html');">&#13;
+        <td width="130" align="right">&#13;
+            Dec-19-23 08:20AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/hbcu-students-reflect-inaugural-sands-132000814.html" target="_blank" rel="nofollow">HBCU Students Reflect on the Inaugural Sands Hospitality Immersion Program</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ACCESSWIRE)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/5-best-sin-stocks-to-invest-in-2024-1238381/');">&#13;
+        <td width="130" align="right">&#13;
+            Dec-15-23 03:22PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/5-best-sin-stocks-to-invest-in-2024-1238381/" target="_blank" rel="nofollow">5 Best Sin Stocks To Invest in 2024</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'ACCESSWIRE', 'https://finance.yahoo.com/news/sands-cares-accelerator-members-significant-161500018.html');">&#13;
+        <td width="130" align="right">&#13;
+            11:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/sands-cares-accelerator-members-significant-161500018.html" target="_blank" rel="nofollow">Sands Cares Accelerator Members Make Significant Progress in 2023</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ACCESSWIRE)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'ACCESSWIRE', 'https://www.accesswire.com/viewarticle.aspx?id=816706');">&#13;
+        <td width="130" align="right">&#13;
+            Dec-13-23 04:30PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.accesswire.com/viewarticle.aspx?id=816706" target="_blank" rel="nofollow">Las Vegas Sands Named to the Dow Jones Sustainability Indices for World and North America</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ACCESSWIRE)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'PR Newswire', 'https://www.prnewswire.com/news-releases/las-vegas-sands-named-to-the-dow-jones-sustainability-indices-for-world-and-north-america-302013209.html');">&#13;
+        <td width="130" align="right">&#13;
+            Dec-12-23 04:05PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.prnewswire.com/news-releases/las-vegas-sands-named-to-the-dow-jones-sustainability-indices-for-world-and-north-america-302013209.html" target="_blank" rel="nofollow">Las Vegas Sands Named to the Dow Jones Sustainability Indices for World and North America</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investor\u0027s Business Daily', 'https://finance.yahoo.com/m/909051b7-500d-3c3a-833f-fcad97d60ebf/how-to-trade-a-leveraged.html');">&#13;
+        <td width="130" align="right">&#13;
+            01:08PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/909051b7-500d-3c3a-833f-fcad97d60ebf/how-to-trade-a-leveraged.html" target="_blank" rel="nofollow">How To Trade A Leveraged Covered Call On LVS Stock</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investor's Business Daily)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://finance.yahoo.com/news/3-gambling-stocks-benefit-holiday-204632770.html');">&#13;
+        <td width="130" align="right">&#13;
+            Dec-04-23 03:46PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/3-gambling-stocks-benefit-holiday-204632770.html" target="_blank" rel="nofollow">3 Gambling Stocks to Benefit From Holiday Season Splurges</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://finance.yahoo.com/news/billionaire-lee-cooperman-10-stock-195621082.html');">&#13;
+        <td width="130" align="right">&#13;
+            02:56PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/billionaire-lee-cooperman-10-stock-195621082.html" target="_blank" rel="nofollow">Billionaire Lee Coopermans 10 Stock Picks with Huge Upside Potential</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'PR Newswire', 'https://www.prnewswire.com/news-releases/sands-china-team-members-and-rotary-club-volunteers-assemble-over-27-000-hygiene-kits-for-clean-the-world-302003266.html');">&#13;
+        <td width="130" align="right">&#13;
+            Dec-01-23 07:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.prnewswire.com/news-releases/sands-china-team-members-and-rotary-club-volunteers-assemble-over-27-000-hygiene-kits-for-clean-the-world-302003266.html" target="_blank" rel="nofollow">Sands China Team Members and Rotary Club Volunteers Assemble Over 27,000 Hygiene Kits for Clean the World</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'ACCESSWIRE', 'https://finance.yahoo.com/news/las-vegas-sands-marina-bay-141500520.html');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-30-23 09:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/las-vegas-sands-marina-bay-141500520.html" target="_blank" rel="nofollow">Las Vegas Sands and Marina Bay Sands Award Scholarships to 49 Singapore Students To Nurture Hospitality Talent</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ACCESSWIRE)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Bloomberg', 'https://finance.yahoo.com/news/marina-bay-sands-said-seek-053129896.html');">&#13;
+        <td width="130" align="right">&#13;
+            12:31AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/marina-bay-sands-said-seek-053129896.html" target="_blank" rel="nofollow">Marina Bay Sands Said to Seek Up to S$10 Billion Loan for Growth</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Bloomberg)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investopedia', 'https://www.investopedia.com/s-and-p-500-gains-and-losses-today-netapp-and-gm-rise-hormel-and-las-vegas-sands-fall-8408153?utm_campaign=rss_headlines\u0026utm_source=rss\u0026utm_medium=referral');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-29-23 04:57PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.investopedia.com/s-and-p-500-gains-and-losses-today-netapp-and-gm-rise-hormel-and-las-vegas-sands-fall-8408153?utm_campaign=rss_headlines&amp;utm_source=rss&amp;utm_medium=referral" target="_blank" rel="nofollow">S&amp;P 500 Gains and Losses Today: NetApp and GM Rise; Hormel and Las Vegas Sands Fall</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investopedia)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investopedia', 'https://www.investopedia.com/las-vegas-sands-shares-drop-as-top-shareholder-sells-usd2b-in-stock-to-buy-dallas-mavericks-8408075?utm_campaign=rss_headlines\u0026utm_source=rss\u0026utm_medium=referral');">&#13;
+        <td width="130" align="right">&#13;
+            04:48PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.investopedia.com/las-vegas-sands-shares-drop-as-top-shareholder-sells-usd2b-in-stock-to-buy-dallas-mavericks-8408075?utm_campaign=rss_headlines&amp;utm_source=rss&amp;utm_medium=referral" target="_blank" rel="nofollow">Las Vegas Sands Shares Drop as Top Shareholder Sells $2B in Stock to Buy Dallas Mavericks</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investopedia)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Barrons.com', 'https://finance.yahoo.com/m/a8f15e22-e7fe-34a6-b97f-9f88f347ca37/these-stocks-moved-the-most.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:18PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/a8f15e22-e7fe-34a6-b97f-9f88f347ca37/these-stocks-moved-the-most.html" target="_blank" rel="nofollow">These Stocks Moved the Most Today: GM, Cigna, Petco, Fluence Energy, GameStop, NetApp, Workday, and More</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Bloomberg', 'https://finance.yahoo.com/news/adelson-mavericks-deal-drives-ons-211451100.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:14PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/adelson-mavericks-deal-drives-ons-211451100.html" target="_blank" rel="nofollow">Adelsons Mavericks Deal Drives Follow-Ons Near Two-Year High</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Bloomberg)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'The Wall Street Journal', 'https://finance.yahoo.com/m/248c6f25-fa79-392a-98b4-9f2aa7eef4dc/mark-cuban-is-set-to-sell.html');">&#13;
+        <td width="130" align="right">&#13;
+            01:46PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/248c6f25-fa79-392a-98b4-9f2aa7eef4dc/mark-cuban-is-set-to-sell.html" target="_blank" rel="nofollow">Mark Cuban Is Set to Sell Majority Stake in Dallas Mavericks to Adelson Family</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(The Wall Street Journal)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Barrons.com', 'https://finance.yahoo.com/m/f08d4adf-9237-3fea-ae7f-7b2c6cc7fc98/these-stocks-are-moving-the.html');">&#13;
+        <td width="130" align="right">&#13;
+            01:21PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/f08d4adf-9237-3fea-ae7f-7b2c6cc7fc98/these-stocks-are-moving-the.html" target="_blank" rel="nofollow">These Stocks Are Moving the Most Today</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Barrons.com', 'https://finance.yahoo.com/m/a8f15e22-e7fe-34a6-b97f-9f88f347ca37/these-stocks-are-moving-the.html');">&#13;
+        <td width="130" align="right">&#13;
+            01:19PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/a8f15e22-e7fe-34a6-b97f-9f88f347ca37/these-stocks-are-moving-the.html" target="_blank" rel="nofollow">These Stocks Are Moving the Most Today: GM, Cigna, Petco, Fluence Energy, GameStop, NetApp, Workday, and More</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investopedia', 'https://www.investopedia.com/midday-movers-gm-rises-on-usd10b-buyback-and-nba-team-buy-hurts-las-vegas-sands-8407919?utm_campaign=rss_headlines\u0026utm_source=rss\u0026utm_medium=referral');">&#13;
+        <td width="130" align="right">&#13;
+            12:38PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.investopedia.com/midday-movers-gm-rises-on-usd10b-buyback-and-nba-team-buy-hurts-las-vegas-sands-8407919?utm_campaign=rss_headlines&amp;utm_source=rss&amp;utm_medium=referral" target="_blank" rel="nofollow">Midday Movers: GM Rises on $10B Buyback and NBA Team Buy Hurts Las Vegas Sands</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investopedia)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2023/11/miriam-adelson-is-dumping-las-vegas-sands-lvs-stock-heres-why/');">&#13;
+        <td width="130" align="right">&#13;
+            12:21PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2023/11/miriam-adelson-is-dumping-las-vegas-sands-lvs-stock-heres-why/" target="_blank" rel="nofollow">Miriam Adelson Is Dumping Las Vegas Sands (LVS) Stock. Here's Why.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investor\u0027s Business Daily', 'https://finance.yahoo.com/m/68e373dc-9115-314c-bc55-6d186ba484cb/nasdaq-pares-gains-after.html');">&#13;
+        <td width="130" align="right">&#13;
+            12:10PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/68e373dc-9115-314c-bc55-6d186ba484cb/nasdaq-pares-gains-after.html" target="_blank" rel="nofollow">Nasdaq Pares Gains After Hitting 2023 High As GDP Cheer Wanes; Small Caps Lead But Face Bearish Sign</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investor's Business Daily)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Yahoo Finance Video', 'https://finance.yahoo.com/video/mark-cuban-sell-stake-mavericks-155117529.html');">&#13;
+        <td width="130" align="right">&#13;
+            10:51AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/video/mark-cuban-sell-stake-mavericks-155117529.html" target="_blank" rel="nofollow">Mark Cuban to sell stake in Mavericks to Adelson family: Report</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance Video)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investor\u0027s Business Daily', 'https://finance.yahoo.com/m/68e373dc-9115-314c-bc55-6d186ba484cb/nasdaq-at-new-2023-high-after.html');">&#13;
+        <td width="130" align="right">&#13;
+            10:29AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/68e373dc-9115-314c-bc55-6d186ba484cb/nasdaq-at-new-2023-high-after.html" target="_blank" rel="nofollow">Nasdaq At New 2023 High After GDP Data, Earnings. Mark Cuban Reportedly Sells NBA Team To Casino Billionaire.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investor's Business Daily)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'ACCESSWIRE', 'https://finance.yahoo.com/news/macao-youth-learn-skills-pro-141500097.html');">&#13;
+        <td width="130" align="right">&#13;
+            09:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/macao-youth-learn-skills-pro-141500097.html" target="_blank" rel="nofollow">Macao Youth Learn Skills From Pro Champions at Sands Golf Day</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ACCESSWIRE)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Barrons.com', 'https://finance.yahoo.com/m/a7bdd97c-1f65-38b7-8249-a39ae5590bf0/mark-cuban-to-sell-mavericks.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:55AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/a7bdd97c-1f65-38b7-8249-a39ae5590bf0/mark-cuban-to-sell-mavericks.html" target="_blank" rel="nofollow">Mark Cuban to Sell Mavericks Stake to Miriam Adelson. Why Las Vegas Sands Stocks Down.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investing.com', 'https://finance.yahoo.com/news/gm-foot-locker-crowdstrike-workday-075059936.html');">&#13;
+        <td width="130" align="right">&#13;
+            02:50AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/gm-foot-locker-crowdstrike-workday-075059936.html" target="_blank" rel="nofollow">GM, Foot Locker, CrowdStrike, Workday rise premarket;  Dollar Tree falls</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investing.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Associated Press Finance', 'https://finance.yahoo.com/news/ap-top-extended-financial-headlines-050000570.html');">&#13;
+        <td width="130" align="right">&#13;
+            12:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/ap-top-extended-financial-headlines-050000570.html" target="_blank" rel="nofollow">AP Top Extended Financial Headlines at 1:09 p.m. EST</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Associated Press Finance)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Bloomberg', 'https://finance.yahoo.com/news/adelson-family-buy-sports-team-213251982.html');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-28-23 09:34PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/adelson-family-buy-sports-team-213251982.html" target="_blank" rel="nofollow">Adelsons to Buy Stake in NBAs Dallas Mavericks From Mark Cuban</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Bloomberg)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'PR Newswire', 'https://www.prnewswire.com/news-releases/las-vegas-sands-announces-pricing-of-common-stock-offering-by-its-principal-stockholder-301999993.html');">&#13;
+        <td width="130" align="right">&#13;
+            09:07PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.prnewswire.com/news-releases/las-vegas-sands-announces-pricing-of-common-stock-offering-by-its-principal-stockholder-301999993.html" target="_blank" rel="nofollow">Las Vegas Sands Announces Pricing of Common Stock Offering by its Principal Stockholder</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Associated Press Finance', 'https://finance.yahoo.com/news/mavs-mark-cuban-working-3-012318457.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:23PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/mavs-mark-cuban-working-3-012318457.html" target="_blank" rel="nofollow">Mark Cuban working on $3.5B sale of Dallas Mavericks to Sands casino family, AP source says</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Associated Press Finance)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'CNBC TV', 'https://www.youtube.com/watch?v=b-sJCSrEGaI');">&#13;
+        <td width="130" align="right">&#13;
+            05:26PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.youtube.com/watch?v=b-sJCSrEGaI" target="_blank" rel="nofollow">Miriam Adelson to sell $2 billion in Las Vegas Sands stock</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(CNBC TV)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Yahoo Finance Video', 'https://finance.yahoo.com/video/las-vegas-sands-principal-stockholder-222508612.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:25PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/video/las-vegas-sands-principal-stockholder-222508612.html" target="_blank" rel="nofollow">Las Vegas Sands principal stockholder to sell $2B of stock</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance Video)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'PR Newswire', 'https://www.prnewswire.com/news-releases/las-vegas-sands-announces-launch-of-common-stock-offering-by-its-principal-stockholder-301999802.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:07PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.prnewswire.com/news-releases/las-vegas-sands-announces-launch-of-common-stock-offering-by-its-principal-stockholder-301999802.html" target="_blank" rel="nofollow">Las Vegas Sands Announces Launch of Common Stock Offering by its Principal Stockholder</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://finance.yahoo.com/news/george-soros-jim-cramer-love-165142602.html');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-27-23 11:51AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/george-soros-jim-cramer-love-165142602.html" target="_blank" rel="nofollow">George Soros and Jim Cramer Love These Stocks</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/billionaire-leon-coopermans-long-term-stock-picks-top-5-stocks-1226236/');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-23-23 01:02PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/billionaire-leon-coopermans-long-term-stock-picks-top-5-stocks-1226236/" target="_blank" rel="nofollow">Billionaire Leon Cooperman's Long-Term Stock Picks: Top 5 Stocks</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'PR Newswire', 'https://www.prnewswire.com/news-releases/sands-china-supports-macau-grand-prix-with-community-and-tourist-activities-301996630.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:43AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.prnewswire.com/news-releases/sands-china-supports-macau-grand-prix-with-community-and-tourist-activities-301996630.html" target="_blank" rel="nofollow">Sands China Supports Macau Grand Prix with Community and Tourist Activities</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2186087/las-vegas-sands-lvs-up-7-1-since-last-earnings-report-can-it-continue');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-17-23 11:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2186087/las-vegas-sands-lvs-up-7-1-since-last-earnings-report-can-it-continue" target="_blank" rel="nofollow">Las Vegas Sands (LVS) Up 7.1% Since Last Earnings Report: Can It Continue?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'ACCESSWIRE', 'https://finance.yahoo.com/news/team-member-groups-where-everyone-133000130.html');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-09-23 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/team-member-groups-where-everyone-133000130.html" target="_blank" rel="nofollow">Team Member Resource Groups: Where Everyone Feels Their Voice Is Heard and Their Individuality Is Recognized and Supported</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ACCESSWIRE)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'ACCESSWIRE', 'https://finance.yahoo.com/news/sands-named-3bls-2023-ranking-191500319.html');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-07-23 02:15PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/sands-named-3bls-2023-ranking-191500319.html" target="_blank" rel="nofollow">Sands Named to 3BL's 2023 Ranking of the 100 Best Corporate Citizens</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ACCESSWIRE)</span></div></div></td></tr>
+</table>
+</div>
+
+
+  <script language="javascript">
+  function reSize(){
+    actual_height = document.body.scrollHeight+50;
+    console.log("RP T:" + actual_height)
+    parent.postMessage("RP H=" + actual_height, "*");
+  }
+  window.onload=reSize;
+  </script>
+</body>
+</html>

@@ -1,0 +1,1388 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<title>DAL</title>
+<head>
+  <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <style>
+  * {
+    font-size: 12px;
+    font-family: Arial, Helvetica, sans-serif, Microsoft JhengHei;
+  }
+  
+  .is-negative {
+    color: #008000;
+  }
+  
+  .is-positive {
+    color: #ff0000;
+  }
+
+  .snapshot-td2
+  {
+    color:#000000;
+    text-decoration:none;
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3d3;
+    white-space:nowrap;
+  }
+
+  .snapshot-td2-cp
+  {
+    color:#000000;
+    text-decoration:none;
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3d3;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+
+  .fullview-ratings-outer
+  {
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3c3;
+  }
+
+  td.fullview-ratings-inner
+  {
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3c3;
+  }
+
+  .t3r1
+  {
+    color:#ff0000;
+  }
+
+  .body-table-rating-downgrade
+  {
+    color:#dd3333;
+    text-decoration:none;
+    background:#fff0f0;
+  }
+
+  .body-table-rating-upgrade
+  {
+    color:#009900;
+    text-decoration:none;
+    background:#f0fff0;
+  }
+
+  .body-table-rating-neutral
+  {
+    color:#333333;
+    text-decoration:none;
+    background:#f0f0f0;
+  }
+
+  table {
+    border-collapse: collapse;
+  }
+
+  td, th {
+    border: 1px solid #FDEBD2;
+    text-align: left;
+    padding: 5px;
+  }
+  </style>
+  <script>
+    function swap(img){
+      if (img.style.width === "100%"){
+        var realWidth = document.querySelector("#stock").naturalWidth;
+        img.style.width = realWidth + "px";
+        parent.postMessage("RP W=" + realWidth, "*");
+      }
+      else{
+        img.style.width = "100%";
+        parent.postMessage("RP W=" + 0, "*");
+      }
+    }
+
+    var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+    var eventer = window[eventMethod];
+    var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+
+    // Listen to message from child window
+    eventer(messageEvent,function(e) {
+      console.log (e.data);
+      if (typeof e.data == "string")
+      {
+        if (e.data.indexOf("SD H=") > -1)
+        {
+          document.getElementById("stockdog").height = e.data.substring(5) + 'px';
+          console.log("RP R:" + document.getElementById("stockdog").height)
+
+          actual_height = document.body.scrollHeight+100;
+          console.log("RP T:" + actual_height)
+          parent.postMessage("RP H=" + actual_height, "*");
+        }
+      }
+    }, false);
+  </script>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+</head>
+<body>
+  <hr color="#ff8000" align="center" size="5">
+  <p align="center"><b>Stock:</b>&emsp;<a href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=DAL&type=pe-ratio&statement=price-ratios&freq=Q" target="_blank">PE Chart</a>&emsp;<a href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=DAL&type=price-book&statement=price-ratios&freq=Q" target="_blank">PB Chart</a>&emsp;<a href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=DAL&type=price-sales&statement=price-ratios&freq=Q" target="_blank">PS Chart</a>&emsp;<a href="https://www.wsj.com/market-data/quotes/DAL/financials/quarter/cash-flow" target="_blank">Finance</a>&emsp;<a href="https://www.dataroma.com/m/stock.php?sym=DAL" target="_blank">Ownership</a>&emsp;<a href="https://hedgefollow.com/stocks/DAL" target="_blank">Institute</a>&emsp;<a href="https://www.ptt.cc/bbs/Stock/search?q=DAL" target="_blank">PTT Search</a>&emsp;<a href="https://unusualwhales.com/stock/DAL/greek-exposure" target="_blank">GEX</a></p>
+  <hr color="#ff8000" align="center" size="5">
+   <div align="center"><iframe id="stock" src="DAL_EC.html" frameborder="0" width="100%" height="1600px" scrolling="no"></iframe></div>
+  <hr color="#ff8000" align="center">
+  <div align="center"><iframe id="stockdog" src="DAL_SD.html" frameborder="0" width="100%" height="1000px" scrolling="no"></iframe></div>
+  <p><hr color="#ff8000" align="center"><p>
+<div align="center"><a href="https://www.marketwatch.com/investing/stock/DAL/analystestimates" target="_blank"><img style="max-height:100%; max-width:100%; object-fit:contain" src=https://app.quotemedia.com/quotetools/getChart?webmasterId=91386&symbol=DAL&chtype=FinancialLine&chcon=on&chdon=on&chfrmon=on&chscale=1d&chton=on&chwid=800&chhig=380&chln=ffa500&chfill=ffa500&chfnts=10&chbdr=000000&chbgch=ffffffff&chgrd=cccccc&svg=false&lang=en&locale=en></a></div>
+
+<hr color="#ff8000" align="center">
+
+
+<hr color="#ff8000" align="center">
+<table align="center" width="70%" class="js-table-ratings styled-table-new is-rounded is-small" cellpadding="0" cellspacing="0" border="0">
+<thead>&#13;
+                <tr>&#13;
+                    <th width="140" align="left">Date</th>&#13;
+                    <th width="320" align="left">Action</th>&#13;
+                    <th width="320" align="left">Analyst</th>&#13;
+                    <th width="320" align="left">Rating Change</th>&#13;
+                    <th width="320" align="left">Price Target Change</th>&#13;
+                </tr>&#13;
+            </thead><tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Mar-20-24</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">UBS</td>
+<td class="text-left" width="320" align="left">Buy</td>
+<td class="text-left tabular-nums" width="320" align="left">$59</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Mar-07-23</td><td width="320" align="left"><span class="fv-label is-small is-positive-200">Upgrade</span></td>
+<td class="text-left color-text is-positive" width="320" align="left">Evercore ISI</td>
+<td class="text-left color-text is-positive" width="320" align="left">In-line → Outperform</td>
+<td class="text-left tabular-nums color-text is-positive" width="320" align="left">$40 → $47</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Feb-08-23</td><td width="320" align="left"><span class="fv-label is-small is-positive-200">Upgrade</span></td>
+<td class="text-left color-text is-positive" width="320" align="left">Redburn</td>
+<td class="text-left color-text is-positive" width="320" align="left">Neutral → Buy</td>
+<td class="text-left tabular-nums color-text is-positive" width="320" align="left">$55</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Jan-05-23</td><td width="320" align="left"><span class="fv-label is-small is-positive-200">Upgrade</span></td>
+<td class="text-left color-text is-positive" width="320" align="left">Argus</td>
+<td class="text-left color-text is-positive" width="320" align="left">Hold → Buy</td>
+<td class="text-left tabular-nums color-text is-positive" width="320" align="left">$39</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Dec-16-22</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Resumed</span></td>
+<td class="text-left" width="320" align="left">Goldman</td>
+<td class="text-left" width="320" align="left">Buy</td>
+<td class="text-left tabular-nums" width="320" align="left">$40</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Dec-15-22</td><td width="320" align="left"><span class="fv-label is-small is-negative-200">Downgrade</span></td>
+<td class="text-left color-text is-negative" width="320" align="left">Evercore ISI</td>
+<td class="text-left color-text is-negative" width="320" align="left">Outperform → In-line</td>
+<td class="text-left tabular-nums color-text is-negative" width="320" align="left">$50 → $40</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Oct-14-22</td><td width="320" align="left"><span class="fv-label is-small is-positive-200">Upgrade</span></td>
+<td class="text-left color-text is-positive" width="320" align="left">Cowen</td>
+<td class="text-left color-text is-positive" width="320" align="left">Market Perform → Outperform</td>
+<td class="text-left tabular-nums color-text is-positive" width="320" align="left">$54</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Jul-15-22</td><td width="320" align="left"><span class="fv-label is-small is-negative-200">Downgrade</span></td>
+<td class="text-left color-text is-negative" width="320" align="left">Argus</td>
+<td class="text-left color-text is-negative" width="320" align="left">Buy → Hold</td>
+<td class="text-left tabular-nums color-text is-negative" width="320" align="left"/>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Apr-18-22</td><td width="320" align="left"><span class="fv-label is-small is-positive-200">Upgrade</span></td>
+<td class="text-left color-text is-positive" width="320" align="left">UBS</td>
+<td class="text-left color-text is-positive" width="320" align="left">Neutral → Buy</td>
+<td class="text-left tabular-nums color-text is-positive" width="320" align="left">$44 → $53</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text is-last"><td width="140" align="left">Apr-14-22</td><td width="320" align="left"><span class="fv-label is-small is-positive-200">Upgrade</span></td>
+<td class="text-left color-text is-positive" width="320" align="left">Barclays</td>
+<td class="text-left color-text is-positive" width="320" align="left">Equal Weight → Overweight</td>
+<td class="text-left tabular-nums color-text is-positive" width="320" align="left">$42 → $60</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Feb-15-22</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Resumed</span></td>
+<td class="text-left" width="320" align="left">Wolfe Research</td>
+<td class="text-left" width="320" align="left">Outperform</td>
+<td class="text-left tabular-nums" width="320" align="left">$50</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Jan-25-22</td><td width="320" align="left"><span class="fv-label is-small is-positive-200">Upgrade</span></td>
+<td class="text-left color-text is-positive" width="320" align="left">Berenberg</td>
+<td class="text-left color-text is-positive" width="320" align="left">Hold → Buy</td>
+<td class="text-left tabular-nums color-text is-positive" width="320" align="left">$48 → $50</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Jan-18-22</td><td width="320" align="left"><span class="fv-label is-small is-positive-200">Upgrade</span></td>
+<td class="text-left color-text is-positive" width="320" align="left">Argus</td>
+<td class="text-left color-text is-positive" width="320" align="left">Hold → Buy</td>
+<td class="text-left tabular-nums color-text is-positive" width="320" align="left">$46</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Jan-13-22</td><td width="320" align="left"><span class="fv-label is-small is-positive-200">Upgrade</span></td>
+<td class="text-left color-text is-positive" width="320" align="left">Susquehanna</td>
+<td class="text-left color-text is-positive" width="320" align="left">Neutral → Positive</td>
+<td class="text-left tabular-nums color-text is-positive" width="320" align="left">$45 → $50</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Jan-07-22</td><td width="320" align="left"><span class="fv-label is-small is-positive-200">Upgrade</span></td>
+<td class="text-left color-text is-positive" width="320" align="left">BofA Securities</td>
+<td class="text-left color-text is-positive" width="320" align="left">Neutral → Buy</td>
+<td class="text-left tabular-nums color-text is-positive" width="320" align="left">$46 → $48</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Jan-05-22</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">Jefferies</td>
+<td class="text-left" width="320" align="left">Buy</td>
+<td class="text-left tabular-nums" width="320" align="left">$45 → $50</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Nov-19-21</td><td width="320" align="left"><span class="fv-label is-small is-positive-200">Upgrade</span></td>
+<td class="text-left color-text is-positive" width="320" align="left">Wolfe Research</td>
+<td class="text-left color-text is-positive" width="320" align="left">Peer Perform → Outperform</td>
+<td class="text-left tabular-nums color-text is-positive" width="320" align="left"/>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Oct-06-21</td><td width="320" align="left"><span class="fv-label is-small is-negative-200">Downgrade</span></td>
+<td class="text-left color-text is-negative" width="320" align="left">Wolfe Research</td>
+<td class="text-left color-text is-negative" width="320" align="left">Outperform → Peer Perform</td>
+<td class="text-left tabular-nums color-text is-negative" width="320" align="left"/>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Sep-23-21</td><td width="320" align="left"><span class="fv-label is-small is-negative-200">Downgrade</span></td>
+<td class="text-left color-text is-negative" width="320" align="left">Argus</td>
+<td class="text-left color-text is-negative" width="320" align="left">Buy → Hold</td>
+<td class="text-left tabular-nums color-text is-negative" width="320" align="left"/>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Aug-11-21</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">Redburn</td>
+<td class="text-left" width="320" align="left">Neutral</td>
+<td class="text-left tabular-nums" width="320" align="left"/>
+</tr>
+</table>
+
+
+
+<hr color="#ff8000" align="center">
+<table cellpadding="0" cellspacing="0" align="center" width="70%" class="body-table styled-table-new is-rounded p-0 mt-2">
+<thead>
+<tr>
+<th class="" align="left">Insider Trading</th>
+<th class="" align="left">Relationship</th>
+<th class="" align="left">Date</th>
+<th class="" align="center">Transaction</th>
+<th class="" align="right">Cost</th>
+<th class="" align="right">#Shares</th>
+<th class="" align="right">Value ($)</th>
+<th class="" align="right">#Shares Total</th>
+<th class="" align="center">SEC Form 4</th>
+</tr>
+</thead>
+<tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1620414&amp;tc=7" class="tab-link">Smith Joanne D</a></td><td style="white-space:nowrap">EVP &amp; Chief People Officer</td><td>Feb 27 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">42.02</td><td class="value" align="right">4,876</td><td class="value" align="right">204,904</td><td class="value" align="right">117,267</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/27904/000168316824001243/xslF345X05/ownership.xml" class="tab-link" target="_blank">Feb 29 04:01 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1777758&amp;tc=7" class="tab-link">Carroll William C</a></td><td style="white-space:nowrap">SVP, Fin &amp; Controller</td><td>Feb 06 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">40.15</td><td class="value" align="right">6,192</td><td class="value" align="right">248,609</td><td class="value" align="right">9,806</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/27904/000168316824000755/xslF345X05/ownership.xml" class="tab-link" target="_blank">Feb 07 04:30 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1289878&amp;tc=7" class="tab-link">Bastian Edward H</a></td><td style="white-space:nowrap">Chief Executive Officer</td><td>Feb 01 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">30.89</td><td class="value" align="right">71,840</td><td class="value" align="right">2,219,138</td><td class="value" align="right">500,608</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/27904/000168316824000652/xslF345X05/ownership.xml" class="tab-link" target="_blank">Feb 02 04:30 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1289878&amp;tc=7" class="tab-link">Bastian Edward H</a></td><td style="white-space:nowrap">Chief Executive Officer</td><td>Feb 01 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">39.20</td><td class="value" align="right">71,840</td><td class="value" align="right">2,815,769</td><td class="value" align="right">428,768</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/27904/000168316824000652/xslF345X05/ownership.xml" class="tab-link" target="_blank">Feb 02 04:30 PM</a></td></tr><tr class="fv-insider-row is-buy-2" valign="top"><td><a href="insidertrading.ashx?oc=1505989&amp;tc=7" class="tab-link">Taylor David S</a></td><td style="white-space:nowrap">Director</td><td>Oct 27 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Buy</span></td><td class="value" align="right">30.75</td><td class="value" align="right">10,000</td><td class="value" align="right">307,500</td><td class="value" align="right">27,470</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/27904/000168316823007536/xslF345X05/ownership.xml" class="tab-link" target="_blank">Oct 31 04:30 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1620414&amp;tc=7" class="tab-link">Smith Joanne D</a></td><td style="white-space:nowrap">EVP &amp; Chief People Officer</td><td>Oct 19 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">33.29</td><td class="value" align="right">3,030</td><td class="value" align="right">100,869</td><td class="value" align="right">95,362</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/27904/000168316823007288/xslF345X05/ownership.xml" class="tab-link" target="_blank">Oct 19 05:30 PM</a></td></tr><tr class="fv-insider-row is-buy-2" valign="top"><td><a href="insidertrading.ashx?oc=1505989&amp;tc=7" class="tab-link">Taylor David S</a></td><td style="white-space:nowrap">Director</td><td>Oct 18 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Buy</span></td><td class="value" align="right">33.09</td><td class="value" align="right">10,000</td><td class="value" align="right">330,900</td><td class="value" align="right">17,470</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/27904/000168316823007289/xslF345X05/ownership.xml" class="tab-link" target="_blank">Oct 19 05:30 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1620414&amp;tc=7" class="tab-link">Smith Joanne D</a></td><td style="white-space:nowrap">EVP &amp; Chief People Officer</td><td>Oct 17 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">34.80</td><td class="value" align="right">9,390</td><td class="value" align="right">326,772</td><td class="value" align="right">98,392</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/27904/000168316823007288/xslF345X05/ownership.xml" class="tab-link" target="_blank">Oct 19 05:30 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1666169&amp;tc=7" class="tab-link">Sear Steven M</a></td><td style="white-space:nowrap">EVP - Global Sales &amp; Distrib</td><td>Aug 09 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">45.52</td><td class="value" align="right">12,129</td><td class="value" align="right">552,112</td><td class="value" align="right">85,708</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/27904/000168316823005512/xslF345X05/ownership.xml" class="tab-link" target="_blank">Aug 10 04:30 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1647706&amp;tc=7" class="tab-link">Carter Peter W</a></td><td style="white-space:nowrap">EVP - External Affairs</td><td>Aug 07 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">45.00</td><td class="value" align="right">17,944</td><td class="value" align="right">807,480</td><td class="value" align="right">166,192</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/27904/000168316823005427/xslF345X05/ownership.xml" class="tab-link" target="_blank">Aug 08 05:30 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1647706&amp;tc=7" class="tab-link">Carter Peter W</a></td><td style="white-space:nowrap">EVP - External Affairs</td><td>Aug 02 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">45.00</td><td class="value" align="right">7,056</td><td class="value" align="right">317,520</td><td class="value" align="right">184,136</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/27904/000168316823005297/xslF345X05/ownership.xml" class="tab-link" target="_blank">Aug 04 04:30 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1432864&amp;tc=7" class="tab-link">HUERTA MICHAEL P</a></td><td style="white-space:nowrap">Director</td><td>Jul 20 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">48.43</td><td class="value" align="right">3,350</td><td class="value" align="right">162,244</td><td class="value" align="right">27,465</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/27904/000168316823005036/xslF345X05/ownership.xml" class="tab-link" target="_blank">Jul 21 04:30 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1620414&amp;tc=7" class="tab-link">Smith Joanne D</a></td><td style="white-space:nowrap">EVP &amp; Chief People Officer</td><td>May 31 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">36.90</td><td class="value" align="right">7,513</td><td class="value" align="right">277,230</td><td class="value" align="right">107,782</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/27904/000168316823003862/xslF345X04/ownership.xml" class="tab-link" target="_blank">Jun 02 04:30 PM</a></td></tr><tr class="fv-insider-row is-buy-2" valign="top"><td><a href="insidertrading.ashx?oc=1505989&amp;tc=7" class="tab-link">Taylor David S</a></td><td style="white-space:nowrap">Director</td><td>Apr 26 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Buy</span></td><td class="value" align="right">32.83</td><td class="value" align="right">5,000</td><td class="value" align="right">164,125</td><td class="value" align="right">25,360</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/27904/000168316823002704/xslF345X04/ownership.xml" class="tab-link" target="_blank">Apr 27 04:30 PM</a></td></tr><tr class="fv-insider-row is-buy-2" valign="top"><td><a href="insidertrading.ashx?oc=1505989&amp;tc=7" class="tab-link">Taylor David S</a></td><td style="white-space:nowrap">Director</td><td>Apr 21 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Buy</span></td><td class="value" align="right">34.26</td><td class="value" align="right">5,000</td><td class="value" align="right">171,275</td><td class="value" align="right">20,360</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/27904/000168316823002594/xslF345X04/ownership.xml" class="tab-link" target="_blank">Apr 24 05:00 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1193002&amp;tc=7" class="tab-link">HAUENSTEIN GLEN W</a></td><td style="white-space:nowrap">President</td><td>Apr 17 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">34.53</td><td class="value" align="right">5,000</td><td class="value" align="right">172,650</td><td class="value" align="right">273,712</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/27904/000168316823002517/xslF345X04/ownership.xml" class="tab-link" target="_blank">Apr 18 06:14 PM</a></td></tr><tr class="fv-insider-row is-buy-2" valign="top"><td><a href="insidertrading.ashx?oc=1505989&amp;tc=7" class="tab-link">Taylor David S</a></td><td style="white-space:nowrap">Director</td><td>Apr 14 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Buy</span></td><td class="value" align="right">33.56</td><td class="value" align="right">5,000</td><td class="value" align="right">167,805</td><td class="value" align="right">15,360</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/27904/000168316823002516/xslF345X04/ownership.xml" class="tab-link" target="_blank">Apr 18 06:13 PM</a></td></tr></table>
+
+
+
+<hr color="#ff8000" align="center">
+<div class="body-table-news-wrapper news-table_wrapper"><table align="center" width="70%" cellpadding="1" cellspacing="0" border="0" id="news-table" class="fullview-news-outer news-table">
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2246514/is-trending-stock-delta-air-lines-inc-dal-a-buy-now');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-27-24 09:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2246514/is-trending-stock-delta-air-lines-inc-dal-a-buy-now" target="_blank" rel="nofollow">Is Trending Stock Delta Air Lines, Inc. (DAL) a Buy Now?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'PR Newswire', 'https://www.prnewswire.com/news-releases/delta-air-lines-announces-webcast-of-march-quarter-2024-financial-results-302099761.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.prnewswire.com/news-releases/delta-air-lines-announces-webcast-of-march-quarter-2024-financial-results-302099761.html" target="_blank" rel="nofollow">Delta Air Lines Announces Webcast of March Quarter 2024 Financial Results</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Associated Press Finance', 'https://finance.yahoo.com/news/delta-flight-cut-short-panel-213209708.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-26-24 05:32PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/delta-flight-cut-short-panel-213209708.html" target="_blank" rel="nofollow">A Delta flight was cut short after a panel behind one of the engines fell off during takeoff</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Associated Press Finance)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/20-best-airlines-in-the-world-in-2024-1280152/');">&#13;
+        <td width="130" align="right">&#13;
+            11:52AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/20-best-airlines-in-the-world-in-2024-1280152/" target="_blank" rel="nofollow">20 Best Airlines in the World in 2024</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2245666/delta-air-lines-dal-sees-a-more-significant-dip-than-broader-market-some-facts-to-know');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-25-24 05:45PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2245666/delta-air-lines-dal-sees-a-more-significant-dip-than-broader-market-some-facts-to-know" target="_blank" rel="nofollow">Delta Air Lines (DAL) Sees a More Significant Dip Than Broader Market: Some Facts to Know</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'FreightWaves', 'https://finance.yahoo.com/news/delta-air-lines-taps-peter-202615547.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-22-24 04:26PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/delta-air-lines-taps-peter-202615547.html" target="_blank" rel="nofollow">Delta Air Lines taps Peter Penseel to lead cargo division</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(FreightWaves)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Bloomberg', 'https://finance.yahoo.com/news/chicago-8-5-billion-o-113000317.html');">&#13;
+        <td width="130" align="right">&#13;
+            10:33AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/chicago-8-5-billion-o-113000317.html" target="_blank" rel="nofollow">OHare Revamp Turns Contentious After Going Billions Over Budget</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Bloomberg)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Fortune', 'https://finance.yahoo.com/news/delta-ceo-lost-mom-2020-161117644.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-21-24 12:11PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/delta-ceo-lost-mom-2020-161117644.html" target="_blank" rel="nofollow">Delta CEO lost his mom in 2020 while the travel industry took a hit from COVID. Heres the mindset shift that helped him overcome the toughest year of his life</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Fortune)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2244110/here-s-why-you-should-retain-delta-air-lines-dal-stock-now');">&#13;
+        <td width="130" align="right">&#13;
+            10:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2244110/here-s-why-you-should-retain-delta-air-lines-dal-stock-now" target="_blank" rel="nofollow">Here's Why You Should Retain Delta Air Lines (DAL) Stock Now</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Quartz', 'https://qz.com/delta-pilot-sentenced-drunk-1851355113');">&#13;
+        <td width="130" align="right">&#13;
+            09:55AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://qz.com/delta-pilot-sentenced-drunk-1851355113" target="_blank" rel="nofollow">A Delta pilot was sentenced to 10 months in jail after trying to fly while intoxicated</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Quartz)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'TipRanks', 'https://finance.yahoo.com/news/expecting-clearer-skies-ahead-ubs-130325392.html');">&#13;
+        <td width="130" align="right">&#13;
+            09:03AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/expecting-clearer-skies-ahead-ubs-130325392.html" target="_blank" rel="nofollow">Expecting Clearer Skies Ahead: UBS Suggests 3 Airline Stocks to Buy With Double-Digit Upside</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(TipRanks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Quartz', 'https://qz.com/boarding-pass-qr-photo-man-arrested-1851354857');">&#13;
+        <td width="130" align="right">&#13;
+            08:55AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://qz.com/boarding-pass-qr-photo-man-arrested-1851354857" target="_blank" rel="nofollow">QR codes are making it easy to steal your tickets</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Quartz)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'The Wall Street Journal', 'https://finance.yahoo.com/m/c79a2cc6-c66d-31f1-8343-4a416f0d2bfd/a-delta-pilot-showed-up-to.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-20-24 12:22PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/c79a2cc6-c66d-31f1-8343-4a416f0d2bfd/a-delta-pilot-showed-up-to.html" target="_blank" rel="nofollow">A Delta Pilot Showed Up to Fly Under the Influence. He Will Spend 10 Months in Jail.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(The Wall Street Journal)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Barrons.com', 'https://finance.yahoo.com/m/1e8b1df7-3a0a-3df6-8d86-8d8789cbba62/airline-stocks-are-among-the.html');">&#13;
+        <td width="130" align="right">&#13;
+            11:59AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/1e8b1df7-3a0a-3df6-8d86-8d8789cbba62/airline-stocks-are-among-the.html" target="_blank" rel="nofollow">Airline Stocks Are Among the Top S&amp;P 500 Fliers Today</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Barrons.com', 'https://finance.yahoo.com/m/a88d1e70-ff6b-33e9-9eb2-4a89f4007fbf/airline-stocks-can-take-off.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:47AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/a88d1e70-ff6b-33e9-9eb2-4a89f4007fbf/airline-stocks-can-take-off.html" target="_blank" rel="nofollow">Airline Stocks Can Take Off This Year, UBS Says. Buy These 4, Sell These 2.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Reuters', 'https://finance.yahoo.com/news/us-spring-passenger-airline-travel-185743634.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-19-24 02:57PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/us-spring-passenger-airline-travel-185743634.html" target="_blank" rel="nofollow">US spring passenger airline travel expected to hit new record -- group</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Reuters)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'TheStreet', 'https://finance.yahoo.com/m/d2112af2-acdc-3e8d-aba8-eb326c501f97/one-more-airline-cracks-down.html');">&#13;
+        <td width="130" align="right">&#13;
+            12:20PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/d2112af2-acdc-3e8d-aba8-eb326c501f97/one-more-airline-cracks-down.html" target="_blank" rel="nofollow">One more airline cracks down on lounge crowding in a way you won't like</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(TheStreet)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'TheStreet', 'https://finance.yahoo.com/m/d2112af2-acdc-3e8d-aba8-eb326c501f97/another-airline-is-making.html');">&#13;
+        <td width="130" align="right">&#13;
+            12:20PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/d2112af2-acdc-3e8d-aba8-eb326c501f97/another-airline-is-making.html" target="_blank" rel="nofollow">Another airline is making lounge fees more expensive</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(TheStreet)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2242444/why-delta-air-lines-dal-outpaced-the-stock-market-today');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-18-24 05:45PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2242444/why-delta-air-lines-dal-outpaced-the-stock-market-today" target="_blank" rel="nofollow">Why Delta Air Lines (DAL) Outpaced the Stock Market Today</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Barrons.com', 'https://finance.yahoo.com/m/4d54df4f-c94d-32a0-8065-c7933a117321/why-the-airline-industry-is.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:23PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/4d54df4f-c94d-32a0-8065-c7933a117321/why-the-airline-industry-is.html" target="_blank" rel="nofollow">Why the Airline Industry Is Still Ultracompetitive</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Barrons.com', 'https://finance.yahoo.com/m/b4bf4749-0310-3eda-b191-4a41b53b6c71/delta-air-lines%2C-ford%2C-gm%2C.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:25AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/b4bf4749-0310-3eda-b191-4a41b53b6c71/delta-air-lines%2C-ford%2C-gm%2C.html" target="_blank" rel="nofollow">Delta Air Lines, Ford, GM, and Walgreens Are the Cheapest Stocks in the S&amp;P 500</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/cf8e7758-a997-332e-ad5f-d4212be5c1aa/here%27s-the-best-airline-stock.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-17-24 11:10AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/cf8e7758-a997-332e-ad5f-d4212be5c1aa/here%27s-the-best-airline-stock.html" target="_blank" rel="nofollow">Here's the Best Airline Stock to Buy for 2024</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Yahoo Finance Video', 'https://finance.yahoo.com/video/younger-travelers-planning-more-even-212219843.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-15-24 05:22PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/video/younger-travelers-planning-more-even-212219843.html" target="_blank" rel="nofollow">Younger travelers are planning more, even turning to travel agents</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance Video)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'The Wall Street Journal', 'https://finance.yahoo.com/m/fc62a385-e467-3464-a00b-513b5104c4b6/hertz-global-ceo-scherr-to.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:03PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/fc62a385-e467-3464-a00b-513b5104c4b6/hertz-global-ceo-scherr-to.html" target="_blank" rel="nofollow">Hertz Global CEO Scherr to Step Down After EV Reversal</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(The Wall Street Journal)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Reuters', 'https://finance.yahoo.com/news/1-hertz-appoints-gil-west-205146598.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:51PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/1-hertz-appoints-gil-west-205146598.html" target="_blank" rel="nofollow">UPDATE 2-Hertz appoints Gil West as CEO</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Reuters)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2241264/is-most-watched-stock-delta-air-lines-inc-dal-worth-betting-on-now');">&#13;
+        <td width="130" align="right">&#13;
+            09:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2241264/is-most-watched-stock-delta-air-lines-inc-dal-worth-betting-on-now" target="_blank" rel="nofollow">Is Most-Watched Stock Delta Air Lines, Inc. (DAL) Worth Betting on Now?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'TheStreet', 'https://finance.yahoo.com/m/98cc228f-4e21-324d-b70e-e536458f2781/delta-air-lines-adds-a-new.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-14-24 11:16AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/98cc228f-4e21-324d-b70e-e536458f2781/delta-air-lines-adds-a-new.html" target="_blank" rel="nofollow">Delta Air Lines adds a new route travelers have been asking for</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(TheStreet)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Reuters', 'https://finance.yahoo.com/news/1-delta-air-resume-flights-040046449.html');">&#13;
+        <td width="130" align="right">&#13;
+            12:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/1-delta-air-resume-flights-040046449.html" target="_blank" rel="nofollow">UPDATE 1-Delta Air to resume flights to Israel starting June 7</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Reuters)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Reuters', 'https://finance.yahoo.com/news/delta-air-resume-flights-israel-032830052.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-13-24 11:28PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/delta-air-resume-flights-israel-032830052.html" target="_blank" rel="nofollow">Delta Air to resume flights to Israel starting June 7</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Reuters)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Fortune', 'https://finance.yahoo.com/news/delta-ceo-just-paid-1-122821420.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:28AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/delta-ceo-just-paid-1-122821420.html" target="_blank" rel="nofollow">Deltas CEO just paid out $1.4 billion to his employees. Here are his 3 secrets to being a great boss</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Fortune)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Bloomberg', 'https://finance.yahoo.com/news/boeing-crisis-derails-airline-growth-180221164.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-12-24 02:02PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/boeing-crisis-derails-airline-growth-180221164.html" target="_blank" rel="nofollow">Boeing Crisis Derails Airline Growth Plans as Output Stalls</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Bloomberg)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investopedia', 'https://www.investopedia.com/southwest-and-american-airlines-give-guidance-warnings-shares-plummet-8607861');">&#13;
+        <td width="130" align="right">&#13;
+            12:17PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.investopedia.com/southwest-and-american-airlines-give-guidance-warnings-shares-plummet-8607861" target="_blank" rel="nofollow">Southwest and American Airlines Give Guidance Warnings, Shares Plummet</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investopedia)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2239400/delta-dal-sees-boeing-737-max-10-delivery-extension-to-2027');">&#13;
+        <td width="130" align="right">&#13;
+            11:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2239400/delta-dal-sees-boeing-737-max-10-delivery-extension-to-2027" target="_blank" rel="nofollow">Delta (DAL) Sees Boeing 737 MAX 10 Delivery Extension to 2027</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'CNBC TV', 'https://www.youtube.com/watch?v=pOgVDNv1IuI');">&#13;
+        <td width="130" align="right">&#13;
+            09:26AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.youtube.com/watch?v=pOgVDNv1IuI" target="_blank" rel="nofollow">Delta Air Lines CEO Ed Bastian on FY guidance: We're seeing demand continuing with great strength</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(CNBC TV)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Reuters', 'https://finance.yahoo.com/news/1-delta-air-reaffirms-first-105811252.html');">&#13;
+        <td width="130" align="right">&#13;
+            06:58AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/1-delta-air-reaffirms-first-105811252.html" target="_blank" rel="nofollow">UPDATE 1-Delta Air reaffirms first-quarter profit forecast</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Reuters)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Reuters', 'https://finance.yahoo.com/news/delta-air-forecasts-first-quarter-104109094.html');">&#13;
+        <td width="130" align="right">&#13;
+            06:41AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/delta-air-forecasts-first-quarter-104109094.html" target="_blank" rel="nofollow">Delta Air reaffirms first-quarter profit forecast</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Reuters)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Reuters', 'https://finance.yahoo.com/news/delta-air-forecasts-first-quarter-103732069.html');">&#13;
+        <td width="130" align="right">&#13;
+            06:37AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/delta-air-forecasts-first-quarter-103732069.html" target="_blank" rel="nofollow">Delta Air forecasts first-quarter profit largely above estimates</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Reuters)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2238875/delta-air-lines-dal-gains-as-market-dips-what-you-should-know');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-11-24 05:45PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2238875/delta-air-lines-dal-gains-as-market-dips-what-you-should-know" target="_blank" rel="nofollow">Delta Air Lines (DAL) Gains As Market Dips: What You Should Know</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/20-largest-travel-companies-in-the-world-1272054/');">&#13;
+        <td width="130" align="right">&#13;
+            02:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/20-largest-travel-companies-in-the-world-1272054/" target="_blank" rel="nofollow">20 Largest Travel Companies In The World</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Air Cargo World', 'https://aircargonext.com/news/cargo-airlines/delta-ceo-sees-lengthy-battle-over-fate-of-aeromexico-alliance/');">&#13;
+        <td width="130" align="right">&#13;
+            01:23PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://aircargonext.com/news/cargo-airlines/delta-ceo-sees-lengthy-battle-over-fate-of-aeromexico-alliance/" target="_blank" rel="nofollow">Delta CEO sees lengthy battle over fate of Aeromexico alliance</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Air Cargo World)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Quartz', 'https://qz.com/delta-boeing-safety-delay-two-years-1851324924');">&#13;
+        <td width="130" align="right">&#13;
+            10:48AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://qz.com/delta-boeing-safety-delay-two-years-1851324924" target="_blank" rel="nofollow">Delta Air Lines might get some of its Boeing planes 2 years late because of safety delays</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Quartz)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Yahoo Finance Video', 'https://finance.yahoo.com/video/boeing-faces-criminal-probe-over-143214325.html');">&#13;
+        <td width="130" align="right">&#13;
+            10:32AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/video/boeing-faces-criminal-probe-over-143214325.html" target="_blank" rel="nofollow">Boeing faces criminal probe over manufacturing woes: WSJ</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance Video)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Barrons.com', 'https://finance.yahoo.com/m/8d3b5935-f70f-39e2-9278-151f073cada8/boeing-stock-falls-as-justice.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:23AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/8d3b5935-f70f-39e2-9278-151f073cada8/boeing-stock-falls-as-justice.html" target="_blank" rel="nofollow">Boeing Stock Falls as Justice Department Starts Criminal Inquiry Into Door Blowout</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Barrons.com', 'https://finance.yahoo.com/m/e0168560-c410-3e0f-9f26-f283499a8a05/airlines-need-to-boost.html');">&#13;
+        <td width="130" align="right">&#13;
+            02:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/e0168560-c410-3e0f-9f26-f283499a8a05/airlines-need-to-boost.html" target="_blank" rel="nofollow">Airlines Need to Boost Revenue. Theyre Coming for Your Bags.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Reuters', 'https://finance.yahoo.com/news/delta-expects-boeing-737-max-233134251.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-10-24 07:31PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/delta-expects-boeing-737-max-233134251.html" target="_blank" rel="nofollow">Delta expects Boeing 737 Max 10 deliveries to be delayed until 2027, Bloomberg reports</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Reuters)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Reuters', 'https://finance.yahoo.com/news/1-delta-expects-boeing-737-230234406.html');">&#13;
+        <td width="130" align="right">&#13;
+            07:02PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/1-delta-expects-boeing-737-230234406.html" target="_blank" rel="nofollow">UPDATE 3-Delta expects Boeing 737 Max 10 deliveries to be delayed until 2027, Bloomberg reports</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Reuters)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Reuters', 'https://finance.yahoo.com/news/delta-expects-boeing-737-max-222615708.html');">&#13;
+        <td width="130" align="right">&#13;
+            06:26PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/delta-expects-boeing-737-max-222615708.html" target="_blank" rel="nofollow">Delta expects Boeing 737 Max 10 may be delayed until 2027, Bloomberg says</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Reuters)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/11-highest-paying-airlines-for-pilots-in-the-us-1271930/');">&#13;
+        <td width="130" align="right">&#13;
+            02:19PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/11-highest-paying-airlines-for-pilots-in-the-us-1271930/" target="_blank" rel="nofollow">11 Highest-Paying Airlines for Pilots in the US</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/952aed04-265d-3a51-9c60-70b6452e46e6/investor-update%3A-spirit.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-08-24 01:44PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/952aed04-265d-3a51-9c60-70b6452e46e6/investor-update%3A-spirit.html" target="_blank" rel="nofollow">Investor Update: Spirit Airlines, Macy's, Apple, Spotify</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'GuruFocus.com', 'https://finance.yahoo.com/news/wheels-experience-inc-reports-fourth-181909406.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-07-24 01:19PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/wheels-experience-inc-reports-fourth-181909406.html" target="_blank" rel="nofollow">Wheels Up Experience Inc. Reports Fourth Quarter Earnings Amidst Strategic Repositioning</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/25-best-places-to-travel-in-the-world-in-2024-1269973/');">&#13;
+        <td width="130" align="right">&#13;
+            06:27AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/25-best-places-to-travel-in-the-world-in-2024-1269973/" target="_blank" rel="nofollow">25 Best Places to Travel in the World in 2024</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/11-best-aviation-stocks-to-buy-according-to-analysts-1268762/');">&#13;
+        <td width="130" align="right">&#13;
+            06:26AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/11-best-aviation-stocks-to-buy-according-to-analysts-1268762/" target="_blank" rel="nofollow">11 Best Aviation Stocks To Buy According To Analysts</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'TheStreet', 'https://finance.yahoo.com/m/653f87bb-cc25-338b-813b-efafb1c16169/delta-is-taking-a-very.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-06-24 06:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/653f87bb-cc25-338b-813b-efafb1c16169/delta-is-taking-a-very.html" target="_blank" rel="nofollow">Delta is taking a very controversial page out of American's playbook</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(TheStreet)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Fortune', 'https://finance.yahoo.com/news/delta-passengers-now-pay-more-153542546.html');">&#13;
+        <td width="130" align="right">&#13;
+            10:35AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/delta-passengers-now-pay-more-153542546.html" target="_blank" rel="nofollow">Delta passengers now have to pay more to check their bags</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Fortune)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Associated Press Finance', 'https://finance.yahoo.com/news/delta-airlines-hiking-checked-baggage-201628405.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-05-24 03:16PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/delta-airlines-hiking-checked-baggage-201628405.html" target="_blank" rel="nofollow">Delta Airlines is hiking checked-baggage fees 17% following similar moves by United and American</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Associated Press Finance)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'TheStreet', 'https://finance.yahoo.com/m/e0da5be4-5b41-3dd4-956e-f4ff60e49acb/delta-air-lines-just-ended-a.html');">&#13;
+        <td width="130" align="right">&#13;
+            11:38AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/e0da5be4-5b41-3dd4-956e-f4ff60e49acb/delta-air-lines-just-ended-a.html" target="_blank" rel="nofollow">Delta Air Lines just ended a major flight experiment</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(TheStreet)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2235646/here-s-why-delta-air-lines-dal-fell-more-than-broader-market');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-04-24 05:45PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2235646/here-s-why-delta-air-lines-dal-fell-more-than-broader-market" target="_blank" rel="nofollow">Here's Why Delta Air Lines (DAL) Fell More Than Broader Market</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2235209/delta-air-lines-inc-dal-is-attracting-investor-attention-here-is-what-you-should-know');">&#13;
+        <td width="130" align="right">&#13;
+            09:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2235209/delta-air-lines-inc-dal-is-attracting-investor-attention-here-is-what-you-should-know" target="_blank" rel="nofollow">Delta Air Lines, Inc. (DAL) is Attracting Investor Attention: Here is What You Should Know</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Yahoo Finance Video', 'https://finance.yahoo.com/video/top-travel-credit-cards-according-222738856.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-01-24 05:27PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/video/top-travel-credit-cards-according-222738856.html" target="_blank" rel="nofollow">Top travel credit cards, according to The Points Guy</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance Video)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'GuruFocus.com', 'https://finance.yahoo.com/news/insider-sell-evp-chief-people-220047659.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-29-24 05:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/insider-sell-evp-chief-people-220047659.html" target="_blank" rel="nofollow">Insider Sell: EVP &amp; Chief People Officer Joanne Smith Sells Shares of Delta Air Lines Inc (DAL)</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://finance.yahoo.com/news/3-elite-blue-chips-market-151346103.html');">&#13;
+        <td width="130" align="right">&#13;
+            10:13AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/3-elite-blue-chips-market-151346103.html" target="_blank" rel="nofollow">3 Elite Blue-Chips With Market-Crushing Potential in 2024</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Yahoo Finance Video', 'https://finance.yahoo.com/video/airline-stocks-expected-stabilize-moderating-174052393.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-27-24 12:40PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/video/airline-stocks-expected-stabilize-moderating-174052393.html" target="_blank" rel="nofollow">Airline stocks expected to stabilize on moderating fuel costs</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance Video)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2231997/why-the-market-dipped-but-delta-air-lines-dal-gained-today');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-26-24 05:45PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2231997/why-the-market-dipped-but-delta-air-lines-dal-gained-today" target="_blank" rel="nofollow">Why the Market Dipped But Delta Air Lines (DAL) Gained Today</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Yahoo Finance Video', 'https://finance.yahoo.com/video/three-big-travel-stocks-watch-170802963.html');">&#13;
+        <td width="130" align="right">&#13;
+            12:08PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/video/three-big-travel-stocks-watch-170802963.html" target="_blank" rel="nofollow">Three big travel stocks to watch in 2024</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance Video)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://finance.yahoo.com/news/25-cheapest-countries-fly-usa-172820326.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-25-24 12:28PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/25-cheapest-countries-fly-usa-172820326.html" target="_blank" rel="nofollow">25 Cheapest Countries to Fly to From the USA in 2024</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://finance.yahoo.com/news/11-best-airline-stocks-buy-190613131.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-24-24 02:06PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/11-best-airline-stocks-buy-190613131.html" target="_blank" rel="nofollow">11 Best Airline Stocks to Buy According to Analysts</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Reuters', 'https://finance.yahoo.com/news/1-delta-seeks-reversal-us-000238927.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-23-24 07:02PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/1-delta-seeks-reversal-us-000238927.html" target="_blank" rel="nofollow">UPDATE 1-Delta seeks reversal of US plan to scrap airline's Aeromexico partnership</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Reuters)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Reuters', 'https://finance.yahoo.com/news/delta-seeks-reversal-us-plan-223013620.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:30PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/delta-seeks-reversal-us-plan-223013620.html" target="_blank" rel="nofollow">Delta seeks reversal of US plan to scrap airline's Aeromexico partnership</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Reuters)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'TheStreet', 'https://finance.yahoo.com/m/3fd04b91-bf98-373a-86a0-49dbadf57c0a/delta-launches-new-long-haul.html');">&#13;
+        <td width="130" align="right">&#13;
+            12:28PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/3fd04b91-bf98-373a-86a0-49dbadf57c0a/delta-launches-new-long-haul.html" target="_blank" rel="nofollow">Delta launches new long-haul flight to compete with American and United</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(TheStreet)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Fortune', 'https://finance.yahoo.com/news/vp-charge-delta-employee-benefits-124412902.html');">&#13;
+        <td width="130" align="right">&#13;
+            07:44AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/vp-charge-delta-employee-benefits-124412902.html" target="_blank" rel="nofollow">The VP in charge of Deltas employee benefits says that their choice to pay out $1.4 billion to workers is all about talent retention and motivation</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Fortune)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://finance.yahoo.com/news/top-20-most-valuable-travel-182520641.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-22-24 01:25PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/top-20-most-valuable-travel-182520641.html" target="_blank" rel="nofollow">Top 20 Most Valuable Travel Companies in the World</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Reuters', 'https://finance.yahoo.com/news/1-united-airlines-become-first-223839179.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-21-24 05:38PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/1-united-airlines-become-first-223839179.html" target="_blank" rel="nofollow">UPDATE 1-United Airlines to become first US carrier to resume Israel flights since Gaza war</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Reuters)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Autoblog', 'https://finance.yahoo.com/m/5b5bfbb7-8125-302d-a6b8-d1a70852c7e0/delta-is-using-a-porsche-911.html');">&#13;
+        <td width="130" align="right">&#13;
+            11:25AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/5b5bfbb7-8125-302d-a6b8-d1a70852c7e0/delta-is-using-a-porsche-911.html" target="_blank" rel="nofollow">Delta is using a Porsche 911 GT3 RS to help fliers make tight connections</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Autoblog)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2228816/delta-air-lines-dal-advances-while-market-declines-some-information-for-investors');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-20-24 05:45PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2228816/delta-air-lines-dal-advances-while-market-declines-some-information-for-investors" target="_blank" rel="nofollow">Delta Air Lines (DAL) Advances While Market Declines: Some Information for Investors</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Fortune', 'https://finance.yahoo.com/news/delta-offering-special-flight-view-171151122.html');">&#13;
+        <td width="130" align="right">&#13;
+            12:11PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/delta-offering-special-flight-view-171151122.html" target="_blank" rel="nofollow">Delta is offering a special flight to view the total solar eclipse on April 8</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Fortune)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'FreightWaves', 'https://finance.yahoo.com/news/delta-cargo-deliverdirect-offers-e-144039402.html');">&#13;
+        <td width="130" align="right">&#13;
+            09:40AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/delta-cargo-deliverdirect-offers-e-144039402.html" target="_blank" rel="nofollow">Delta Cargos DeliverDirect offers e-commerce delivery at the speed of flight</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(FreightWaves)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2228409/delta-air-lines-inc-dal-is-a-trending-stock-facts-to-know-before-betting-on-it');">&#13;
+        <td width="130" align="right">&#13;
+            09:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2228409/delta-air-lines-inc-dal-is-a-trending-stock-facts-to-know-before-betting-on-it" target="_blank" rel="nofollow">Delta Air Lines, Inc. (DAL) Is a Trending Stock: Facts to Know Before Betting on It</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://finance.yahoo.com/news/20-best-caribbean-islands-visit-154000928.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-18-24 10:40AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/20-best-caribbean-islands-visit-154000928.html" target="_blank" rel="nofollow">20 Best Caribbean Islands to Visit for Families</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://finance.yahoo.com/news/15-friendliest-countries-europe-162953986.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-17-24 11:29AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/15-friendliest-countries-europe-162953986.html" target="_blank" rel="nofollow">15 Friendliest Countries in Europe</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Fortune', 'https://finance.yahoo.com/news/delta-keeping-secret-past-20-110400359.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-16-24 06:04AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/delta-keeping-secret-past-20-110400359.html" target="_blank" rel="nofollow">Delta has been keeping a secret for the past 20 yearsand pilots really want you to ask about it</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Fortune)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Fortune', 'https://finance.yahoo.com/news/delta-pays-1-4-billion-163351756.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-15-24 11:33AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/delta-pays-1-4-billion-163351756.html" target="_blank" rel="nofollow">Delta pays out $1.4 billion in profit sharing</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Fortune)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Fortune', 'https://finance.yahoo.com/news/delta-flight-forced-turn-around-153839026.html');">&#13;
+        <td width="130" align="right">&#13;
+            10:38AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/delta-flight-forced-turn-around-153839026.html" target="_blank" rel="nofollow">Delta flight forced to turn around after maggots fall on passengers</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Fortune)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'PR Newswire', 'https://www.prnewswire.com/news-releases/uatp-receives-patent-approval-for-innovative-new-payment-technology-302063125.html');">&#13;
+        <td width="130" align="right">&#13;
+            09:19AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.prnewswire.com/news-releases/uatp-receives-patent-approval-for-innovative-new-payment-technology-302063125.html" target="_blank" rel="nofollow">UATP Receives Patent Approval for Innovative New Payment Technology</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/ee66ce3d-9832-31a6-ad48-8304407bb93b/2-stocks-down-90%25-and-37%25-to.html');">&#13;
+        <td width="130" align="right">&#13;
+            09:05AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/ee66ce3d-9832-31a6-ad48-8304407bb93b/2-stocks-down-90%25-and-37%25-to.html" target="_blank" rel="nofollow">2 Stocks Down 90% and 37% to Buy Now</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'CNN Business', 'https://finance.yahoo.com/m/01a2e340-d2e9-3e70-b09a-80813257a81d/delta-paying-%241.4-billion-in.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-14-24 04:18PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/01a2e340-d2e9-3e70-b09a-80813257a81d/delta-paying-%241.4-billion-in.html" target="_blank" rel="nofollow">Delta paying $1.4 billion in profit sharing payments to employees</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(CNN Business)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'CNBC TV', 'https://www.youtube.com/watch?v=DXPwWVHFzRQ');">&#13;
+        <td width="130" align="right">&#13;
+            09:22AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.youtube.com/watch?v=DXPwWVHFzRQ" target="_blank" rel="nofollow">Delta Air Lines CEO Ed Bastian on $1.4B profit sharing, travel demand outlook</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(CNBC TV)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Fortune', 'https://finance.yahoo.com/news/bank-america-lockheed-martin-don-115605074.html');">&#13;
+        <td width="130" align="right">&#13;
+            06:56AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/bank-america-lockheed-martin-don-115605074.html" target="_blank" rel="nofollow">Bank of America and Lockheed Martin say you dont need a degree to land a job therebut thats not what their hiring data suggests</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Fortune)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Reuters', 'https://finance.yahoo.com/news/1-us-lawmakers-urge-delta-163440893.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-13-24 11:34AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/1-us-lawmakers-urge-delta-163440893.html" target="_blank" rel="nofollow">UPDATE 1-US lawmakers urge Delta Air to remain neutral in union organizing</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Reuters)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Reuters', 'https://finance.yahoo.com/news/us-lawmakers-urge-delta-air-141849258.html');">&#13;
+        <td width="130" align="right">&#13;
+            09:18AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/us-lawmakers-urge-delta-air-141849258.html" target="_blank" rel="nofollow">US lawmakers urge Delta Air to remain neutral in union organizing</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Reuters)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'GuruFocus.com', 'https://finance.yahoo.com/news/decoding-delta-air-lines-inc-052557681.html');">&#13;
+        <td width="130" align="right">&#13;
+            12:25AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/decoding-delta-air-lines-inc-052557681.html" target="_blank" rel="nofollow">Decoding Delta Air Lines Inc (DAL): A Strategic SWOT Insight</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Reuters', 'https://finance.yahoo.com/news/spirit-airlines-uncertainty-pilots-dusting-200036498.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-12-24 03:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/spirit-airlines-uncertainty-pilots-dusting-200036498.html" target="_blank" rel="nofollow">Spirit Airlines uncertainty has some pilots dusting off their resumes</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Reuters)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'PR Newswire', 'https://www.prnewswire.com/news-releases/delta-air-lines-to-present-at-upcoming-conferences-302058639.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-09-24 09:56AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.prnewswire.com/news-releases/delta-air-lines-to-present-at-upcoming-conferences-302058639.html" target="_blank" rel="nofollow">Delta Air Lines to Present at Upcoming Conferences</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2223972/delta-air-lines-inc-dal-is-attracting-investor-attention-here-is-what-you-should-know');">&#13;
+        <td width="130" align="right">&#13;
+            09:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2223972/delta-air-lines-inc-dal-is-attracting-investor-attention-here-is-what-you-should-know" target="_blank" rel="nofollow">Delta Air Lines, Inc. (DAL) is Attracting Investor Attention: Here is What You Should Know</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'GuruFocus.com', 'https://finance.yahoo.com/news/delta-air-lines-turbulent-times-130147517.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:01AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/delta-air-lines-turbulent-times-130147517.html" target="_blank" rel="nofollow">Delta Air Lines: From Turbulent Times to Financial Resurgence</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'PR Newswire', 'https://www.prnewswire.com/news-releases/delta-air-lines-declares-quarterly-dividend-302058020.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-08-24 04:30PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.prnewswire.com/news-releases/delta-air-lines-declares-quarterly-dividend-302058020.html" target="_blank" rel="nofollow">Delta Air Lines Declares Quarterly Dividend</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://finance.yahoo.com/news/delta-dal-add-flights-winter-161700531.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-05-24 11:17AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/delta-dal-add-flights-winter-161700531.html" target="_blank" rel="nofollow">Delta (DAL) to Add Flights for Winter to Boost Connectivity</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Barrons.com', 'https://finance.yahoo.com/m/188ca1e0-39c4-3c5f-915e-d464e1d57aca/boeing%E2%80%99s-troubles-aren%E2%80%99t.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-04-24 04:39PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/188ca1e0-39c4-3c5f-915e-d464e1d57aca/boeing%E2%80%99s-troubles-aren%E2%80%99t.html" target="_blank" rel="nofollow">Boeings Troubles Arent Going Away. How to Profit From Its Problems.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'GuruFocus.com', 'https://finance.yahoo.com/news/delta-air-lines-inc-ceo-021020332.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-02-24 09:10PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/delta-air-lines-inc-ceo-021020332.html" target="_blank" rel="nofollow">Delta Air Lines Inc CEO Edward Bastian Sells 71,840 Shares</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/ec413e07-3fb6-32dd-88cd-7476fe62a988/3-aerospace-%26-defense-stocks.html');">&#13;
+        <td width="130" align="right">&#13;
+            06:32AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/ec413e07-3fb6-32dd-88cd-7476fe62a988/3-aerospace-%26-defense-stocks.html" target="_blank" rel="nofollow">3 Aerospace &amp; Defense Stocks to Buy Hand Over Fist in February</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Bloomberg', 'https://finance.yahoo.com/news/amex-delta-unveil-credit-cards-172718173.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-01-24 12:27PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/amex-delta-unveil-credit-cards-172718173.html" target="_blank" rel="nofollow">Amex, Delta Unveil Credit Cards With New Perks, Higher Fees</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Bloomberg)</span></div></div></td></tr>
+</table>
+</div>
+
+
+  <script language="javascript">
+  function reSize(){
+    actual_height = document.body.scrollHeight+50;
+    console.log("RP T:" + actual_height)
+    parent.postMessage("RP H=" + actual_height, "*");
+  }
+  window.onload=reSize;
+  </script>
+</body>
+</html>

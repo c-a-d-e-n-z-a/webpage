@@ -1,0 +1,1388 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<title>CRSP</title>
+<head>
+  <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <style>
+  * {
+    font-size: 12px;
+    font-family: Arial, Helvetica, sans-serif, Microsoft JhengHei;
+  }
+  
+  .is-negative {
+    color: #008000;
+  }
+  
+  .is-positive {
+    color: #ff0000;
+  }
+
+  .snapshot-td2
+  {
+    color:#000000;
+    text-decoration:none;
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3d3;
+    white-space:nowrap;
+  }
+
+  .snapshot-td2-cp
+  {
+    color:#000000;
+    text-decoration:none;
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3d3;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+
+  .fullview-ratings-outer
+  {
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3c3;
+  }
+
+  td.fullview-ratings-inner
+  {
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3c3;
+  }
+
+  .t3r1
+  {
+    color:#ff0000;
+  }
+
+  .body-table-rating-downgrade
+  {
+    color:#dd3333;
+    text-decoration:none;
+    background:#fff0f0;
+  }
+
+  .body-table-rating-upgrade
+  {
+    color:#009900;
+    text-decoration:none;
+    background:#f0fff0;
+  }
+
+  .body-table-rating-neutral
+  {
+    color:#333333;
+    text-decoration:none;
+    background:#f0f0f0;
+  }
+
+  table {
+    border-collapse: collapse;
+  }
+
+  td, th {
+    border: 1px solid #FDEBD2;
+    text-align: left;
+    padding: 5px;
+  }
+  </style>
+  <script>
+    function swap(img){
+      if (img.style.width === "100%"){
+        var realWidth = document.querySelector("#stock").naturalWidth;
+        img.style.width = realWidth + "px";
+        parent.postMessage("RP W=" + realWidth, "*");
+      }
+      else{
+        img.style.width = "100%";
+        parent.postMessage("RP W=" + 0, "*");
+      }
+    }
+
+    var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+    var eventer = window[eventMethod];
+    var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+
+    // Listen to message from child window
+    eventer(messageEvent,function(e) {
+      console.log (e.data);
+      if (typeof e.data == "string")
+      {
+        if (e.data.indexOf("SD H=") > -1)
+        {
+          document.getElementById("stockdog").height = e.data.substring(5) + 'px';
+          console.log("RP R:" + document.getElementById("stockdog").height)
+
+          actual_height = document.body.scrollHeight+100;
+          console.log("RP T:" + actual_height)
+          parent.postMessage("RP H=" + actual_height, "*");
+        }
+      }
+    }, false);
+  </script>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+</head>
+<body>
+  <hr color="#ff8000" align="center" size="5">
+  <p align="center"><b>Stock:</b>&emsp;<a href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=CRSP&type=pe-ratio&statement=price-ratios&freq=Q" target="_blank">PE Chart</a>&emsp;<a href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=CRSP&type=price-book&statement=price-ratios&freq=Q" target="_blank">PB Chart</a>&emsp;<a href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=CRSP&type=price-sales&statement=price-ratios&freq=Q" target="_blank">PS Chart</a>&emsp;<a href="https://www.wsj.com/market-data/quotes/CRSP/financials/quarter/cash-flow" target="_blank">Finance</a>&emsp;<a href="https://www.dataroma.com/m/stock.php?sym=CRSP" target="_blank">Ownership</a>&emsp;<a href="https://hedgefollow.com/stocks/CRSP" target="_blank">Institute</a>&emsp;<a href="https://www.ptt.cc/bbs/Stock/search?q=CRSP" target="_blank">PTT Search</a>&emsp;<a href="https://unusualwhales.com/stock/CRSP/greek-exposure" target="_blank">GEX</a></p>
+  <hr color="#ff8000" align="center" size="5">
+   <div align="center"><iframe id="stock" src="CRSP_EC.html" frameborder="0" width="100%" height="1600px" scrolling="no"></iframe></div>
+  <hr color="#ff8000" align="center">
+  <div align="center"><iframe id="stockdog" src="CRSP_SD.html" frameborder="0" width="100%" height="1000px" scrolling="no"></iframe></div>
+  <p><hr color="#ff8000" align="center"><p>
+<div align="center"><a href="https://www.marketwatch.com/investing/stock/CRSP/analystestimates" target="_blank"><img style="max-height:100%; max-width:100%; object-fit:contain" src=https://app.quotemedia.com/quotetools/getChart?webmasterId=91386&symbol=CRSP&chtype=FinancialLine&chcon=on&chdon=on&chfrmon=on&chscale=1d&chton=on&chwid=800&chhig=380&chln=ffa500&chfill=ffa500&chfnts=10&chbdr=000000&chbgch=ffffffff&chgrd=cccccc&svg=false&lang=en&locale=en></a></div>
+
+<hr color="#ff8000" align="center">
+
+
+<hr color="#ff8000" align="center">
+<table align="center" width="70%" class="js-table-ratings styled-table-new is-rounded is-small" cellpadding="0" cellspacing="0" border="0">
+<thead>&#13;
+                <tr>&#13;
+                    <th width="140" align="left">Date</th>&#13;
+                    <th width="320" align="left">Action</th>&#13;
+                    <th width="320" align="left">Analyst</th>&#13;
+                    <th width="320" align="left">Rating Change</th>&#13;
+                    <th width="320" align="left">Price Target Change</th>&#13;
+                </tr>&#13;
+            </thead><tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Feb-15-24</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">Wolfe Research</td>
+<td class="text-left" width="320" align="left">Peer Perform</td>
+<td class="text-left tabular-nums" width="320" align="left"/>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Dec-11-23</td><td width="320" align="left"><span class="fv-label is-small is-negative-200">Downgrade</span></td>
+<td class="text-left color-text is-negative" width="320" align="left">TD Cowen</td>
+<td class="text-left color-text is-negative" width="320" align="left">Market Perform → Underperform</td>
+<td class="text-left tabular-nums color-text is-negative" width="320" align="left">$30</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Oct-17-23</td><td width="320" align="left"><span class="fv-label is-small is-negative-200">Downgrade</span></td>
+<td class="text-left color-text is-negative" width="320" align="left">Cantor Fitzgerald</td>
+<td class="text-left color-text is-negative" width="320" align="left">Overweight → Neutral</td>
+<td class="text-left tabular-nums color-text is-negative" width="320" align="left"/>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Sep-27-23</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">Mizuho</td>
+<td class="text-left" width="320" align="left">Buy</td>
+<td class="text-left tabular-nums" width="320" align="left">$82</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Aug-17-23</td><td width="320" align="left"><span class="fv-label is-small is-positive-200">Upgrade</span></td>
+<td class="text-left color-text is-positive" width="320" align="left">Citigroup</td>
+<td class="text-left color-text is-positive" width="320" align="left">Neutral → Buy</td>
+<td class="text-left tabular-nums color-text is-positive" width="320" align="left"/>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">May-30-23</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">William Blair</td>
+<td class="text-left" width="320" align="left">Outperform</td>
+<td class="text-left tabular-nums" width="320" align="left">$75</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Apr-13-23</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">Cantor Fitzgerald</td>
+<td class="text-left" width="320" align="left">Overweight</td>
+<td class="text-left tabular-nums" width="320" align="left">$72</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Mar-21-23</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">Bernstein</td>
+<td class="text-left" width="320" align="left">Mkt Perform</td>
+<td class="text-left tabular-nums" width="320" align="left">$44</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Mar-17-23</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">Bryan Garnier</td>
+<td class="text-left" width="320" align="left">Buy</td>
+<td class="text-left tabular-nums" width="320" align="left">$70</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text is-last"><td width="140" align="left">Mar-07-23</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">Robert W. Baird</td>
+<td class="text-left" width="320" align="left">Neutral</td>
+<td class="text-left tabular-nums" width="320" align="left">$46</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Oct-11-22</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">Morgan Stanley</td>
+<td class="text-left" width="320" align="left">Underweight</td>
+<td class="text-left tabular-nums" width="320" align="left">$37</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Aug-09-22</td><td width="320" align="left"><span class="fv-label is-small is-negative-200">Downgrade</span></td>
+<td class="text-left color-text is-negative" width="320" align="left">Barclays</td>
+<td class="text-left color-text is-negative" width="320" align="left">Overweight → Equal Weight</td>
+<td class="text-left tabular-nums color-text is-negative" width="320" align="left">$99 → $88</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Jun-23-22</td><td width="320" align="left"><span class="fv-label is-small is-negative-200">Downgrade</span></td>
+<td class="text-left color-text is-negative" width="320" align="left">Evercore ISI</td>
+<td class="text-left color-text is-negative" width="320" align="left">Outperform → In-line</td>
+<td class="text-left tabular-nums color-text is-negative" width="320" align="left">$66 → $60</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Jun-17-22</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">BMO Capital Markets</td>
+<td class="text-left" width="320" align="left">Outperform</td>
+<td class="text-left tabular-nums" width="320" align="left">$98</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Apr-28-22</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">Credit Suisse</td>
+<td class="text-left" width="320" align="left">Neutral</td>
+<td class="text-left tabular-nums" width="320" align="left">$78</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Dec-07-21</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">Cowen</td>
+<td class="text-left" width="320" align="left">Market Perform</td>
+<td class="text-left tabular-nums" width="320" align="left"/>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Oct-19-21</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">SVB Leerink</td>
+<td class="text-left" width="320" align="left">Outperform</td>
+<td class="text-left tabular-nums" width="320" align="left">$126</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Jun-14-21</td><td width="320" align="left"><span class="fv-label is-small is-positive-200">Upgrade</span></td>
+<td class="text-left color-text is-positive" width="320" align="left">Citigroup</td>
+<td class="text-left color-text is-positive" width="320" align="left">Sell → Neutral</td>
+<td class="text-left tabular-nums color-text is-positive" width="320" align="left">$55 → $132</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Apr-21-21</td><td width="320" align="left"><span class="fv-label is-small is-positive-200">Upgrade</span></td>
+<td class="text-left color-text is-positive" width="320" align="left">Jefferies</td>
+<td class="text-left color-text is-positive" width="320" align="left">Hold → Buy</td>
+<td class="text-left tabular-nums color-text is-positive" width="320" align="left">$172</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Mar-04-21</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">JMP Securities</td>
+<td class="text-left" width="320" align="left">Mkt Outperform</td>
+<td class="text-left tabular-nums" width="320" align="left">$160</td>
+</tr>
+</table>
+
+
+
+<hr color="#ff8000" align="center">
+<table cellpadding="0" cellspacing="0" align="center" width="70%" class="body-table styled-table-new is-rounded p-0 mt-2">
+<thead>
+<tr>
+<th class="" align="left">Insider Trading</th>
+<th class="" align="left">Relationship</th>
+<th class="" align="left">Date</th>
+<th class="" align="center">Transaction</th>
+<th class="" align="right">Cost</th>
+<th class="" align="right">#Shares</th>
+<th class="" align="right">Value ($)</th>
+<th class="" align="right">#Shares Total</th>
+<th class="" align="center">SEC Form 4</th>
+</tr>
+</thead>
+<tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1682019&amp;tc=7" class="tab-link">Kulkarni Samarth</a></td><td style="white-space:nowrap">Chief Executive Officer</td><td>Mar 15 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">19.12</td><td class="value" align="right">20,000</td><td class="value" align="right">382,400</td><td class="value" align="right">228,122</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1674416/000095017024032989/xslF345X05/ownership.xml" class="tab-link" target="_blank">Mar 18 05:45 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1682019&amp;tc=7" class="tab-link">Kulkarni Samarth</a></td><td style="white-space:nowrap">Chief Executive Officer</td><td>Mar 15 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">72.48</td><td class="value" align="right">20,000</td><td class="value" align="right">1,449,628</td><td class="value" align="right">208,122</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1674416/000095017024032989/xslF345X05/ownership.xml" class="tab-link" target="_blank">Mar 18 05:45 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1968317&amp;tc=7" class="tab-link">Prasad Raju</a></td><td style="white-space:nowrap">Chief Financial Officer</td><td>Mar 15 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">72.69</td><td class="value" align="right">3,524</td><td class="value" align="right">256,160</td><td class="value" align="right">6,476</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1674416/000095017024032990/xslF345X05/ownership.xml" class="tab-link" target="_blank">Mar 18 05:45 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1682019&amp;tc=7" class="tab-link">Kulkarni Samarth</a></td><td style="white-space:nowrap">Chief Executive Officer</td><td>Mar 12 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">74.44</td><td class="value" align="right">4,583</td><td class="value" align="right">341,159</td><td class="value" align="right">208,122</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1674416/000095017024030189/xslF345X05/ownership.xml" class="tab-link" target="_blank">Mar 12 05:45 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1708172&amp;tc=7" class="tab-link">KASINGER JAMES R.</a></td><td style="white-space:nowrap">General Counsel and Secretary</td><td>Mar 12 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">74.44</td><td class="value" align="right">1,146</td><td class="value" align="right">85,308</td><td class="value" align="right">61,174</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1674416/000095017024030190/xslF345X05/ownership.xml" class="tab-link" target="_blank">Mar 12 05:45 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1682019&amp;tc=7" class="tab-link">Kulkarni Samarth</a></td><td style="white-space:nowrap">Chief Executive Officer</td><td>Mar 11 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">78.26</td><td class="value" align="right">9,802</td><td class="value" align="right">767,105</td><td class="value" align="right">203,705</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1674416/000095017024030189/xslF345X05/ownership.xml" class="tab-link" target="_blank">Mar 12 05:45 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1708172&amp;tc=7" class="tab-link">KASINGER JAMES R.</a></td><td style="white-space:nowrap">General Counsel and Secretary</td><td>Mar 11 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">78.26</td><td class="value" align="right">2,801</td><td class="value" align="right">219,206</td><td class="value" align="right">60,070</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1674416/000095017024030190/xslF345X05/ownership.xml" class="tab-link" target="_blank">Mar 12 05:45 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1682019&amp;tc=7" class="tab-link">Kulkarni Samarth</a></td><td style="white-space:nowrap">Chief Executive Officer</td><td>Feb 20 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">79.67</td><td class="value" align="right">6,370</td><td class="value" align="right">507,498</td><td class="value" align="right">194,257</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1674416/000095017024018174/xslF345X05/ownership.xml" class="tab-link" target="_blank">Feb 21 05:45 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1708172&amp;tc=7" class="tab-link">KASINGER JAMES R.</a></td><td style="white-space:nowrap">General Counsel and Secretary</td><td>Feb 20 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">79.67</td><td class="value" align="right">1,913</td><td class="value" align="right">152,409</td><td class="value" align="right">57,371</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1674416/000095017024018175/xslF345X05/ownership.xml" class="tab-link" target="_blank">Feb 21 05:45 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1682019&amp;tc=7" class="tab-link">Kulkarni Samarth</a></td><td style="white-space:nowrap">Chief Executive Officer</td><td>Feb 15 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">19.12</td><td class="value" align="right">20,000</td><td class="value" align="right">382,400</td><td class="value" align="right">207,377</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1674416/000095017024016574/xslF345X05/ownership.xml" class="tab-link" target="_blank">Feb 16 05:45 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1682019&amp;tc=7" class="tab-link">Kulkarni Samarth</a></td><td style="white-space:nowrap">Chief Executive Officer</td><td>Feb 15 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">80.36</td><td class="value" align="right">20,000</td><td class="value" align="right">1,607,177</td><td class="value" align="right">187,377</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1674416/000095017024016574/xslF345X05/ownership.xml" class="tab-link" target="_blank">Feb 16 05:45 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1682019&amp;tc=7" class="tab-link">Kulkarni Samarth</a></td><td style="white-space:nowrap">Chief Executive Officer</td><td>Jan 29 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">19.12</td><td class="value" align="right">50,000</td><td class="value" align="right">956,000</td><td class="value" align="right">237,377</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1674416/000095017024009505/xslF345X05/ownership.xml" class="tab-link" target="_blank">Jan 31 05:45 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1682019&amp;tc=7" class="tab-link">Kulkarni Samarth</a></td><td style="white-space:nowrap">Chief Executive Officer</td><td>Jan 29 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">60.51</td><td class="value" align="right">50,000</td><td class="value" align="right">3,025,573</td><td class="value" align="right">187,377</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1674416/000095017024009505/xslF345X05/ownership.xml" class="tab-link" target="_blank">Jan 31 05:45 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1682019&amp;tc=7" class="tab-link">Kulkarni Samarth</a></td><td style="white-space:nowrap">Chief Executive Officer</td><td>Jan 16 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">19.12</td><td class="value" align="right">20,000</td><td class="value" align="right">382,400</td><td class="value" align="right">207,377</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1674416/000095017024005492/xslF345X05/ownership.xml" class="tab-link" target="_blank">Jan 18 05:45 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1682019&amp;tc=7" class="tab-link">Kulkarni Samarth</a></td><td style="white-space:nowrap">Chief Executive Officer</td><td>Jan 16 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">62.50</td><td class="value" align="right">20,000</td><td class="value" align="right">1,250,058</td><td class="value" align="right">187,377</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1674416/000095017024005492/xslF345X05/ownership.xml" class="tab-link" target="_blank">Jan 18 05:45 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1682019&amp;tc=7" class="tab-link">Kulkarni Samarth</a></td><td style="white-space:nowrap">Chief Executive Officer</td><td>May 30 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">19.12</td><td class="value" align="right">25,000</td><td class="value" align="right">478,000</td><td class="value" align="right">412,377</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1674416/000120919123033394/xslF345X04/doc4.xml" class="tab-link" target="_blank">Jun 01 05:44 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1682019&amp;tc=7" class="tab-link">Kulkarni Samarth</a></td><td style="white-space:nowrap">Chief Executive Officer</td><td>May 30 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">64.88</td><td class="value" align="right">25,000</td><td class="value" align="right">1,621,894</td><td class="value" align="right">387,377</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1674416/000120919123033394/xslF345X04/doc4.xml" class="tab-link" target="_blank">Jun 01 05:44 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1682019&amp;tc=7" class="tab-link">Kulkarni Samarth</a></td><td style="white-space:nowrap">Chief Executive Officer</td><td>Apr 25 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">19.12</td><td class="value" align="right">25,000</td><td class="value" align="right">478,000</td><td class="value" align="right">412,377</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1674416/000120919123025901/xslF345X04/doc4.xml" class="tab-link" target="_blank">Apr 27 05:37 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1682019&amp;tc=7" class="tab-link">Kulkarni Samarth</a></td><td style="white-space:nowrap">Chief Executive Officer</td><td>Apr 25 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">50.67</td><td class="value" align="right">25,000</td><td class="value" align="right">1,266,638</td><td class="value" align="right">387,377</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1674416/000120919123025901/xslF345X04/doc4.xml" class="tab-link" target="_blank">Apr 27 05:37 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1682019&amp;tc=7" class="tab-link">Kulkarni Samarth</a></td><td style="white-space:nowrap">Chief Executive Officer</td><td>Mar 29 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">19.12</td><td class="value" align="right">25,000</td><td class="value" align="right">478,000</td><td class="value" align="right">412,377</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1674416/000120919123021911/xslF345X04/doc4.xml" class="tab-link" target="_blank">Mar 31 05:49 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1682019&amp;tc=7" class="tab-link">Kulkarni Samarth</a></td><td style="white-space:nowrap">Chief Executive Officer</td><td>Mar 29 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">44.46</td><td class="value" align="right">25,000</td><td class="value" align="right">1,111,504</td><td class="value" align="right">387,377</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1674416/000120919123021911/xslF345X04/doc4.xml" class="tab-link" target="_blank">Mar 31 05:49 PM</a></td></tr></table>
+
+
+
+<hr color="#ff8000" align="center">
+<div class="body-table-news-wrapper news-table_wrapper"><table align="center" width="70%" cellpadding="1" cellspacing="0" border="0" id="news-table" class="fullview-news-outer news-table">
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/888c79a8-824b-3782-9f12-e2be433be184/3-no-brainer-healthcare.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-27-24 04:50AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/888c79a8-824b-3782-9f12-e2be433be184/3-no-brainer-healthcare.html" target="_blank" rel="nofollow">3 No-Brainer Healthcare Stocks to Buy Right Now for Less Than $1,000</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2245734/crispr-therapeutics-ag-crsp-sees-a-more-significant-dip-than-broader-market-some-facts-to-know');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-25-24 06:15PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2245734/crispr-therapeutics-ag-crsp-sees-a-more-significant-dip-than-broader-market-some-facts-to-know" target="_blank" rel="nofollow">CRISPR Therapeutics AG (CRSP) Sees a More Significant Dip Than Broader Market: Some Facts to Know</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/cathie-woods-stock-portfolio-2024-stock-picks-1271188/');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-24-24 10:08AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/cathie-woods-stock-portfolio-2024-stock-picks-1271188/" target="_blank" rel="nofollow">Cathie Wood's Stock Portfolio: 2024 Stock Picks</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/efb5ec62-9c51-3472-85ea-ea8b6988ca46/buying-these-dirt-cheap.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-23-24 06:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/efb5ec62-9c51-3472-85ea-ea8b6988ca46/buying-these-dirt-cheap.html" target="_blank" rel="nofollow">Buying These Dirt-Cheap Stocks Could Be a Brilliant Move</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2244978/crispr-therapeutics-crsp-down-13-6-since-last-earnings-report-can-it-rebound');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-22-24 11:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2244978/crispr-therapeutics-crsp-down-13-6-since-last-earnings-report-can-it-rebound" target="_blank" rel="nofollow">CRISPR Therapeutics (CRSP) Down 13.6% Since Last Earnings Report: Can It Rebound?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://finance.yahoo.com/news/3-stocks-could-next-big-201951442.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-21-24 04:19PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/3-stocks-could-next-big-201951442.html" target="_blank" rel="nofollow">3 Stocks That Could Be the Next Big Thing in Gene Editing</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://finance.yahoo.com/news/3-biopharma-stocks-predicted-soar-174951903.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-20-24 01:49PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/3-biopharma-stocks-predicted-soar-174951903.html" target="_blank" rel="nofollow">3 Biopharma Stocks Predicted to Soar in Q2 2024</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2243128/crispr-therapeutics-ag-crsp-outperforms-broader-market-what-you-need-to-know');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-19-24 06:15PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2243128/crispr-therapeutics-ag-crsp-outperforms-broader-market-what-you-need-to-know" target="_blank" rel="nofollow">CRISPR Therapeutics AG (CRSP) Outperforms Broader Market: What You Need to Know</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'GuruFocus.com', 'https://finance.yahoo.com/news/insider-sell-cfo-raju-prasad-040707979.html');">&#13;
+        <td width="130" align="right">&#13;
+            12:07AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/insider-sell-cfo-raju-prasad-040707979.html" target="_blank" rel="nofollow">Insider Sell: CFO Raju Prasad Sells Shares of CRISPR Therapeutics AG (CRSP)</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/30-biggest-biotechnology-companies-in-the-world-1275642/');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-17-24 08:50AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/30-biggest-biotechnology-companies-in-the-world-1275642/" target="_blank" rel="nofollow">30 Biggest Biotechnology Companies in the World</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/6b5bdbd1-eb39-3611-a5e6-3ab85e7429c5/is-it-too-late-to-buy-crispr.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-16-24 08:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/6b5bdbd1-eb39-3611-a5e6-3ab85e7429c5/is-it-too-late-to-buy-crispr.html" target="_blank" rel="nofollow">Is It Too Late to Buy CRISPR Therapeutics Stock?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/maxcyte-inc-nasdaqmxct-q4-2023-earnings-call-transcript-1274089/');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-14-24 08:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/maxcyte-inc-nasdaqmxct-q4-2023-earnings-call-transcript-1274089/" target="_blank" rel="nofollow">MaxCyte, Inc. (NASDAQ:MXCT) Q4 2023 Earnings Call Transcript</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://finance.yahoo.com/news/7-biotech-stocks-buy-sector-182531236.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-13-24 02:25PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/7-biotech-stocks-buy-sector-182531236.html" target="_blank" rel="nofollow">7 Biotech Stocks to Buy as Sector Rotation Ramps Up</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'GlobeNewswire', 'https://www.globenewswire.com/news-release/2024/03/13/2845431/0/en/CRISPR-Therapeutics-Proposes-New-Appointment-to-the-Board-of-Directors.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.globenewswire.com/news-release/2024/03/13/2845431/0/en/CRISPR-Therapeutics-Proposes-New-Appointment-to-the-Board-of-Directors.html" target="_blank" rel="nofollow">CRISPR Therapeutics Proposes New Appointment to the Board of Directors</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://finance.yahoo.com/news/top-3-biotech-stocks-buy-194500538.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-06-24 02:45PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/top-3-biotech-stocks-buy-194500538.html" target="_blank" rel="nofollow">The Top 3 Biotech Stocks to Buy in March 2024</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/485a1f56-a8f2-3d7c-be8a-da3f06ceea35/here%27s-why-crispr.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-05-24 06:53PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/485a1f56-a8f2-3d7c-be8a-da3f06ceea35/here%27s-why-crispr.html" target="_blank" rel="nofollow">Here's Why CRISPR Therapeutics Stock Climbed 34% in February</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://finance.yahoo.com/news/chatgpt-stock-predictions-3-biotech-160221770.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-04-24 11:02AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/chatgpt-stock-predictions-3-biotech-160221770.html" target="_blank" rel="nofollow">ChatGPT Stock Predictions: 3 Biotech Companies the AI Bot Thinks Have 10X Potential</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/12-tech-stocks-to-sell-right-now-according-to-cathie-wood-1268039/');">&#13;
+        <td width="130" align="right">&#13;
+            08:48AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/12-tech-stocks-to-sell-right-now-according-to-cathie-wood-1268039/" target="_blank" rel="nofollow">12 Tech Stocks To Sell Right Now According To Cathie Wood</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'CNBC TV', 'https://www.youtube.com/watch?v=dh8KiZrPj34');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-29-24 05:32PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.youtube.com/watch?v=dh8KiZrPj34" target="_blank" rel="nofollow">Crispr Therapeutics CEO: Science in gene editing is moving at break-neck speed</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(CNBC TV)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/b0196f71-3310-3b29-89ff-a0406e7f9b80/crispr-therapeutics-stock-has.html');">&#13;
+        <td width="130" align="right">&#13;
+            06:31AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/b0196f71-3310-3b29-89ff-a0406e7f9b80/crispr-therapeutics-stock-has.html" target="_blank" rel="nofollow">CRISPR Therapeutics Stock Has 32% Upside, According to 1 Wall Street Analyst</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/1162382a-0ca3-3a8e-86b7-f946d4f04566/a-bull-market-is-here%3A-2.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:50AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/1162382a-0ca3-3a8e-86b7-f946d4f04566/a-bull-market-is-here%3A-2.html" target="_blank" rel="nofollow">A Bull Market Is Here: 2 Magnificent Stocks Down 80% to Buy Right Now</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://finance.yahoo.com/news/3-biotech-stocks-bound-blast-170057584.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-27-24 12:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/3-biotech-stocks-bound-blast-170057584.html" target="_blank" rel="nofollow">3 Biotech Stocks Bound to Blast Off By 2029</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/ff93f026-19f4-3810-9882-5fafeaaba863/3-biotech-stocks-to-buy-and.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-26-24 08:50AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/ff93f026-19f4-3810-9882-5fafeaaba863/3-biotech-stocks-to-buy-and.html" target="_blank" rel="nofollow">3 Biotech Stocks to Buy and Hold for the Next 10 Years</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/eb36b90c-bd2e-3433-959c-e40ec1411042/missed-out-on-crispr.html');">&#13;
+        <td width="130" align="right">&#13;
+            06:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/eb36b90c-bd2e-3433-959c-e40ec1411042/missed-out-on-crispr.html" target="_blank" rel="nofollow">Missed Out on CRISPR Therapeutics? My Best Gene-Editing Stock to Buy and Hold</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Morningstar Research', 'https://finance.yahoo.com/m/b3f616f6-b52f-3f4c-907c-e43d405ed7dd/analyst-report%3A-crispr.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-23-24 10:01AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/b3f616f6-b52f-3f4c-907c-e43d405ed7dd/analyst-report%3A-crispr.html" target="_blank" rel="nofollow">Analyst Report: CRISPR Therapeutics AG</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Morningstar Research)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://finance.yahoo.com/news/crispr-crsp-q4-earnings-top-123700918.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-22-24 07:37AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/crispr-crsp-q4-earnings-top-123700918.html" target="_blank" rel="nofollow">CRISPR (CRSP) Q4 Earnings Top on Collaboration Revenues, Stock Up</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://finance.yahoo.com/news/13-best-short-squeeze-stocks-090055208.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/13-best-short-squeeze-stocks-090055208.html" target="_blank" rel="nofollow">13 Best Short Squeeze Stocks To Buy Now</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investor\u0027s Business Daily', 'https://finance.yahoo.com/m/5c2f9727-eb18-3e7e-99f5-7099dcf0dee9/crispr-stock-whipsaws-as-wall.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-21-24 04:32PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/5c2f9727-eb18-3e7e-99f5-7099dcf0dee9/crispr-stock-whipsaws-as-wall.html" target="_blank" rel="nofollow">Crispr Stock Whipsaws As Wall Street Watches Its Gene-Editing Blockbuster Candidate</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investor's Business Daily)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investor\u0027s Business Daily', 'https://finance.yahoo.com/m/5c2f9727-eb18-3e7e-99f5-7099dcf0dee9/crispr-reports-its-first.html');">&#13;
+        <td width="130" align="right">&#13;
+            10:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/5c2f9727-eb18-3e7e-99f5-7099dcf0dee9/crispr-reports-its-first.html" target="_blank" rel="nofollow">Crispr Reports Its First Profit In 10 Quarters, But Shares Trade Sideways</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investor's Business Daily)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'GlobeNewswire', 'https://www.globenewswire.com/news-release/2024/02/21/2832665/0/en/CRISPR-Therapeutics-Provides-Business-Update-and-Reports-Fourth-Quarter-and-Full-Year-2023-Financial-Results.html');">&#13;
+        <td width="130" align="right">&#13;
+            07:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.globenewswire.com/news-release/2024/02/21/2832665/0/en/CRISPR-Therapeutics-Provides-Business-Update-and-Reports-Fourth-Quarter-and-Full-Year-2023-Financial-Results.html" target="_blank" rel="nofollow">CRISPR Therapeutics Provides Business Update and Reports Fourth Quarter and Full Year 2023 Financial Results</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/1490135d-ee2a-3a5d-95a5-9263f9056684/cathie-wood-is-betting-on.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-20-24 05:02AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/1490135d-ee2a-3a5d-95a5-9263f9056684/cathie-wood-is-betting-on.html" target="_blank" rel="nofollow">Cathie Wood Is Betting on This Top Technology: 2 Stocks She Just Bought</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://finance.yahoo.com/news/3-biotech-stocks-buy-crispr-210849902.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-19-24 04:08PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/3-biotech-stocks-buy-crispr-210849902.html" target="_blank" rel="nofollow">3 Biotech Stocks to Buy That Have CRISPR-Like Breakthrough Potential</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/ee10fe94-10c2-36fd-a7c1-6a290136777e/if-you-invested-%2410%2C000-in.html');">&#13;
+        <td width="130" align="right">&#13;
+            01:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/ee10fe94-10c2-36fd-a7c1-6a290136777e/if-you-invested-%2410%2C000-in.html" target="_blank" rel="nofollow">If You Invested $10,000 in CRISPR Therapeutics in 2019, This Is How Much You Would Have Today</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://finance.yahoo.com/news/3-stocks-cathie-wood-loving-191948523.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-16-24 02:19PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/3-stocks-cathie-wood-loving-191948523.html" target="_blank" rel="nofollow">3 Stocks That Cathie Wood Is Loving Now: February 2024</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2227425/crispr-therapeutics-ag-crsp-moves-6-9-higher-will-this-strength-last');">&#13;
+        <td width="130" align="right">&#13;
+            07:31AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2227425/crispr-therapeutics-ag-crsp-moves-6-9-higher-will-this-strength-last" target="_blank" rel="nofollow">CRISPR Therapeutics AG (CRSP) Moves 6.9% Higher: Will This Strength Last?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'GlobeNewswire', 'https://www.globenewswire.com/news-release/2024/02/15/2829970/0/en/CRISPR-Therapeutics-to-Present-at-the-Citi-2024-Virtual-Oncology-Leadership-Summit.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-15-24 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.globenewswire.com/news-release/2024/02/15/2829970/0/en/CRISPR-Therapeutics-to-Present-at-the-Citi-2024-Virtual-Oncology-Leadership-Summit.html" target="_blank" rel="nofollow">CRISPR Therapeutics to Present at the Citi 2024 Virtual Oncology Leadership Summit</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span> <span class="body-table-news-gain fv-label is-positive-200">+6.88%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://finance.yahoo.com/news/crispr-crsp-report-q4-earnings-131500307.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-14-24 08:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/crispr-crsp-report-q4-earnings-131500307.html" target="_blank" rel="nofollow">CRISPR (CRSP) to Report Q4 Earnings: What's in the Cards?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span> <span class="body-table-news-gain fv-label is-positive-200">+8.60%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investor\u0027s Business Daily', 'https://finance.yahoo.com/m/4ab06c9e-f7ff-31fc-a1e0-38de347e3c21/crispr-therapeutics-stock.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-13-24 01:22PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/4ab06c9e-f7ff-31fc-a1e0-38de347e3c21/crispr-therapeutics-stock.html" target="_blank" rel="nofollow">CRISPR Therapeutics Stock Shows Rising Relative Strength, Hits 90+</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investor's Business Daily)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2225563/crispr-therapeutics-ag-crsp-may-report-negative-earnings-know-the-trend-ahead-of-q4-release');">&#13;
+        <td width="130" align="right">&#13;
+            10:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2225563/crispr-therapeutics-ag-crsp-may-report-negative-earnings-know-the-trend-ahead-of-q4-release" target="_blank" rel="nofollow">CRISPR Therapeutics AG (CRSP) May Report Negative Earnings: Know the Trend Ahead of Q4 Release</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'GlobeNewswire', 'https://www.globenewswire.com/news-release/2024/02/13/2828258/0/en/CRISPR-Therapeutics-Announces-280-Million-Registered-Direct-Offering.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.globenewswire.com/news-release/2024/02/13/2828258/0/en/CRISPR-Therapeutics-Announces-280-Million-Registered-Direct-Offering.html" target="_blank" rel="nofollow">CRISPR Therapeutics Announces $280 Million Registered Direct Offering</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'GlobeNewswire', 'https://www.globenewswire.com/news-release/2024/02/13/2827965/0/en/European-Commission-Approves-First-CRISPR-Cas9-Gene-Edited-Therapy-CASGEVY-exagamglogene-autotemcel-for-the-Treatment-of-Sickle-Cell-Disease-SCD-and-Transfusion-Dependent-Beta-Thal.html');">&#13;
+        <td width="130" align="right">&#13;
+            02:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.globenewswire.com/news-release/2024/02/13/2827965/0/en/European-Commission-Approves-First-CRISPR-Cas9-Gene-Edited-Therapy-CASGEVY-exagamglogene-autotemcel-for-the-Treatment-of-Sickle-Cell-Disease-SCD-and-Transfusion-Dependent-Beta-Thal.html" target="_blank" rel="nofollow">European Commission Approves First CRISPR/Cas9 Gene-Edited Therapy, CASGEVY  (exagamglogene autotemcel), for the Treatment of Sickle Cell Disease (SCD) and Transfusion-Dependent Beta Thalassemia (TDT)</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://finance.yahoo.com/news/top-11-crispr-stocks-invest-220915033.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-10-24 05:09PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/top-11-crispr-stocks-invest-220915033.html" target="_blank" rel="nofollow">Top 11 CRISPR Stocks To Invest In</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://finance.yahoo.com/news/crispr-therapeutics-ag-crsp-laps-230005529.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-09-24 06:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/crispr-therapeutics-ag-crsp-laps-230005529.html" target="_blank" rel="nofollow">CRISPR Therapeutics AG (CRSP) Laps the Stock Market: Here's Why</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/11fe32eb-8684-3d51-b61a-eafabb11cb00/2-healthcare-stocks-to-buy.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-08-24 02:59AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/11fe32eb-8684-3d51-b61a-eafabb11cb00/2-healthcare-stocks-to-buy.html" target="_blank" rel="nofollow">2 Healthcare Stocks to Buy Hand Over Fist in February</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/e296af66-04c6-3815-9d74-d2857043c06c/cathie-wood-just-bought-these.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-07-24 10:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/e296af66-04c6-3815-9d74-d2857043c06c/cathie-wood-just-bought-these.html" target="_blank" rel="nofollow">Cathie Wood Just Bought These 3 Biotech Stocks. Should You?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://finance.yahoo.com/news/jim-cramer-says-stay-away-140920534.html');">&#13;
+        <td width="130" align="right">&#13;
+            09:09AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/jim-cramer-says-stay-away-140920534.html" target="_blank" rel="nofollow">Jim Cramer Says You Should Stay Away from These 10 Stocks</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/e8b1598f-0fdd-3e0d-908f-3e743f18577a/2-cathie-wood-stocks-i-plan.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-05-24 08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/e8b1598f-0fdd-3e0d-908f-3e743f18577a/2-cathie-wood-stocks-i-plan.html" target="_blank" rel="nofollow">2 Cathie Wood Stocks I Plan on Buying for My Kids' Portfolios</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/d9d06b17-07ca-39e7-a9b9-7e2b1bfd65a1/got-%24100%3F-2-top-cathie-wood.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-04-24 02:35PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/d9d06b17-07ca-39e7-a9b9-7e2b1bfd65a1/got-%24100%3F-2-top-cathie-wood.html" target="_blank" rel="nofollow">Got $100? 2 Top Cathie Wood Stocks to Buy and Hold.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://finance.yahoo.com/news/crispr-therapeutics-ag-crsp-rises-230011509.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-02-24 06:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/crispr-therapeutics-ag-crsp-rises-230011509.html" target="_blank" rel="nofollow">CRISPR Therapeutics AG (CRSP) Rises But Trails Market: What Investors Should Know</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://finance.yahoo.com/news/top-stock-picks-2024-3-021007199.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-01-24 09:10PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/top-stock-picks-2024-3-021007199.html" target="_blank" rel="nofollow">Top Stock Picks 2024: 3 Healthcare Stocks Leading Medical Advancements</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/01/3-once-in-a-lifetime-gene-editing-stocks-with-unprecedented-surge-potential/');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-31-24 12:28PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/01/3-once-in-a-lifetime-gene-editing-stocks-with-unprecedented-surge-potential/" target="_blank" rel="nofollow">3 Once-in-a-Lifetime Gene Editing Stocks with Unprecedented Surge Potential</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/ba06440c-786d-3678-978f-b6902aed60a2/history-says-the-s%26p-500-may.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-30-24 05:10AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/ba06440c-786d-3678-978f-b6902aed60a2/history-says-the-s%26p-500-may.html" target="_blank" rel="nofollow">History Says the S&amp;P 500 May Climb in the Triple Digits During This Bull Market. 3 Top Growth Stocks to Buy Before it Does.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/03830122-609e-3eb3-a1de-cf646f43f210/is-crispr-therapeutics-a-buy.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:02AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/03830122-609e-3eb3-a1de-cf646f43f210/is-crispr-therapeutics-a-buy.html" target="_blank" rel="nofollow">Is CRISPR Therapeutics a Buy in the New Bull Market?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/0829b0dd-edf2-3257-bfa8-66e93da19aab/cathie-wood-goes-bargain.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-28-24 05:10AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/0829b0dd-edf2-3257-bfa8-66e93da19aab/cathie-wood-goes-bargain.html" target="_blank" rel="nofollow">Cathie Wood Goes Bargain Hunting: 3 Stocks She Bought Last Week</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://finance.yahoo.com/news/crispr-therapeutics-ag-crsp-stock-231519854.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-25-24 06:15PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/crispr-therapeutics-ag-crsp-stock-231519854.html" target="_blank" rel="nofollow">CRISPR Therapeutics AG (CRSP) Stock Sinks As Market Gains: What You Should Know</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://finance.yahoo.com/news/biotech-stocks-fire-top-3-133227963.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:32AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/biotech-stocks-fire-top-3-133227963.html" target="_blank" rel="nofollow">Biotech Stocks Are on Fire: Here Are the Top 3 Picks for January</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/c8f92a24-7960-33e8-a82a-57bd1657b7d2/where-will-crispr.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-24-24 09:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/c8f92a24-7960-33e8-a82a-57bd1657b7d2/where-will-crispr.html" target="_blank" rel="nofollow">Where Will CRISPR Therapeutics Be in 5 Years?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/57c8675c-6c0a-325a-8807-6f0e8faeb027/1-setback-and-1-opportunity.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-23-24 09:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/57c8675c-6c0a-325a-8807-6f0e8faeb027/1-setback-and-1-opportunity.html" target="_blank" rel="nofollow">1 Setback and 1 Opportunity for CRISPR Therapeutics Stock</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://finance.yahoo.com/news/cathie-wood-latest-stock-picks-141200408.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-22-24 09:12AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/cathie-wood-latest-stock-picks-141200408.html" target="_blank" rel="nofollow">Cathie Woods Latest Stock Picks: 11 Biggest Positions</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span> <span class="body-table-news-gain fv-label is-positive-200">+5.28%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/1aec5a4e-aaaf-397f-b1db-0fefac14fe79/could-crispr-therapeutics.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:05AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/1aec5a4e-aaaf-397f-b1db-0fefac14fe79/could-crispr-therapeutics.html" target="_blank" rel="nofollow">Could CRISPR Therapeutics Stock Help You Become a Millionaire?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/ac1c4e59-8929-3d15-9992-0d7a9d80bb09/could-editas-medicine-become.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-21-24 09:37AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/ac1c4e59-8929-3d15-9992-0d7a9d80bb09/could-editas-medicine-become.html" target="_blank" rel="nofollow">Could Editas Medicine Become the Next CRISPR Therapeutics?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/3f5ddbf1-7e0c-3494-a986-3a0147028aad/better-growth-stock%3A-intellia.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/3f5ddbf1-7e0c-3494-a986-3a0147028aad/better-growth-stock%3A-intellia.html" target="_blank" rel="nofollow">Better Growth Stock: Intellia Therapeutics vs. CRISPR Therapeutics</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/203c78e0-d303-3a0b-b4d5-33eca933f393/3-high-flying-stocks-that.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-20-24 06:50AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/203c78e0-d303-3a0b-b4d5-33eca933f393/3-high-flying-stocks-that.html" target="_blank" rel="nofollow">3 High-Flying Stocks That Could Soar Even More in 2024</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://finance.yahoo.com/news/crispr-therapeutics-ag-crsp-outpaces-231520191.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-19-24 06:15PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/crispr-therapeutics-ag-crsp-outpaces-231520191.html" target="_blank" rel="nofollow">CRISPR Therapeutics AG (CRSP) Outpaces Stock Market Gains: What You Should Know</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investor\u0027s Business Daily', 'https://finance.yahoo.com/m/b7671481-88fb-3e99-87f0-db0036365e3c/crispr-wins-its-second.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-16-24 04:08PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/b7671481-88fb-3e99-87f0-db0036365e3c/crispr-wins-its-second.html" target="_blank" rel="nofollow">Crispr Wins Its Second Gene-Editing Approval In Another Boost To Vertex Stock</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investor's Business Daily)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'GlobeNewswire', 'https://www.globenewswire.com/news-release/2024/01/16/2810298/0/en/CRISPR-Therapeutics-Announces-U-S-Food-and-Drug-Administration-FDA-Approval-of-CASGEVY-exagamglogene-autotemcel-for-the-Treatment-of-Transfusion-Dependent-Beta-Thalassemia.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:01PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.globenewswire.com/news-release/2024/01/16/2810298/0/en/CRISPR-Therapeutics-Announces-U-S-Food-and-Drug-Administration-FDA-Approval-of-CASGEVY-exagamglogene-autotemcel-for-the-Treatment-of-Transfusion-Dependent-Beta-Thalassemia.html" target="_blank" rel="nofollow">CRISPR Therapeutics Announces U.S. Food and Drug Administration (FDA) Approval of CASGEVY  (exagamglogene autotemcel) for the Treatment of Transfusion-Dependent Beta Thalassemia</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/46acb4b9-b7bf-33f6-a663-7334e8e1b66e/these-2-stocks-carry-a-lot-of.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/46acb4b9-b7bf-33f6-a663-7334e8e1b66e/these-2-stocks-carry-a-lot-of.html" target="_blank" rel="nofollow">These 2 Stocks Carry a Lot of Risk, but Their Upside Is Huge</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/6611e4aa-3b4e-3a53-b85f-4d4bf997697e/here%27s-why-crispr.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-15-24 04:56PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/6611e4aa-3b4e-3a53-b85f-4d4bf997697e/here%27s-why-crispr.html" target="_blank" rel="nofollow">Here's Why CRISPR Therapeutics Stock Rose 54% Last Year</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/575a809b-a5b0-359f-b88a-b394b48bdc8b/5-biotech-stocks-that-could.html');">&#13;
+        <td width="130" align="right">&#13;
+            06:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/575a809b-a5b0-359f-b88a-b394b48bdc8b/5-biotech-stocks-that-could.html" target="_blank" rel="nofollow">5 Biotech Stocks That Could Be Big Winners in 2024 and Beyond</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/643a4839-2cfa-3333-88db-eabe76c72140/down-88%25%2C-could-editas.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:19AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/643a4839-2cfa-3333-88db-eabe76c72140/down-88%25%2C-could-editas.html" target="_blank" rel="nofollow">Down 88%, Could Editas Medicine Be a Good Investment Now?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/ce0483d0-2110-322f-a56d-20bfcc489f46/what-does-it-mean-for.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-14-24 01:30PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/ce0483d0-2110-322f-a56d-20bfcc489f46/what-does-it-mean-for.html" target="_blank" rel="nofollow">What Does It Mean for Investors if CRISPR Therapeutics Gets Bought Out in 2024?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/20bb2fad-cafb-37f7-b1ab-214bba24df6e/my-5-top-growth-stocks-to-buy.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:10AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/20bb2fad-cafb-37f7-b1ab-214bba24df6e/my-5-top-growth-stocks-to-buy.html" target="_blank" rel="nofollow">My 5 Top Growth Stocks to Buy Hand Over Fist for 2024</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/285b4697-b96f-3e94-9497-839a6110b99c/the-top-healthcare-stocks-to.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-13-24 06:05AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/285b4697-b96f-3e94-9497-839a6110b99c/the-top-healthcare-stocks-to.html" target="_blank" rel="nofollow">The Top Healthcare Stocks to Buy With $100</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/87139ceb-593d-3009-989d-62426d366e24/cathie-wood-goes-bargain.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:20AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/87139ceb-593d-3009-989d-62426d366e24/cathie-wood-goes-bargain.html" target="_blank" rel="nofollow">Cathie Wood Goes Bargain Hunting: 3 Stocks She Bought This Week</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/dad5b12c-bb8e-3e27-8ad7-9f8b2520aa75/3-cathie-wood-stocks-to-start.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-10-24 06:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/dad5b12c-bb8e-3e27-8ad7-9f8b2520aa75/3-cathie-wood-stocks-to-start.html" target="_blank" rel="nofollow">3 Cathie Wood Stocks to Start Off Your New Year Right</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://finance.yahoo.com/news/crispr-therapeutics-ag-crsp-stock-231519949.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-09-24 06:15PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/crispr-therapeutics-ag-crsp-stock-231519949.html" target="_blank" rel="nofollow">CRISPR Therapeutics AG (CRSP) Stock Moves -0.1%: What You Should Know</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'FierceBiotech.com', 'https://www.fiercebiotech.com/biotech/vertex-cuts-ties-crispr-therapeutics-type-1-diabetes-stem-cell-therapy');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-08-24 09:17AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.fiercebiotech.com/biotech/vertex-cuts-ties-crispr-therapeutics-type-1-diabetes-stem-cell-therapy" target="_blank" rel="nofollow">Vertex cuts ties to CRISPR Therapeutics' type 1 diabetes stem cell therapy</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(FierceBiotech.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'GlobeNewswire', 'https://www.globenewswire.com/news-release/2024/01/08/2805274/0/en/CRISPR-Therapeutics-Highlights-Strategic-Priorities-and-2024-Outlook.html');">&#13;
+        <td width="130" align="right">&#13;
+            07:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.globenewswire.com/news-release/2024/01/08/2805274/0/en/CRISPR-Therapeutics-Highlights-Strategic-Priorities-and-2024-Outlook.html" target="_blank" rel="nofollow">CRISPR Therapeutics Highlights Strategic Priorities and 2024 Outlook</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/6535b136-db10-37da-b890-764962414e29/the-ultimate-growth-stock-to.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/6535b136-db10-37da-b890-764962414e29/the-ultimate-growth-stock-to.html" target="_blank" rel="nofollow">The Ultimate Growth Stock to Buy With $1,000 Right Now</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/d1f7c279-083e-31ec-b284-311a91f0ef45/5-innovative-stocks-that.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-06-24 05:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/d1f7c279-083e-31ec-b284-311a91f0ef45/5-innovative-stocks-that.html" target="_blank" rel="nofollow">5 Innovative Stocks That Could Score a Win for Your Portfolio in 2024</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/55166bd8-461e-3af7-81ef-70caab0db9e8/here%27s-why-2024-could-be-a.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-04-24 05:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/55166bd8-461e-3af7-81ef-70caab0db9e8/here%27s-why-2024-could-be-a.html" target="_blank" rel="nofollow">Here's Why 2024 Could Be a Big Year for CRISPR Therapeutics</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://finance.yahoo.com/news/3-healthcare-stocks-millionaire-next-171746569.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-03-24 12:17PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/3-healthcare-stocks-millionaire-next-171746569.html" target="_blank" rel="nofollow">3 Healthcare Stocks to Make You the Millionaire Next Door: 2024 Edition</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span> <span class="body-table-news-loss fv-label is-negative-200">-5.30%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'GlobeNewswire', 'https://www.globenewswire.com/news-release/2024/01/03/2803326/0/en/CRISPR-Therapeutics-to-Present-at-the-42nd-Annual-J-P-Morgan-Healthcare-Conference.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.globenewswire.com/news-release/2024/01/03/2803326/0/en/CRISPR-Therapeutics-to-Present-at-the-42nd-Annual-J-P-Morgan-Healthcare-Conference.html" target="_blank" rel="nofollow">CRISPR Therapeutics to Present at the 42nd Annual J.P. Morgan Healthcare Conference</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/2c33c2f1-fcdb-3d10-a838-288297da7624/3-no-brainer-growth-stocks-to.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-01-24 09:05AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/2c33c2f1-fcdb-3d10-a838-288297da7624/3-no-brainer-growth-stocks-to.html" target="_blank" rel="nofollow">3 No-Brainer Growth Stocks to Buy for Less Than $100</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/bfe3c26b-d8f0-3cfa-aa01-5fa2d5c34e00/1-cathie-wood-stock-worth.html');">&#13;
+        <td width="130" align="right">&#13;
+            Dec-31-23 10:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/bfe3c26b-d8f0-3cfa-aa01-5fa2d5c34e00/1-cathie-wood-stock-worth.html" target="_blank" rel="nofollow">1 Cathie Wood Stock Worth Buying Hand Over Fist in 2024</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/a29d2e62-953b-3f89-9bdd-bdbc42ea6d9f/2-gene-editing-stocks-that.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/a29d2e62-953b-3f89-9bdd-bdbc42ea6d9f/2-gene-editing-stocks-that.html" target="_blank" rel="nofollow">2 Gene-Editing Stocks That Might Be the Next CRISPR Therapeutics</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/58ca3b53-f79f-30d5-be2c-a4ab34c949ea/3-stocks-that-could-be.html');">&#13;
+        <td width="130" align="right">&#13;
+            Dec-30-23 06:50AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/58ca3b53-f79f-30d5-be2c-a4ab34c949ea/3-stocks-that-could-be.html" target="_blank" rel="nofollow">3 Stocks That Could Be Monster Winners in 2024</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://finance.yahoo.com/news/ai-automation-leaders-2024-7-050908057.html');">&#13;
+        <td width="130" align="right">&#13;
+            12:09AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/ai-automation-leaders-2024-7-050908057.html" target="_blank" rel="nofollow">AI and Automation Leaders for 2024: 7 Stocks to Stay Ahead of the Robot Uprising</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://finance.yahoo.com/news/3-healthcare-technology-stocks-improve-103000373.html');">&#13;
+        <td width="130" align="right">&#13;
+            Dec-25-23 05:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/3-healthcare-technology-stocks-improve-103000373.html" target="_blank" rel="nofollow">3 Healthcare Technology Stocks to Improve Lives in 2024</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/82327a3d-e8f1-3250-a58d-f49f08ef3034/could-crispr-therapeutics.html');">&#13;
+        <td width="130" align="right">&#13;
+            Dec-22-23 05:02PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/82327a3d-e8f1-3250-a58d-f49f08ef3034/could-crispr-therapeutics.html" target="_blank" rel="nofollow">Could CRISPR Therapeutics Stock Help You Become a Millionaire?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span> <span class="body-table-news-gain fv-label is-positive-200">+5.07%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/48a5d8d5-7e4d-3b32-8198-53fc9237085c/up-more-than-60%25-in-2023%2C-is.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:27AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/48a5d8d5-7e4d-3b32-8198-53fc9237085c/up-more-than-60%25-in-2023%2C-is.html" target="_blank" rel="nofollow">Up More Than 60% in 2023, Is It Too Late to Buy This Soaring Biotech Stock?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/ec6fd6d5-36bd-3c92-9eb7-baa62b6b0e14/6-words-that-explain-why.html');">&#13;
+        <td width="130" align="right">&#13;
+            Dec-21-23 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/ec6fd6d5-36bd-3c92-9eb7-baa62b6b0e14/6-words-that-explain-why.html" target="_blank" rel="nofollow">6 Words That Explain Why CRISPR Stock Isn't Soaring Despite the Recent FDA Approval for Its Gene-Editing Therapy</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/62c4abd6-9923-3cca-81e1-eb1f9502a0b8/better-bull-market-buy%3A.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:51AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/62c4abd6-9923-3cca-81e1-eb1f9502a0b8/better-bull-market-buy%3A.html" target="_blank" rel="nofollow">Better Bull Market Buy: CRISPR Therapeutics vs. Pfizer Stock</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'FierceBiotech.com', 'https://www.fiercebiotech.com/biotech/crispr-therapeutics-cmo-resigns-6-days-after-exa-cels-fda-approval');">&#13;
+        <td width="130" align="right">&#13;
+            Dec-20-23 11:04AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.fiercebiotech.com/biotech/crispr-therapeutics-cmo-resigns-6-days-after-exa-cels-fda-approval" target="_blank" rel="nofollow">CRISPR Therapeutics' CMO resigns 6 days after Casgevy's FDA approval</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(FierceBiotech.com)</span> <span class="body-table-news-loss fv-label is-negative-200">-9.01%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2023/12/crsp-stock-alert-crispr-therapeutics-is-losing-its-medical-chief/');">&#13;
+        <td width="130" align="right">&#13;
+            09:43AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2023/12/crsp-stock-alert-crispr-therapeutics-is-losing-its-medical-chief/" target="_blank" rel="nofollow">CRSP Stock Alert: CRISPR Therapeutics Is Losing Its Medical Chief</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/c1640f1a-4f12-31ec-ac75-0d7583660834/3-reasons-to-buy-crispr.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/c1640f1a-4f12-31ec-ac75-0d7583660834/3-reasons-to-buy-crispr.html" target="_blank" rel="nofollow">3 Reasons to Buy CRISPR Therapeutics Stock Like There's No Tomorrow</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'The Wall Street Journal', 'https://finance.yahoo.com/m/5da3f5d5-a5bd-3786-be9b-829549ce62f0/crispr-therapeutics-medical.html');">&#13;
+        <td width="130" align="right">&#13;
+            Dec-19-23 05:11PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/5da3f5d5-a5bd-3786-be9b-829549ce62f0/crispr-therapeutics-medical.html" target="_blank" rel="nofollow">Crispr Therapeutics Medical Chief Morrow to Resign</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(The Wall Street Journal)</span> <span class="body-table-news-gain fv-label is-positive-200">+8.84%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/0cc487b0-ba7d-3704-922c-1678eed69f4b/3-healthcare-stocks-that.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/0cc487b0-ba7d-3704-922c-1678eed69f4b/3-healthcare-stocks-that.html" target="_blank" rel="nofollow">3 Healthcare Stocks That Could Help Make You a Millionaire</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/d92e0dde-bcf3-383f-a492-45e9fbdb7054/2-stocks-profiting-from.html');">&#13;
+        <td width="130" align="right">&#13;
+            Dec-18-23 05:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/d92e0dde-bcf3-383f-a492-45e9fbdb7054/2-stocks-profiting-from.html" target="_blank" rel="nofollow">2 Stocks Profiting From Unstoppable Trends That Could Make You Rich</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/8fdd799f-323e-394c-a52a-a5fcaeba49cf/2-stocks-that-could-turn.html');">&#13;
+        <td width="130" align="right">&#13;
+            Dec-17-23 08:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/8fdd799f-323e-394c-a52a-a5fcaeba49cf/2-stocks-that-could-turn.html" target="_blank" rel="nofollow">2 Stocks That Could Turn $1,000 Into $3,500 in 10 Years</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+</table>
+</div>
+
+
+  <script language="javascript">
+  function reSize(){
+    actual_height = document.body.scrollHeight+50;
+    console.log("RP T:" + actual_height)
+    parent.postMessage("RP H=" + actual_height, "*");
+  }
+  window.onload=reSize;
+  </script>
+</body>
+</html>

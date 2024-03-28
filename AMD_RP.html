@@ -1,0 +1,1388 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<title>AMD</title>
+<head>
+  <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <style>
+  * {
+    font-size: 12px;
+    font-family: Arial, Helvetica, sans-serif, Microsoft JhengHei;
+  }
+  
+  .is-negative {
+    color: #008000;
+  }
+  
+  .is-positive {
+    color: #ff0000;
+  }
+
+  .snapshot-td2
+  {
+    color:#000000;
+    text-decoration:none;
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3d3;
+    white-space:nowrap;
+  }
+
+  .snapshot-td2-cp
+  {
+    color:#000000;
+    text-decoration:none;
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3d3;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+
+  .fullview-ratings-outer
+  {
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3c3;
+  }
+
+  td.fullview-ratings-inner
+  {
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3c3;
+  }
+
+  .t3r1
+  {
+    color:#ff0000;
+  }
+
+  .body-table-rating-downgrade
+  {
+    color:#dd3333;
+    text-decoration:none;
+    background:#fff0f0;
+  }
+
+  .body-table-rating-upgrade
+  {
+    color:#009900;
+    text-decoration:none;
+    background:#f0fff0;
+  }
+
+  .body-table-rating-neutral
+  {
+    color:#333333;
+    text-decoration:none;
+    background:#f0f0f0;
+  }
+
+  table {
+    border-collapse: collapse;
+  }
+
+  td, th {
+    border: 1px solid #FDEBD2;
+    text-align: left;
+    padding: 5px;
+  }
+  </style>
+  <script>
+    function swap(img){
+      if (img.style.width === "100%"){
+        var realWidth = document.querySelector("#stock").naturalWidth;
+        img.style.width = realWidth + "px";
+        parent.postMessage("RP W=" + realWidth, "*");
+      }
+      else{
+        img.style.width = "100%";
+        parent.postMessage("RP W=" + 0, "*");
+      }
+    }
+
+    var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+    var eventer = window[eventMethod];
+    var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+
+    // Listen to message from child window
+    eventer(messageEvent,function(e) {
+      console.log (e.data);
+      if (typeof e.data == "string")
+      {
+        if (e.data.indexOf("SD H=") > -1)
+        {
+          document.getElementById("stockdog").height = e.data.substring(5) + 'px';
+          console.log("RP R:" + document.getElementById("stockdog").height)
+
+          actual_height = document.body.scrollHeight+100;
+          console.log("RP T:" + actual_height)
+          parent.postMessage("RP H=" + actual_height, "*");
+        }
+      }
+    }, false);
+  </script>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+</head>
+<body>
+  <hr color="#ff8000" align="center" size="5">
+  <p align="center"><b>Stock:</b>&emsp;<a href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=AMD&type=pe-ratio&statement=price-ratios&freq=Q" target="_blank">PE Chart</a>&emsp;<a href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=AMD&type=price-book&statement=price-ratios&freq=Q" target="_blank">PB Chart</a>&emsp;<a href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=AMD&type=price-sales&statement=price-ratios&freq=Q" target="_blank">PS Chart</a>&emsp;<a href="https://www.wsj.com/market-data/quotes/AMD/financials/quarter/cash-flow" target="_blank">Finance</a>&emsp;<a href="https://www.dataroma.com/m/stock.php?sym=AMD" target="_blank">Ownership</a>&emsp;<a href="https://hedgefollow.com/stocks/AMD" target="_blank">Institute</a>&emsp;<a href="https://www.ptt.cc/bbs/Stock/search?q=AMD" target="_blank">PTT Search</a>&emsp;<a href="https://unusualwhales.com/stock/AMD/greek-exposure" target="_blank">GEX</a></p>
+  <hr color="#ff8000" align="center" size="5">
+   <div align="center"><iframe id="stock" src="AMD_EC.html" frameborder="0" width="100%" height="1600px" scrolling="no"></iframe></div>
+  <hr color="#ff8000" align="center">
+  <div align="center"><iframe id="stockdog" src="AMD_SD.html" frameborder="0" width="100%" height="1000px" scrolling="no"></iframe></div>
+  <p><hr color="#ff8000" align="center"><p>
+<div align="center"><a href="https://www.marketwatch.com/investing/stock/AMD/analystestimates" target="_blank"><img style="max-height:100%; max-width:100%; object-fit:contain" src=https://app.quotemedia.com/quotetools/getChart?webmasterId=91386&symbol=AMD&chtype=FinancialLine&chcon=on&chdon=on&chfrmon=on&chscale=1d&chton=on&chwid=800&chhig=380&chln=ffa500&chfill=ffa500&chfnts=10&chbdr=000000&chbgch=ffffffff&chgrd=cccccc&svg=false&lang=en&locale=en></a></div>
+
+<hr color="#ff8000" align="center">
+
+
+<hr color="#ff8000" align="center">
+<table align="center" width="70%" class="js-table-ratings styled-table-new is-rounded is-small" cellpadding="0" cellspacing="0" border="0">
+<thead>&#13;
+                <tr>&#13;
+                    <th width="140" align="left">Date</th>&#13;
+                    <th width="320" align="left">Action</th>&#13;
+                    <th width="320" align="left">Analyst</th>&#13;
+                    <th width="320" align="left">Rating Change</th>&#13;
+                    <th width="320" align="left">Price Target Change</th>&#13;
+                </tr>&#13;
+            </thead><tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Mar-07-24</td><td width="320" align="left"><span class="fv-label is-small is-negative-200">Downgrade</span></td>
+<td class="text-left color-text is-negative" width="320" align="left">DZ Bank</td>
+<td class="text-left color-text is-negative" width="320" align="left">Buy → Hold</td>
+<td class="text-left tabular-nums color-text is-negative" width="320" align="left">$200</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Jan-31-24</td><td width="320" align="left"><span class="fv-label is-small is-positive-200">Upgrade</span></td>
+<td class="text-left color-text is-positive" width="320" align="left">Northland Capital</td>
+<td class="text-left color-text is-positive" width="320" align="left">Market Perform → Outperform</td>
+<td class="text-left tabular-nums color-text is-positive" width="320" align="left">$195</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Jan-30-24</td><td width="320" align="left"><span class="fv-label is-small is-negative-200">Downgrade</span></td>
+<td class="text-left color-text is-negative" width="320" align="left">Raymond James</td>
+<td class="text-left color-text is-negative" width="320" align="left">Strong Buy → Outperform</td>
+<td class="text-left tabular-nums color-text is-negative" width="320" align="left">$190 → $195</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Jan-29-24</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">Susquehanna</td>
+<td class="text-left" width="320" align="left">Positive</td>
+<td class="text-left tabular-nums" width="320" align="left">$170 → $210</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Jan-29-24</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">Morgan Stanley</td>
+<td class="text-left" width="320" align="left">Overweight</td>
+<td class="text-left tabular-nums" width="320" align="left">$128 → $193</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Jan-29-24</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">BofA Securities</td>
+<td class="text-left" width="320" align="left">Buy</td>
+<td class="text-left tabular-nums" width="320" align="left">$165 → $195</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Jan-24-24</td><td width="320" align="left"><span class="fv-label is-small is-positive-200">Upgrade</span></td>
+<td class="text-left color-text is-positive" width="320" align="left">New Street</td>
+<td class="text-left color-text is-positive" width="320" align="left">Neutral → Buy</td>
+<td class="text-left tabular-nums color-text is-positive" width="320" align="left">$215</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Jan-23-24</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">Cantor Fitzgerald</td>
+<td class="text-left" width="320" align="left">Overweight</td>
+<td class="text-left tabular-nums" width="320" align="left">$190</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Jan-22-24</td><td width="320" align="left"><span class="fv-label is-small is-negative-200">Downgrade</span></td>
+<td class="text-left color-text is-negative" width="320" align="left">Northland Capital</td>
+<td class="text-left color-text is-negative" width="320" align="left">Outperform → Market Perform</td>
+<td class="text-left tabular-nums color-text is-negative" width="320" align="left"/>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text is-last"><td width="140" align="left">Jan-18-24</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">TD Cowen</td>
+<td class="text-left" width="320" align="left">Outperform</td>
+<td class="text-left tabular-nums" width="320" align="left">$130 → $185</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Jan-16-24</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">Susquehanna</td>
+<td class="text-left" width="320" align="left">Positive</td>
+<td class="text-left tabular-nums" width="320" align="left">$130 → $170</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Jan-16-24</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">KeyBanc Capital Markets</td>
+<td class="text-left" width="320" align="left">Overweight</td>
+<td class="text-left tabular-nums" width="320" align="left">$170 → $195</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Jan-16-24</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">Barclays</td>
+<td class="text-left" width="320" align="left">Overweight</td>
+<td class="text-left tabular-nums" width="320" align="left">$120 → $200</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Jan-08-24</td><td width="320" align="left"><span class="fv-label is-small is-positive-200">Upgrade</span></td>
+<td class="text-left color-text is-positive" width="320" align="left">Melius</td>
+<td class="text-left color-text is-positive" width="320" align="left">Hold → Buy</td>
+<td class="text-left tabular-nums color-text is-positive" width="320" align="left"/>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Dec-15-23</td><td width="320" align="left"><span class="fv-label is-small is-positive-200">Upgrade</span></td>
+<td class="text-left color-text is-positive" width="320" align="left">BofA Securities</td>
+<td class="text-left color-text is-positive" width="320" align="left">Neutral → Buy</td>
+<td class="text-left tabular-nums color-text is-positive" width="320" align="left">$165</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Nov-14-23</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">ROTH MKM</td>
+<td class="text-left" width="320" align="left">Buy</td>
+<td class="text-left tabular-nums" width="320" align="left">$125</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Aug-02-23</td><td width="320" align="left"><span class="fv-label is-small is-positive-200">Upgrade</span></td>
+<td class="text-left color-text is-positive" width="320" align="left">Citigroup</td>
+<td class="text-left color-text is-positive" width="320" align="left">Neutral → Buy</td>
+<td class="text-left tabular-nums color-text is-positive" width="320" align="left">$120 → $136</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Aug-02-23</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">JP Morgan</td>
+<td class="text-left" width="320" align="left">Neutral</td>
+<td class="text-left tabular-nums" width="320" align="left">$92 → $130</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Aug-02-23</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">BofA Securities</td>
+<td class="text-left" width="320" align="left">Neutral</td>
+<td class="text-left tabular-nums" width="320" align="left">$130 → $132</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">Jul-20-23</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">Wolfe Research</td>
+<td class="text-left" width="320" align="left">Outperform</td>
+<td class="text-left tabular-nums" width="320" align="left">$150</td>
+</tr>
+</table>
+
+
+
+<hr color="#ff8000" align="center">
+<table cellpadding="0" cellspacing="0" align="center" width="70%" class="body-table styled-table-new is-rounded p-0 mt-2">
+<thead>
+<tr>
+<th class="" align="left">Insider Trading</th>
+<th class="" align="left">Relationship</th>
+<th class="" align="left">Date</th>
+<th class="" align="center">Transaction</th>
+<th class="" align="right">Cost</th>
+<th class="" align="right">#Shares</th>
+<th class="" align="right">Value ($)</th>
+<th class="" align="right">#Shares Total</th>
+<th class="" align="center">SEC Form 4</th>
+</tr>
+</thead>
+<tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1449649&amp;tc=7" class="tab-link">Papermaster Mark D</a></td><td style="white-space:nowrap">Chief Technology Officer &amp; EVP</td><td>Mar 15 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">12.83</td><td class="value" align="right">16,200</td><td class="value" align="right">207,846</td><td class="value" align="right">1,570,802</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248824000040/xslF345X05/wk-form4_1710879411.xml" class="tab-link" target="_blank">Mar 19 04:17 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1674334&amp;tc=7" class="tab-link">SMITH DARLA M</a></td><td style="white-space:nowrap">Chief Accounting Officer</td><td>Mar 15 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">1,934</td><td class="value" align="right">0</td><td class="value" align="right">6,143</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248824000046/xslF345X05/wk-form4_1710879996.xml" class="tab-link" target="_blank">Mar 19 04:27 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1182953&amp;tc=7" class="tab-link">PENG VICTOR</a></td><td style="white-space:nowrap">President, AMD</td><td>Mar 15 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">28,840</td><td class="value" align="right">0</td><td class="value" align="right">28,840</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248824000044/xslF345X05/wk-form4_1710879806.xml" class="tab-link" target="_blank">Mar 19 04:23 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1979076&amp;tc=7" class="tab-link">HUYNH JACK M</a></td><td style="white-space:nowrap">SVP &amp; GM, Computing &amp; Graphics</td><td>Mar 15 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">1,970</td><td class="value" align="right">0</td><td class="value" align="right">419,581</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248824000042/xslF345X05/wk-form4_1710879579.xml" class="tab-link" target="_blank">Mar 19 04:19 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1449649&amp;tc=7" class="tab-link">Papermaster Mark D</a></td><td style="white-space:nowrap">Chief Technology Officer &amp; EVP</td><td>Mar 15 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">186.73</td><td class="value" align="right">16,200</td><td class="value" align="right">3,025,082</td><td class="value" align="right">1,554,602</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248824000040/xslF345X05/wk-form4_1710879411.xml" class="tab-link" target="_blank">Mar 19 04:17 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1405109&amp;tc=7" class="tab-link">Su Lisa T</a></td><td style="white-space:nowrap">Chair, President &amp; CEO</td><td>Mar 13 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">195.13</td><td class="value" align="right">125,000</td><td class="value" align="right">24,391,404</td><td class="value" align="right">3,222,230</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248824000038/xslF345X05/wk-form4_1710533592.xml" class="tab-link" target="_blank">Mar 15 04:13 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1273666&amp;tc=7" class="tab-link">WOLIN HARRY A</a></td><td style="white-space:nowrap">SVP</td><td>Mar 07 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">34.19</td><td class="value" align="right">32,789</td><td class="value" align="right">1,121,056</td><td class="value" align="right">1,466,385</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248824000036/xslF345X05/wk-form4_1710188422.xml" class="tab-link" target="_blank">Mar 11 04:22 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1273666&amp;tc=7" class="tab-link">WOLIN HARRY A</a></td><td style="white-space:nowrap">SVP</td><td>Mar 07 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">212.31</td><td class="value" align="right">32,789</td><td class="value" align="right">6,961,433</td><td class="value" align="right">1,433,596</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248824000036/xslF345X05/wk-form4_1710188422.xml" class="tab-link" target="_blank">Mar 11 04:22 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1361347&amp;tc=7" class="tab-link">HOUSEHOLDER JOSEPH A</a></td><td style="white-space:nowrap">Director</td><td>Mar 04 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">208.08</td><td class="value" align="right">6,572</td><td class="value" align="right">1,367,502</td><td class="value" align="right">2,197</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248824000029/xslF345X05/wk-form4_1709759337.xml" class="tab-link" target="_blank">Mar 06 04:09 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1674334&amp;tc=7" class="tab-link">SMITH DARLA M</a></td><td style="white-space:nowrap">Chief Accounting Officer</td><td>Feb 29 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">188.66</td><td class="value" align="right">1,678</td><td class="value" align="right">316,571</td><td class="value" align="right">4,209</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248824000027/xslF345X05/wk-form4_1709592498.xml" class="tab-link" target="_blank">Mar 04 05:48 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1405109&amp;tc=7" class="tab-link">Su Lisa T</a></td><td style="white-space:nowrap">Chair, President &amp; CEO</td><td>Feb 21 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">163.35</td><td class="value" align="right">125,000</td><td class="value" align="right">20,418,208</td><td class="value" align="right">3,195,360</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248824000025/xslF345X05/wk-form4_1708722554.xml" class="tab-link" target="_blank">Feb 23 04:09 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1449649&amp;tc=7" class="tab-link">Papermaster Mark D</a></td><td style="white-space:nowrap">Chief Technology Officer &amp; EVP</td><td>Feb 15 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">12.83</td><td class="value" align="right">16,200</td><td class="value" align="right">207,846</td><td class="value" align="right">1,570,802</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000162828024005599/xslF345X05/wk-form4_1708464866.xml" class="tab-link" target="_blank">Feb 20 04:35 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1622864&amp;tc=7" class="tab-link">Norrod Forrest Eugene</a></td><td style="white-space:nowrap">EVP &amp; GM DESG</td><td>Feb 15 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">10,994</td><td class="value" align="right">0</td><td class="value" align="right">269,684</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000162828024005629/xslF345X05/wk-form4_1708466088.xml" class="tab-link" target="_blank">Feb 20 04:55 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1979076&amp;tc=7" class="tab-link">HUYNH JACK M</a></td><td style="white-space:nowrap">SVP &amp; GM, Computing &amp; Graphics</td><td>Feb 15 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">2,473</td><td class="value" align="right">0</td><td class="value" align="right">418,214</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000162828024005617/xslF345X05/wk-form4_1708465711.xml" class="tab-link" target="_blank">Feb 20 04:48 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1452385&amp;tc=7" class="tab-link">Hu Jean X.</a></td><td style="white-space:nowrap">EVP, CFO and Treasurer</td><td>Feb 15 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">96,757</td><td class="value" align="right">0</td><td class="value" align="right">96,757</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000162828024005612/xslF345X05/wk-form4_1708465534.xml" class="tab-link" target="_blank">Feb 20 04:46 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1449649&amp;tc=7" class="tab-link">Papermaster Mark D</a></td><td style="white-space:nowrap">Chief Technology Officer &amp; EVP</td><td>Feb 15 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">177.57</td><td class="value" align="right">16,200</td><td class="value" align="right">2,876,677</td><td class="value" align="right">1,554,602</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000162828024005599/xslF345X05/wk-form4_1708464866.xml" class="tab-link" target="_blank">Feb 20 04:35 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1768248&amp;tc=7" class="tab-link">GRASBY PAUL DARREN</a></td><td style="white-space:nowrap">EVP Strategic Partnerships</td><td>Feb 05 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">67.06</td><td class="value" align="right">40,289</td><td class="value" align="right">2,701,784</td><td class="value" align="right">130,952</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248824000018/xslF345X05/wk-form4_1707340044.xml" class="tab-link" target="_blank">Feb 07 04:07 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1768248&amp;tc=7" class="tab-link">GRASBY PAUL DARREN</a></td><td style="white-space:nowrap">EVP Strategic Partnerships</td><td>Feb 05 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">177.83</td><td class="value" align="right">40,289</td><td class="value" align="right">7,164,593</td><td class="value" align="right">90,663</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248824000018/xslF345X05/wk-form4_1707340044.xml" class="tab-link" target="_blank">Feb 07 04:07 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1622864&amp;tc=7" class="tab-link">Norrod Forrest Eugene</a></td><td style="white-space:nowrap">EVP &amp; GM DESG</td><td>Feb 02 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">12.83</td><td class="value" align="right">29,293</td><td class="value" align="right">375,829</td><td class="value" align="right">317,983</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248824000016/xslF345X05/wk-form4_1707254568.xml" class="tab-link" target="_blank">Feb 06 04:23 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1182953&amp;tc=7" class="tab-link">PENG VICTOR</a></td><td style="white-space:nowrap">President, AMD</td><td>Feb 02 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">175.11</td><td class="value" align="right">100,000</td><td class="value" align="right">17,511,109</td><td class="value" align="right">241,266</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248824000014/xslF345X05/wk-form4_1707253960.xml" class="tab-link" target="_blank">Feb 06 04:12 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1622864&amp;tc=7" class="tab-link">Norrod Forrest Eugene</a></td><td style="white-space:nowrap">EVP &amp; GM DESG</td><td>Feb 02 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">175.94</td><td class="value" align="right">59,293</td><td class="value" align="right">10,432,183</td><td class="value" align="right">258,690</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248824000016/xslF345X05/wk-form4_1707254568.xml" class="tab-link" target="_blank">Feb 06 04:23 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1674334&amp;tc=7" class="tab-link">SMITH DARLA M</a></td><td style="white-space:nowrap">Chief Accounting Officer</td><td>Jan 15 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">472</td><td class="value" align="right">0</td><td class="value" align="right">6,076</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248824000005/xslF345X05/wk-form4_1705525913.xml" class="tab-link" target="_blank">Jan 17 04:12 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1979076&amp;tc=7" class="tab-link">HUYNH JACK M</a></td><td style="white-space:nowrap">SVP &amp; GM, Computing &amp; Graphics</td><td>Jan 15 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">1,772</td><td class="value" align="right">0</td><td class="value" align="right">416,224</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248824000003/xslF345X05/wk-form4_1705525796.xml" class="tab-link" target="_blank">Jan 17 04:10 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1674334&amp;tc=7" class="tab-link">SMITH DARLA M</a></td><td style="white-space:nowrap">Chief Accounting Officer</td><td>Dec 07 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">125.69</td><td class="value" align="right">4,000</td><td class="value" align="right">502,760</td><td class="value" align="right">5,604</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000208/xslF345X05/wk-form4_1702329193.xml" class="tab-link" target="_blank">Dec 11 04:13 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1405109&amp;tc=7" class="tab-link">Su Lisa T</a></td><td style="white-space:nowrap">Chair, President &amp; CEO</td><td>Dec 05 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">12.83</td><td class="value" align="right">75,000</td><td class="value" align="right">962,250</td><td class="value" align="right">3,422,640</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000205/xslF345X05/wk-form4_1701986396.xml" class="tab-link" target="_blank">Dec 07 05:00 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1405109&amp;tc=7" class="tab-link">Su Lisa T</a></td><td style="white-space:nowrap">Chair, President &amp; CEO</td><td>Dec 05 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">117.73</td><td class="value" align="right">75,000</td><td class="value" align="right">8,829,451</td><td class="value" align="right">3,347,640</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000205/xslF345X05/wk-form4_1701986396.xml" class="tab-link" target="_blank">Dec 07 05:00 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1405109&amp;tc=7" class="tab-link">Su Lisa T</a></td><td style="white-space:nowrap">Chair, President &amp; CEO</td><td>Nov 07 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">12.83</td><td class="value" align="right">75,000</td><td class="value" align="right">962,250</td><td class="value" align="right">3,433,721</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000201/xslF345X05/wk-form4_1699564479.xml" class="tab-link" target="_blank">Nov 09 04:14 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1405109&amp;tc=7" class="tab-link">Su Lisa T</a></td><td style="white-space:nowrap">Chair, President &amp; CEO</td><td>Nov 07 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">113.32</td><td class="value" align="right">75,000</td><td class="value" align="right">8,498,871</td><td class="value" align="right">3,358,721</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000201/xslF345X05/wk-form4_1699564479.xml" class="tab-link" target="_blank">Nov 09 04:14 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1768248&amp;tc=7" class="tab-link">GRASBY PAUL DARREN</a></td><td style="white-space:nowrap">EVP Strategic Partnerships</td><td>Nov 07 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">113.44</td><td class="value" align="right">13,000</td><td class="value" align="right">1,474,720</td><td class="value" align="right">90,663</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000199/xslF345X05/wk-form4_1699564105.xml" class="tab-link" target="_blank">Nov 09 04:09 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1405109&amp;tc=7" class="tab-link">Su Lisa T</a></td><td style="white-space:nowrap">Chair, President &amp; CEO</td><td>Sep 12 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">12.83</td><td class="value" align="right">75,000</td><td class="value" align="right">962,250</td><td class="value" align="right">3,433,721</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000183/xslF345X05/wk-form4_1694722114.xml" class="tab-link" target="_blank">Sep 14 04:08 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1405109&amp;tc=7" class="tab-link">Su Lisa T</a></td><td style="white-space:nowrap">Chair, President &amp; CEO</td><td>Sep 12 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">105.40</td><td class="value" align="right">75,000</td><td class="value" align="right">7,904,861</td><td class="value" align="right">3,358,721</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000183/xslF345X05/wk-form4_1694722114.xml" class="tab-link" target="_blank">Sep 14 04:08 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1768248&amp;tc=7" class="tab-link">GRASBY PAUL DARREN</a></td><td style="white-space:nowrap">EVP Strategic Partnerships</td><td>Aug 30 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">106.21</td><td class="value" align="right">14,942</td><td class="value" align="right">1,586,990</td><td class="value" align="right">103,663</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000181/xslF345X05/wk-form4_1693598635.xml" class="tab-link" target="_blank">Sep 01 04:04 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1979076&amp;tc=7" class="tab-link">HUYNH JACK M</a></td><td style="white-space:nowrap">SVP &amp; GM, Computing &amp; Graphics</td><td>Aug 16 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">4,940</td><td class="value" align="right">0</td><td class="value" align="right">416,272</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000169/xslF345X05/wk-form4_1692390265.xml" class="tab-link" target="_blank">Aug 18 04:24 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1405109&amp;tc=7" class="tab-link">Su Lisa T</a></td><td style="white-space:nowrap">Chair, President &amp; CEO</td><td>Aug 16 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">273,615</td><td class="value" align="right">0</td><td class="value" align="right">3,466,389</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000167/xslF345X05/wk-form4_1692389889.xml" class="tab-link" target="_blank">Aug 18 04:18 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1273666&amp;tc=7" class="tab-link">WOLIN HARRY A</a></td><td style="white-space:nowrap">SVP, GC &amp; Corporate Secretary</td><td>Aug 16 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">36,560</td><td class="value" align="right">0</td><td class="value" align="right">1,466,227</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000165/xslF345X05/wk-form4_1692389621.xml" class="tab-link" target="_blank">Aug 18 04:13 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1449649&amp;tc=7" class="tab-link">Papermaster Mark D</a></td><td style="white-space:nowrap">Chief Technology Officer &amp; EVP</td><td>Aug 16 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">71,145</td><td class="value" align="right">0</td><td class="value" align="right">1,594,427</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000175/xslF345X05/wk-form4_1692390769.xml" class="tab-link" target="_blank">Aug 18 04:32 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1622864&amp;tc=7" class="tab-link">Norrod Forrest Eugene</a></td><td style="white-space:nowrap">EVP &amp; GM DESG</td><td>Aug 16 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">49,405</td><td class="value" align="right">0</td><td class="value" align="right">308,131</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000173/xslF345X05/wk-form4_1692390653.xml" class="tab-link" target="_blank">Aug 18 04:31 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1768248&amp;tc=7" class="tab-link">GRASBY PAUL DARREN</a></td><td style="white-space:nowrap">EVP Strategic Partnerships</td><td>Aug 16 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">59,287</td><td class="value" align="right">0</td><td class="value" align="right">146,470</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000171/xslF345X05/wk-form4_1692390516.xml" class="tab-link" target="_blank">Aug 18 04:28 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1405109&amp;tc=7" class="tab-link">Su Lisa T</a></td><td style="white-space:nowrap">Chair, President &amp; CEO</td><td>Aug 15 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">12.83</td><td class="value" align="right">75,000</td><td class="value" align="right">962,250</td><td class="value" align="right">3,267,774</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000163/xslF345X05/wk-form4_1692303009.xml" class="tab-link" target="_blank">Aug 17 04:10 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1405109&amp;tc=7" class="tab-link">Su Lisa T</a></td><td style="white-space:nowrap">Chair, President &amp; CEO</td><td>Aug 15 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">111.59</td><td class="value" align="right">75,000</td><td class="value" align="right">8,369,403</td><td class="value" align="right">3,192,774</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000163/xslF345X05/wk-form4_1692303009.xml" class="tab-link" target="_blank">Aug 17 04:10 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1449649&amp;tc=7" class="tab-link">Papermaster Mark D</a></td><td style="white-space:nowrap">Chief Technology Officer &amp; EVP</td><td>Aug 09 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">15,178</td><td class="value" align="right">0</td><td class="value" align="right">1,528,423</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000155/xslF345X05/wk-form4_1691785029.xml" class="tab-link" target="_blank">Aug 11 04:17 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1674334&amp;tc=7" class="tab-link">SMITH DARLA M</a></td><td style="white-space:nowrap">Chief Accounting Officer</td><td>Aug 09 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">3,046</td><td class="value" align="right">0</td><td class="value" align="right">10,599</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000153/xslF345X05/wk-form4_1691784918.xml" class="tab-link" target="_blank">Aug 11 04:15 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1405109&amp;tc=7" class="tab-link">Su Lisa T</a></td><td style="white-space:nowrap">Chair, President &amp; CEO</td><td>Aug 09 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">50,456</td><td class="value" align="right">0</td><td class="value" align="right">3,212,526</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000151/xslF345X05/wk-form4_1691784815.xml" class="tab-link" target="_blank">Aug 11 04:13 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1273666&amp;tc=7" class="tab-link">WOLIN HARRY A</a></td><td style="white-space:nowrap">SVP, GC &amp; Corporate Secretary</td><td>Aug 09 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">6,350</td><td class="value" align="right">0</td><td class="value" align="right">1,431,214</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000149/xslF345X05/wk-form4_1691784689.xml" class="tab-link" target="_blank">Aug 11 04:11 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1768248&amp;tc=7" class="tab-link">GRASBY PAUL DARREN</a></td><td style="white-space:nowrap">EVP Strategic Partnerships</td><td>Aug 09 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">11,777</td><td class="value" align="right">0</td><td class="value" align="right">92,719</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000161/xslF345X05/wk-form4_1691785757.xml" class="tab-link" target="_blank">Aug 11 04:29 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1979076&amp;tc=7" class="tab-link">HUYNH JACK M</a></td><td style="white-space:nowrap">SVP &amp; GM, Computing &amp; Graphics</td><td>Aug 09 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">6,759</td><td class="value" align="right">0</td><td class="value" align="right">412,979</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000159/xslF345X05/wk-form4_1691785612.xml" class="tab-link" target="_blank">Aug 11 04:27 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1622864&amp;tc=7" class="tab-link">Norrod Forrest Eugene</a></td><td style="white-space:nowrap">EVP &amp; GM DESG</td><td>Aug 09 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">9,727</td><td class="value" align="right">0</td><td class="value" align="right">261,543</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000157/xslF345X05/wk-form4_1691785499.xml" class="tab-link" target="_blank">Aug 11 04:25 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1182953&amp;tc=7" class="tab-link">PENG VICTOR</a></td><td style="white-space:nowrap">President, AMD</td><td>Aug 09 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">6,517</td><td class="value" align="right">0</td><td class="value" align="right">6,517</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000143/xslF345X05/wk-form4_1691784333.xml" class="tab-link" target="_blank">Aug 11 04:05 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1182953&amp;tc=7" class="tab-link">PENG VICTOR</a></td><td style="white-space:nowrap">President, AMD</td><td>Jul 12 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">30,491</td><td class="value" align="right">0</td><td class="value" align="right">30,491</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000127/xslF345X04/wk-form4_1689365351.xml" class="tab-link" target="_blank">Jul 14 04:09 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1449649&amp;tc=7" class="tab-link">Papermaster Mark D</a></td><td style="white-space:nowrap">Chief Technology Officer &amp; EVP</td><td>Jul 06 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">6.98</td><td class="value" align="right">31,701</td><td class="value" align="right">221,273</td><td class="value" align="right">1,544,946</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000125/xslF345X04/wk-form4_1689020801.xml" class="tab-link" target="_blank">Jul 10 04:26 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1449649&amp;tc=7" class="tab-link">Papermaster Mark D</a></td><td style="white-space:nowrap">Chief Technology Officer &amp; EVP</td><td>Jul 06 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">111.49</td><td class="value" align="right">31,701</td><td class="value" align="right">3,534,376</td><td class="value" align="right">1,513,245</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000125/xslF345X04/wk-form4_1689020801.xml" class="tab-link" target="_blank">Jul 10 04:26 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1273666&amp;tc=7" class="tab-link">WOLIN HARRY A</a></td><td style="white-space:nowrap">SVP, GC &amp; Corporate Secretary</td><td>Jun 09 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">17.27</td><td class="value" align="right">74,473</td><td class="value" align="right">1,286,225</td><td class="value" align="right">1,499,337</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000120/xslF345X04/wk-form4_1686692026.xml" class="tab-link" target="_blank">Jun 13 05:33 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1182953&amp;tc=7" class="tab-link">PENG VICTOR</a></td><td style="white-space:nowrap">President, AMD</td><td>Jun 09 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">124.57</td><td class="value" align="right">105,000</td><td class="value" align="right">13,080,128</td><td class="value" align="right">321,090</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000118/xslF345X04/wk-form4_1686691865.xml" class="tab-link" target="_blank">Jun 13 05:31 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1273666&amp;tc=7" class="tab-link">WOLIN HARRY A</a></td><td style="white-space:nowrap">SVP, GC &amp; Corporate Secretary</td><td>Jun 09 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">125.98</td><td class="value" align="right">74,473</td><td class="value" align="right">9,382,109</td><td class="value" align="right">1,424,864</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000120/xslF345X04/wk-form4_1686692026.xml" class="tab-link" target="_blank">Jun 13 05:33 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1405109&amp;tc=7" class="tab-link">Su Lisa T</a></td><td style="white-space:nowrap">Chair, President &amp; CEO</td><td>Jun 06 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">6.98</td><td class="value" align="right">777,214</td><td class="value" align="right">5,424,954</td><td class="value" align="right">3,666,116</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000114/xslF345X04/wk-form4_1686255203.xml" class="tab-link" target="_blank">Jun 08 04:13 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1405109&amp;tc=7" class="tab-link">Su Lisa T</a></td><td style="white-space:nowrap">Chair, President &amp; CEO</td><td>Jun 06 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">122.63</td><td class="value" align="right">300,000</td><td class="value" align="right">36,790,156</td><td class="value" align="right">3,366,116</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000114/xslF345X04/wk-form4_1686255203.xml" class="tab-link" target="_blank">Jun 08 04:13 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1449649&amp;tc=7" class="tab-link">Papermaster Mark D</a></td><td style="white-space:nowrap">Chief Technology Officer &amp; EVP</td><td>Jun 05 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">6.98</td><td class="value" align="right">30,000</td><td class="value" align="right">209,400</td><td class="value" align="right">1,543,245</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000110/xslF345X04/wk-form4_1686168528.xml" class="tab-link" target="_blank">Jun 07 04:09 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1449649&amp;tc=7" class="tab-link">Papermaster Mark D</a></td><td style="white-space:nowrap">Chief Technology Officer &amp; EVP</td><td>Jun 05 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">117.46</td><td class="value" align="right">30,000</td><td class="value" align="right">3,523,844</td><td class="value" align="right">1,513,245</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000110/xslF345X04/wk-form4_1686168528.xml" class="tab-link" target="_blank">Jun 07 04:09 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1768248&amp;tc=7" class="tab-link">GRASBY PAUL DARREN</a></td><td style="white-space:nowrap">EVP &amp; CSO</td><td>Jun 05 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">118.77</td><td class="value" align="right">15,000</td><td class="value" align="right">1,781,550</td><td class="value" align="right">80,942</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000112/xslF345X04/wk-form4_1686169026.xml" class="tab-link" target="_blank">Jun 07 04:17 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1622864&amp;tc=7" class="tab-link">Norrod Forrest Eugene</a></td><td style="white-space:nowrap">EVP &amp; GM DESG</td><td>May 25 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">119.35</td><td class="value" align="right">25,000</td><td class="value" align="right">2,983,750</td><td class="value" align="right">251,816</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000106/xslF345X04/wk-form4_1685478255.xml" class="tab-link" target="_blank">May 30 04:25 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1331263&amp;tc=7" class="tab-link">Olson Jon A</a></td><td style="white-space:nowrap">Director</td><td>May 18 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">732</td><td class="value" align="right">0</td><td class="value" align="right">2,368</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000088/xslF345X04/wf-form4_168478637113336.xml" class="tab-link" target="_blank">May 22 04:13 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1361347&amp;tc=7" class="tab-link">HOUSEHOLDER JOSEPH A</a></td><td style="white-space:nowrap">Director</td><td>May 18 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">2,197</td><td class="value" align="right">0</td><td class="value" align="right">8,769</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000096/xslF345X04/wf-form4_168478714908513.xml" class="tab-link" target="_blank">May 22 04:26 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1316065&amp;tc=7" class="tab-link">TALWALKAR ABHIJIT Y</a></td><td style="white-space:nowrap">Director</td><td>May 18 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">2,197</td><td class="value" align="right">0</td><td class="value" align="right">17,498</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000092/xslF345X04/wf-form4_168478675288851.xml" class="tab-link" target="_blank">May 22 04:19 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1418351&amp;tc=7" class="tab-link">Denzel Nora</a></td><td style="white-space:nowrap">Director</td><td>May 18 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">2,197</td><td class="value" align="right">0</td><td class="value" align="right">90,751</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000094/xslF345X04/wf-form4_168478695504018.xml" class="tab-link" target="_blank">May 22 04:22 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1674334&amp;tc=7" class="tab-link">SMITH DARLA M</a></td><td style="white-space:nowrap">Chief Accounting Officer</td><td>May 15 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">96.86</td><td class="value" align="right">3,873</td><td class="value" align="right">375,151</td><td class="value" align="right">7,553</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000082/xslF345X04/wf-form4_168435433070357.xml" class="tab-link" target="_blank">May 17 04:12 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1449649&amp;tc=7" class="tab-link">Papermaster Mark D</a></td><td style="white-space:nowrap">Chief Technology Officer &amp; EVP</td><td>May 05 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">6.98</td><td class="value" align="right">30,000</td><td class="value" align="right">209,400</td><td class="value" align="right">1,546,945</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000078/xslF345X04/wf-form4_168367220606252.xml" class="tab-link" target="_blank">May 09 06:43 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1449649&amp;tc=7" class="tab-link">Papermaster Mark D</a></td><td style="white-space:nowrap">Chief Technology Officer &amp; EVP</td><td>May 05 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">85.14</td><td class="value" align="right">30,000</td><td class="value" align="right">2,554,200</td><td class="value" align="right">1,516,945</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000078/xslF345X04/wf-form4_168367220606252.xml" class="tab-link" target="_blank">May 09 06:43 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1674334&amp;tc=7" class="tab-link">SMITH DARLA M</a></td><td style="white-space:nowrap">Chief Accounting Officer</td><td>Apr 15 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">628</td><td class="value" align="right">0</td><td class="value" align="right">11,364</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000070/xslF345X04/wf-form4_168184857312075.xml" class="tab-link" target="_blank">Apr 18 04:09 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1768248&amp;tc=7" class="tab-link">GRASBY PAUL DARREN</a></td><td style="white-space:nowrap">EVP &amp; CSO</td><td>Apr 12 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">94.85</td><td class="value" align="right">12,500</td><td class="value" align="right">1,185,625</td><td class="value" align="right">95,942</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000068/xslF345X04/wf-form4_168150290676905.xml" class="tab-link" target="_blank">Apr 14 04:08 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1449649&amp;tc=7" class="tab-link">Papermaster Mark D</a></td><td style="white-space:nowrap">Chief Technology Officer &amp; EVP</td><td>Apr 06 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">6.98</td><td class="value" align="right">30,000</td><td class="value" align="right">209,400</td><td class="value" align="right">1,546,945</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000066/xslF345X04/wf-form4_168115738965276.xml" class="tab-link" target="_blank">Apr 10 04:10 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1449649&amp;tc=7" class="tab-link">Papermaster Mark D</a></td><td style="white-space:nowrap">Chief Technology Officer &amp; EVP</td><td>Apr 06 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">91.39</td><td class="value" align="right">30,000</td><td class="value" align="right">2,741,607</td><td class="value" align="right">1,516,945</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/2488/000000248823000066/xslF345X04/wf-form4_168115738965276.xml" class="tab-link" target="_blank">Apr 10 04:10 PM</a></td></tr></table>
+
+
+
+<hr color="#ff8000" align="center">
+<div class="body-table-news-wrapper news-table_wrapper"><table align="center" width="70%" cellpadding="1" cellspacing="0" border="0" id="news-table" class="fullview-news-outer news-table">
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'StockStory', 'https://finance.yahoo.com/news/q4-earnings-outperformers-lattice-semiconductor-090724355.html');">&#13;
+        <td width="130" align="right">&#13;
+            Today 05:07AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/q4-earnings-outperformers-lattice-semiconductor-090724355.html" target="_blank" rel="nofollow">Q4 Earnings Outperformers: Lattice Semiconductor (NASDAQ:LSCC) And The Rest Of The Processors and Graphics Chips Stocks</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(StockStory)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/20-biggest-semiconductor-companies-in-the-us-1280508/');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-27-24 05:57PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/20-biggest-semiconductor-companies-in-the-us-1280508/" target="_blank" rel="nofollow">20 Biggest Semiconductor Companies in the US</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/b676da7f-c54c-3bc3-a729-5ee52fe6cd44/why-intel-stock-rose-despite.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:38PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/b676da7f-c54c-3bc3-a729-5ee52fe6cd44/why-intel-stock-rose-despite.html" target="_blank" rel="nofollow">Why Intel Stock Rose Despite Bearish Momentum for Artificial Intelligence (AI) Stocks Today</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/a00c24c4-8f15-3082-8a3a-7011eca41039/rising-to-the-challenge%3A-this.html');">&#13;
+        <td width="130" align="right">&#13;
+            10:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/a00c24c4-8f15-3082-8a3a-7011eca41039/rising-to-the-challenge%3A-this.html" target="_blank" rel="nofollow">Rising to the Challenge: This Aspiring "Magnificent Seven" Stock is the One to Watch in 2024</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Bloomberg', 'https://finance.yahoo.com/news/ai-rally-expands-beyond-nvidia-124426564.html');">&#13;
+        <td width="130" align="right">&#13;
+            09:47AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/ai-rally-expands-beyond-nvidia-124426564.html" target="_blank" rel="nofollow">AI Rally Expands Beyond Nvidia as Investors Bid Up Hardware</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Bloomberg)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/cognition-therapeutics-inc-nasdaqcgtx-q4-2023-earnings-call-transcript-1281205/');">&#13;
+        <td width="130" align="right">&#13;
+            09:31AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/cognition-therapeutics-inc-nasdaqcgtx-q4-2023-earnings-call-transcript-1281205/" target="_blank" rel="nofollow">Cognition Therapeutics, Inc. (NASDAQ:CGTX) Q4 2023 Earnings Call Transcript</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'GlobeNewswire', 'https://www.globenewswire.com/news-release/2024/03/27/2853229/0/en/Increased-Adoption-of-Artificial-Intelligence-Across-the-Healthcare-Industry-Driving-Strong-Market-Growth.html');">&#13;
+        <td width="130" align="right">&#13;
+            09:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.globenewswire.com/news-release/2024/03/27/2853229/0/en/Increased-Adoption-of-Artificial-Intelligence-Across-the-Healthcare-Industry-Driving-Strong-Market-Growth.html" target="_blank" rel="nofollow">Increased Adoption of Artificial Intelligence Across the Healthcare Industry Driving Strong Market Growth</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/8d5ea5d2-163c-33a9-96e6-a14b411be5d9/if-there-were-a-%22magnificent.html');">&#13;
+        <td width="130" align="right">&#13;
+            06:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/8d5ea5d2-163c-33a9-96e6-a14b411be5d9/if-there-were-a-%22magnificent.html" target="_blank" rel="nofollow">If There Were a "Magnificent Seven" Purely for AI Stocks, These Would Be My Top Picks</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/market360/2024/03/ignore-the-noise-3-reasons-why-amd-stocks-ai-powered-bull-case-remains-intact/');">&#13;
+        <td width="130" align="right">&#13;
+            06:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/market360/2024/03/ignore-the-noise-3-reasons-why-amd-stocks-ai-powered-bull-case-remains-intact/" target="_blank" rel="nofollow">Ignore the Noise: 3 Reasons Why AMD Stock's AI-Powered Bull Case Remains Intact</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/caa612ca-d5ad-3af1-90e3-3734d315bc60/want-geopolitical-insurance.html');">&#13;
+        <td width="130" align="right">&#13;
+            06:25AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/caa612ca-d5ad-3af1-90e3-3734d315bc60/want-geopolitical-insurance.html" target="_blank" rel="nofollow">Want Geopolitical Insurance for Your Semiconductor Investments? Buy This Stock</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/9be171ce-f2af-301a-831d-eba2b1881b2e/3-millionaire-maker.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:25AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/9be171ce-f2af-301a-831d-eba2b1881b2e/3-millionaire-maker.html" target="_blank" rel="nofollow">3 Millionaire-Maker Technology Stocks</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/d439ee9b-add7-381f-a286-f223e2be6940/2-artificial-intelligence.html');">&#13;
+        <td width="130" align="right">&#13;
+            03:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/d439ee9b-add7-381f-a286-f223e2be6940/2-artificial-intelligence.html" target="_blank" rel="nofollow">2 Artificial Intelligence (AI) Stocks That Could Go Parabolic</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'DigiTimes', 'https://www.digitimes.com/news/a20240327PD208/china-processor-ban-amd-intel.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-26-24 10:58PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.digitimes.com/news/a20240327PD208/china-processor-ban-amd-intel.html" target="_blank" rel="nofollow">Intel and AMD could lose billions if China goes through with US processor ban</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(DigiTimes)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investor\u0027s Business Daily', 'https://finance.yahoo.com/m/776dffee-64af-3502-ad20-38a315d1693e/is-amd-stock-a-buy-before.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:55AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/776dffee-64af-3502-ad20-38a315d1693e/is-amd-stock-a-buy-before.html" target="_blank" rel="nofollow">Is AMD Stock A Buy Before Chipmaker's First-Quarter Earnings Report?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investor's Business Daily)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'StockStory', 'https://finance.yahoo.com/news/processors-graphics-chips-stocks-q4-110927684.html');">&#13;
+        <td width="130" align="right">&#13;
+            07:09AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/processors-graphics-chips-stocks-q4-110927684.html" target="_blank" rel="nofollow">Processors and Graphics Chips Stocks Q4 In Review: AMD (NASDAQ:AMD) Vs Peers</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(StockStory)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/0a009d35-9e6e-35a3-92bb-0d0d6a5562bb/4-reasons-to-buy-amd-stock.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:35AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/0a009d35-9e6e-35a3-92bb-0d0d6a5562bb/4-reasons-to-buy-amd-stock.html" target="_blank" rel="nofollow">4 Reasons to Buy AMD Stock Like There's No Tomorrow</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/64903796-d8ce-3a23-86e6-ef8711ef9a2e/where-will-amd-stock-be-in.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/64903796-d8ce-3a23-86e6-ef8711ef9a2e/where-will-amd-stock-be-in.html" target="_blank" rel="nofollow">Where Will AMD Stock Be in 2030?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/a48efb3c-6434-330d-b24d-3779ba14f359/forget-nvidia%3A-here-are-3.html');">&#13;
+        <td width="130" align="right">&#13;
+            03:27AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/a48efb3c-6434-330d-b24d-3779ba14f359/forget-nvidia%3A-here-are-3.html" target="_blank" rel="nofollow">Forget Nvidia: Here Are 3 Other Artificial Intelligence (AI) Stocks to Buy Instead</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'TheStreet', 'https://finance.yahoo.com/m/5e7846d0-0fd1-30b5-9b26-1f68f7569a85/amd-stock-analysts-overhaul.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-25-24 07:03PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/5e7846d0-0fd1-30b5-9b26-1f68f7569a85/amd-stock-analysts-overhaul.html" target="_blank" rel="nofollow">AMD stock analysts overhaul price targets after China news</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(TheStreet)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2245653/here-s-why-advanced-micro-devices-amd-fell-more-than-broader-market');">&#13;
+        <td width="130" align="right">&#13;
+            05:45PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2245653/here-s-why-advanced-micro-devices-amd-fell-more-than-broader-market" target="_blank" rel="nofollow">Here's Why Advanced Micro Devices (AMD) Fell More Than Broader Market</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investor\u0027s Business Daily', 'https://finance.yahoo.com/m/d69f0813-e859-3b9e-bf76-1b9c2971232a/china-aims-to-phase-out-amd%2C.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:22PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/d69f0813-e859-3b9e-bf76-1b9c2971232a/china-aims-to-phase-out-amd%2C.html" target="_blank" rel="nofollow">China Aims To Phase Out AMD, Intel Chips From Government Computers</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investor's Business Daily)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Barrons.com', 'https://finance.yahoo.com/m/ef62b59f-2890-3f7a-a717-c1e0f07d088a/these-stocks-moved-the-most.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:19PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/ef62b59f-2890-3f7a-a717-c1e0f07d088a/these-stocks-moved-the-most.html" target="_blank" rel="nofollow">These Stocks Moved the Most Today: Boeing, United Airlines, Micron, Super Micro, Tesla, Lucid, Apple, and More</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Quartz', 'https://qz.com/stock-market-closer-dow-dips-1851364176');">&#13;
+        <td width="130" align="right">&#13;
+            04:19PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://qz.com/stock-market-closer-dow-dips-1851364176" target="_blank" rel="nofollow">The market week kicked off at a slow pace, AI keeps the hopes high</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Quartz)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Barrons.com', 'https://finance.yahoo.com/m/ef62b59f-2890-3f7a-a717-c1e0f07d088a/these-stocks-are-moving-the.html');">&#13;
+        <td width="130" align="right">&#13;
+            01:10PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/ef62b59f-2890-3f7a-a717-c1e0f07d088a/these-stocks-are-moving-the.html" target="_blank" rel="nofollow">These Stocks Are Moving the Most Today: Boeing, United Airlines, Micron, Super Micro, Tesla, Lucid, Apple, and More</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Yahoo Finance Video', 'https://finance.yahoo.com/video/chinas-chip-ban-tit-tat-165836423.html');">&#13;
+        <td width="130" align="right">&#13;
+            12:58PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/video/chinas-chip-ban-tit-tat-165836423.html" target="_blank" rel="nofollow">How China's chip ban is a 'tit for tat' political tactic</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance Video)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'The Wall Street Journal', 'https://finance.yahoo.com/m/c23a6450-52c6-3510-8134-81500fdfa34b/stocks-to-watch-monday%3A-dwac%2C.html');">&#13;
+        <td width="130" align="right">&#13;
+            12:53PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/c23a6450-52c6-3510-8134-81500fdfa34b/stocks-to-watch-monday%3A-dwac%2C.html" target="_blank" rel="nofollow">Stocks to Watch Monday: DWAC, AMD, Boeing</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(The Wall Street Journal)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investopedia', 'https://www.investopedia.com/intel-microsoft-slip-as-china-blocks-foreign-chips-software-in-government-computers-8619798');">&#13;
+        <td width="130" align="right">&#13;
+            12:37PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.investopedia.com/intel-microsoft-slip-as-china-blocks-foreign-chips-software-in-government-computers-8619798" target="_blank" rel="nofollow">Intel, Microsoft Slip as China Blocks Foreign Chips, Software in Government Computers</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investopedia)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Quartz', 'https://qz.com/intel-and-amd-down-as-china-cracks-down-on-chips-1851363105');">&#13;
+        <td width="130" align="right">&#13;
+            12:19PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://qz.com/intel-and-amd-down-as-china-cracks-down-on-chips-1851363105" target="_blank" rel="nofollow">Midday market movers: Intel and AMD stock sours on China's chip restrictions</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Quartz)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Barrons.com', 'https://finance.yahoo.com/m/9f4a50db-a6f7-377f-9504-39d4cbf1dbb7/amd-and-intel-stocks-recover.html');">&#13;
+        <td width="130" align="right">&#13;
+            12:05PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/9f4a50db-a6f7-377f-9504-39d4cbf1dbb7/amd-and-intel-stocks-recover.html" target="_blank" rel="nofollow">AMD and Intel Stocks Recover After Report That China Is Phasing Out Their Chips</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/cc99c582-04fa-3d85-a20d-d5799c68b6f1/nvidia-has-a-secret-weapon-to.html');">&#13;
+        <td width="130" align="right">&#13;
+            10:31AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/cc99c582-04fa-3d85-a20d-d5799c68b6f1/nvidia-has-a-secret-weapon-to.html" target="_blank" rel="nofollow">Nvidia Has a Secret Weapon to Keep Growing Long Into the Future</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Bloomberg', 'https://finance.yahoo.com/news/intel-amd-fall-report-china-141653114.html');">&#13;
+        <td width="130" align="right">&#13;
+            10:16AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/intel-amd-fall-report-china-141653114.html" target="_blank" rel="nofollow">Intel, AMD Fall on Report China to Limit Use of US Chips</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Bloomberg)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Quartz', 'https://qz.com/intel-amd-china-chip-foreign-ban-government-computers-1851362584');">&#13;
+        <td width="130" align="right">&#13;
+            10:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://qz.com/intel-amd-china-chip-foreign-ban-government-computers-1851362584" target="_blank" rel="nofollow">Intel and AMD are feeling the impact of China's government chip ban</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Quartz)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Yahoo Finance Video', 'https://finance.yahoo.com/video/intel-amd-stocks-sink-china-141412385.html');">&#13;
+        <td width="130" align="right">&#13;
+            10:14AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/video/intel-amd-stocks-sink-china-141412385.html" target="_blank" rel="nofollow">Intel, AMD stocks dip as China initiates chip restrictions</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance Video)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/03/chip-stocks-alert-why-intc-amd-are-falling-today/');">&#13;
+        <td width="130" align="right">&#13;
+            10:14AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/03/chip-stocks-alert-why-intc-amd-are-falling-today/" target="_blank" rel="nofollow">Chip Stocks Alert: Why INTC, AMD Are Falling Today</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Reuters', 'https://finance.yahoo.com/news/us-stocks-wall-st-starts-135912271.html');">&#13;
+        <td width="130" align="right">&#13;
+            09:59AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/us-stocks-wall-st-starts-135912271.html" target="_blank" rel="nofollow">US STOCKS-Wall St starts holiday-shortened week lower; Boeing limits losses on Dow</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Reuters)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2245371/advanced-micro-devices-inc-amd-is-attracting-investor-attention-here-is-what-you-should-know');">&#13;
+        <td width="130" align="right">&#13;
+            09:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2245371/advanced-micro-devices-inc-amd-is-attracting-investor-attention-here-is-what-you-should-know" target="_blank" rel="nofollow">Advanced Micro Devices, Inc. (AMD) is Attracting Investor Attention: Here is What You Should Know</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Reuters', 'https://finance.yahoo.com/news/us-stocks-wall-st-set-125426813.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:54AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/us-stocks-wall-st-set-125426813.html" target="_blank" rel="nofollow">US STOCKS-Wall St set to dip, Boeing up after it says CEO to step down</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Reuters)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Barrons.com', 'https://finance.yahoo.com/m/9f4a50db-a6f7-377f-9504-39d4cbf1dbb7/amd-and-intel-stock-drop-on.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:53AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/9f4a50db-a6f7-377f-9504-39d4cbf1dbb7/amd-and-intel-stock-drop-on.html" target="_blank" rel="nofollow">AMD and Intel Stock Drop on Report That China Is Phasing Out Their Chips</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/03/amd-and-nvidias-valuation-showdown-which-stock-offers-more-upside/');">&#13;
+        <td width="130" align="right">&#13;
+            07:58AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/03/amd-and-nvidias-valuation-showdown-which-stock-offers-more-upside/" target="_blank" rel="nofollow">AMD and Nvidia's Valuation Showdown: Which Stock Offers More Upside?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investopedia', 'https://www.investopedia.com/5-things-to-know-before-the-stock-market-opens-march-25-2024-8619663');">&#13;
+        <td width="130" align="right">&#13;
+            07:37AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.investopedia.com/5-things-to-know-before-the-stock-market-opens-march-25-2024-8619663" target="_blank" rel="nofollow">5 Things to Know Before the Stock Market Opens</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investopedia)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Yahoo Finance Video', 'https://finance.yahoo.com/video/eu-launches-probe-apple-alphabet-113010077.html');">&#13;
+        <td width="130" align="right">&#13;
+            07:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/video/eu-launches-probe-apple-alphabet-113010077.html" target="_blank" rel="nofollow">EU Launches probe of Apple, Alphabet, and Meta, Yahoo Finance launches Wealth!</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance Video)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Reuters', 'https://finance.yahoo.com/news/us-stocks-futures-slip-start-112720643.html');">&#13;
+        <td width="130" align="right">&#13;
+            07:27AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/us-stocks-futures-slip-start-112720643.html" target="_blank" rel="nofollow">US STOCKS-Futures slip at start of holiday-shortened week</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Reuters)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Reuters', 'https://finance.yahoo.com/news/intel-amd-fall-report-china-103944015.html');">&#13;
+        <td width="130" align="right">&#13;
+            06:39AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/intel-amd-fall-report-china-103944015.html" target="_blank" rel="nofollow">Intel, AMD fall on report China blocks U.S. chips in state computers</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Reuters)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Barrons.com', 'https://finance.yahoo.com/m/94e822a6-59dd-301d-80d9-193255103d86/the-fed-wants-to-cut-rates%2C.html');">&#13;
+        <td width="130" align="right">&#13;
+            06:33AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/94e822a6-59dd-301d-80d9-193255103d86/the-fed-wants-to-cut-rates%2C.html" target="_blank" rel="nofollow">The Fed Wants to Cut Rates, Why Markets Should Brace for It Not to. And 5 Other Things to Know Before Markets Open.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/9b06d9cb-6076-3d82-849d-d174297baad6/forget-nvidia%3A-another-super.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:28AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/9b06d9cb-6076-3d82-849d-d174297baad6/forget-nvidia%3A-another-super.html" target="_blank" rel="nofollow">Forget Nvidia: Another Super Semiconductor Stock Just Hit a New Record High, and It's Not Too Late to Buy</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Barrons.com', 'https://finance.yahoo.com/m/2128cdd9-9f07-3780-a11a-1f7fc472805b/apple%2C-intel%2C-and-amd-in.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:27AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/2128cdd9-9f07-3780-a11a-1f7fc472805b/apple%2C-intel%2C-and-amd-in.html" target="_blank" rel="nofollow">Apple, Intel, and AMD in China Developments, and Other Technology News Today</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/8523bdb2-0bb1-31a6-b2dd-fec64769af96/forget-super-micro-computer%3A.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:06AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/8523bdb2-0bb1-31a6-b2dd-fec64769af96/forget-super-micro-computer%3A.html" target="_blank" rel="nofollow">Forget Super Micro Computer: Billionaires Are Selling It and Buying These 6 Artificial Intelligence (AI) Stocks Instead</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'DigiTimes', 'https://www.digitimes.com/news/a20240325PD213/amd-ai-pc-lisa-su-china-notebook-market.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:20AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.digitimes.com/news/a20240325PD213/amd-ai-pc-lisa-su-china-notebook-market.html" target="_blank" rel="nofollow">AMD's Lisa Su brings AI PCs to China</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(DigiTimes)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Fox Business', 'https://finance.yahoo.com/news/china-blocks-intel-amd-chips-172357375.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-24-24 01:23PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/china-blocks-intel-amd-chips-172357375.html" target="_blank" rel="nofollow">China blocks use of Intel and AMD chips in government computers: report</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Fox Business)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/16-most-undervalued-large-cap-stocks-to-buy-according-to-analysts-1277464/');">&#13;
+        <td width="130" align="right">&#13;
+            10:42AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/16-most-undervalued-large-cap-stocks-to-buy-according-to-analysts-1277464/" target="_blank" rel="nofollow">16 Most Undervalued Large Cap Stocks To Buy According To Analysts</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/12-best-data-center-stocks-to-buy-according-to-analysts-1276553/');">&#13;
+        <td width="130" align="right">&#13;
+            10:01AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/12-best-data-center-stocks-to-buy-according-to-analysts-1276553/" target="_blank" rel="nofollow">12 Best Data Center Stocks To Buy According to Analysts</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/16-most-undervalued-growth-stocks-to-buy-according-to-hedge-funds-1278821/');">&#13;
+        <td width="130" align="right">&#13;
+            09:54AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/16-most-undervalued-growth-stocks-to-buy-according-to-hedge-funds-1278821/" target="_blank" rel="nofollow">16 Most Undervalued Growth Stocks To Buy According To Hedge Funds</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/aabb32c6-533a-30e9-8c8b-a57661547f3e/3-hot-artificial-intelligence.html');">&#13;
+        <td width="130" align="right">&#13;
+            07:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/aabb32c6-533a-30e9-8c8b-a57661547f3e/3-hot-artificial-intelligence.html" target="_blank" rel="nofollow">3 Hot Artificial Intelligence (AI) Stocks to Buy With $1,000 and Hold Forever</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/da0c2ba6-4ff5-3c7a-97eb-04472c46ef92/1-artificial-intelligence.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-23-24 04:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/da0c2ba6-4ff5-3c7a-97eb-04472c46ef92/1-artificial-intelligence.html" target="_blank" rel="nofollow">1 Artificial Intelligence (AI) Stock That Has Created Millionaires, and Will Continue to Make More</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/corporate-insiders-are-dumping-these-11-tech-stocks-1278723/');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-22-24 03:25PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/corporate-insiders-are-dumping-these-11-tech-stocks-1278723/" target="_blank" rel="nofollow">Corporate Insiders are Dumping These 11 Tech Stocks</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2244750/advanced-micro-amd-is-considered-a-good-investment-by-brokers-is-that-true');">&#13;
+        <td width="130" align="right">&#13;
+            09:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2244750/advanced-micro-amd-is-considered-a-good-investment-by-brokers-is-that-true" target="_blank" rel="nofollow">Advanced Micro (AMD) Is Considered a Good Investment by Brokers: Is That True?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/636edb5f-a1dc-37af-808c-235ad76ccbc5/did-nvidia-just-put-a-nail-in.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/636edb5f-a1dc-37af-808c-235ad76ccbc5/did-nvidia-just-put-a-nail-in.html" target="_blank" rel="nofollow">Did Nvidia Just Put a Nail in AMD's Artificial Intelligence (AI) Coffin?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/03/amds-ai-advantage-why-this-dip-could-be-your-last-chance-to-buy/');">&#13;
+        <td width="130" align="right">&#13;
+            06:46AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/03/amds-ai-advantage-why-this-dip-could-be-your-last-chance-to-buy/" target="_blank" rel="nofollow">AMD's AI Advantage: Why This Dip Could Be Your Last Chance to Buy</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/c4789a04-b474-3d6a-92ab-90872d1ad2a1/is-amd-stock-hanging-on-the.html');">&#13;
+        <td width="130" align="right">&#13;
+            06:32AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/c4789a04-b474-3d6a-92ab-90872d1ad2a1/is-amd-stock-hanging-on-the.html" target="_blank" rel="nofollow">Is AMD Stock Hanging on the Success of This 1 Artificial Intelligence (AI) Chip?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/1c611163-d932-30f8-9987-f6831076daaa/2-ai-stocks-to-buy-hand-over.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:16AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/1c611163-d932-30f8-9987-f6831076daaa/2-ai-stocks-to-buy-hand-over.html" target="_blank" rel="nofollow">2 AI Stocks to Buy Hand Over Fist in March</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/03/why-are-chip-stocks-mu-nvda-amd-intc-up-today/');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-21-24 09:43AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/03/why-are-chip-stocks-mu-nvda-amd-intc-up-today/" target="_blank" rel="nofollow">Why Are Chip Stocks MU, NVDA, AMD, INTC Up Today?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/03/amd-stock-why-the-chipmaker-is-a-better-investment-than-nvidia/');">&#13;
+        <td width="130" align="right">&#13;
+            06:10AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/03/amd-stock-why-the-chipmaker-is-a-better-investment-than-nvidia/" target="_blank" rel="nofollow">AMD Stock: Why The Chipmaker Is a Better Investment Than Nvidia</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/03/intels-comeback-story-why-the-chipmaker-still-matters-in-the-ai-era/');">&#13;
+        <td width="130" align="right">&#13;
+            06:05AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/03/intels-comeback-story-why-the-chipmaker-still-matters-in-the-ai-era/" target="_blank" rel="nofollow">Intel's Comeback Story: Why the Chipmaker Still Matters in the AI Era</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/b738a15d-e192-322f-96e8-cb879c4d3f34/better-artificial.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:25AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/b738a15d-e192-322f-96e8-cb879c4d3f34/better-artificial.html" target="_blank" rel="nofollow">Better Artificial Intelligence (AI) Stock: AMD vs. Broadcom</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/b72fa43e-ade5-357f-8d94-98b0356a7df1/where-will-amd-stock-be-in-1.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/b72fa43e-ade5-357f-8d94-98b0356a7df1/where-will-amd-stock-be-in-1.html" target="_blank" rel="nofollow">Where Will AMD Stock Be in 1 Year?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Yahoo Finance Video', 'https://finance.yahoo.com/video/micron-remain-competitive-korean-peers-213852224.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-20-24 05:38PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/video/micron-remain-competitive-korean-peers-213852224.html" target="_blank" rel="nofollow">How Micron can remain competitive with Korean peers: Analyst</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance Video)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/10-nasdaq-stocks-with-biggest-upside-2-1268462/');">&#13;
+        <td width="130" align="right">&#13;
+            08:11AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/10-nasdaq-stocks-with-biggest-upside-2-1268462/" target="_blank" rel="nofollow">10 NASDAQ Stocks with Biggest Upside</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/fbbdde1c-57a7-364c-90e5-2bf3a0e4d66f/history-says-you%27ll-regret.html');">&#13;
+        <td width="130" align="right">&#13;
+            07:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/fbbdde1c-57a7-364c-90e5-2bf3a0e4d66f/history-says-you%27ll-regret.html" target="_blank" rel="nofollow">History Says You'll Regret Buying Nvidia Stock</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/market360/2024/03/dont-declare-game-over-on-amd-stock-just-yet/');">&#13;
+        <td width="130" align="right">&#13;
+            06:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/market360/2024/03/dont-declare-game-over-on-amd-stock-just-yet/" target="_blank" rel="nofollow">Don't Declare Game Over' on AMD Stock Just Yet</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Yahoo Finance', 'https://finance.yahoo.com/news/white-house-awards-intel-85-billion-in-chips-act-funding-090016682.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/white-house-awards-intel-85-billion-in-chips-act-funding-090016682.html" target="_blank" rel="nofollow">White House awards Intel $8.5 billion in CHIPS Act funding</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/28c66406-e77d-3614-abbc-ea54d346f394/will-intel-be-a.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:50AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/28c66406-e77d-3614-abbc-ea54d346f394/will-intel-be-a.html" target="_blank" rel="nofollow">Will Intel Be a Trillion-Dollar Stock by 2030?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'DigiTimes', 'https://www.digitimes.com/news/a20240320PD202/slt-taiwan-ems-ai.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:20AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.digitimes.com/news/a20240320PD202/slt-taiwan-ems-ai.html" target="_blank" rel="nofollow">Semiconductor system-level integration opens SLT opportunities for Taiwanese EMS providers amid AI boom</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(DigiTimes)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/0711fd19-d9a0-32a1-9453-546cfa0070d9/where-will-amd-stock-be-in-3.html');">&#13;
+        <td width="130" align="right">&#13;
+            03:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/0711fd19-d9a0-32a1-9453-546cfa0070d9/where-will-amd-stock-be-in-3.html" target="_blank" rel="nofollow">Where Will AMD Stock Be in 3 Years?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/e2d10f1b-45dc-39d1-8792-a220ae1fe95e/amd-fell-today-is-this-a.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-19-24 05:36PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/e2d10f1b-45dc-39d1-8792-a220ae1fe95e/amd-fell-today-is-this-a.html" target="_blank" rel="nofollow">AMD Fell Today -- Is This a Chance to Buy the Artificial Intelligence (AI) Stock?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investopedia', 'https://www.investopedia.com/s-and-p-500-gains-and-losses-today-international-paper-names-new-ceo-shares-soar-8611328');">&#13;
+        <td width="130" align="right">&#13;
+            04:59PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.investopedia.com/s-and-p-500-gains-and-losses-today-international-paper-names-new-ceo-shares-soar-8611328" target="_blank" rel="nofollow">S&amp;P 500 Gains and Losses Today: International Paper Names New CEO, Shares Soar</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investopedia)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Yahoo Finance Video', 'https://finance.yahoo.com/video/p-500-closes-record-high-204807612.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:48PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/video/p-500-closes-record-high-204807612.html" target="_blank" rel="nofollow">S&amp;P 500 closes at record high, chip stocks lag</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance Video)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/5ecad7a2-2de3-3e3d-aaea-86c2376017d1/why-super-micro-computer%2C.html');">&#13;
+        <td width="130" align="right">&#13;
+            02:16PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/5ecad7a2-2de3-3e3d-aaea-86c2376017d1/why-super-micro-computer%2C.html" target="_blank" rel="nofollow">Why Super Micro Computer, Advanced Micro Devices, and Other Artificial Intelligence (AI) Stocks Tumbled on Tuesday</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/03/from-six-figures-to-seven-3-web3-stocks-set-to-make-millionaires/');">&#13;
+        <td width="130" align="right">&#13;
+            02:10PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/03/from-six-figures-to-seven-3-web3-stocks-set-to-make-millionaires/" target="_blank" rel="nofollow">From Six Figures to Seven: 3 Web3 Stocks Set to Make Millionaires</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investopedia', 'https://www.investopedia.com/top-stock-movers-now-super-micro-computer-international-paper-nordstrom-and-more-8611030');">&#13;
+        <td width="130" align="right">&#13;
+            01:47PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.investopedia.com/top-stock-movers-now-super-micro-computer-international-paper-nordstrom-and-more-8611030" target="_blank" rel="nofollow">Top Stock Movers Now: Super Micro Computer, International Paper, Nordstrom, and More</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investopedia)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'StockStory', 'https://finance.yahoo.com/news/why-amd-amd-shares-falling-171851241.html');">&#13;
+        <td width="130" align="right">&#13;
+            01:18PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/why-amd-amd-shares-falling-171851241.html" target="_blank" rel="nofollow">Why AMD (AMD) Shares Are Falling Today</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(StockStory)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Barrons.com', 'https://finance.yahoo.com/m/c78646a2-ff65-3b8e-862e-0d05ab5a3907/chip-stocks-have-gained-fast..html');">&#13;
+        <td width="130" align="right">&#13;
+            12:03PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/c78646a2-ff65-3b8e-862e-0d05ab5a3907/chip-stocks-have-gained-fast..html" target="_blank" rel="nofollow">Chip Stocks Have Gained Fast. 6 Growth Stocks Without the Run Up.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'The Wall Street Journal', 'https://finance.yahoo.com/m/05e3d280-6f8f-313a-8462-f9a602435d28/nvidia%2C-super-micro-shares.html');">&#13;
+        <td width="130" align="right">&#13;
+            11:06AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/05e3d280-6f8f-313a-8462-f9a602435d28/nvidia%2C-super-micro-shares.html" target="_blank" rel="nofollow">Nvidia, Super Micro Shares Drop After 'AI Woodstock'</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(The Wall Street Journal)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/l1-capital-international-fund-is-trimming-intuit-intu-due-to-share-appreciation-1276826/');">&#13;
+        <td width="130" align="right">&#13;
+            09:01AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/l1-capital-international-fund-is-trimming-intuit-intu-due-to-share-appreciation-1276826/" target="_blank" rel="nofollow">L1 Capital International Fund is Trimming Intuit (INTU) Due to Share Appreciation</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'GlobeNewswire', 'https://www.globenewswire.com/news-release/2024/03/19/2848624/0/en/AMD-Adaptive-Computing-Technology-Powers-Sony-Semiconductor-Solutions-LiDAR-Automotive-Reference-Design.html');">&#13;
+        <td width="130" align="right">&#13;
+            09:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.globenewswire.com/news-release/2024/03/19/2848624/0/en/AMD-Adaptive-Computing-Technology-Powers-Sony-Semiconductor-Solutions-LiDAR-Automotive-Reference-Design.html" target="_blank" rel="nofollow">AMD Adaptive Computing Technology Powers Sony Semiconductor Solutions LiDAR Automotive Reference Design</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/03/nvidias-50-plunge-is-a-wake-up-call-for-amd-investors-riding-the-ai-hype-train/');">&#13;
+        <td width="130" align="right">&#13;
+            06:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/03/nvidias-50-plunge-is-a-wake-up-call-for-amd-investors-riding-the-ai-hype-train/" target="_blank" rel="nofollow">Nvidia's $50 Plunge Is a Wake-Up Call for AMD Investors Riding the AI Hype Train</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'News Direct', 'https://newsdirect.com/news/4-stocks-poised-to-pop-with-the-ai-surge-224333042');">&#13;
+        <td width="130" align="right">&#13;
+            05:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://newsdirect.com/news/4-stocks-poised-to-pop-with-the-ai-surge-224333042" target="_blank" rel="nofollow">4 Stocks Poised To Pop With The AI Surge</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(News Direct)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2242439/advanced-micro-devices-amd-stock-declines-while-market-improves-some-information-for-investors');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-18-24 05:45PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2242439/advanced-micro-devices-amd-stock-declines-while-market-improves-some-information-for-investors" target="_blank" rel="nofollow">Advanced Micro Devices (AMD) Stock Declines While Market Improves: Some Information for Investors</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Yahoo Finance', 'https://finance.yahoo.com/news/nvidia-debuts-next-generation-blackwell-ai-chip-at-gtc-2024-205825161.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:58PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/nvidia-debuts-next-generation-blackwell-ai-chip-at-gtc-2024-205825161.html" target="_blank" rel="nofollow">Nvidia debuts next-generation Blackwell AI chip at GTC 2024</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/396e8c8b-31eb-3df9-91a7-f2b88ac7f696/if-you-invested-%2410%2C000-in.html');">&#13;
+        <td width="130" align="right">&#13;
+            03:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/396e8c8b-31eb-3df9-91a7-f2b88ac7f696/if-you-invested-%2410%2C000-in.html" target="_blank" rel="nofollow">If You Invested $10,000 in Nvidia the Day ChatGPT Came Out, This Is How Much You Would Have Today</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/cda8f11a-73d6-3d22-b329-d7c484c40316/better-ai-stock%3A-arm-holdings.html');">&#13;
+        <td width="130" align="right">&#13;
+            12:15PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/cda8f11a-73d6-3d22-b329-d7c484c40316/better-ai-stock%3A-arm-holdings.html" target="_blank" rel="nofollow">Better AI Stock: Arm Holdings vs. Advanced Micro Devices (AMD)</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Reuters', 'https://finance.yahoo.com/news/super-micro-computer-rides-ai-104556582.html');">&#13;
+        <td width="130" align="right">&#13;
+            06:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/super-micro-computer-rides-ai-104556582.html" target="_blank" rel="nofollow">Super Micro Computer rides AI server boom to join S&amp;P 500</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Reuters)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Yahoo Finance', 'https://finance.yahoo.com/news/nvidia-gtc-2024-what-to-expect-from-the-ai-giants-big-conference-152251933.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:36AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/nvidia-gtc-2024-what-to-expect-from-the-ai-giants-big-conference-152251933.html" target="_blank" rel="nofollow">Nvidia GTC 2024: What to expect from the AI giants big conference</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/42c50513-e1bd-3ca6-b1b4-8de2194a231a/2-artificial-intelligence.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/42c50513-e1bd-3ca6-b1b4-8de2194a231a/2-artificial-intelligence.html" target="_blank" rel="nofollow">2 Artificial Intelligence (AI) Stocks That Could Make You a Millionaire</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/20-most-owned-stocks-by-hedge-funds-now-1274897/');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-17-24 05:47PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/20-most-owned-stocks-by-hedge-funds-now-1274897/" target="_blank" rel="nofollow">20 Most Owned Stocks by Hedge Funds Now</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/11-best-esports-stocks-to-buy-now-1268335/');">&#13;
+        <td width="130" align="right">&#13;
+            03:49PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/11-best-esports-stocks-to-buy-now-1268335/" target="_blank" rel="nofollow">11 Best Esports Stocks to Buy Now</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/03/intel-who-underdog-amd-stocks-2130-surge-isnt-over-yet/');">&#13;
+        <td width="130" align="right">&#13;
+            09:37AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/03/intel-who-underdog-amd-stocks-2130-surge-isnt-over-yet/" target="_blank" rel="nofollow">Intel Who? Underdog AMD Stock's 2,130% Surge Isn't Over Yet.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/e763e650-535a-39ff-9e36-994d1b09bf50/forget-nvidia%3A-2-super.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:07AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/e763e650-535a-39ff-9e36-994d1b09bf50/forget-nvidia%3A-2-super.html" target="_blank" rel="nofollow">Forget Nvidia: 2 Super Semiconductor Stocks to Buy Hand Over Fist, According to Wall Street</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/15a03b87-f417-3634-a231-2894b13b9d43/3-surprise-ai-stocks-headed.html');">&#13;
+        <td width="130" align="right">&#13;
+            07:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/15a03b87-f417-3634-a231-2894b13b9d43/3-surprise-ai-stocks-headed.html" target="_blank" rel="nofollow">3 Surprise AI Stocks Headed for a $1 Trillion Market Cap</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/4167d617-04af-3364-9b92-7f8039b15dcb/which-artificial-intelligence.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:50AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/4167d617-04af-3364-9b92-7f8039b15dcb/which-artificial-intelligence.html" target="_blank" rel="nofollow">Which Artificial Intelligence (AI) Stock Is Wall Street Most Bullish About: AMD, Amazon, Google, Microsoft, or Nvidia?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/f59b4ab7-779a-3a36-b198-9475faa505c0/this-artificial-intelligence.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-16-24 05:01PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/f59b4ab7-779a-3a36-b198-9475faa505c0/this-artificial-intelligence.html" target="_blank" rel="nofollow">This Artificial Intelligence (AI) Company Has Returned Nearly 5,830% in Just Five Years and Is Headed for the S&amp;P 500. Is It Too Late to Buy?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+</table>
+</div>
+
+
+  <script language="javascript">
+  function reSize(){
+    actual_height = document.body.scrollHeight+50;
+    console.log("RP T:" + actual_height)
+    parent.postMessage("RP H=" + actual_height, "*");
+  }
+  window.onload=reSize;
+  </script>
+</body>
+</html>
