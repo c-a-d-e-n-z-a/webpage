@@ -1,0 +1,1325 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<title>BFLY</title>
+<head>
+  <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <style>
+  * {
+    font-size: 12px;
+    font-family: Arial, Helvetica, sans-serif, Microsoft JhengHei;
+  }
+  
+  .is-negative {
+    color: #008000;
+  }
+  
+  .is-positive {
+    color: #ff0000;
+  }
+
+  .snapshot-td2
+  {
+    color:#000000;
+    text-decoration:none;
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3d3;
+    white-space:nowrap;
+  }
+
+  .snapshot-td2-cp
+  {
+    color:#000000;
+    text-decoration:none;
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3d3;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+
+  .fullview-ratings-outer
+  {
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3c3;
+  }
+
+  td.fullview-ratings-inner
+  {
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3c3;
+  }
+
+  .t3r1
+  {
+    color:#ff0000;
+  }
+
+  .body-table-rating-downgrade
+  {
+    color:#dd3333;
+    text-decoration:none;
+    background:#fff0f0;
+  }
+
+  .body-table-rating-upgrade
+  {
+    color:#009900;
+    text-decoration:none;
+    background:#f0fff0;
+  }
+
+  .body-table-rating-neutral
+  {
+    color:#333333;
+    text-decoration:none;
+    background:#f0f0f0;
+  }
+
+  table {
+    border-collapse: collapse;
+  }
+
+  td, th {
+    border: 1px solid #FDEBD2;
+    text-align: left;
+    padding: 5px;
+  }
+  </style>
+  <script>
+    function swap(img){
+      if (img.style.width === "100%"){
+        var realWidth = document.querySelector("#stock").naturalWidth;
+        img.style.width = realWidth + "px";
+        parent.postMessage("RP W=" + realWidth, "*");
+      }
+      else{
+        img.style.width = "100%";
+        parent.postMessage("RP W=" + 0, "*");
+      }
+    }
+
+    var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+    var eventer = window[eventMethod];
+    var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+
+    // Listen to message from child window
+    eventer(messageEvent,function(e) {
+      console.log (e.data);
+      if (typeof e.data == "string")
+      {
+        if (e.data.indexOf("SD H=") > -1)
+        {
+          document.getElementById("stockdog").height = e.data.substring(5) + 'px';
+          console.log("RP R:" + document.getElementById("stockdog").height)
+
+          actual_height = document.body.scrollHeight+100;
+          console.log("RP T:" + actual_height)
+          parent.postMessage("RP H=" + actual_height, "*");
+        }
+      }
+    }, false);
+  </script>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+</head>
+<body>
+  <hr color="#ff8000" align="center" size="5">
+  <p align="center"><b>Stock:</b>&emsp;<a href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=BFLY&type=pe-ratio&statement=price-ratios&freq=Q" target="_blank">PE Chart</a>&emsp;<a href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=BFLY&type=price-book&statement=price-ratios&freq=Q" target="_blank">PB Chart</a>&emsp;<a href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=BFLY&type=price-sales&statement=price-ratios&freq=Q" target="_blank">PS Chart</a>&emsp;<a href="https://www.wsj.com/market-data/quotes/BFLY/financials/quarter/cash-flow" target="_blank">Finance</a>&emsp;<a href="https://www.dataroma.com/m/stock.php?sym=BFLY" target="_blank">Ownership</a>&emsp;<a href="https://hedgefollow.com/stocks/BFLY" target="_blank">Institute</a>&emsp;<a href="https://www.ptt.cc/bbs/Stock/search?q=BFLY" target="_blank">PTT Search</a>&emsp;<a href="https://unusualwhales.com/stock/BFLY/greek-exposure" target="_blank">GEX</a></p>
+  <hr color="#ff8000" align="center" size="5">
+   <div align="center"><iframe id="stock" src="BFLY_EC.html" frameborder="0" width="100%" height="1600px" scrolling="no"></iframe></div>
+  <hr color="#ff8000" align="center">
+  <div align="center"><iframe id="stockdog" src="BFLY_SD.html" frameborder="0" width="100%" height="1000px" scrolling="no"></iframe></div>
+  <p><hr color="#ff8000" align="center"><p>
+<div align="center"><a href="https://www.marketwatch.com/investing/stock/BFLY/analystestimates" target="_blank"><img style="max-height:100%; max-width:100%; object-fit:contain" src=https://app.quotemedia.com/quotetools/getChart?webmasterId=91386&symbol=BFLY&chtype=FinancialLine&chcon=on&chdon=on&chfrmon=on&chscale=1d&chton=on&chwid=800&chhig=380&chln=ffa500&chfill=ffa500&chfnts=10&chbdr=000000&chbgch=ffffffff&chgrd=cccccc&svg=false&lang=en&locale=en></a></div>
+
+<hr color="#ff8000" align="center">
+
+
+<hr color="#ff8000" align="center">
+<table align="center" width="70%" class="js-table-ratings styled-table-new is-rounded is-small" cellpadding="0" cellspacing="0" border="0">
+<thead>&#13;
+                <tr>&#13;
+                    <th width="140" align="left">Date</th>&#13;
+                    <th width="320" align="left">Action</th>&#13;
+                    <th width="320" align="left">Analyst</th>&#13;
+                    <th width="320" align="left">Rating Change</th>&#13;
+                    <th width="320" align="left">Price Target Change</th>&#13;
+                </tr>&#13;
+            </thead><tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Mar-29-23</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">UBS</td>
+<td class="text-left" width="320" align="left">Neutral</td>
+<td class="text-left tabular-nums" width="320" align="left">$2.25</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Nov-29-22</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">Oppenheimer</td>
+<td class="text-left" width="320" align="left">Outperform</td>
+<td class="text-left tabular-nums" width="320" align="left">$4.50</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Oct-04-22</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">B. Riley Securities</td>
+<td class="text-left" width="320" align="left">Buy</td>
+<td class="text-left tabular-nums" width="320" align="left">$9.50</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Dec-17-21</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">UBS</td>
+<td class="text-left" width="320" align="left">Neutral</td>
+<td class="text-left tabular-nums" width="320" align="left">$7</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text is-last"><td width="140" align="left">Jun-21-21</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Initiated</span></td>
+<td class="text-left" width="320" align="left">Cowen</td>
+<td class="text-left" width="320" align="left">Outperform</td>
+<td class="text-left tabular-nums" width="320" align="left">$20</td>
+</tr>
+</table>
+
+
+
+<hr color="#ff8000" align="center">
+<table cellpadding="0" cellspacing="0" align="center" width="70%" class="body-table styled-table-new is-rounded p-0 mt-2">
+<thead>
+<tr>
+<th class="" align="left">Insider Trading</th>
+<th class="" align="left">Relationship</th>
+<th class="" align="left">Date</th>
+<th class="" align="center">Transaction</th>
+<th class="" align="right">Cost</th>
+<th class="" align="right">#Shares</th>
+<th class="" align="right">Value ($)</th>
+<th class="" align="right">#Shares Total</th>
+<th class="" align="center">SEC Form 4</th>
+</tr>
+</thead>
+<tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1808868&amp;tc=7" class="tab-link">Stoica Andrei G</a></td><td style="white-space:nowrap">Chief Technology Officer</td><td>Jun 25 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">0.92</td><td class="value" align="right">3,363</td><td class="value" align="right">3,107</td><td class="value" align="right">1,482,441</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1804176/000110465924075638/xslF345X05/tm2418350-1_4seq1.xml" class="tab-link" target="_blank">Jun 27 04:00 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1808868&amp;tc=7" class="tab-link">Stoica Andrei G</a></td><td style="white-space:nowrap">Chief Technology Officer</td><td>Jun 05 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">0.90</td><td class="value" align="right">11,754</td><td class="value" align="right">10,602</td><td class="value" align="right">1,485,804</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1804176/000110465924069758/xslF345X05/tm2416792-1_4seq1.xml" class="tab-link" target="_blank">Jun 07 05:50 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1481485&amp;tc=7" class="tab-link">Getz Heather C</a></td><td style="white-space:nowrap">EVP, CFO &amp; COO</td><td>May 03 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">0.95</td><td class="value" align="right">59,848</td><td class="value" align="right">57,035</td><td class="value" align="right">2,699,469</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1481485/000110465924058011/xslF345X05/tm2413768-1_4seq1.xml" class="tab-link" target="_blank">May 07 04:15 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1808868&amp;tc=7" class="tab-link">Stoica Andrei G</a></td><td style="white-space:nowrap">Chief Technology Officer</td><td>Apr 02 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1.00</td><td class="value" align="right">1,778</td><td class="value" align="right">1,782</td><td class="value" align="right">1,497,558</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1804176/000110465924043656/xslF345X05/tm2411116-1_4seq1.xml" class="tab-link" target="_blank">Apr 04 04:30 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1808868&amp;tc=7" class="tab-link">Stoica Andrei G</a></td><td style="white-space:nowrap">Chief Technology Officer</td><td>Mar 25 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1.02</td><td class="value" align="right">3,298</td><td class="value" align="right">3,380</td><td class="value" align="right">1,499,336</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1804176/000110465924039720/xslF345X05/tm249885-1_4seq1.xml" class="tab-link" target="_blank">Mar 27 04:15 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1481485&amp;tc=7" class="tab-link">Getz Heather C</a></td><td style="white-space:nowrap">EVP, CFO &amp; COO</td><td>Mar 11 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1.14</td><td class="value" align="right">81,448</td><td class="value" align="right">92,851</td><td class="value" align="right">1,435,788</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1481485/000110465924033950/xslF345X05/tm248687-1_4seq1.xml" class="tab-link" target="_blank">Mar 13 04:30 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1808868&amp;tc=7" class="tab-link">Stoica Andrei G</a></td><td style="white-space:nowrap">Chief Technology Officer</td><td>Mar 11 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1.14</td><td class="value" align="right">76,498</td><td class="value" align="right">87,208</td><td class="value" align="right">889,675</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1804176/000110465924033956/xslF345X05/tm248687-2_4seq1.xml" class="tab-link" target="_blank">Mar 13 04:31 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1808868&amp;tc=7" class="tab-link">Stoica Andrei G</a></td><td style="white-space:nowrap">Chief Technology Officer</td><td>Mar 05 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1.15</td><td class="value" align="right">12,113</td><td class="value" align="right">13,930</td><td class="value" align="right">966,173</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1804176/000110465924031902/xslF345X05/tm248177-1_4seq1.xml" class="tab-link" target="_blank">Mar 07 04:15 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1481485&amp;tc=7" class="tab-link">Getz Heather C</a></td><td style="white-space:nowrap">EVP, CFO &amp; COO</td><td>Jan 05 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1.02</td><td class="value" align="right">66,142</td><td class="value" align="right">67,465</td><td class="value" align="right">1,517,236</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1481485/000106299324000701/xslF345X05/form4.xml" class="tab-link" target="_blank">Jan 09 04:13 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1808868&amp;tc=7" class="tab-link">Stoica Andrei G</a></td><td style="white-space:nowrap">Chief Technology Officer</td><td>Jan 05 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1.02</td><td class="value" align="right">35,612</td><td class="value" align="right">36,324</td><td class="value" align="right">978,286</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1804176/000106299324000697/xslF345X05/form4.xml" class="tab-link" target="_blank">Jan 09 04:12 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1808868&amp;tc=7" class="tab-link">Stoica Andrei G</a></td><td style="white-space:nowrap">Chief Technology Officer</td><td>Dec 26 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1.03</td><td class="value" align="right">2,247</td><td class="value" align="right">2,326</td><td class="value" align="right">1,013,898</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1804176/000110465923130039/xslF345X05/tm2333855-1_4seq1.xml" class="tab-link" target="_blank">Dec 28 04:00 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1808868&amp;tc=7" class="tab-link">Stoica Andrei G</a></td><td style="white-space:nowrap">Chief Technology Officer</td><td>Dec 05 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">0.99</td><td class="value" align="right">7,935</td><td class="value" align="right">7,895</td><td class="value" align="right">1,016,145</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1804176/000110465923124322/xslF345X05/tm2332426-1_4seq1.xml" class="tab-link" target="_blank">Dec 07 04:49 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1808868&amp;tc=7" class="tab-link">Stoica Andrei G</a></td><td style="white-space:nowrap">Chief Technology Officer</td><td>Oct 03 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1.10</td><td class="value" align="right">1,748</td><td class="value" align="right">1,921</td><td class="value" align="right">1,024,080</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1804176/000110465923107205/xslF345X05/tm2327900-1_4seq1.xml" class="tab-link" target="_blank">Oct 05 04:25 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1808868&amp;tc=7" class="tab-link">Stoica Andrei G</a></td><td style="white-space:nowrap">Chief Technology Officer</td><td>Sep 25 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1.21</td><td class="value" align="right">3,300</td><td class="value" align="right">3,977</td><td class="value" align="right">1,025,828</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1804176/000110465923104405/xslF345X05/tm2327102-1_4seq1.xml" class="tab-link" target="_blank">Sep 27 06:58 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1808868&amp;tc=7" class="tab-link">Stoica Andrei G</a></td><td style="white-space:nowrap">Chief Technology Officer</td><td>Sep 06 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1.86</td><td class="value" align="right">11,674</td><td class="value" align="right">21,679</td><td class="value" align="right">1,029,128</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1804176/000110465923099311/xslF345X05/tm2325722-1_4seq1.xml" class="tab-link" target="_blank">Sep 08 04:16 PM</a></td></tr><tr class="fv-insider-row is-buy-1" valign="top"><td><a href="insidertrading.ashx?oc=1258790&amp;tc=7" class="tab-link">DEVIVO JOSEPH</a></td><td style="white-space:nowrap">President &amp; CEO</td><td>Aug 30 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Buy</span></td><td class="value" align="right">1.81</td><td class="value" align="right">10,000</td><td class="value" align="right">18,100</td><td class="value" align="right">4,010,000</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1258790/000110465923097494/xslF345X05/tm2325294-1_4.xml" class="tab-link" target="_blank">Sep 01 08:30 AM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1481485&amp;tc=7" class="tab-link">Getz Heather C</a></td><td style="white-space:nowrap">EVP &amp; Chief Financial Officer</td><td>Jul 05 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">2.19</td><td class="value" align="right">65,577</td><td class="value" align="right">143,482</td><td class="value" align="right">1,383,378</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1481485/000110465923078834/xslF345X04/tm2320777-2_4seq1.xml" class="tab-link" target="_blank">Jul 06 05:43 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1808868&amp;tc=7" class="tab-link">Stoica Andrei G</a></td><td style="white-space:nowrap">Chief Technology Officer</td><td>Jul 05 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">2.19</td><td class="value" align="right">45,633</td><td class="value" align="right">99,845</td><td class="value" align="right">1,040,802</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1804176/000110465923078833/xslF345X04/tm2320777-3_4seq1.xml" class="tab-link" target="_blank">Jul 06 05:40 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1930293&amp;tc=7" class="tab-link">Weiss Lawrence T</a></td><td style="white-space:nowrap">CLO, GC and Corp Sec</td><td>Jul 05 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">2.19</td><td class="value" align="right">27,655</td><td class="value" align="right">60,509</td><td class="value" align="right">1,236,838</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1804176/000110465923078836/xslF345X04/tm2320777-1_4seq1.xml" class="tab-link" target="_blank">Jul 06 05:44 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1808868&amp;tc=7" class="tab-link">Stoica Andrei G</a></td><td style="white-space:nowrap">Chief Technology Officer</td><td>Jul 03 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">2.34</td><td class="value" align="right">1,687</td><td class="value" align="right">3,941</td><td class="value" align="right">1,086,435</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1804176/000110465923078833/xslF345X04/tm2320777-3_4seq1.xml" class="tab-link" target="_blank">Jul 06 05:40 PM</a></td></tr></table>
+
+
+
+<hr color="#ff8000" align="center">
+<div class="body-table-news-wrapper news-table_wrapper"><table align="center" width="70%" cellpadding="1" cellspacing="0" border="0" id="news-table" class="fullview-news-outer news-table">
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'PR Newswire', 'https://www.prnewswire.com/news-releases/ultrasight-joins-butterfly-garden-to-expand-ai-real-time-guidance-across-point-of-care-ultrasound-devices-302184449.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jun-27-24 09:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.prnewswire.com/news-releases/ultrasight-joins-butterfly-garden-to-expand-ai-real-time-guidance-across-point-of-care-ultrasound-devices-302184449.html" target="_blank" rel="nofollow">UltraSight Joins Butterfly Garden to Expand AI Real-Time Guidance Across Point of Care Ultrasound Devices</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(PR Newswire)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200"> -9.78%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://www.businesswire.com/news/home/20240624590197/en/HeartFocus');">&#13;
+        <td width="130" align="right">&#13;
+            Jun-24-24 07:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20240624590197/en/HeartFocus" target="_blank" rel="nofollow">HeartFocus Joins Butterfly Garden to Develop Software Enabling Any Healthcare Professional to Conduct Lifesaving Echos on Butterflys Imaging Platform</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://www.businesswire.com/news/home/20240528844030/en/');">&#13;
+        <td width="130" align="right">&#13;
+            May-28-24 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20240528844030/en/" target="_blank" rel="nofollow">Butterfly Network to Participate at the Goldman Sachs 45th Annual Global Healthcare Conference</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2275085/butterfly-network-bfly-unveils-iq-bladder-ultrasound-scanner');">&#13;
+        <td width="130" align="right">&#13;
+            May-16-24 02:13PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2275085/butterfly-network-bfly-unveils-iq-bladder-ultrasound-scanner" target="_blank" rel="nofollow">Butterfly Network (BFLY) Unveils iQ+ Bladder Ultrasound Scanner</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://www.businesswire.com/news/home/20240515835233/en');">&#13;
+        <td width="130" align="right">&#13;
+            May-15-24 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20240515835233/en" target="_blank" rel="nofollow">Butterfly Network Enters the Bladder Scanning Market With First Specialty Product, iQ+ Bladder, in the United States</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200"> +5.81%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/butterfly-network-inc-nysebfly-q1-2024-earnings-call-transcript-1295655/');">&#13;
+        <td width="130" align="right">&#13;
+            May-02-24 10:43AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/butterfly-network-inc-nysebfly-q1-2024-earnings-call-transcript-1295655/" target="_blank" rel="nofollow">Butterfly Network, Inc. (NYSE:BFLY) Q1 2024 Earnings Call Transcript</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200"> +17.19%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/earning-results/2024/05/bfly-stock-earnings-butterfly-network-for-q1-of-2024/');">&#13;
+        <td width="130" align="right">&#13;
+            May-01-24 08:56PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/earning-results/2024/05/bfly-stock-earnings-butterfly-network-for-q1-of-2024/" target="_blank" rel="nofollow">BFLY Stock Earnings: Butterfly Network Beats EPS, Beats Revenue for Q1 2024</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://www.businesswire.com/news/home/20240501128961/en/');">&#13;
+        <td width="130" align="right">&#13;
+            04:05PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20240501128961/en/" target="_blank" rel="nofollow">Butterfly Network Reports First Quarter 2024 Financial Results</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'ACCESSWIRE', 'https://finance.yahoo.com/news/thinksono-releases-real-time-dvt-120000984.html');">&#13;
+        <td width="130" align="right">&#13;
+            Apr-23-24 08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/thinksono-releases-real-time-dvt-120000984.html" target="_blank" rel="nofollow">ThinkSono Releases Real-Time DVT AI Training Solution for Butterfly Network's Handheld Ultrasound Devices</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(ACCESSWIRE)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://www.businesswire.com/news/home/20240416722103/en/');">&#13;
+        <td width="130" align="right">&#13;
+            Apr-17-24 08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20240416722103/en/" target="_blank" rel="nofollow">Butterfly Network to Report First Quarter 2024 Financial Results on May 1, 2024</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200"> -8.96%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://finance.yahoo.com/news/butterfly-network-clinton-health-access-123000659.html');">&#13;
+        <td width="130" align="right">&#13;
+            Apr-15-24 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-clinton-health-access-123000659.html" target="_blank" rel="nofollow">Butterfly Network, Clinton Health Access Initiative, and Global Ultrasound Institute Partner to Advance Maternal and Fetal Health in South Africa</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200"> +5.37%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'GlobeNewswire', 'https://www.globenewswire.com/news-release/2024/03/27/2853229/0/en/Increased-Adoption-of-Artificial-Intelligence-Across-the-Healthcare-Industry-Driving-Strong-Market-Growth.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-27-24 09:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.globenewswire.com/news-release/2024/03/27/2853229/0/en/Increased-Adoption-of-Artificial-Intelligence-Across-the-Healthcare-Industry-Driving-Strong-Market-Growth.html" target="_blank" rel="nofollow">Increased Adoption of Artificial Intelligence Across the Healthcare Industry Driving Strong Market Growth</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(GlobeNewswire)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200"> +6.00%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://www.businesswire.com/news/home/20240320879229/en/');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-20-24 08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20240320879229/en/" target="_blank" rel="nofollow">Butterfly Network Obtains EU MDR Certification for Butterfly iQ+ Devices in Key European Markets</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://www.businesswire.com/news/home/20240319305041/en/');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-19-24 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20240319305041/en/" target="_blank" rel="nofollow">Butterfly Network Announces Successful Investor Day</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://www.businesswire.com/news/home/20240315338986/en/');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-15-24 05:35PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20240315338986/en/" target="_blank" rel="nofollow">Butterfly Network Announces Investor Day</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://www.businesswire.com/news/home/20240306046860/en/');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-06-24 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20240306046860/en/" target="_blank" rel="nofollow">Butterfly Network to Participate at the Oppenheimer 34th Annual Healthcare MedTech &amp; Services Conference</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://www.zacks.com/stock/news/2236027/are-medical-stocks-lagging-butterfly-network-bfly-this-year');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-05-24 09:40AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.zacks.com/stock/news/2236027/are-medical-stocks-lagging-butterfly-network-bfly-this-year" target="_blank" rel="nofollow">Are Medical Stocks Lagging  Butterfly Network (BFLY) This Year?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Zacks)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200"> -7.32%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/butterfly-network-inc-nysebfly-q4-2023-earnings-call-transcript-1267329/');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-29-24 11:36AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/butterfly-network-inc-nysebfly-q4-2023-earnings-call-transcript-1267329/" target="_blank" rel="nofollow">Butterfly Network, Inc. (NYSE:BFLY) Q4 2023 Earnings Call Transcript</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200"> -19.59%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://www.businesswire.com/news/home/20240228452495/en/');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-28-24 04:05PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20240228452495/en/" target="_blank" rel="nofollow">Butterfly Network Reports Fourth Quarter 2023 Financial Results</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://www.businesswire.com/news/home/20240222946954/en/');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-23-24 08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20240222946954/en/" target="_blank" rel="nofollow">Butterfly Network to Participate at the TD Cowen 44th Annual Health Care Conference on March 5, 2024</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://www.businesswire.com/news/home/20240221859448/en/');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-22-24 08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20240221859448/en/" target="_blank" rel="nofollow">Butterfly Network to Host Investor Day on Monday, March 18, 2024, at the New York Stock Exchange</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://www.businesswire.com/news/home/20240214937246/en/');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-15-24 04:15PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20240214937246/en/" target="_blank" rel="nofollow">Butterfly Network, Inc. to Report Fourth Quarter and Full Year 2023 Financial Results on February 28, 2024</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200"> +10.78%</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200" title="Feb 16, 2024"><svg width="12" height="12" class="fill-current">&#13;
+    <use href="/assets/dist-icons/icons.svg?rev=12#nextday"/>&#13;
+</svg> -6.19%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://www.businesswire.com/news/home/20240213652085/en/The');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-13-24 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20240213652085/en/The" target="_blank" rel="nofollow">Butterfly Network Launches Next-Generation Butterfly iQ3 in the United States</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200"> -6.13%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://www.businesswire.com/news/home/20240111042418/en/');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-11-24 04:56PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20240111042418/en/" target="_blank" rel="nofollow">Butterfly Network Provides Business Update During 42nd Annual J.P. Morgan Healthcare Conference Presentation</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://www.businesswire.com/news/home/20240108891905/en/Butterfly');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-08-24 08:05AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20240108891905/en/Butterfly" target="_blank" rel="nofollow">Butterfly Network Announces FDA Clearance of its Next-Generation Handheld Ultrasound System, Butterfly iQ3</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200"> +20.79%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://www.businesswire.com/news/home/20240105708680/en/');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-05-24 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20240105708680/en/" target="_blank" rel="nofollow">Butterfly to Participate at the 26th Annual Needham Growth Conference</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://www.businesswire.com/news/home/20231219290743/en/');">&#13;
+        <td width="130" align="right">&#13;
+            Dec-19-23 08:05AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20231219290743/en/" target="_blank" rel="nofollow">Butterfly Network Announces Commercial Agreement with Mendaera for Next-Generation Interventional Robotic System Powered by Butterfly's Ultrasound-on-Chip Technology</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200"> +14.18%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://www.businesswire.com/news/home/20231211347917/en/');">&#13;
+        <td width="130" align="right">&#13;
+            Dec-11-23 08:05AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20231211347917/en/" target="_blank" rel="nofollow">Butterfly Network to Present at the 42nd Annual J.P. Morgan Healthcare Conference</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://finance.yahoo.com/news/cathie-wood-stocks-sale-now-170044831.html');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-15-23 12:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/cathie-wood-stocks-sale-now-170044831.html" target="_blank" rel="nofollow">These Cathie Wood Stocks Are On Sale Now</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'ACCESSWIRE', 'https://finance.yahoo.com/news/icardio-ai-joins-butterfly-garden-130000120.html');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-14-23 08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/icardio-ai-joins-butterfly-garden-130000120.html" target="_blank" rel="nofollow">iCardio.ai Joins Butterfly Garden to Deploy Its Cardiac AI Suite on Butterfly Network's Imaging Platform</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(ACCESSWIRE)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200"> +9.91%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://www.businesswire.com/news/home/20231106118074/en/');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-06-23 05:05PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20231106118074/en/" target="_blank" rel="nofollow">Butterfly Network to Present at the Jefferies London Healthcare Conference</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200"> -6.25%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://finance.yahoo.com/news/butterfly-network-inc-nyse-bfly-145559038.html');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-03-23 10:55AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-inc-nyse-bfly-145559038.html" target="_blank" rel="nofollow">Butterfly Network, Inc. (NYSE:BFLY) Q3 2023 Earnings Call Transcript</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200"> +15.60%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'GuruFocus.com', 'https://finance.yahoo.com/news/butterfly-network-inc-bfly-reports-215808612.html');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-02-23 05:58PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-inc-bfly-reports-215808612.html" target="_blank" rel="nofollow">Butterfly Network Inc (BFLY) Reports Q3 2023 Financial Results</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(GuruFocus.com)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200"> +19.38%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://www.businesswire.com/news/home/20231102569217/en/');">&#13;
+        <td width="130" align="right">&#13;
+            04:05PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20231102569217/en/" target="_blank" rel="nofollow">Butterfly Network Reports Third Quarter 2023 Financial Results</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://finance.yahoo.com/news/top-12-medical-ai-companies-160020063.html');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-31-23 12:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/top-12-medical-ai-companies-160020063.html" target="_blank" rel="nofollow">Top 12 Medical AI Companies</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://finance.yahoo.com/news/enovis-enov-expected-beat-earnings-140134707.html');">&#13;
+        <td width="130" align="right">&#13;
+            10:01AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/enovis-enov-expected-beat-earnings-140134707.html" target="_blank" rel="nofollow">Enovis (ENOV) Expected to Beat Earnings Estimates: What to Know Ahead of Q3 Release</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://finance.yahoo.com/news/butterfly-network-inc-bfly-upgraded-160005417.html');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-27-23 12:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-inc-bfly-upgraded-160005417.html" target="_blank" rel="nofollow">Butterfly Network, Inc. (BFLY) Upgraded to Buy: Here's Why</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Zacks)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200"> -5.01%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://www.businesswire.com/news/home/20231024884034/en/');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-24-23 08:10AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20231024884034/en/" target="_blank" rel="nofollow">Butterfly Network Announces 5-Year Co-Development Agreement with Forest Neurotech for Next-generation Brain Computer Interfaces Using Ultrasound-on-Chip Technology</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200"> +15.75%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://www.businesswire.com/news/home/20231018932412/en/');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-18-23 04:14PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20231018932412/en/" target="_blank" rel="nofollow">Butterfly Network, Inc. to Report Third Quarter 2023 Financial Results on November 2, 2023</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200"> -8.51%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'ACCESSWIRE', 'https://finance.yahoo.com/news/thinksono-joins-butterfly-garden-deploy-110000242.html');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-10-23 07:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/thinksono-joins-butterfly-garden-deploy-110000242.html" target="_blank" rel="nofollow">ThinkSono Joins Butterfly Garden to Deploy ThinkSono AI on Butterflys Imaging Platform</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(ACCESSWIRE)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200"> +5.83%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://www.businesswire.com/news/home/20231009268674/en/');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-09-23 08:05AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20231009268674/en/" target="_blank" rel="nofollow">Butterfly Introduces Two Ultrasound Education Offerings at ACEP23, Demonstrating Value of AI-Guidance and Hands-on Expertise in Driving Mass Ultrasound Adoption</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200"> -6.36%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://finance.yahoo.com/news/butterfly-network-razom-expand-global-120500356.html');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-04-23 08:05AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-razom-expand-global-120500356.html" target="_blank" rel="nofollow">Butterfly Network and Razom Expand Global Health Partnership To Bring Additional 200 Butterfly iQ+ Ultrasound Systems to Ukraine</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://finance.yahoo.com/news/butterfly-network-reports-success-majority-120500882.html');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-14-23 08:05AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-reports-success-majority-120500882.html" target="_blank" rel="nofollow">Butterfly Network Reports Success in Majority of U.S. Medical Schools; Includes Nations Largest Medical School, Indiana University School of Medicine</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200"> -5.75%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'GuruFocus.com', 'https://finance.yahoo.com/news/insider-sell-andrei-stoica-sells-050316401.html');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-09-23 01:03AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/insider-sell-andrei-stoica-sells-050316401.html" target="_blank" rel="nofollow">Insider Sell: Andrei Stoica Sells 11,674 Shares of Butterfly Network Inc (BFLY)</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(GuruFocus.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://finance.yahoo.com/news/butterfly-network-inc-nyse-bfly-111424996.html');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-05-23 07:14AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-inc-nyse-bfly-111424996.html" target="_blank" rel="nofollow">Butterfly Network, Inc. (NYSE:BFLY) Q2 2023 Earnings Call Transcript</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://finance.yahoo.com/news/butterfly-network-inc-bfly-reports-131511449.html');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-03-23 09:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-inc-bfly-reports-131511449.html" target="_blank" rel="nofollow">Butterfly Network, Inc. (BFLY) Reports Q2 Loss, Tops Revenue Estimates</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://finance.yahoo.com/news/butterfly-network-reports-second-quarter-120000055.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-reports-second-quarter-120000055.html" target="_blank" rel="nofollow">Butterfly Network Reports Second Quarter 2023 Financial Results</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://finance.yahoo.com/news/butterfly-network-launches-butterfly-garden-210500917.html');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-02-23 05:05PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-launches-butterfly-garden-210500917.html" target="_blank" rel="nofollow">Butterfly Network launches "Butterfly Garden" AI Marketplace for custom AI applications</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200"> -8.20%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://finance.yahoo.com/news/axonics-modulation-technologies-axnx-reports-212516086.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-27-23 05:25PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/axonics-modulation-technologies-axnx-reports-212516086.html" target="_blank" rel="nofollow">Axonics Modulation Technologies (AXNX) Reports Q2 Loss, Tops Revenue Estimates</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Zacks)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200"> -8.20%</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200" title="Jul 28, 2023"><svg width="12" height="12" class="fill-current">&#13;
+    <use href="/assets/dist-icons/icons.svg?rev=12#nextday"/>&#13;
+</svg> +6.70%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://finance.yahoo.com/news/butterfly-network-inc-report-second-142400452.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-17-23 10:24AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-inc-report-second-142400452.html" target="_blank" rel="nofollow">Butterfly Network, Inc. to Report Second Quarter 2023 Financial Results on August 3, 2023</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Simply Wall St.', 'https://finance.yahoo.com/news/heres-why-were-watching-butterfly-101712254.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-03-23 06:17AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/heres-why-were-watching-butterfly-101712254.html" target="_blank" rel="nofollow">Here's Why We're Watching Butterfly Network's (NYSE:BFLY) Cash Burn Situation</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Simply Wall St.)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Simply Wall St.', 'https://finance.yahoo.com/news/shareholders-butterfly-network-nyse-bfly-163032977.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jun-05-23 12:30PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/shareholders-butterfly-network-nyse-bfly-163032977.html" target="_blank" rel="nofollow">Shareholders in Butterfly Network (NYSE:BFLY) are in the red if they invested a year ago</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Simply Wall St.)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://finance.yahoo.com/news/butterfly-network-inc-bfly-reports-132501295.html');">&#13;
+        <td width="130" align="right">&#13;
+            May-11-23 09:25AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-inc-bfly-reports-132501295.html" target="_blank" rel="nofollow">Butterfly Network, Inc. (BFLY) Reports Q1 Loss, Misses Revenue Estimates</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Zacks)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200"> -19.28%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://finance.yahoo.com/news/butterfly-network-reports-first-quarter-120500689.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:05AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-reports-first-quarter-120500689.html" target="_blank" rel="nofollow">Butterfly Network Reports First Quarter 2023 Financial Results</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://finance.yahoo.com/news/sonendo-inc-sonx-reports-q1-232511101.html');">&#13;
+        <td width="130" align="right">&#13;
+            May-09-23 07:25PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/sonendo-inc-sonx-reports-q1-232511101.html" target="_blank" rel="nofollow">Sonendo, Inc. (SONX) Reports Q1 Loss, Tops Revenue Estimates</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Zacks)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200" title="May 10, 2023"><svg width="12" height="12" class="fill-current">&#13;
+    <use href="/assets/dist-icons/icons.svg?rev=12#nextday"/>&#13;
+</svg> +5.19%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://finance.yahoo.com/news/why-butterfly-network-bfly-might-141202591.html');">&#13;
+        <td width="130" align="right">&#13;
+            10:12AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/why-butterfly-network-bfly-might-141202591.html" target="_blank" rel="nofollow">Why Butterfly Network (BFLY) Might Surprise This Earnings Season</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://finance.yahoo.com/news/irhythm-technologies-irtc-reports-q1-220510420.html');">&#13;
+        <td width="130" align="right">&#13;
+            May-04-23 06:05PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/irhythm-technologies-irtc-reports-q1-220510420.html" target="_blank" rel="nofollow">IRhythm Technologies (IRTC) Reports Q1 Loss, Tops Revenue Estimates</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://finance.yahoo.com/news/butterfly-network-inc-bfly-expected-140302797.html');">&#13;
+        <td width="130" align="right">&#13;
+            Apr-27-23 10:03AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-inc-bfly-expected-140302797.html" target="_blank" rel="nofollow">Butterfly Network, Inc. (BFLY) Expected to Beat Earnings Estimates: Should You Buy?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://finance.yahoo.com/news/butterfly-network-inc-report-first-123000466.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-inc-report-first-123000466.html" target="_blank" rel="nofollow">Butterfly Network, Inc. to Report First Quarter 2023 Financial Results on May 11, 2023</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://finance.yahoo.com/news/butterfly-network-names-joseph-m-121000515.html');">&#13;
+        <td width="130" align="right">&#13;
+            Apr-24-23 08:10AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-names-joseph-m-121000515.html" target="_blank" rel="nofollow">Butterfly Network Names Joseph M. DeVivo as President and Chief Executive Officer</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Simply Wall St.', 'https://finance.yahoo.com/news/butterfly-network-inc-nyse-bfly-104152962.html');">&#13;
+        <td width="130" align="right">&#13;
+            Apr-17-23 06:41AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-inc-nyse-bfly-104152962.html" target="_blank" rel="nofollow">Butterfly Network, Inc. (NYSE:BFLY) Stocks Shoot Up 31% But Its P/S Still Looks Reasonable</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Simply Wall St.)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200"> +5.02%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://finance.yahoo.com/news/butterfly-network-bfly-stock-outpacing-134001081.html');">&#13;
+        <td width="130" align="right">&#13;
+            Apr-11-23 09:40AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-bfly-stock-outpacing-134001081.html" target="_blank" rel="nofollow">Is Butterfly Network (BFLY) Stock Outpacing Its Medical Peers This Year?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Zacks)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200"> +13.77%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'TipRanks', 'https://finance.yahoo.com/news/too-cheap-ignore-cathie-wood-212257023.html');">&#13;
+        <td width="130" align="right">&#13;
+            Apr-10-23 05:22PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/too-cheap-ignore-cathie-wood-212257023.html" target="_blank" rel="nofollow">Too Cheap to Ignore: Cathie Wood Snaps Up These 2 Stocks Under $5</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(TipRanks)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200"> +8.33%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://finance.yahoo.com/news/butterfly-network-announces-fda-cleared-200500901.html');">&#13;
+        <td width="130" align="right">&#13;
+            Apr-03-23 04:05PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-announces-fda-cleared-200500901.html" target="_blank" rel="nofollow">Butterfly Network Announces New FDA-Cleared AI-Enabled Lung Tool</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200" title="Apr 04, 2023"><svg width="12" height="12" class="fill-current">&#13;
+    <use href="/assets/dist-icons/icons.svg?rev=12#nextday"/>&#13;
+</svg> +21.39%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Simply Wall St.', 'https://finance.yahoo.com/news/butterfly-network-inc-nyse-bfly-193635091.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-29-23 03:36PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-inc-nyse-bfly-193635091.html" target="_blank" rel="nofollow">Butterfly Network, Inc. (NYSE:BFLY) is definitely on the radar of institutional investors who own 38% of the company</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Simply Wall St.)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200"> -6.78%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://finance.yahoo.com/news/irhythm-technologies-irtc-soars-3-114211966.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-14-23 07:42AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/irhythm-technologies-irtc-soars-3-114211966.html" target="_blank" rel="nofollow">iRhythm Technologies (IRTC) Soars 3.9%: Is Further Upside Left in the Stock?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://finance.yahoo.com/news/butterfly-network-present-33rd-annual-220000730.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-08-23 05:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-present-33rd-annual-220000730.html" target="_blank" rel="nofollow">Butterfly Network to Present at the 33rd Annual Oppenheimer Healthcare Conference</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://finance.yahoo.com/news/butterfly-network-inc-nyse-bfly-132537456.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-02-23 08:25AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-inc-nyse-bfly-132537456.html" target="_blank" rel="nofollow">Butterfly Network, Inc. (NYSE:BFLY) Q4 2022 Earnings Call Transcript</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://finance.yahoo.com/news/butterfly-network-present-43rd-annual-220000702.html');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-01-23 05:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-present-43rd-annual-220000702.html" target="_blank" rel="nofollow">Butterfly Network to Present at the 43rd Annual Cowen Health Care Conference</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200"> -8.94%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://finance.yahoo.com/news/butterfly-network-inc-bfly-reports-162504417.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-28-23 11:25AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-inc-bfly-reports-162504417.html" target="_blank" rel="nofollow">Butterfly Network, Inc. (BFLY) Reports Q4 Loss, Lags Revenue Estimates</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Zacks)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200"> +10.81%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://finance.yahoo.com/news/butterfly-network-reports-fourth-quarter-130000068.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-reports-fourth-quarter-130000068.html" target="_blank" rel="nofollow">Butterfly Network Reports Fourth Quarter 2022 Financial Results</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://finance.yahoo.com/news/portable-butterfly-iq-ultrasound-system-220000438.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-22-23 05:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/portable-butterfly-iq-ultrasound-system-220000438.html" target="_blank" rel="nofollow">Portable Butterfly iQ+ ultrasound system for University Hospital Bonn and Faculty of Medicine Students</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://finance.yahoo.com/news/butterfly-network-bfly-outperforming-other-144002690.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-16-23 09:40AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-bfly-outperforming-other-144002690.html" target="_blank" rel="nofollow">Is Butterfly Network (BFLY) Outperforming Other Medical Stocks This Year?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://finance.yahoo.com/news/butterfly-network-inc-report-fourth-133000114.html');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-13-23 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-inc-report-fourth-133000114.html" target="_blank" rel="nofollow">Butterfly Network, Inc. to Report Fourth Quarter 2022 Financial Results on February 28, 2023</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Simply Wall St.', 'https://finance.yahoo.com/news/think-butterfly-network-nyse-bfly-163436940.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-23-23 11:34AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/think-butterfly-network-nyse-bfly-163436940.html" target="_blank" rel="nofollow">We Think Butterfly Network (NYSE:BFLY) Needs To Drive Business Growth Carefully</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Simply Wall St.)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200"> +6.37%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Simply Wall St.', 'https://finance.yahoo.com/news/past-butterfly-network-nyse-bfly-143734533.html');">&#13;
+        <td width="130" align="right">&#13;
+            Dec-27-22 09:37AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/past-butterfly-network-nyse-bfly-143734533.html" target="_blank" rel="nofollow">The past year for Butterfly Network (NYSE:BFLY) investors has not been profitable</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Simply Wall St.)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200"> -5.08%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://finance.yahoo.com/news/butterfly-network-completes-successful-deployment-130000560.html');">&#13;
+        <td width="130" align="right">&#13;
+            Dec-19-22 08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-completes-successful-deployment-130000560.html" target="_blank" rel="nofollow">Butterfly Network Completes Successful Deployment of 500 Butterfly iQ+ Devices and Training of 500+ Healthcare Workers Across 224 Facilities in Kenya</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200"> -8.47%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://finance.yahoo.com/news/butterfly-network-present-41st-annual-130000019.html');">&#13;
+        <td width="130" align="right">&#13;
+            Dec-14-22 08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-present-41st-annual-130000019.html" target="_blank" rel="nofollow">Butterfly Network to Present at the 41st Annual J.P. Morgan Healthcare Conference</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://finance.yahoo.com/news/butterfly-announces-ceo-transition-220000014.html');">&#13;
+        <td width="130" align="right">&#13;
+            Dec-06-22 05:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-announces-ceo-transition-220000014.html" target="_blank" rel="nofollow">Butterfly Announces CEO Transition</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200"> -5.52%</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200" title="Dec 07, 2022"><svg width="12" height="12" class="fill-current">&#13;
+    <use href="/assets/dist-icons/icons.svg?rev=12#nextday"/>&#13;
+</svg> -9.09%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://finance.yahoo.com/news/invest-spdr-p-health-care-112011988.html');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-18-22 06:20AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/invest-spdr-p-health-care-112011988.html" target="_blank" rel="nofollow">Should You Invest in the SPDR S&amp;P Health Care Equipment ETF (XHE)?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Simply Wall St.', 'https://finance.yahoo.com/news/butterfly-network-third-quarter-2022-104036887.html');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-09-22 05:40AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-third-quarter-2022-104036887.html" target="_blank" rel="nofollow">Butterfly Network Third Quarter 2022 Earnings: Misses Expectations</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Simply Wall St.)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200"> -8.65%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Simply Wall St.', 'https://finance.yahoo.com/news/us-6-75-thats-analysts-123121221.html');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-06-22 07:31AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/us-6-75-thats-analysts-123121221.html" target="_blank" rel="nofollow">US$6.75: That's What Analysts Think Butterfly Network, Inc. (NYSE:BFLY) Is Worth After Its Latest Results</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Simply Wall St.)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/e91c6e26-b1b0-3673-b721-076574c333c1/2-growth-stocks-that-could.html');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-05-22 05:39AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/e91c6e26-b1b0-3673-b721-076574c333c1/2-growth-stocks-that-could.html" target="_blank" rel="nofollow">2 Growth Stocks That Could Double Your Money or Better, According to Wall Street</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://finance.yahoo.com/news/butterfly-network-reports-third-quarter-120000616.html');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-03-22 08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-reports-third-quarter-120000616.html" target="_blank" rel="nofollow">Butterfly Network Reports Third Quarter 2022 Financial Results</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200"> -17.75%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://finance.yahoo.com/news/butterfly-network-inc-report-third-120000998.html');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-24-22 08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-inc-report-third-120000998.html" target="_blank" rel="nofollow">Butterfly Network, Inc. to Report Third Quarter 2022 Financial Results on November 3, 2022</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Simply Wall St.', 'https://finance.yahoo.com/news/40-stake-butterfly-network-inc-184114141.html');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-20-22 02:41PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/40-stake-butterfly-network-inc-184114141.html" target="_blank" rel="nofollow">With 40% stake, Butterfly Network, Inc. (NYSE:BFLY) seems to have captured institutional investors' interest</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Simply Wall St.)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://www.fool.com/investing/2022/10/07/3-stocks-that-could-rocket-to-higher-according-to/?source=eptyholnk0000202\u0026utm_source=yahoo-host\u0026utm_medium=feed\u0026utm_campaign=article');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-07-22 05:33AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.fool.com/investing/2022/10/07/3-stocks-that-could-rocket-to-higher-according-to/?source=eptyholnk0000202&amp;utm_source=yahoo-host&amp;utm_medium=feed&amp;utm_campaign=article" target="_blank" rel="nofollow">2 Growth Stocks That Could Rocket 80% to 102% Higher, According to Wall Street</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Motley Fool)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200"> -6.80%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://finance.yahoo.com/news/spdr-p-health-care-equipment-102010388.html');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-05-22 06:20AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/spdr-p-health-care-equipment-102010388.html" target="_blank" rel="nofollow">Is SPDR S&amp;P Health Care Equipment ETF (XHE) a Strong ETF Right Now?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Zacks)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200"> -6.83%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://finance.yahoo.com/news/butterfly-network-launches-proficiency-management-123000843.html');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-29-22 05:04PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-launches-proficiency-management-123000843.html" target="_blank" rel="nofollow">Butterfly Network Launches Proficiency Management Solution at American College of Emergency Physicians Scientific Assembly 2022</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://finance.yahoo.com/news/butterfly-network-distributes-500-butterfly-123000319.html');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-20-22 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-distributes-500-butterfly-123000319.html" target="_blank" rel="nofollow">Butterfly Network Distributes 500 Butterfly iQ+ Devices to Healthcare Workers in Kenya to Transform Maternal and Fetal Health</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://www.fool.com/investing/2022/08/30/cathie-wood-goes-bargain-shopping-3-stocks-she-jus/?source=eptyholnk0000202\u0026utm_source=yahoo-host\u0026utm_medium=feed\u0026utm_campaign=article');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-30-22 06:41AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.fool.com/investing/2022/08/30/cathie-wood-goes-bargain-shopping-3-stocks-she-jus/?source=eptyholnk0000202&amp;utm_source=yahoo-host&amp;utm_medium=feed&amp;utm_campaign=article" target="_blank" rel="nofollow">Cathie Wood Goes Bargain-Shopping: 3 Stocks She Just Bought</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://www.fool.com/investing/2022/08/24/cathie-wood-goes-bargain-hunting-3-stocks-she-just/?source=eptyholnk0000202\u0026utm_source=yahoo-host\u0026utm_medium=feed\u0026utm_campaign=article');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-24-22 08:10AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.fool.com/investing/2022/08/24/cathie-wood-goes-bargain-hunting-3-stocks-she-just/?source=eptyholnk0000202&amp;utm_source=yahoo-host&amp;utm_medium=feed&amp;utm_campaign=article" target="_blank" rel="nofollow">Cathie Wood Goes Bargain Hunting: 3 Stocks She Just Bought</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Motley Fool)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200"> +6.10%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Simply Wall St.', 'https://finance.yahoo.com/news/heres-why-were-not-too-123545336.html');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-16-22 08:35AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/heres-why-were-not-too-123545336.html" target="_blank" rel="nofollow">Here's Why We're Not Too Worried About Butterfly Network's (NYSE:BFLY) Cash Burn Situation</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Simply Wall St.)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200"> -7.29%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Zacks', 'https://finance.yahoo.com/news/aveo-pharmaceuticals-aveo-outpaced-other-134001290.html');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-12-22 09:40AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/aveo-pharmaceuticals-aveo-outpaced-other-134001290.html" target="_blank" rel="nofollow">Has AVEO Pharmaceuticals (AVEO) Outpaced Other Medical Stocks This Year?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Zacks)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://finance.yahoo.com/news/butterfly-files-motion-dismiss-claims-200500232.html');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-08-22 04:05PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-files-motion-dismiss-claims-200500232.html" target="_blank" rel="nofollow">Butterfly Files Motion to Dismiss Claims in FUJIFILM Sonosite Legal Action</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200"> -9.88%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://finance.yahoo.com/news/butterfly-network-reports-second-quarter-113000879.html');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-03-22 07:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-reports-second-quarter-113000879.html" target="_blank" rel="nofollow">Butterfly Network Reports Second Quarter 2022 Financial Results</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200"> +16.46%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://finance.yahoo.com/news/butterfly-network-inc-report-second-204500834.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-21-22 04:45PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/butterfly-network-inc-report-second-204500834.html" target="_blank" rel="nofollow">Butterfly Network, Inc. to Report Second Quarter 2022 Financial Results on August 3, 2022</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200" title="Jul 22, 2022"><svg width="12" height="12" class="fill-current">&#13;
+    <use href="/assets/dist-icons/icons.svg?rev=12#nextday"/>&#13;
+</svg> -6.40%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Simply Wall St.', 'https://finance.yahoo.com/news/strong-week-butterfly-network-nyse-112003736.html');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-20-22 07:20AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/strong-week-butterfly-network-nyse-112003736.html" target="_blank" rel="nofollow">Strong week for Butterfly Network (NYSE:BFLY) shareholders doesn't alleviate pain of one-year loss</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Simply Wall St.)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200"> +8.62%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Business Wire', 'https://finance.yahoo.com/news/medical-university-south-carolina-joins-120000552.html');">&#13;
+        <td width="130" align="right">&#13;
+            May-24-22 08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/medical-university-south-carolina-joins-120000552.html" target="_blank" rel="nofollow">Medical University of South Carolina joins forces with Butterfly Network to transform patient care, health education, and medical research</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Business Wire)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200"> -5.59%</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Simply Wall St.', 'https://finance.yahoo.com/news/much-butterfly-network-inc-nyse-175949145.html');">&#13;
+        <td width="130" align="right">&#13;
+            May-13-22 01:59PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/much-butterfly-network-inc-nyse-175949145.html" target="_blank" rel="nofollow">How Much Of Butterfly Network, Inc. (NYSE:BFLY) Do Insiders Own?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Simply Wall St.)</span> <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200"> +14.23%</span></div></div></td></tr>
+</table>
+</div>
+
+
+  <script language="javascript">
+  function reSize(){
+    actual_height = document.body.scrollHeight+50;
+    console.log("RP T:" + actual_height)
+    parent.postMessage("RP H=" + actual_height, "*");
+  }
+  window.onload=reSize;
+  </script>
+</body>
+</html>

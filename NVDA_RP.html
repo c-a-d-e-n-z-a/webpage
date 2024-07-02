@@ -1,0 +1,1388 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<title>NVDA</title>
+<head>
+  <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <style>
+  * {
+    font-size: 12px;
+    font-family: Arial, Helvetica, sans-serif, Microsoft JhengHei;
+  }
+  
+  .is-negative {
+    color: #008000;
+  }
+  
+  .is-positive {
+    color: #ff0000;
+  }
+
+  .snapshot-td2
+  {
+    color:#000000;
+    text-decoration:none;
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3d3;
+    white-space:nowrap;
+  }
+
+  .snapshot-td2-cp
+  {
+    color:#000000;
+    text-decoration:none;
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3d3;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+
+  .fullview-ratings-outer
+  {
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3c3;
+  }
+
+  td.fullview-ratings-inner
+  {
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3c3;
+  }
+
+  .t3r1
+  {
+    color:#ff0000;
+  }
+
+  .body-table-rating-downgrade
+  {
+    color:#dd3333;
+    text-decoration:none;
+    background:#fff0f0;
+  }
+
+  .body-table-rating-upgrade
+  {
+    color:#009900;
+    text-decoration:none;
+    background:#f0fff0;
+  }
+
+  .body-table-rating-neutral
+  {
+    color:#333333;
+    text-decoration:none;
+    background:#f0f0f0;
+  }
+
+  table {
+    border-collapse: collapse;
+  }
+
+  td, th {
+    border: 1px solid #FDEBD2;
+    text-align: left;
+    padding: 5px;
+  }
+  </style>
+  <script>
+    function swap(img){
+      if (img.style.width === "100%"){
+        var realWidth = document.querySelector("#stock").naturalWidth;
+        img.style.width = realWidth + "px";
+        parent.postMessage("RP W=" + realWidth, "*");
+      }
+      else{
+        img.style.width = "100%";
+        parent.postMessage("RP W=" + 0, "*");
+      }
+    }
+
+    var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+    var eventer = window[eventMethod];
+    var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+
+    // Listen to message from child window
+    eventer(messageEvent,function(e) {
+      console.log (e.data);
+      if (typeof e.data == "string")
+      {
+        if (e.data.indexOf("SD H=") > -1)
+        {
+          document.getElementById("stockdog").height = e.data.substring(5) + 'px';
+          console.log("RP R:" + document.getElementById("stockdog").height)
+
+          actual_height = document.body.scrollHeight+100;
+          console.log("RP T:" + actual_height)
+          parent.postMessage("RP H=" + actual_height, "*");
+        }
+      }
+    }, false);
+  </script>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+</head>
+<body>
+  <hr color="#ff8000" align="center" size="5">
+  <p align="center"><b>Stock:</b>&emsp;<a href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=NVDA&type=pe-ratio&statement=price-ratios&freq=Q" target="_blank">PE Chart</a>&emsp;<a href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=NVDA&type=price-book&statement=price-ratios&freq=Q" target="_blank">PB Chart</a>&emsp;<a href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=NVDA&type=price-sales&statement=price-ratios&freq=Q" target="_blank">PS Chart</a>&emsp;<a href="https://www.wsj.com/market-data/quotes/NVDA/financials/quarter/cash-flow" target="_blank">Finance</a>&emsp;<a href="https://www.dataroma.com/m/stock.php?sym=NVDA" target="_blank">Ownership</a>&emsp;<a href="https://hedgefollow.com/stocks/NVDA" target="_blank">Institute</a>&emsp;<a href="https://www.ptt.cc/bbs/Stock/search?q=NVDA" target="_blank">PTT Search</a>&emsp;<a href="https://unusualwhales.com/stock/NVDA/greek-exposure" target="_blank">GEX</a></p>
+  <hr color="#ff8000" align="center" size="5">
+   <div align="center"><iframe id="stock" src="NVDA_EC.html" frameborder="0" width="100%" height="1600px" scrolling="no"></iframe></div>
+  <hr color="#ff8000" align="center">
+  <div align="center"><iframe id="stockdog" src="NVDA_SD.html" frameborder="0" width="100%" height="1000px" scrolling="no"></iframe></div>
+  <p><hr color="#ff8000" align="center"><p>
+<div align="center"><a href="https://www.marketwatch.com/investing/stock/NVDA/analystestimates" target="_blank"><img style="max-height:100%; max-width:100%; object-fit:contain" src=https://app.quotemedia.com/quotetools/getChart?webmasterId=91386&symbol=NVDA&chtype=FinancialLine&chcon=on&chdon=on&chfrmon=on&chscale=1d&chton=on&chwid=800&chhig=380&chln=ffa500&chfill=ffa500&chfnts=10&chbdr=000000&chbgch=ffffffff&chgrd=cccccc&svg=false&lang=en&locale=en></a></div>
+
+<hr color="#ff8000" align="center">
+
+
+<hr color="#ff8000" align="center">
+<table align="center" width="70%" class="js-table-ratings styled-table-new is-rounded is-small" cellpadding="0" cellspacing="0" border="0">
+<thead>&#13;
+                <tr>&#13;
+                    <th width="140" align="left">Date</th>&#13;
+                    <th width="320" align="left">Action</th>&#13;
+                    <th width="320" align="left">Analyst</th>&#13;
+                    <th width="320" align="left">Rating Change</th>&#13;
+                    <th width="320" align="left">Price Target Change</th>&#13;
+                </tr>&#13;
+            </thead><tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Jul-01-24</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">Morgan Stanley</td>
+<td class="text-left" width="320" align="left">Overweight</td>
+<td class="text-left tabular-nums" width="320" align="left">$116 → $144</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Jun-18-24</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">Rosenblatt</td>
+<td class="text-left" width="320" align="left">Buy</td>
+<td class="text-left tabular-nums" width="320" align="left">$140 → $200</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">Jun-03-24</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">BofA Securities</td>
+<td class="text-left" width="320" align="left">Buy</td>
+<td class="text-left tabular-nums" width="320" align="left">$1320 → $1500</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">May-24-24</td><td width="320" align="left"><span class="fv-label is-small is-negative-200">Downgrade</span></td>
+<td class="text-left color-text is-negative" width="320" align="left">DZ Bank</td>
+<td class="text-left color-text is-negative" width="320" align="left">Buy → Hold</td>
+<td class="text-left tabular-nums color-text is-negative" width="320" align="left">$1025</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">May-23-24</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">Wolfe Research</td>
+<td class="text-left" width="320" align="left">Outperform</td>
+<td class="text-left tabular-nums" width="320" align="left">$1200 → $1250</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">May-23-24</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">Wells Fargo</td>
+<td class="text-left" width="320" align="left">Overweight</td>
+<td class="text-left tabular-nums" width="320" align="left">$1150 → $1250</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">May-23-24</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">UBS</td>
+<td class="text-left" width="320" align="left">Buy</td>
+<td class="text-left tabular-nums" width="320" align="left">$1150 → $1200</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">May-23-24</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">Truist</td>
+<td class="text-left" width="320" align="left">Buy</td>
+<td class="text-left tabular-nums" width="320" align="left">$1177 → $1288</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text"><td width="140" align="left">May-23-24</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">The Benchmark Company</td>
+<td class="text-left" width="320" align="left">Buy</td>
+<td class="text-left tabular-nums" width="320" align="left">$1000 → $1350</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text is-last"><td width="140" align="left">May-23-24</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">TD Cowen</td>
+<td class="text-left" width="320" align="left">Buy</td>
+<td class="text-left tabular-nums" width="320" align="left">$1100 → $1200</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">May-23-24</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">Susquehanna</td>
+<td class="text-left" width="320" align="left">Positive</td>
+<td class="text-left tabular-nums" width="320" align="left">$1100 → $1200</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">May-23-24</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">Stifel</td>
+<td class="text-left" width="320" align="left">Buy</td>
+<td class="text-left tabular-nums" width="320" align="left">$1085 → $1140</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">May-23-24</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">Raymond James</td>
+<td class="text-left" width="320" align="left">Strong Buy</td>
+<td class="text-left tabular-nums" width="320" align="left">$1100 → $1200</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">May-23-24</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">Piper Sandler</td>
+<td class="text-left" width="320" align="left">Overweight</td>
+<td class="text-left tabular-nums" width="320" align="left">$1050 → $1200</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">May-23-24</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">Needham</td>
+<td class="text-left" width="320" align="left">Buy</td>
+<td class="text-left tabular-nums" width="320" align="left">$850 → $1200</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">May-23-24</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">Morgan Stanley</td>
+<td class="text-left" width="320" align="left">Overweight</td>
+<td class="text-left tabular-nums" width="320" align="left">$1000 → $1160</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">May-23-24</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">Mizuho</td>
+<td class="text-left" width="320" align="left">Buy</td>
+<td class="text-left tabular-nums" width="320" align="left">$1000 → $1180</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">May-23-24</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">KeyBanc Capital Markets</td>
+<td class="text-left" width="320" align="left">Overweight</td>
+<td class="text-left tabular-nums" width="320" align="left">$1200 → $1300</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">May-23-24</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">JP Morgan</td>
+<td class="text-left" width="320" align="left">Overweight</td>
+<td class="text-left tabular-nums" width="320" align="left">$850 → $1150</td>
+</tr>
+<tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden"><td width="140" align="left">May-23-24</td><td width="320" align="left"><span class="fv-label is-small is-neutral">Reiterated</span></td>
+<td class="text-left" width="320" align="left">Jefferies</td>
+<td class="text-left" width="320" align="left">Buy</td>
+<td class="text-left tabular-nums" width="320" align="left">$1200 → $1350</td>
+</tr>
+</table>
+
+
+
+<hr color="#ff8000" align="center">
+<table cellpadding="0" cellspacing="0" align="center" width="70%" class="body-table styled-table-new is-rounded p-0 mt-2">
+<thead>
+<tr>
+<th class="" align="left">Insider Trading</th>
+<th class="" align="left">Relationship</th>
+<th class="" align="left">Date</th>
+<th class="" align="center">Transaction</th>
+<th class="" align="right">Cost</th>
+<th class="" align="right">#Shares</th>
+<th class="" align="right">Value ($)</th>
+<th class="" align="right">#Shares Total</th>
+<th class="" align="center">SEC Form 4</th>
+</tr>
+</thead>
+<tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1197649&amp;tc=7" class="tab-link">HUANG JEN HSUN</a></td><td style="white-space:nowrap">President and CEO</td><td>Jun 27 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">124.39</td><td class="value" align="right">120,000</td><td class="value" align="right">14,926,277</td><td class="value" align="right">80,214,995</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000181/xslF345X05/wk-form4_1719606038.xml" class="tab-link" target="_blank">Jun 28 04:20 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1197649&amp;tc=7" class="tab-link">HUANG JEN HSUN</a></td><td style="white-space:nowrap">President and CEO</td><td>Jun 26 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">124.88</td><td class="value" align="right">120,000</td><td class="value" align="right">14,985,866</td><td class="value" align="right">80,334,995</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000181/xslF345X05/wk-form4_1719606038.xml" class="tab-link" target="_blank">Jun 28 04:20 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1197649&amp;tc=7" class="tab-link">HUANG JEN HSUN</a></td><td style="white-space:nowrap">President and CEO</td><td>Jun 25 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">123.42</td><td class="value" align="right">120,000</td><td class="value" align="right">14,810,007</td><td class="value" align="right">80,454,995</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000174/xslF345X05/wk-form4_1719432474.xml" class="tab-link" target="_blank">Jun 26 04:08 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1588670&amp;tc=7" class="tab-link">Kress Colette</a></td><td style="white-space:nowrap">EVP &amp; Chief Financial Officer</td><td>Jun 25 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">123.45</td><td class="value" align="right">100,000</td><td class="value" align="right">12,345,297</td><td class="value" align="right">5,088,862</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000176/xslF345X05/wk-form4_1719432548.xml" class="tab-link" target="_blank">Jun 26 04:09 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1197649&amp;tc=7" class="tab-link">HUANG JEN HSUN</a></td><td style="white-space:nowrap">President and CEO</td><td>Jun 24 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">120.84</td><td class="value" align="right">120,000</td><td class="value" align="right">14,500,568</td><td class="value" align="right">80,574,995</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000174/xslF345X05/wk-form4_1719432474.xml" class="tab-link" target="_blank">Jun 26 04:08 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1588670&amp;tc=7" class="tab-link">Kress Colette</a></td><td style="white-space:nowrap">EVP &amp; Chief Financial Officer</td><td>Jun 24 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">120.85</td><td class="value" align="right">100,000</td><td class="value" align="right">12,085,217</td><td class="value" align="right">5,188,862</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000176/xslF345X05/wk-form4_1719432548.xml" class="tab-link" target="_blank">Jun 26 04:09 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1197649&amp;tc=7" class="tab-link">HUANG JEN HSUN</a></td><td style="white-space:nowrap">President and CEO</td><td>Jun 21 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">127.10</td><td class="value" align="right">120,000</td><td class="value" align="right">15,252,385</td><td class="value" align="right">80,694,995</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000170/xslF345X05/wk-form4_1719015161.xml" class="tab-link" target="_blank">Jun 21 08:12 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1588670&amp;tc=7" class="tab-link">Kress Colette</a></td><td style="white-space:nowrap">EVP &amp; Chief Financial Officer</td><td>Jun 21 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">126.99</td><td class="value" align="right">100,000</td><td class="value" align="right">12,699,088</td><td class="value" align="right">5,288,862</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000169/xslF345X05/wk-form4_1719014702.xml" class="tab-link" target="_blank">Jun 21 08:05 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1526111&amp;tc=7" class="tab-link">Robertson Donald F Jr</a></td><td style="white-space:nowrap">Principal Accounting Officer</td><td>Jun 21 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">128.17</td><td class="value" align="right">4,500</td><td class="value" align="right">576,751</td><td class="value" align="right">503,878</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000164/xslF345X05/wk-form4_1719002145.xml" class="tab-link" target="_blank">Jun 21 04:35 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1197649&amp;tc=7" class="tab-link">HUANG JEN HSUN</a></td><td style="white-space:nowrap">President and CEO</td><td>Jun 20 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">135.87</td><td class="value" align="right">120,000</td><td class="value" align="right">16,304,893</td><td class="value" align="right">80,814,995</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000170/xslF345X05/wk-form4_1719015161.xml" class="tab-link" target="_blank">Jun 21 08:12 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1197649&amp;tc=7" class="tab-link">HUANG JEN HSUN</a></td><td style="white-space:nowrap">President and CEO</td><td>Jun 18 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">134.03</td><td class="value" align="right">120,000</td><td class="value" align="right">16,083,429</td><td class="value" align="right">80,998,830</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000155/xslF345X05/wk-form4_1718914977.xml" class="tab-link" target="_blank">Jun 20 04:23 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1197649&amp;tc=7" class="tab-link">HUANG JEN HSUN</a></td><td style="white-space:nowrap">President and CEO</td><td>Jun 17 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">131.76</td><td class="value" align="right">120,000</td><td class="value" align="right">15,811,425</td><td class="value" align="right">81,118,830</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000155/xslF345X05/wk-form4_1718914977.xml" class="tab-link" target="_blank">Jun 20 04:23 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1197649&amp;tc=7" class="tab-link">HUANG JEN HSUN</a></td><td style="white-space:nowrap">President and CEO</td><td>Jun 14 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">131.13</td><td class="value" align="right">120,000</td><td class="value" align="right">15,735,438</td><td class="value" align="right">81,238,830</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000153/xslF345X05/wk-form4_1718658038.xml" class="tab-link" target="_blank">Jun 17 05:00 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1197649&amp;tc=7" class="tab-link">HUANG JEN HSUN</a></td><td style="white-space:nowrap">President and CEO</td><td>Jun 13 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">128.74</td><td class="value" align="right">120,000</td><td class="value" align="right">15,449,345</td><td class="value" align="right">81,358,830</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000153/xslF345X05/wk-form4_1718658038.xml" class="tab-link" target="_blank">Jun 17 05:00 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1199039&amp;tc=7" class="tab-link">STEVENS MARK A</a></td><td style="white-space:nowrap">Director</td><td>Jun 12 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">125.88</td><td class="value" align="right">320,000</td><td class="value" align="right">40,280,736</td><td class="value" align="right">9,526,240</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000151/xslF345X05/wk-form4_1718315527.xml" class="tab-link" target="_blank">Jun 13 05:52 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1199039&amp;tc=7" class="tab-link">STEVENS MARK A</a></td><td style="white-space:nowrap">Director</td><td>Jun 11 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">120.42</td><td class="value" align="right">150,000</td><td class="value" align="right">18,063,285</td><td class="value" align="right">9,846,240</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000151/xslF345X05/wk-form4_1718315527.xml" class="tab-link" target="_blank">Jun 13 05:52 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1197647&amp;tc=7" class="tab-link">COXE TENCH</a></td><td style="white-space:nowrap">Director</td><td>Jun 07 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1194.57</td><td class="value" align="right">100,000</td><td class="value" align="right">119,457,412</td><td class="value" align="right">2,967,136</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000141588924016244/xslF345X05/form4-06102024_080653.xml" class="tab-link" target="_blank">Jun 10 04:55 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1199039&amp;tc=7" class="tab-link">STEVENS MARK A</a></td><td style="white-space:nowrap">Director</td><td>Jun 05 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1199.06</td><td class="value" align="right">16,670</td><td class="value" align="right">19,988,343</td><td class="value" align="right">999,624</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000147/xslF345X05/wk-form4_1717794757.xml" class="tab-link" target="_blank">Jun 07 05:12 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1283854&amp;tc=7" class="tab-link">Shoquist Debora</a></td><td style="white-space:nowrap">EVP, Operations</td><td>Jun 05 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1200.69</td><td class="value" align="right">10,425</td><td class="value" align="right">12,517,143</td><td class="value" align="right">144,938</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000148/xslF345X05/wk-form4_1717794853.xml" class="tab-link" target="_blank">Jun 07 05:14 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1283854&amp;tc=7" class="tab-link">Shoquist Debora</a></td><td style="white-space:nowrap">EVP, Operations</td><td>Jun 05 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1222.83</td><td class="value" align="right">715</td><td class="value" align="right">874,324</td><td class="value" align="right">144,223</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000149/xslF345X05/wk-form4_1717794910.xml" class="tab-link" target="_blank">Jun 07 05:15 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1283854&amp;tc=7" class="tab-link">Shoquist Debora</a></td><td style="white-space:nowrap">EVP, Operations</td><td>Jun 04 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1151.59</td><td class="value" align="right">15,000</td><td class="value" align="right">17,273,842</td><td class="value" align="right">155,363</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000140/xslF345X05/wk-form4_1717621363.xml" class="tab-link" target="_blank">Jun 05 05:02 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1283854&amp;tc=7" class="tab-link">Shoquist Debora</a></td><td style="white-space:nowrap">EVP, Operations</td><td>Jun 03 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1136.41</td><td class="value" align="right">15,000</td><td class="value" align="right">17,046,175</td><td class="value" align="right">170,363</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000139/xslF345X05/wk-form4_1717621332.xml" class="tab-link" target="_blank">Jun 05 05:02 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1199039&amp;tc=7" class="tab-link">STEVENS MARK A</a></td><td style="white-space:nowrap">Director</td><td>Jun 03 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1139.20</td><td class="value" align="right">8,900</td><td class="value" align="right">10,138,892</td><td class="value" align="right">1,016,294</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000138/xslF345X05/wk-form4_1717621281.xml" class="tab-link" target="_blank">Jun 05 05:01 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1199039&amp;tc=7" class="tab-link">STEVENS MARK A</a></td><td style="white-space:nowrap">Director</td><td>May 30 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1130.17</td><td class="value" align="right">9,939</td><td class="value" align="right">11,232,791</td><td class="value" align="right">1,025,194</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000134/xslF345X05/wk-form4_1717185896.xml" class="tab-link" target="_blank">May 31 04:05 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1199039&amp;tc=7" class="tab-link">STEVENS MARK A</a></td><td style="white-space:nowrap">Director</td><td>May 29 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1148.01</td><td class="value" align="right">17,000</td><td class="value" align="right">19,516,170</td><td class="value" align="right">1,035,133</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000134/xslF345X05/wk-form4_1717185896.xml" class="tab-link" target="_blank">May 31 04:05 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1219888&amp;tc=7" class="tab-link">HUDSON DAWN E</a></td><td style="white-space:nowrap">Director</td><td>May 29 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1150.03</td><td class="value" align="right">5,000</td><td class="value" align="right">5,750,150</td><td class="value" align="right">45,500</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000132/xslF345X05/wk-form4_1717185818.xml" class="tab-link" target="_blank">May 31 04:03 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1219888&amp;tc=7" class="tab-link">HUDSON DAWN E</a></td><td style="white-space:nowrap">Director</td><td>May 28 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1140.04</td><td class="value" align="right">5,000</td><td class="value" align="right">5,700,200</td><td class="value" align="right">50,500</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000122/xslF345X05/wk-form4_1717013584.xml" class="tab-link" target="_blank">May 29 04:13 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1256735&amp;tc=7" class="tab-link">MCCAFFERY MICHAEL G</a></td><td style="white-space:nowrap">Director</td><td>May 28 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1122.91</td><td class="value" align="right">3,879</td><td class="value" align="right">4,355,785</td><td class="value" align="right">9,687</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000129/xslF345X05/wk-form4_1717100932.xml" class="tab-link" target="_blank">May 30 04:29 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1197652&amp;tc=7" class="tab-link">SEAWELL A BROOKE</a></td><td style="white-space:nowrap">Director</td><td>May 28 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1117.72</td><td class="value" align="right">1,438</td><td class="value" align="right">1,607,281</td><td class="value" align="right">650</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000128/xslF345X05/wk-form4_1717100828.xml" class="tab-link" target="_blank">May 30 04:27 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="insidertrading.ashx?oc=1256735&amp;tc=7" class="tab-link">MCCAFFERY MICHAEL G</a></td><td style="white-space:nowrap">Director</td><td>May 28 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1147.34</td><td class="value" align="right">57</td><td class="value" align="right">65,398</td><td class="value" align="right">9,630</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000130/xslF345X05/wk-form4_1717100974.xml" class="tab-link" target="_blank">May 30 04:29 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1219888&amp;tc=7" class="tab-link">HUDSON DAWN E</a></td><td style="white-space:nowrap">Director</td><td>May 24 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1059.20</td><td class="value" align="right">15,000</td><td class="value" align="right">15,888,045</td><td class="value" align="right">55,500</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000122/xslF345X05/wk-form4_1717013584.xml" class="tab-link" target="_blank">May 29 04:13 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1818224&amp;tc=7" class="tab-link">Dabiri John</a></td><td style="white-space:nowrap">Director</td><td>May 24 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1043.95</td><td class="value" align="right">198</td><td class="value" align="right">206,702</td><td class="value" align="right">1,857</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000121/xslF345X05/wk-form4_1717013529.xml" class="tab-link" target="_blank">May 29 04:12 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1199039&amp;tc=7" class="tab-link">STEVENS MARK A</a></td><td style="white-space:nowrap">Director</td><td>Apr 05 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">879.97</td><td class="value" align="right">22,700</td><td class="value" align="right">19,975,240</td><td class="value" align="right">1,052,133</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000092/xslF345X05/wk-form4_1712694633.xml" class="tab-link" target="_blank">Apr 09 04:30 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1190270&amp;tc=7" class="tab-link">PERRY MARK L</a></td><td style="white-space:nowrap">Director</td><td>Apr 02 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">887.89</td><td class="value" align="right">7,000</td><td class="value" align="right">6,215,259</td><td class="value" align="right">116,000</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000090/xslF345X05/wk-form4_1712176010.xml" class="tab-link" target="_blank">Apr 03 04:27 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1199039&amp;tc=7" class="tab-link">STEVENS MARK A</a></td><td style="white-space:nowrap">Director</td><td>Mar 28 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">905.65</td><td class="value" align="right">11,000</td><td class="value" align="right">9,962,150</td><td class="value" align="right">1,074,833</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000088/xslF345X05/wk-form4_1712005372.xml" class="tab-link" target="_blank">Apr 01 05:03 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1818224&amp;tc=7" class="tab-link">Dabiri John</a></td><td style="white-space:nowrap">Director</td><td>Mar 25 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">940.00</td><td class="value" align="right">128</td><td class="value" align="right">120,320</td><td class="value" align="right">2,055</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000085/xslF345X05/wk-form4_1711573568.xml" class="tab-link" target="_blank">Mar 27 05:06 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1526111&amp;tc=7" class="tab-link">Robertson Donald F Jr</a></td><td style="white-space:nowrap">Principal Accounting Officer</td><td>Mar 22 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">911.62</td><td class="value" align="right">450</td><td class="value" align="right">410,229</td><td class="value" align="right">49,815</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000083/xslF345X05/wk-form4_1711492719.xml" class="tab-link" target="_blank">Mar 26 06:38 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1199039&amp;tc=7" class="tab-link">STEVENS MARK A</a></td><td style="white-space:nowrap">Director</td><td>Mar 07 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">919.33</td><td class="value" align="right">21,750</td><td class="value" align="right">19,995,508</td><td class="value" align="right">1,085,833</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000057/xslF345X05/wk-form4_1710190550.xml" class="tab-link" target="_blank">Mar 11 04:55 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1197647&amp;tc=7" class="tab-link">COXE TENCH</a></td><td style="white-space:nowrap">Director</td><td>Mar 05 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">850.10</td><td class="value" align="right">200,000</td><td class="value" align="right">170,020,366</td><td class="value" align="right">3,097,136</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000122520824003814/xslF345X05/doc4.xml" class="tab-link" target="_blank">Mar 06 06:01 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1636665&amp;tc=7" class="tab-link">Drell Persis</a></td><td style="white-space:nowrap">Director</td><td>Mar 05 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">845.13</td><td class="value" align="right">5,000</td><td class="value" align="right">4,225,640</td><td class="value" align="right">2,106</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000051/xslF345X05/wk-form4_1709772814.xml" class="tab-link" target="_blank">Mar 06 07:53 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1199039&amp;tc=7" class="tab-link">STEVENS MARK A</a></td><td style="white-space:nowrap">Director</td><td>Mar 04 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">853.54</td><td class="value" align="right">12,000</td><td class="value" align="right">10,242,502</td><td class="value" align="right">1,107,583</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000050/xslF345X05/wk-form4_1709768756.xml" class="tab-link" target="_blank">Mar 06 06:46 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1199039&amp;tc=7" class="tab-link">STEVENS MARK A</a></td><td style="white-space:nowrap">Director</td><td>Feb 26 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">800.74</td><td class="value" align="right">5,000</td><td class="value" align="right">4,003,700</td><td class="value" align="right">1,119,583</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000041/xslF345X05/wk-form4_1709071698.xml" class="tab-link" target="_blank">Feb 27 05:08 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1197650&amp;tc=7" class="tab-link">JONES HARVEY C</a></td><td style="white-space:nowrap">Director</td><td>Feb 23 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">815.87</td><td class="value" align="right">65,000</td><td class="value" align="right">53,031,712</td><td class="value" align="right">731,120</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000037/xslF345X05/wk-form4_1709071330.xml" class="tab-link" target="_blank">Feb 27 05:02 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1190270&amp;tc=7" class="tab-link">PERRY MARK L</a></td><td style="white-space:nowrap">Director</td><td>Feb 23 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">796.45</td><td class="value" align="right">15,000</td><td class="value" align="right">11,946,692</td><td class="value" align="right">123,000</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000040/xslF345X05/wk-form4_1709071584.xml" class="tab-link" target="_blank">Feb 27 05:06 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1199039&amp;tc=7" class="tab-link">STEVENS MARK A</a></td><td style="white-space:nowrap">Director</td><td>Feb 23 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">797.57</td><td class="value" align="right">10,000</td><td class="value" align="right">7,975,700</td><td class="value" align="right">1,124,583</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000041/xslF345X05/wk-form4_1709071698.xml" class="tab-link" target="_blank">Feb 27 05:08 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1256735&amp;tc=7" class="tab-link">MCCAFFERY MICHAEL G</a></td><td style="white-space:nowrap">Director</td><td>Feb 23 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">800.00</td><td class="value" align="right">4,000</td><td class="value" align="right">3,200,000</td><td class="value" align="right">13,566</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000038/xslF345X05/wk-form4_1709071452.xml" class="tab-link" target="_blank">Feb 27 05:04 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1199039&amp;tc=7" class="tab-link">STEVENS MARK A</a></td><td style="white-space:nowrap">Director</td><td>Jan 12 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">546.95</td><td class="value" align="right">36,000</td><td class="value" align="right">19,690,344</td><td class="value" align="right">1,134,583</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000011/xslF345X05/wk-form4_1705444387.xml" class="tab-link" target="_blank">Jan 16 05:33 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1199039&amp;tc=7" class="tab-link">STEVENS MARK A</a></td><td style="white-space:nowrap">Director</td><td>Jan 11 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">549.88</td><td class="value" align="right">18,500</td><td class="value" align="right">10,172,771</td><td class="value" align="right">1,170,583</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000009/xslF345X05/wk-form4_1705099343.xml" class="tab-link" target="_blank">Jan 12 05:42 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1199039&amp;tc=7" class="tab-link">STEVENS MARK A</a></td><td style="white-space:nowrap">Director</td><td>Jan 10 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">542.93</td><td class="value" align="right">35,648</td><td class="value" align="right">19,354,238</td><td class="value" align="right">1,189,083</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000009/xslF345X05/wk-form4_1705099343.xml" class="tab-link" target="_blank">Jan 12 05:42 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1283854&amp;tc=7" class="tab-link">Shoquist Debora</a></td><td style="white-space:nowrap">EVP, Operations</td><td>Jan 08 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">500.00</td><td class="value" align="right">5,676</td><td class="value" align="right">2,838,000</td><td class="value" align="right">48,360</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000006/xslF345X05/wk-form4_1704840872.xml" class="tab-link" target="_blank">Jan 09 05:54 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1526111&amp;tc=7" class="tab-link">Robertson Donald F Jr</a></td><td style="white-space:nowrap">Principal Accounting Officer</td><td>Jan 05 '24</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">484.62</td><td class="value" align="right">450</td><td class="value" align="right">218,079</td><td class="value" align="right">50,961</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000004/xslF345X05/wk-form4_1704840790.xml" class="tab-link" target="_blank">Jan 09 05:53 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1283854&amp;tc=7" class="tab-link">Shoquist Debora</a></td><td style="white-space:nowrap">EVP, Operations</td><td>Dec 18 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">500.04</td><td class="value" align="right">20,000</td><td class="value" align="right">10,000,860</td><td class="value" align="right">54,036</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000275/xslF345X05/wk-form4_1703110828.xml" class="tab-link" target="_blank">Dec 20 05:20 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1199039&amp;tc=7" class="tab-link">STEVENS MARK A</a></td><td style="white-space:nowrap">Director</td><td>Dec 15 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">490.20</td><td class="value" align="right">10,200</td><td class="value" align="right">5,000,042</td><td class="value" align="right">969,231</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000272/xslF345X05/wk-form4_1703026482.xml" class="tab-link" target="_blank">Dec 19 05:54 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1219888&amp;tc=7" class="tab-link">HUDSON DAWN E</a></td><td style="white-space:nowrap">Director</td><td>Dec 15 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">492.52</td><td class="value" align="right">1,000</td><td class="value" align="right">492,525</td><td class="value" align="right">70,500</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000273/xslF345X05/wk-form4_1703026643.xml" class="tab-link" target="_blank">Dec 19 05:57 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1199039&amp;tc=7" class="tab-link">STEVENS MARK A</a></td><td style="white-space:nowrap">Director</td><td>Dec 13 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">481.60</td><td class="value" align="right">10,400</td><td class="value" align="right">5,008,640</td><td class="value" align="right">979,431</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000254/xslF345X05/wk-form4_1702686271.xml" class="tab-link" target="_blank">Dec 15 07:24 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1256735&amp;tc=7" class="tab-link">MCCAFFERY MICHAEL G</a></td><td style="white-space:nowrap">Director</td><td>Dec 13 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">481.99</td><td class="value" align="right">4,250</td><td class="value" align="right">2,048,448</td><td class="value" align="right">17,566</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581024000038/xslF345X05/wk-form4_1709071452.xml" class="tab-link" target="_blank">Feb 27 05:04 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1283854&amp;tc=7" class="tab-link">Shoquist Debora</a></td><td style="white-space:nowrap">EVP, Operations</td><td>Nov 29 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">482.42</td><td class="value" align="right">15,824</td><td class="value" align="right">7,633,761</td><td class="value" align="right">74,036</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000243/xslF345X05/wk-form4_1701480372.xml" class="tab-link" target="_blank">Dec 01 08:26 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1283854&amp;tc=7" class="tab-link">Shoquist Debora</a></td><td style="white-space:nowrap">EVP, Operations</td><td>Nov 28 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">478.10</td><td class="value" align="right">20,000</td><td class="value" align="right">9,561,944</td><td class="value" align="right">89,860</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000233/xslF345X05/wk-form4_1701218204.xml" class="tab-link" target="_blank">Nov 28 07:36 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1219888&amp;tc=7" class="tab-link">HUDSON DAWN E</a></td><td style="white-space:nowrap">Director</td><td>Nov 28 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">477.77</td><td class="value" align="right">11,000</td><td class="value" align="right">5,255,469</td><td class="value" align="right">71,500</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000237/xslF345X05/wk-form4_1701383720.xml" class="tab-link" target="_blank">Nov 30 05:35 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1283854&amp;tc=7" class="tab-link">Shoquist Debora</a></td><td style="white-space:nowrap">EVP, Operations</td><td>Nov 27 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">481.85</td><td class="value" align="right">20,000</td><td class="value" align="right">9,637,067</td><td class="value" align="right">109,860</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000233/xslF345X05/wk-form4_1701218204.xml" class="tab-link" target="_blank">Nov 28 07:36 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1199039&amp;tc=7" class="tab-link">STEVENS MARK A</a></td><td style="white-space:nowrap">Director</td><td>Nov 27 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">483.18</td><td class="value" align="right">10,000</td><td class="value" align="right">4,831,754</td><td class="value" align="right">989,831</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000234/xslF345X05/wk-form4_1701218278.xml" class="tab-link" target="_blank">Nov 28 07:38 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1199039&amp;tc=7" class="tab-link">STEVENS MARK A</a></td><td style="white-space:nowrap">Director</td><td>Nov 24 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">482.00</td><td class="value" align="right">280</td><td class="value" align="right">134,960</td><td class="value" align="right">999,831</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000234/xslF345X05/wk-form4_1701218278.xml" class="tab-link" target="_blank">Nov 28 07:38 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1818224&amp;tc=7" class="tab-link">Dabiri John</a></td><td style="white-space:nowrap">Director</td><td>Nov 24 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">484.99</td><td class="value" align="right">218</td><td class="value" align="right">105,728</td><td class="value" align="right">2,183</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000235/xslF345X05/wk-form4_1701218344.xml" class="tab-link" target="_blank">Nov 28 07:39 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1197649&amp;tc=7" class="tab-link">HUANG JEN HSUN</a></td><td style="white-space:nowrap">President and CEO</td><td>Sep 15 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">4.00</td><td class="value" align="right">118,750</td><td class="value" align="right">475,000</td><td class="value" align="right">8,037,625</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000198/xslF345X05/wk-form4_1695070833.xml" class="tab-link" target="_blank">Sep 18 05:00 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1197649&amp;tc=7" class="tab-link">HUANG JEN HSUN</a></td><td style="white-space:nowrap">President and CEO</td><td>Sep 14 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">4.00</td><td class="value" align="right">29,684</td><td class="value" align="right">118,736</td><td class="value" align="right">7,948,559</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000198/xslF345X05/wk-form4_1695070833.xml" class="tab-link" target="_blank">Sep 18 05:00 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1197649&amp;tc=7" class="tab-link">HUANG JEN HSUN</a></td><td style="white-space:nowrap">President and CEO</td><td>Sep 14 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">455.75</td><td class="value" align="right">29,684</td><td class="value" align="right">13,528,345</td><td class="value" align="right">7,918,875</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000198/xslF345X05/wk-form4_1695070833.xml" class="tab-link" target="_blank">Sep 18 05:00 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1197649&amp;tc=7" class="tab-link">HUANG JEN HSUN</a></td><td style="white-space:nowrap">President and CEO</td><td>Sep 13 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">4.00</td><td class="value" align="right">29,688</td><td class="value" align="right">118,752</td><td class="value" align="right">7,948,563</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000196/xslF345X05/wk-form4_1694653063.xml" class="tab-link" target="_blank">Sep 13 08:57 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1197649&amp;tc=7" class="tab-link">HUANG JEN HSUN</a></td><td style="white-space:nowrap">President and CEO</td><td>Sep 13 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">454.01</td><td class="value" align="right">29,688</td><td class="value" align="right">13,478,507</td><td class="value" align="right">7,918,875</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000196/xslF345X05/wk-form4_1694653063.xml" class="tab-link" target="_blank">Sep 13 08:57 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1197649&amp;tc=7" class="tab-link">HUANG JEN HSUN</a></td><td style="white-space:nowrap">President and CEO</td><td>Sep 12 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">4.00</td><td class="value" align="right">29,688</td><td class="value" align="right">118,752</td><td class="value" align="right">7,948,563</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000195/xslF345X05/wk-form4_1694652942.xml" class="tab-link" target="_blank">Sep 13 08:55 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1197649&amp;tc=7" class="tab-link">HUANG JEN HSUN</a></td><td style="white-space:nowrap">President and CEO</td><td>Sep 12 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">451.96</td><td class="value" align="right">29,688</td><td class="value" align="right">13,417,928</td><td class="value" align="right">7,918,875</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000195/xslF345X05/wk-form4_1694652942.xml" class="tab-link" target="_blank">Sep 13 08:55 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1197649&amp;tc=7" class="tab-link">HUANG JEN HSUN</a></td><td style="white-space:nowrap">President and CEO</td><td>Sep 11 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">4.00</td><td class="value" align="right">29,688</td><td class="value" align="right">118,752</td><td class="value" align="right">7,948,563</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000190/xslF345X05/wk-form4_1694476893.xml" class="tab-link" target="_blank">Sep 11 08:01 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1197649&amp;tc=7" class="tab-link">HUANG JEN HSUN</a></td><td style="white-space:nowrap">President and CEO</td><td>Sep 11 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">448.99</td><td class="value" align="right">29,688</td><td class="value" align="right">13,329,754</td><td class="value" align="right">7,918,875</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000190/xslF345X05/wk-form4_1694476893.xml" class="tab-link" target="_blank">Sep 11 08:01 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1197649&amp;tc=7" class="tab-link">HUANG JEN HSUN</a></td><td style="white-space:nowrap">President and CEO</td><td>Sep 08 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">4.00</td><td class="value" align="right">118,750</td><td class="value" align="right">475,000</td><td class="value" align="right">7,918,875</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000189/xslF345X05/wk-form4_1694476766.xml" class="tab-link" target="_blank">Sep 11 07:59 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1197649&amp;tc=7" class="tab-link">HUANG JEN HSUN</a></td><td style="white-space:nowrap">President and CEO</td><td>Sep 07 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">4.00</td><td class="value" align="right">29,688</td><td class="value" align="right">118,752</td><td class="value" align="right">7,829,813</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000189/xslF345X05/wk-form4_1694476766.xml" class="tab-link" target="_blank">Sep 11 07:59 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1197649&amp;tc=7" class="tab-link">HUANG JEN HSUN</a></td><td style="white-space:nowrap">President and CEO</td><td>Sep 07 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">458.30</td><td class="value" align="right">29,688</td><td class="value" align="right">13,605,939</td><td class="value" align="right">7,800,125</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000189/xslF345X05/wk-form4_1694476766.xml" class="tab-link" target="_blank">Sep 11 07:59 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1197649&amp;tc=7" class="tab-link">HUANG JEN HSUN</a></td><td style="white-space:nowrap">President and CEO</td><td>Sep 06 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">4.00</td><td class="value" align="right">29,688</td><td class="value" align="right">118,752</td><td class="value" align="right">7,829,813</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000186/xslF345X05/wk-form4_1694044531.xml" class="tab-link" target="_blank">Sep 06 07:55 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1197649&amp;tc=7" class="tab-link">HUANG JEN HSUN</a></td><td style="white-space:nowrap">President and CEO</td><td>Sep 06 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">471.55</td><td class="value" align="right">29,688</td><td class="value" align="right">13,999,287</td><td class="value" align="right">7,800,125</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000186/xslF345X05/wk-form4_1694044531.xml" class="tab-link" target="_blank">Sep 06 07:55 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1197649&amp;tc=7" class="tab-link">HUANG JEN HSUN</a></td><td style="white-space:nowrap">President and CEO</td><td>Sep 05 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">4.00</td><td class="value" align="right">29,688</td><td class="value" align="right">118,752</td><td class="value" align="right">7,829,813</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000185/xslF345X05/wk-form4_1694044469.xml" class="tab-link" target="_blank">Sep 06 07:54 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1197649&amp;tc=7" class="tab-link">HUANG JEN HSUN</a></td><td style="white-space:nowrap">President and CEO</td><td>Sep 05 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">484.66</td><td class="value" align="right">29,688</td><td class="value" align="right">14,388,561</td><td class="value" align="right">7,800,125</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000185/xslF345X05/wk-form4_1694044469.xml" class="tab-link" target="_blank">Sep 06 07:54 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="insidertrading.ashx?oc=1197649&amp;tc=7" class="tab-link">HUANG JEN HSUN</a></td><td style="white-space:nowrap">President and CEO</td><td>Sep 01 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">4.00</td><td class="value" align="right">29,688</td><td class="value" align="right">118,752</td><td class="value" align="right">7,829,813</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000185/xslF345X05/wk-form4_1694044469.xml" class="tab-link" target="_blank">Sep 06 07:54 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1197649&amp;tc=7" class="tab-link">HUANG JEN HSUN</a></td><td style="white-space:nowrap">President and CEO</td><td>Sep 01 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">486.40</td><td class="value" align="right">29,688</td><td class="value" align="right">14,440,205</td><td class="value" align="right">7,800,125</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000185/xslF345X05/wk-form4_1694044469.xml" class="tab-link" target="_blank">Sep 06 07:54 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1199039&amp;tc=7" class="tab-link">STEVENS MARK A</a></td><td style="white-space:nowrap">Director</td><td>Aug 29 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">489.91</td><td class="value" align="right">30,675</td><td class="value" align="right">15,028,072</td><td class="value" align="right">1,000,111</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000181/xslF345X05/wk-form4_1693429998.xml" class="tab-link" target="_blank">Aug 30 05:13 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1199039&amp;tc=7" class="tab-link">STEVENS MARK A</a></td><td style="white-space:nowrap">Director</td><td>Aug 28 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">468.08</td><td class="value" align="right">21,500</td><td class="value" align="right">10,063,636</td><td class="value" align="right">1,030,786</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000181/xslF345X05/wk-form4_1693429998.xml" class="tab-link" target="_blank">Aug 30 05:13 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="insidertrading.ashx?oc=1588670&amp;tc=7" class="tab-link">Kress Colette</a></td><td style="white-space:nowrap">EVP &amp; Chief Financial Officer</td><td>Aug 28 '23</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">460.74</td><td class="value" align="right">4,980</td><td class="value" align="right">2,294,476</td><td class="value" align="right">499,428</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1045810/000104581023000180/xslF345X05/wk-form4_1693429721.xml" class="tab-link" target="_blank">Aug 30 05:08 PM</a></td></tr></table>
+
+
+
+<hr color="#ff8000" align="center">
+<div class="body-table-news-wrapper news-table_wrapper"><table align="center" width="70%" cellpadding="1" cellspacing="0" border="0" id="news-table" class="fullview-news-outer news-table">
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Barrons.com', 'https://finance.yahoo.com/m/4da8112d-b28f-3582-bc6d-b261c87a0919/nvidia-faces-first-ai.html');">&#13;
+        <td width="130" align="right">&#13;
+            Today 09:48AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/4da8112d-b28f-3582-bc6d-b261c87a0919/nvidia-faces-first-ai.html" target="_blank" rel="nofollow">Nvidia Faces First AI Antitrust Charge, According to Report</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Barrons.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Barrons.com', 'https://finance.yahoo.com/m/affcbeba-de73-3b6b-9faa-c8c0717b3d82/nvidia-stock-drops.-the-case.html');">&#13;
+        <td width="130" align="right">&#13;
+            09:47AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/affcbeba-de73-3b6b-9faa-c8c0717b3d82/nvidia-stock-drops.-the-case.html" target="_blank" rel="nofollow">Nvidia Stock Drops. The Case for the Chip Maker to Rally.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Barrons.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Barrons.com', 'https://finance.yahoo.com/m/74419e33-c876-3091-9b30-fa6ee0aca300/these-stocks-are-moving-the.html');">&#13;
+        <td width="130" align="right">&#13;
+            09:44AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/74419e33-c876-3091-9b30-fa6ee0aca300/these-stocks-are-moving-the.html" target="_blank" rel="nofollow">These Stocks Are Moving the Most Today</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Barrons.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Barrons.com', 'https://finance.yahoo.com/m/cf612bad-84f1-35ac-a8df-131cb3c1c91b/these-stocks-are-moving-the.html');">&#13;
+        <td width="130" align="right">&#13;
+            09:44AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/cf612bad-84f1-35ac-a8df-131cb3c1c91b/these-stocks-are-moving-the.html" target="_blank" rel="nofollow">These Stocks Are Moving the Most Today: Tesla, Nvidia, Chewy, Paramount, D.R. Horton, Pure Storage, PayPal, and More</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Barrons.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/2208ad76-61fc-3d6d-a108-cc6a15632e46/1-growth-stock-down-56%25-to.html');">&#13;
+        <td width="130" align="right">&#13;
+            09:07AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/2208ad76-61fc-3d6d-a108-cc6a15632e46/1-growth-stock-down-56%25-to.html" target="_blank" rel="nofollow">1 Growth Stock Down 56% to Buy Right Now</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/is-jfrog-ltd-frog-well-positioned-for-a-takeoff-1320166/');">&#13;
+        <td width="130" align="right">&#13;
+            08:38AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/is-jfrog-ltd-frog-well-positioned-for-a-takeoff-1320166/" target="_blank" rel="nofollow">Is JFrog Ltd (FROG) Well Positioned for a Takeoff?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/does-cava-group-cava-have-a-long-growth-trajectory-1320163/');">&#13;
+        <td width="130" align="right">&#13;
+            08:33AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/does-cava-group-cava-have-a-long-growth-trajectory-1320163/" target="_blank" rel="nofollow">Does CAVA Group (CAVA) Have a Long Growth Trajectory?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/will-paymentus-holdings-pay-be-able-to-attain-20-revenue-growth-1320159/');">&#13;
+        <td width="130" align="right">&#13;
+            08:27AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/will-paymentus-holdings-pay-be-able-to-attain-20-revenue-growth-1320159/" target="_blank" rel="nofollow">Will Paymentus Holdings (PAY) be Able to Attain 20% Revenue Growth?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Barrons.com', 'https://finance.yahoo.com/m/78c3fc1f-732c-3619-b911-7025b4e33178/the-5-cheapest-tech-stocks.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:11AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/78c3fc1f-732c-3619-b911-7025b4e33178/the-5-cheapest-tech-stocks.html" target="_blank" rel="nofollow">The 5 Cheapest Tech Stocks Nowand How They Got That Way</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Barrons.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Bloomberg', 'https://finance.yahoo.com/news/top-investors-see-plenty-ai-090000103.html');">&#13;
+        <td width="130" align="right">&#13;
+            07:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/top-investors-see-plenty-ai-090000103.html" target="_blank" rel="nofollow">BlackRock, BNP See Plenty of AI Fuel Left to Drive Equity Rally</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Bloomberg)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/is-broadcom-inc-nasdaqavgo-the-best-ai-momentum-stock-1319710/');">&#13;
+        <td width="130" align="right">&#13;
+            07:32AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/is-broadcom-inc-nasdaqavgo-the-best-ai-momentum-stock-1319710/" target="_blank" rel="nofollow">Is Broadcom Inc. (NASDAQ:AVGO) the Best AI Momentum Stock?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/is-advanced-micro-devices-inc-nasdaqamd-the-best-ai-chips-stock-to-buy-now-1319712/');">&#13;
+        <td width="130" align="right">&#13;
+            07:31AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/is-advanced-micro-devices-inc-nasdaqamd-the-best-ai-chips-stock-to-buy-now-1319712/" target="_blank" rel="nofollow">Is Advanced Micro Devices Inc. (NASDAQ:AMD) the Best AI Chips Stock to Buy Now?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/is-alphabet-inc-nasdaqgoog-the-best-ai-stock-to-stick-to-during-upcoming-volatility-1319714/');">&#13;
+        <td width="130" align="right">&#13;
+            07:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/is-alphabet-inc-nasdaqgoog-the-best-ai-stock-to-stick-to-during-upcoming-volatility-1319714/" target="_blank" rel="nofollow">Is Alphabet Inc. (NASDAQ:GOOG) the Best AI Stock to Stick To During Upcoming Volatility?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/analysts-think-investors-will-buy-more-nvidia-corp-nvda-to-offset-volatility-this-summer-1319719/');">&#13;
+        <td width="130" align="right">&#13;
+            07:29AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/analysts-think-investors-will-buy-more-nvidia-corp-nvda-to-offset-volatility-this-summer-1319719/" target="_blank" rel="nofollow">Analysts Think Investors Will Buy More NVIDIA Corp (NVDA) to Offset Volatility This Summer</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/is-meta-platforms-inc-nasdaqmeta-the-best-ai-momentum-stock-to-benefit-from-volatility-ahead-1319721/');">&#13;
+        <td width="130" align="right">&#13;
+            07:28AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/is-meta-platforms-inc-nasdaqmeta-the-best-ai-momentum-stock-to-benefit-from-volatility-ahead-1319721/" target="_blank" rel="nofollow">Is Meta Platforms Inc (NASDAQ:META) the Best AI Momentum Stock to Benefit from Volatility Ahead?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/is-amazon-com-inc-nasdaqamzn-the-best-ai-momentum-stock-to-benefit-from-volatility-ahead-1319729/');">&#13;
+        <td width="130" align="right">&#13;
+            07:27AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/is-amazon-com-inc-nasdaqamzn-the-best-ai-momentum-stock-to-benefit-from-volatility-ahead-1319729/" target="_blank" rel="nofollow">Is Amazon.com Inc (NASDAQ:AMZN) the Best AI Momentum Stock to Benefit from Volatility Ahead?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/is-apple-inc-nasdaqaapl-the-best-ai-momentum-stock-to-benefit-from-volatility-ahead-1319732/');">&#13;
+        <td width="130" align="right">&#13;
+            07:26AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/is-apple-inc-nasdaqaapl-the-best-ai-momentum-stock-to-benefit-from-volatility-ahead-1319732/" target="_blank" rel="nofollow">Is Apple Inc (NASDAQ:AAPL) the Best AI Momentum Stock to Benefit from Volatility Ahead?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/07/3-cloud-infrastructure-plays-growing-50-despite-tech-slowdown/');">&#13;
+        <td width="130" align="right">&#13;
+            07:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/07/3-cloud-infrastructure-plays-growing-50-despite-tech-slowdown/" target="_blank" rel="nofollow">3 Cloud Infrastructure Plays Growing 50%+ Despite Tech Slowdown</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/market360/2024/07/the-1200-nvidia-prediction-how-nvda-stock-could-soar-back-to-its-pre-split-price/');">&#13;
+        <td width="130" align="right">&#13;
+            06:40AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/market360/2024/07/the-1200-nvidia-prediction-how-nvda-stock-could-soar-back-to-its-pre-split-price/" target="_blank" rel="nofollow">The $1,200 Nvidia Prediction: How NVDA Stock Could Soar Back to Its Pre-Split Price</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Fortune', 'https://finance.yahoo.com/news/anyone-beat-nvidia-ai-analysts-103000003.html');">&#13;
+        <td width="130" align="right">&#13;
+            06:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/anyone-beat-nvidia-ai-analysts-103000003.html" target="_blank" rel="nofollow">Can anyone beat Nvidia in AI? Analysts say its the wrong question</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Fortune)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/07/3-mega-cap-chip-stocks-that-could-make-major-moves-soon/');">&#13;
+        <td width="130" align="right">&#13;
+            06:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/07/3-mega-cap-chip-stocks-that-could-make-major-moves-soon/" target="_blank" rel="nofollow">3 Mega-Cap Chip Stocks That Could Make Major Moves Soon</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/market360/2024/07/amazons-2-trillion-milestone-why-amzn-stock-could-surge-another-20/');">&#13;
+        <td width="130" align="right">&#13;
+            06:20AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/market360/2024/07/amazons-2-trillion-milestone-why-amzn-stock-could-surge-another-20/" target="_blank" rel="nofollow">Amazon's $2 Trillion Milestone: Why AMZN Stock Could Surge Another 20%</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/07/3-stocks-earning-rare-triple-upgrades-from-major-brokerages/');">&#13;
+        <td width="130" align="right">&#13;
+            06:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/07/3-stocks-earning-rare-triple-upgrades-from-major-brokerages/" target="_blank" rel="nofollow">3 Stocks Earning Rare 'Triple Upgrades' from Major Brokerages</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/07/ai-gold-rush-why-smci-stock-could-skyrocket-despite-recent-pullback/');">&#13;
+        <td width="130" align="right">&#13;
+            06:10AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/07/ai-gold-rush-why-smci-stock-could-skyrocket-despite-recent-pullback/" target="_blank" rel="nofollow">AI Gold Rush: Why SMCI Stock Could Skyrocket Despite Recent Pullback</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/9550863b-474e-37a9-ac41-f07c574038c0/should-you-buy-nvidia-stock.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:50AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/9550863b-474e-37a9-ac41-f07c574038c0/should-you-buy-nvidia-stock.html" target="_blank" rel="nofollow">Should You Buy Nvidia Stock Hand Over Fist After Its Post-Stock-Split Pullback?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/333ce6fd-0dec-30ac-a524-b9aed20dc40c/better-artificial.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/333ce6fd-0dec-30ac-a524-b9aed20dc40c/better-artificial.html" target="_blank" rel="nofollow">Better Artificial Intelligence (AI) Stock: Nvidia vs. AMD</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/the-state-with-the-most-auto-debt-per-capita-in-the-us-1320048/');">&#13;
+        <td width="130" align="right">&#13;
+            05:20AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/the-state-with-the-most-auto-debt-per-capita-in-the-us-1320048/" target="_blank" rel="nofollow">The State with the Most Auto Debt Per Capita in the US</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/25-states-with-most-auto-debt-per-capita-in-the-us-1320020/');">&#13;
+        <td width="130" align="right">&#13;
+            05:19AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/25-states-with-most-auto-debt-per-capita-in-the-us-1320020/" target="_blank" rel="nofollow">25 States with Most Auto Debt Per Capita in the US</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/1d44ab4f-5249-3357-9332-4678bd2d27dd/is-it-too-late-to-buy-super.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:10AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/1d44ab4f-5249-3357-9332-4678bd2d27dd/is-it-too-late-to-buy-super.html" target="_blank" rel="nofollow">Is It Too Late to Buy Super Micro Computer Stock Now?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/de63b274-1889-30da-a1b2-e8fb73a94381/forget-nvidia%3A-prominent.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:06AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/de63b274-1889-30da-a1b2-e8fb73a94381/forget-nvidia%3A-prominent.html" target="_blank" rel="nofollow">Forget Nvidia: Prominent Billionaires Are Selling It and Buying These 2 Hypergrowth Stocks Instead</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Yahoo Finance', 'https://finance.yahoo.com/news/ai-meets-do-no-harm-healthcare-grapples-with-tech-promises-090013741.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/ai-meets-do-no-harm-healthcare-grapples-with-tech-promises-090013741.html" target="_blank" rel="nofollow">AI meets 'Do no harm': Healthcare grapples with tech promises</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Yahoo Finance)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/7f11593a-364a-3566-b2fc-25ef178e0193/meet-the-unstoppable-stock.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:49AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/7f11593a-364a-3566-b2fc-25ef178e0193/meet-the-unstoppable-stock.html" target="_blank" rel="nofollow">Meet the Unstoppable Stock That Just Joined Nvidia, Microsoft, Apple, and Alphabet by Topping $2 Trillion in Market Cap</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'DigiTimes', 'https://www.digitimes.com/news/a20240702PD205/systex-data-subsidiary-finance-nvidia.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:04AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.digitimes.com/news/a20240702PD205/systex-data-subsidiary-finance-nvidia.html" target="_blank" rel="nofollow">Naurint introduces edge server for enterprise applications</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(DigiTimes)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'DigiTimes', 'https://www.digitimes.com/news/a20240702PD221/france-nvidia-antitrust-investigation-ai.html');">&#13;
+        <td width="130" align="right">&#13;
+            03:51AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.digitimes.com/news/a20240702PD221/france-nvidia-antitrust-investigation-ai.html" target="_blank" rel="nofollow">France targets Nvidia in landmark antitrust case over AI dominance</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(DigiTimes)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Barrons.com', 'https://finance.yahoo.com/m/695c1b71-1e84-3400-a7d2-bae3cd5508bb/nvidia-and-microsoft-are.html');">&#13;
+        <td width="130" align="right">&#13;
+            03:48AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/695c1b71-1e84-3400-a7d2-bae3cd5508bb/nvidia-and-microsoft-are.html" target="_blank" rel="nofollow">Nvidia and Microsoft Are Pricey. Here Are the 5 Cheapest Tech Stocks Now.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Barrons.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/heres-why-diamond-hill-long-short-fund-is-holding-its-short-position-palomar-holdings-plmr-1320120/');">&#13;
+        <td width="130" align="right">&#13;
+            03:05AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/heres-why-diamond-hill-long-short-fund-is-holding-its-short-position-palomar-holdings-plmr-1320120/" target="_blank" rel="nofollow">Here's Why Diamond Hill Long-Short Fund is Holding its Short Position Palomar Holdings (PLMR)</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/heres-why-the-walt-disney-company-dis-rose-in-q1-1320118/');">&#13;
+        <td width="130" align="right">&#13;
+            02:54AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/heres-why-the-walt-disney-company-dis-rose-in-q1-1320118/" target="_blank" rel="nofollow">Here's Why The Walt Disney Company (DIS) Rose in Q1</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/heres-why-meta-platforms-meta-surged-in-q1-1320116/');">&#13;
+        <td width="130" align="right">&#13;
+            02:36AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/heres-why-meta-platforms-meta-surged-in-q1-1320116/" target="_blank" rel="nofollow">Here's Why Meta Platforms (META) Surged in Q1</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/b1d615fb-2f78-3f96-8d07-1f5400912d37/nvidia%27s-1-killer-advantage.html');">&#13;
+        <td width="130" align="right">&#13;
+            01:35AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/b1d615fb-2f78-3f96-8d07-1f5400912d37/nvidia%27s-1-killer-advantage.html" target="_blank" rel="nofollow">Nvidia's 1 Killer Advantage Will Produce a "Cash Gusher" for Shareholders in the Wake of Its 10-for-1 Stock Split, According to 1 Wall Street Analyst.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Reuters', 'https://finance.yahoo.com/news/analysis-echoes-dotcom-bubble-haunt-050351239.html');">&#13;
+        <td width="130" align="right">&#13;
+            01:03AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/analysis-echoes-dotcom-bubble-haunt-050351239.html" target="_blank" rel="nofollow">Analysis-Echoes of dotcom bubble haunt AI-driven US stock market</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Reuters)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/07/surprise-3-stocks-that-are-outperforming-nvidia-in-2024/');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-01-24 11:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/07/surprise-3-stocks-that-are-outperforming-nvidia-in-2024/" target="_blank" rel="nofollow">Surprise! 3 Stocks That Are Outperforming Nvidia in 2024.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/07/the-3-best-semiconductors-stocks-to-buy-in-july-2024/');">&#13;
+        <td width="130" align="right">&#13;
+            09:11PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/07/the-3-best-semiconductors-stocks-to-buy-in-july-2024/" target="_blank" rel="nofollow">The 3 Best Semiconductors Stocks to Buy in July 2024</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/why-is-tesla-inc-tsla-the-best-stock-to-buy-and-hold-for-5-years-according-to-cathie-wood-1320059/');">&#13;
+        <td width="130" align="right">&#13;
+            08:46PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/why-is-tesla-inc-tsla-the-best-stock-to-buy-and-hold-for-5-years-according-to-cathie-wood-1320059/" target="_blank" rel="nofollow">Why Is Tesla, Inc. (TSLA) the Best Stock to Buy and Hold for 5 Years According to Cathie Wood?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/is-roku-inc-roku-one-of-the-best-stocks-to-buy-and-hold-for-5-years-according-to-cathie-wood-1320056/');">&#13;
+        <td width="130" align="right">&#13;
+            08:43PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/is-roku-inc-roku-one-of-the-best-stocks-to-buy-and-hold-for-5-years-according-to-cathie-wood-1320056/" target="_blank" rel="nofollow">Is Roku, Inc. (ROKU) One of the Best Stocks to Buy and Hold For 5 Years According to Cathie Wood?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/is-crispr-therapeutics-ag-crsp-the-best-stock-to-buy-and-hold-for-5-years-1320053/');">&#13;
+        <td width="130" align="right">&#13;
+            08:40PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/is-crispr-therapeutics-ag-crsp-the-best-stock-to-buy-and-hold-for-5-years-1320053/" target="_blank" rel="nofollow">Is CRISPR Therapeutics AG (CRSP) the Best Stock to Buy and Hold for 5 Years?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/teladoc-health-inc-tdoc-best-stock-to-buy-and-hold-for-5-years-according-to-cathie-wood-1320050/');">&#13;
+        <td width="130" align="right">&#13;
+            08:28PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/teladoc-health-inc-tdoc-best-stock-to-buy-and-hold-for-5-years-according-to-cathie-wood-1320050/" target="_blank" rel="nofollow">Teladoc Health, Inc. (TDOC): Best Stock to Buy and Hold For 5 Years According to Cathie Wood?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/2bf74983-eade-399d-879b-17d3cfdad6d8/nvidia-is-a-top-ai-stock%2C-but.html');">&#13;
+        <td width="130" align="right">&#13;
+            08:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/2bf74983-eade-399d-879b-17d3cfdad6d8/nvidia-is-a-top-ai-stock%2C-but.html" target="_blank" rel="nofollow">Nvidia Is a Top AI Stock, but Don't Ignore These 4 Red Flags</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/is-twist-bioscience-corporation-twst-a-good-stock-to-buy-and-hold-for-5-years-1320024/');">&#13;
+        <td width="130" align="right">&#13;
+            07:08PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/is-twist-bioscience-corporation-twst-a-good-stock-to-buy-and-hold-for-5-years-1320024/" target="_blank" rel="nofollow">Is Twist Bioscience Corporation (TWST) a Good Stock to Buy and Hold for 5 Years?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/spotify-technology-s-a-spot-a-stock-to-buy-and-hold-for-5-years-1320014/');">&#13;
+        <td width="130" align="right">&#13;
+            06:31PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/spotify-technology-s-a-spot-a-stock-to-buy-and-hold-for-5-years-1320014/" target="_blank" rel="nofollow">Spotify Technology S.A. (SPOT): A Stock to Buy and Hold For 5 Years?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/25436fc6-6b4c-33c7-ad57-02c25a868da0/2-artificial-intelligence.html');">&#13;
+        <td width="130" align="right">&#13;
+            06:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/25436fc6-6b4c-33c7-ad57-02c25a868da0/2-artificial-intelligence.html" target="_blank" rel="nofollow">2 Artificial Intelligence (AI) Stocks Trading Under $30 That Can Supercharge Your Portfolio</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'The Information', 'https://finance.yahoo.com/m/34e8768d-5ce8-32ff-9ce1-9aef8f42faaa/nvidia-to-face-french.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:53PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/34e8768d-5ce8-32ff-9ce1-9aef8f42faaa/nvidia-to-face-french.html" target="_blank" rel="nofollow">Nvidia to Face French Antitrust Charges, According to Report</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(The Information)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Yahoo Finance Video', 'https://finance.yahoo.com/video/ai-investments-see-aggressive-broadening-213802680.html');">&#13;
+        <td width="130" align="right">&#13;
+            05:38PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/video/ai-investments-see-aggressive-broadening-213802680.html" target="_blank" rel="nofollow">AI investments will see 'aggressive broadening out': Analyst</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Yahoo Finance Video)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Barrons.com', 'https://finance.yahoo.com/m/20299ede-b1f3-3197-b687-bdbaafb5fd41/nvidia-stock-breaks-losing.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:46PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/20299ede-b1f3-3197-b687-bdbaafb5fd41/nvidia-stock-breaks-losing.html" target="_blank" rel="nofollow">Nvidia Stock Breaks Losing Streak. Whats Worrying the Market.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Barrons.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investor\u0027s Business Daily', 'https://finance.yahoo.com/m/e4418519-a66e-3d16-ade9-920cbc9d1702/nvidia-stock-seen-reaching.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:30PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/e4418519-a66e-3d16-ade9-920cbc9d1702/nvidia-stock-seen-reaching.html" target="_blank" rel="nofollow">Nvidia Stock Seen Reaching New High On 'Robust' Sales</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Investor's Business Daily)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Barrons.com', 'https://finance.yahoo.com/m/2fc8e5e6-e13f-3596-8028-19b7a454f311/%E2%80%98why-isn%E2%80%99t-nvidia-in-my.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:30PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/2fc8e5e6-e13f-3596-8028-19b7a454f311/%E2%80%98why-isn%E2%80%99t-nvidia-in-my.html" target="_blank" rel="nofollow">Why Isnt Nvidia in My Portfolio? How Advisors Are Answering Client Questions About Hot Stocks.</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Barrons.com)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/07/7-budget-friendly-stocks-getting-ready-to-rocket-in-2024/');">&#13;
+        <td width="130" align="right">&#13;
+            04:30PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/07/7-budget-friendly-stocks-getting-ready-to-rocket-in-2024/" target="_blank" rel="nofollow">7 Budget-Friendly Stocks Getting Ready to Rocket in 2024</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/07/3-retirement-all-stars-for-steady-growth-and-income/');">&#13;
+        <td width="130" align="right">&#13;
+            04:30PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/07/3-retirement-all-stars-for-steady-growth-and-income/" target="_blank" rel="nofollow">3 Retirement All-Stars for Steady Growth and Income</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/07/morgan-stanley-just-raised-its-price-target-on-nvidia-nvda-stock-2/');">&#13;
+        <td width="130" align="right">&#13;
+            04:19PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/07/morgan-stanley-just-raised-its-price-target-on-nvidia-nvda-stock-2/" target="_blank" rel="nofollow">Morgan Stanley Just Raised Its Price Target on Nvidia (NVDA) Stock</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/07/3-ai-chip-stocks-future-you-will-be-happy-to-own/');">&#13;
+        <td width="130" align="right">&#13;
+            04:13PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/07/3-ai-chip-stocks-future-you-will-be-happy-to-own/" target="_blank" rel="nofollow">3 AI Chip Stocks Future You' Will Be Happy to Own</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investor\u0027s Business Daily', 'https://finance.yahoo.com/m/8c7138d4-5779-361f-b6e3-a968efb278e6/amazon%2C-meta-spearhead-fresh.html');">&#13;
+        <td width="130" align="right">&#13;
+            04:03PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/8c7138d4-5779-361f-b6e3-a968efb278e6/amazon%2C-meta-spearhead-fresh.html" target="_blank" rel="nofollow">Amazon, Meta Spearhead Fresh Batch Of Breakouts As Nvidia Shows Resilience</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Investor's Business Daily)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/07/the-10-soundhound-ai-stock-prediction-why-this-unknown-name-could-outperform-nvidia/');">&#13;
+        <td width="130" align="right">&#13;
+            03:43PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/07/the-10-soundhound-ai-stock-prediction-why-this-unknown-name-could-outperform-nvidia/" target="_blank" rel="nofollow">The $10 SoundHound AI Stock Prediction: Why This Unknown Name Could Outperform Nvidia</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/why-is-albemarle-corporation-alb-the-best-lithium-and-battery-stock-to-buy-now-1320009/');">&#13;
+        <td width="130" align="right">&#13;
+            03:19PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/why-is-albemarle-corporation-alb-the-best-lithium-and-battery-stock-to-buy-now-1320009/" target="_blank" rel="nofollow">Why Is Albemarle Corporation (ALB) the Best Lithium and Battery Stock to Buy Now?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/rio-tinto-group-rio-why-are-hedge-funds-bullish-on-this-lithium-and-battery-stock-right-now-1320006/');">&#13;
+        <td width="130" align="right">&#13;
+            03:17PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/rio-tinto-group-rio-why-are-hedge-funds-bullish-on-this-lithium-and-battery-stock-right-now-1320006/" target="_blank" rel="nofollow">Rio Tinto Group (RIO): Why Are Hedge Funds Bullish on This Lithium and Battery Stock Right Now?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/is-enersys-ens-the-best-lithium-and-battery-stock-to-buy-now-1320003/');">&#13;
+        <td width="130" align="right">&#13;
+            03:14PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/is-enersys-ens-the-best-lithium-and-battery-stock-to-buy-now-1320003/" target="_blank" rel="nofollow">Is EnerSys (ENS) the Best Lithium and Battery Stock to Buy Now?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/are-hedge-funds-bullish-on-sigma-lithium-corporation-sgml-1319999/');">&#13;
+        <td width="130" align="right">&#13;
+            02:39PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/are-hedge-funds-bullish-on-sigma-lithium-corporation-sgml-1319999/" target="_blank" rel="nofollow">Are Hedge Funds Bullish on Sigma Lithium Corporation (SGML)?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'CNBC TV', 'https://www.youtube.com/watch?v=7zSzFfa3DuY');">&#13;
+        <td width="130" align="right">&#13;
+            02:38PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.youtube.com/watch?v=7zSzFfa3DuY" target="_blank" rel="nofollow">Trade Tracker: Steve Weiss trims Nvidia</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(CNBC TV)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/07/nvda-stock-alert-nvidia-will-likely-face-antitrust-charges-in-france/');">&#13;
+        <td width="130" align="right">&#13;
+            02:35PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/07/nvda-stock-alert-nvidia-will-likely-face-antitrust-charges-in-france/" target="_blank" rel="nofollow">NVDA Stock Alert: Nvidia Will Likely Face Antitrust Charges in France</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investor\u0027s Business Daily', 'https://finance.yahoo.com/m/d27e7c4c-2bb0-323d-8610-fb1eb057a898/nvidia-%28nvda%29-stock-quotes%2C.html');">&#13;
+        <td width="130" align="right">&#13;
+            02:30PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/d27e7c4c-2bb0-323d-8610-fb1eb057a898/nvidia-%28nvda%29-stock-quotes%2C.html" target="_blank" rel="nofollow">Nvidia (NVDA) Stock Quotes, Company News And Chart Analysis</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Investor's Business Daily)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investor\u0027s Business Daily', 'https://finance.yahoo.com/m/684c930d-1475-3adc-b013-ae604c056ebc/ai-stocks%3A-tech-giants%2C-cloud.html');">&#13;
+        <td width="130" align="right">&#13;
+            02:18PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/684c930d-1475-3adc-b013-ae604c056ebc/ai-stocks%3A-tech-giants%2C-cloud.html" target="_blank" rel="nofollow">AI Stocks: Tech Giants, Cloud Titans, Chipmakers Battle For An Edge</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Investor's Business Daily)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investor\u0027s Business Daily', 'https://finance.yahoo.com/m/4205eaa9-f620-3a0b-a81a-0e82c7c9fd0b/magnificent-seven-stocks%3A.html');">&#13;
+        <td width="130" align="right">&#13;
+            02:12PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/4205eaa9-f620-3a0b-a81a-0e82c7c9fd0b/magnificent-seven-stocks%3A.html" target="_blank" rel="nofollow">Magnificent Seven Stocks: Nvidia Stock Reverses Higher; Tesla Surges</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Investor's Business Daily)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/07/3-recent-stock-downgrades-signaling-trouble-ahead/');">&#13;
+        <td width="130" align="right">&#13;
+            01:48PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/07/3-recent-stock-downgrades-signaling-trouble-ahead/" target="_blank" rel="nofollow">3 Recent Stock Downgrades Signaling Trouble Ahead</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Yahoo Finance Video', 'https://finance.yahoo.com/video/boeing-spirit-aerosystems-deal-reaction-171636780.html');">&#13;
+        <td width="130" align="right">&#13;
+            01:16PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/video/boeing-spirit-aerosystems-deal-reaction-171636780.html" target="_blank" rel="nofollow">Boeing-Spirit AeroSystems deal, reaction to Biden-Trump debate: Morning Brief</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Yahoo Finance Video)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'The Telegraph', 'https://finance.yahoo.com/m/a461ccba-8d9a-3f3d-8b64-04f6e10396cd/french-stock-market-gains-on.html');">&#13;
+        <td width="130" align="right">&#13;
+            01:11PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/a461ccba-8d9a-3f3d-8b64-04f6e10396cd/french-stock-market-gains-on.html" target="_blank" rel="nofollow">French stock market gains on bet Le Pen wont win majority</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(The Telegraph)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investor\u0027s Business Daily', 'https://finance.yahoo.com/m/80fe8744-afd4-33aa-a250-bbdaf9b0f2c0/nvidia-stock-steady-as-it.html');">&#13;
+        <td width="130" align="right">&#13;
+            01:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/80fe8744-afd4-33aa-a250-bbdaf9b0f2c0/nvidia-stock-steady-as-it.html" target="_blank" rel="nofollow">Nvidia Stock Steady As It Tries To Recover; Is The Stock A Buy Now?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Investor's Business Daily)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/freyr-battery-inc-nysefrey-is-this-the-best-lithium-and-battery-stock-to-buy-right-now-1319990/');">&#13;
+        <td width="130" align="right">&#13;
+            12:56PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/freyr-battery-inc-nysefrey-is-this-the-best-lithium-and-battery-stock-to-buy-right-now-1319990/" target="_blank" rel="nofollow">FREYR Battery, Inc. (FREY): Is This The Best Lithium and Battery Stock to Buy Right Now?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/is-lifezone-metals-limited-lzm-one-of-the-best-lithium-and-battery-stocks-to-buy-now-1319987/');">&#13;
+        <td width="130" align="right">&#13;
+            12:54PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/is-lifezone-metals-limited-lzm-one-of-the-best-lithium-and-battery-stocks-to-buy-now-1319987/" target="_blank" rel="nofollow">Is Lifezone Metals Limited (LZM) One of the Best Lithium and Battery Stocks to Buy Now?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/did-sociedad-quimica-y-minera-de-chile-s-a-sqm-exceed-expectations-in-q1-1319983/');">&#13;
+        <td width="130" align="right">&#13;
+            12:51PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/did-sociedad-quimica-y-minera-de-chile-s-a-sqm-exceed-expectations-in-q1-1319983/" target="_blank" rel="nofollow">Did Sociedad Qu mica y Minera de Chile S.A. (SQM) Exceed Expectations in Q1?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/why-are-analysts-bullish-on-critical-metals-corp-crml-1319976/');">&#13;
+        <td width="130" align="right">&#13;
+            12:47PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/why-are-analysts-bullish-on-critical-metals-corp-crml-1319976/" target="_blank" rel="nofollow">Why Are Analysts Bullish on Critical Metals Corp. (CRML)?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/why-did-analysts-give-piedmont-lithium-inc-pll-a-buy-rating-1319973/');">&#13;
+        <td width="130" align="right">&#13;
+            12:44PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/why-did-analysts-give-piedmont-lithium-inc-pll-a-buy-rating-1319973/" target="_blank" rel="nofollow">Why Did Analysts Give Piedmont Lithium Inc. (PLL) a Buy Rating?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Investor\u0027s Business Daily', 'https://finance.yahoo.com/m/8c7138d4-5779-361f-b6e3-a968efb278e6/nvidia-tested-as-amazon%2C-meta.html');">&#13;
+        <td width="130" align="right">&#13;
+            12:41PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/8c7138d4-5779-361f-b6e3-a968efb278e6/nvidia-tested-as-amazon%2C-meta.html" target="_blank" rel="nofollow">Nvidia Tested As Amazon, Meta Spearhead This Batch Of Breakouts</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Investor's Business Daily)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/lithium-americas-argentina-corp-laac-is-this-a-good-lithium-and-battery-stock-to-buy-now-1319969/');">&#13;
+        <td width="130" align="right">&#13;
+            12:41PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/lithium-americas-argentina-corp-laac-is-this-a-good-lithium-and-battery-stock-to-buy-now-1319969/" target="_blank" rel="nofollow">Lithium Americas (Argentina) Corp. (LAAC): Is This a Good Lithium and Battery Stock to Buy Now?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'CNBC TV', 'https://www.youtube.com/watch?v=3DiLPVUPmH4');">&#13;
+        <td width="130" align="right">&#13;
+            12:38PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.youtube.com/watch?v=3DiLPVUPmH4" target="_blank" rel="nofollow">Nvidia: Here's why Morgan Stanley raised its price target on the stock</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(CNBC TV)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/diamond-hill-long-short-fund-benefited-from-its-long-position-in-international-business-machines-ibm-1319913/');">&#13;
+        <td width="130" align="right">&#13;
+            12:19PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/diamond-hill-long-short-fund-benefited-from-its-long-position-in-international-business-machines-ibm-1319913/" target="_blank" rel="nofollow">Diamond Hill Long-Short Fund Benefited from its Short Position in International Business Machines (IBM)</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/why-is-new-york-community-bancorp-inc-nycb-the-best-bank-penny-stock-to-buy-now-1319961/');">&#13;
+        <td width="130" align="right">&#13;
+            12:08PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/why-is-new-york-community-bancorp-inc-nycb-the-best-bank-penny-stock-to-buy-now-1319961/" target="_blank" rel="nofollow">Why Is New York Community Bancorp, Inc. (NYCB) the Best Bank Penny Stock to Buy Now?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/why-did-analysts-give-banco-bradesco-s-a-bbd-a-buy-rating-1319959/');">&#13;
+        <td width="130" align="right">&#13;
+            12:03PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/why-did-analysts-give-banco-bradesco-s-a-bbd-a-buy-rating-1319959/" target="_blank" rel="nofollow">Why Did Analysts Give Banco Bradesco S.A. (BBD) a Buy Rating?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/did-banco-santander-s-a-san-perform-well-in-q1-1319955/');">&#13;
+        <td width="130" align="right">&#13;
+            12:01PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/did-banco-santander-s-a-san-perform-well-in-q1-1319955/" target="_blank" rel="nofollow">Did Banco Santander, S.A. (SAN) Perform Well in Q1?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/lloyds-banking-group-plc-lyg-did-this-bank-penny-stock-meet-expectations-in-q1-1319949/');">&#13;
+        <td width="130" align="right">&#13;
+            11:57AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/lloyds-banking-group-plc-lyg-did-this-bank-penny-stock-meet-expectations-in-q1-1319949/" target="_blank" rel="nofollow">Lloyds Banking Group plc (LYG): Did This Bank Penny Stock Meet Expectations in Q1?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/what-makes-powell-industries-powl-a-good-short-position-1319917/');">&#13;
+        <td width="130" align="right">&#13;
+            11:56AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/what-makes-powell-industries-powl-a-good-short-position-1319917/" target="_blank" rel="nofollow">What Makes Powell Industries (POWL) a Good Short Position?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/did-mizuho-financial-group-inc-mfg-outperform-expectations-in-the-last-quarter-1319946/');">&#13;
+        <td width="130" align="right">&#13;
+            11:53AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/did-mizuho-financial-group-inc-mfg-outperform-expectations-in-the-last-quarter-1319946/" target="_blank" rel="nofollow">Did Mizuho Financial Group, Inc. (MFG) Outperform Expectations in the Last Quarter?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Bloomberg', 'https://finance.yahoo.com/news/french-antitrust-regulators-set-charge-151406034.html');">&#13;
+        <td width="130" align="right">&#13;
+            11:46AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/french-antitrust-regulators-set-charge-151406034.html" target="_blank" rel="nofollow">Nvidia to Be Hit by French Antitrust Complaint, Reuters Says</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Bloomberg)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/grupo-aval-acciones-y-valores-s-a-aval-why-are-analysts-bullish-on-this-bank-penny-stock-1319943/');">&#13;
+        <td width="130" align="right">&#13;
+            11:43AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/grupo-aval-acciones-y-valores-s-a-aval-why-are-analysts-bullish-on-this-bank-penny-stock-1319943/" target="_blank" rel="nofollow">Grupo Aval Acciones Y Valores S.A. (AVAL): Why Are Analysts Bullish on This Bank Penny Stock?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/why-are-analysts-bullish-on-riverview-bancorp-inc-rvsb-right-now-1319940/');">&#13;
+        <td width="130" align="right">&#13;
+            11:39AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/why-are-analysts-bullish-on-riverview-bancorp-inc-rvsb-right-now-1319940/" target="_blank" rel="nofollow">Why Are Analysts Bullish on Riverview Bancorp, Inc. (RVSB) Right Now?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'CNBC TV', 'https://www.youtube.com/watch?v=5eSFLP2QAzY');">&#13;
+        <td width="130" align="right">&#13;
+            11:38AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.youtube.com/watch?v=5eSFLP2QAzY" target="_blank" rel="nofollow">Nvidia and Microsoft will drive AI revolution: Wedbush's Dan Ives</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(CNBC TV)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/f99e8c1b-dd09-3192-8634-948aec7f0403/ai%27s-roi.html');">&#13;
+        <td width="130" align="right">&#13;
+            11:33AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/f99e8c1b-dd09-3192-8634-948aec7f0403/ai%27s-roi.html" target="_blank" rel="nofollow">AI's ROI</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Bloomberg', 'https://finance.yahoo.com/news/nvidia-jankowski-takes-cfo-job-153000073.html');">&#13;
+        <td width="130" align="right">&#13;
+            11:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/nvidia-jankowski-takes-cfo-job-153000073.html" target="_blank" rel="nofollow">Nvidias Jankowski Takes CFO Job at Chip Startup Lightmatter</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Bloomberg)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/hypergrowthinvesting/2024/07/google-deepmind-ceo-this-is-the-next-100-billion-ai-business/');">&#13;
+        <td width="130" align="right">&#13;
+            11:13AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/hypergrowthinvesting/2024/07/google-deepmind-ceo-this-is-the-next-100-billion-ai-business/" target="_blank" rel="nofollow">Google DeepMind CEO: 'This Is the Next $100 Billion AI Business'</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'InvestorPlace', 'https://investorplace.com/2024/07/3-stocks-with-massive-growth-potential/');">&#13;
+        <td width="130" align="right">&#13;
+            11:12AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://investorplace.com/2024/07/3-stocks-with-massive-growth-potential/" target="_blank" rel="nofollow">3 Stocks With Massive Growth Potential: Buy Now or Regret Later</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(InvestorPlace)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Motley Fool', 'https://finance.yahoo.com/m/f63a6de2-e873-352d-b1ff-c22ba80199e2/halfway-through-2024%2C-nvidia.html');">&#13;
+        <td width="130" align="right">&#13;
+            11:05AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/f63a6de2-e873-352d-b1ff-c22ba80199e2/halfway-through-2024%2C-nvidia.html" target="_blank" rel="nofollow">Halfway Through 2024, Nvidia Has Grown Its  Market Cap by Nearly $2 Trillion: Here's Who Owns the Most Shares</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Motley Fool)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Reuters', 'https://finance.yahoo.com/news/french-antitrust-regulators-preparing-nvidia-144944259.html');">&#13;
+        <td width="130" align="right">&#13;
+            10:49AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/french-antitrust-regulators-preparing-nvidia-144944259.html" target="_blank" rel="nofollow">Exclusive-Nvidia set to face French antitrust charges, sources say</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Reuters)</span></div></div></td></tr>
+    <tr class="cursor-pointer has-label" onclick="trackAndOpenNews(event, 'Insider Monkey', 'https://www.insidermonkey.com/blog/will-citigroups-c-restructuring-efforts-pay-off-1319907/');">&#13;
+        <td width="130" align="right">&#13;
+            10:37AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.insidermonkey.com/blog/will-citigroups-c-restructuring-efforts-pay-off-1319907/" target="_blank" rel="nofollow">Will Citigroup's (C) Restructuring Efforts Pay Off?</a>&#13;
+                </div>&#13;
+                <div class="news-link-right flex gap-1 items-center">&#13;
+                    <span>(Insider Monkey)</span></div></div></td></tr>
+</table>
+</div>
+
+
+  <script language="javascript">
+  function reSize(){
+    actual_height = document.body.scrollHeight+50;
+    console.log("RP T:" + actual_height)
+    parent.postMessage("RP H=" + actual_height, "*");
+  }
+  window.onload=reSize;
+  </script>
+</body>
+</html>
