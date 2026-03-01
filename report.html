@@ -1,0 +1,261 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<title>Portfolio Review Report</title>
+<head>
+  <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <style>
+  body {
+    margin: 0;
+    font-size: 12px;
+    font-family: Arial, Helvetica, sans-serif, Microsoft JhengHei;
+  }
+
+  #navbar {
+    overflow: hidden;
+    background-color: #333;
+    position: fixed;
+    top: 0;
+    width: 100%;
+  }
+
+  #navbar a {
+    float: left;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 2px 4px;
+    text-decoration: none;
+    font-size: 12px;
+  }
+
+  #navbar a:hover {
+    background-color: #ddd;
+    color: black;
+  }
+
+  #navbar a.active {
+    background-color: #4CAF50;
+    color: white;
+  }
+
+  #navbar a.read {
+    background-color: #FF8000;
+    color: white;
+  }
+
+  #myBtn {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 99;
+    font-size: 18px;
+    border: none;
+    outline: none;
+    background-color: #ff8000;
+    color: white;
+    cursor: pointer;
+    padding: 15px;
+    border-radius: 4px;
+  }
+
+  #myBtn:hover {
+    background-color: #555;
+  }
+  </style>
+  <script>
+    var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+    var eventer = window[eventMethod];
+    var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+
+    // Listen to message from child window
+    eventer(messageEvent,function(e) {
+      console.log (e.data);
+      if (typeof e.data == "string")
+      {
+        if (e.data.indexOf("RP H=") > -1)
+        {
+          document.getElementById('report').height = e.data.substring(5) + 'px';
+          console.log("PF H:" + document.getElementById("report").height)
+        }
+
+        if (e.data.indexOf("RP W=") > -1)
+        {
+          if (e.data.substring(5) == "0")
+          {
+            document.getElementById('report').width = "100%";
+          }
+          else
+          {
+            document.getElementById('report').width = e.data.substring(5) + 'px';
+          }
+          console.log("PF W:" + document.getElementById("report").width)
+        }
+      }
+    }, false);
+  </script>
+</head>
+<body onload="loadDefault()">
+  <div id="navbar">
+    <a class="active" href="#" id="overview.html" onclick="changeContent(this)">Overview</a>
+    <a href="#" id="exchange.html" onclick="changeContent(this)">Exchange Rate</a>
+    <a href="#" id="quickchart.html" onclick="changeContent(this)">Quick Chart</a>
+    <a href="#" id="breadth_high_low.html" onclick="changeContent(this)">Market Breadth (TW)</a>
+    <!-- <a href="#" id="sepa.html" onclick="changeContent(this)">SEPA (TW)</a> -->
+    <!-- <a href="#" id="sepa_track.html" onclick="changeContent(this)">SEPA Track (TW)</a> -->
+    <a href="#" id="sepa_us.html" onclick="changeContent(this)">SEPA (US)</a>
+    <a href="#" id="sepa_us_track.html" onclick="changeContent(this)">SEPA Track (US)</a>
+    <a href="#" id="ST_FL_BBS_15.html" onclick="changeContent(this)">ST_FL_BBS_15</a>
+    <a href="#" id="ST_FL_RM_03.html" onclick="changeContent(this)">ST_FL_RM_03</a>
+    <a href="#" id="ST_FL_ML_23.html" onclick="changeContent(this)">ST_FL_ML_23</a>
+    <a href="#" id="ST_FL_ML_25.html" onclick="changeContent(this)">ST_FL_ML_25</a>
+    <a href="#" id="ST_FL_ML_28.html" onclick="changeContent(this)">ST_FL_ML_28</a>
+    <a href="#" id="ST_FL_GA_01.html" onclick="changeContent(this)">ST_FL_GA_01</a>
+    <a href="#" id="macromicro_1.html" onclick="changeContent(this)">MACROMICRO-1</a>
+    <a href="#" id="macromicro_2.html" onclick="changeContent(this)">MACROMICRO-2</a>
+    <a href="#" id="macromicro_3.html" onclick="changeContent(this)">MACROMICRO-3</a>
+    <a href="#" id="macromicro_4.html" onclick="changeContent(this)">MACROMICRO-4</a>
+    <a href="#" id="macromicro_5.html" onclick="changeContent(this)">MACROMICRO-5</a>
+    <a href="#" id="macromicro_6.html" onclick="changeContent(this)">MACROMICRO-6</a>
+    <a href="#" id="macromicro_7.html" onclick="changeContent(this)">MACROMICRO-7</a>
+    <a href="#" id="macromicro_8.html" onclick="changeContent(this)">MACROMICRO-8</a>
+    <a href="#" id="^TWII_RP.html" title="台灣加權" onclick="changeContent(this)">^TWII</a>
+    <a href="#" id="^TWOII_RP.html" title="台灣店頭" onclick="changeContent(this)">^TWOII</a>
+    <a href="#" id="TWA02_RP.html" title="台灣加權報酬指數" onclick="changeContent(this)">TWA02</a>
+    <a href="#" id="^TNX_RP.html" title="Treasury Yield 10 Years" onclick="changeContent(this)">^TNX</a>
+    <a href="#" id="DX-Y.NYB_RP.html" title="ICE US Dollar Index " onclick="changeContent(this)">DX-Y.NYB</a>
+    <a href="#" id="TWD=X_RP.html" title="USD/TWD" onclick="changeContent(this)">TWD=X</a>
+    <a href="#" id="JPY=X_RP.html" title="USD/JPY" onclick="changeContent(this)">JPY=X</a>
+    <a href="#" id="JPYTWD=X_RP.html" title="JPY/TWD" onclick="changeContent(this)">JPYTWD=X</a>
+    <a href="#" id="^GSPC_RP.html" title="S&P 500" onclick="changeContent(this)">^GSPC</a>
+    <a href="#" id="000300.SS_RP.html" title="滬深300" onclick="changeContent(this)">000300.SS</a>
+    <a href="#" id="^DJI_RP.html" title="Dow Jones Industrial Average" onclick="changeContent(this)">^DJI</a>
+    <a href="#" id="^IXIC_RP.html" title="NASDAQ Composite" onclick="changeContent(this)">^IXIC</a>
+    <a href="#" id="^VIX_RP.html" title="CBOE Volatility Index" onclick="changeContent(this)">^VIX</a>
+    <a href="#" id="^VXN_RP.html" title="CBOE NASDAQ 100 Voltility" onclick="changeContent(this)">^VXN</a>
+    <a href="#" id="0050.TW_RP.html" title="元大台灣50" onclick="changeContent(this)">0050.TW</a>
+    <a href="#" id="00631L.TW_RP.html" title="元大台灣50正2" onclick="changeContent(this)">00631L.TW</a>
+    <a href="#" id="VOO_RP.html" title="Vanguard 500 Index Fund" onclick="changeContent(this)">VOO</a>
+    <a href="#" id="SPMO_RP.html" title="Invesco S&P 500 Momentum ETF" onclick="changeContent(this)">SPMO</a>
+    <a href="#" id="QQQ_RP.html" title="Invesco NASDAQ QQQ Trust" onclick="changeContent(this)">QQQ</a>
+    <a href="#" id="QLD_RP.html" title="ProShares Ultra QQQ" onclick="changeContent(this)">QLD</a>
+    <a href="#" id="TQQQ_RP.html" title="ProShares UltraPro QQQ" onclick="changeContent(this)">TQQQ</a>
+    <a href="#" id="FNGU_RP.html" title="FANG+ Index 3X" onclick="changeContent(this)">FNGU</a>
+    <a href="#" id="XLF_RP.html" title="Financial Select Sector SPDR Fund" onclick="changeContent(this)">XLF</a>
+    <a href="#" id="IWM_RP.html" title="iShares Russell 2000 ETF" onclick="changeContent(this)">IWM</a>
+    <a href="#" id="URTY_RP.html" title="Proshare Utra Russell 2000 ETF" onclick="changeContent(this)">URTY</a>
+    <a href="#" id="ARKK_RP.html" title="ARK Innovation ETF" onclick="changeContent(this)">ARKK</a>
+    <a href="#" id="SMH_RP.html" title="VanEck Vectors Semiconductor ETF" onclick="changeContent(this)">SMH</a>
+    <a href="#" id="IGV_RP.html" title="Tech-Software Sector ETF" onclick="changeContent(this)">IGV</a>
+    <a href="#" id="GNOM_RP.html" title="Global X Genomics & Biotechnology ETF" onclick="changeContent(this)">GNOM</a>
+    <a href="#" id="MCHI_RP.html" title="iShares MSCI China ETF" onclick="changeContent(this)">MCHI</a>
+    <a href="#" id="KWEB_RP.html" title="KraneShares CSI China Internet ETF" onclick="changeContent(this)">KWEB</a>
+    <a href="#" id="REZ_RP.html" title="iShares Residential and Multisector Real Estate ETF" onclick="changeContent(this)">REZ</a>
+    <a href="#" id="ITB_RP.html" title="iShares U.S. Home Construction ETF" onclick="changeContent(this)">ITB</a>
+    <a href="#" id="FLIN_RP.html" title="Franklin FTSE India ETF" onclick="changeContent(this)">FLIN</a>
+    <a href="#" id="IEF_RP.html" title="iShare 7-10 Year Treasure Bond ETF" onclick="changeContent(this)">IEF</a>
+    <a href="#" id="USL_RP.html" title="United States 12 Month Oil Fund LP" onclick="changeContent(this)">USL</a>
+    <a href="#" id="VGK_RP.html" title="Vanguard European Stock Index Fund ETF" onclick="changeContent(this)">VGK</a>
+    <a href="#" id="VNM_RP.html" title="VanEck Vectors Vietnam ETF" onclick="changeContent(this)">VNM</a>
+    <a href="#" id="EWY_RP.html" title="iShares MSCI South Korea Capped ETF" onclick="changeContent(this)">EWY</a>
+    <a href="#" id="EWJ_RP.html" title="iShares MSCI Japan ETF" onclick="changeContent(this)">EWJ</a>
+    <a href="#" id="NLR_RP.html" title="VanEck Uranium and Nuclear ETF" onclick="changeContent(this)">NLR</a>
+    <a href="#" id="NVDA_RP.html" title="NVIDIA Corporation" onclick="changeContent(this)">NVDA</a>
+    <a href="#" id="INTC_RP.html" title="Intel Corporation" onclick="changeContent(this)">INTC</a>
+    <a href="#" id="AMD_RP.html" title="Advanced Micro Devices, Inc." onclick="changeContent(this)">AMD</a>
+    <a href="#" id="AAPL_RP.html" title="Apple Inc" onclick="changeContent(this)">AAPL</a>
+    <a href="#" id="MSFT_RP.html" title="Microsoft Corporation" onclick="changeContent(this)">MSFT</a>
+    <a href="#" id="GOOG_RP.html" title="Alphabet Inc." onclick="changeContent(this)">GOOG</a>
+    <a href="#" id="META_RP.html" title="Meta Platforms, Inc." onclick="changeContent(this)">META</a>
+    <a href="#" id="AMZN_RP.html" title="Amazon.com Inc." onclick="changeContent(this)">AMZN</a>
+    <a href="#" id="TSLA_RP.html" title="Tesla, Inc." onclick="changeContent(this)">TSLA</a>
+    <a href="#" id="CRWD_RP.html" title="Crowdstrike Holdings Inc." onclick="changeContent(this)">CRWD</a>
+    <a href="#" id="PLTR_RP.html" title="Palantir Technologies Inc" onclick="changeContent(this)">PLTR</a>
+    <a href="#" id="GRAB_RP.html" title="Grab Holdings Ltd." onclick="changeContent(this)">GRAB</a>
+    <a href="#" id="BFLY_RP.html" title="Butterfly Network Ord Shs Class A" onclick="changeContent(this)">BFLY</a>
+    <a href="#" id="XYZ_RP.html" title="Square Inc" onclick="changeContent(this)">XYZ</a>
+    <a href="#" id="STM_RP.html" title="STMicroelectronics N.V." onclick="changeContent(this)">STM</a>
+    <a href="#" id="DIS_RP.html" title="Walt Disney Co" onclick="changeContent(this)">DIS</a>
+    <a href="#" id="QCOM_RP.html" title="Qualcomm Inc." onclick="changeContent(this)">QCOM</a>
+    <a href="#" id="DXYZ_RP.html" title="Destiny Tech100" onclick="changeContent(this)">DXYZ</a>
+    <a href="#" id="BIDU_RP.html" title="Baidu Inc" onclick="changeContent(this)">BIDU</a>
+    <a href="#" id="2454.TW_RP.html" title="聯發科" onclick="changeContent(this)">2454.TW</a>
+    <a href="#" id="2330.TW_RP.html" title="台積電" onclick="changeContent(this)">2330.TW</a>
+    <a href="#" id="3711.TW_RP.html" title="日月光投控" onclick="changeContent(this)">3711.TW</a>
+    <a href="#" id="6488.TWO_RP.html" title="環球晶" onclick="changeContent(this)">6488.TWO</a>
+    <a href="#" id="3008.TW_RP.html" title="大立光" onclick="changeContent(this)">3008.TW</a>
+    <a href="#" id="2317.TW_RP.html" title="鴻海" onclick="changeContent(this)">2317.TW</a>
+    <a href="#" id="0941.HK_RP.html" title="中國移動" onclick="changeContent(this)">0941.HK</a>
+    <a href="#" id="6446.TW_RP.html" title="藥華藥" onclick="changeContent(this)">6446.TW</a>
+    <a href="#" id="0763.HK_RP.html" title="中興通訊" onclick="changeContent(this)">0763.HK</a>
+    <a href="#" id="0981.HK_RP.html" title="中芯國際" onclick="changeContent(this)">0981.HK</a>
+    <a href="#" id="3324.TWO_RP.html" title="雙鴻" onclick="changeContent(this)">3324.TWO</a>
+    <a href="#" id="3017.TW_RP.html" title="奇鋐" onclick="changeContent(this)">3017.TW</a>
+    <a href="#" id="8069.TWO_RP.html" title="元太" onclick="changeContent(this)">8069.TWO</a>
+    <a href="#" id="SE_RP.html" title="Sea Limited (SE)" onclick="changeContent(this)">SE</a>
+    <a href="#" id="U_RP.html" title="Unity Software Inc." onclick="changeContent(this)">U</a>
+    <a href="#" id="BABA_RP.html" title="Alibaba Group Holding Limited" onclick="changeContent(this)">BABA</a>
+    <a href="#" id="TCEHY_RP.html" title="Tencent Holdings Limited" onclick="changeContent(this)">TCEHY</a>
+    <a href="#" id="3690.HK_RP.html" title="美團-W" onclick="changeContent(this)">3690.HK</a>
+    <a href="#" id="6854.TW_RP.html" title="錼創科技" onclick="changeContent(this)">6854.TW</a>
+    <a href="#" id="5278.TWO_RP.html" title="尚凡" onclick="changeContent(this)">5278.TWO</a>
+    <a href="#" id="8299.TWO_RP.html" title="群聯" onclick="changeContent(this)">8299.TWO</a>
+    <a href="#" id="7822.TWO_RP.html" title="倍利科" onclick="changeContent(this)">7822.TWO</a>
+    <a href="#" id="7776.TWO_RP.html" title="奧孟亞" onclick="changeContent(this)">7776.TWO</a>
+    <a href="#" id="6945.TWO_RP.html" title="圓祥" onclick="changeContent(this)">6945.TWO</a>
+    <a href="#" id="1795.TW_RP.html" title="美時" onclick="changeContent(this)">1795.TW</a>
+    <a href="#" id="3037.TW_RP.html" title="欣興" onclick="changeContent(this)">3037.TW</a>
+    <a href="#" id="BTC-USD_RP.html" title="Bitcoin USD" onclick="changeContent(this)">BTC-USD</a>
+    <a href="#" id="BNB-USD_RP.html" title="BinanceCoin USD" onclick="changeContent(this)">BNB-USD</a>
+    <a href="#" id="ETH-USD_RP.html" title="ETC-USD" onclick="changeContent(this)">ETH-USD</a>
+    <a href="#" id="SOL-USD_RP.html" title="Solana USD" onclick="changeContent(this)">SOL-USD</a>
+
+  </div>
+  <div id="display" class="content" align="center"><iframe id="report" src="overview.html" frameborder="0" width="100%" height="100%"></iframe></div>
+  <button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
+  <script>
+    var previousActive = document.getElementById("overview.html")
+
+    function changeContent(obj) {
+      document.getElementById("report").src = obj.id;
+      obj.classList.add("active");
+
+      previousActive.classList.remove("active");
+      previousActive.classList.add("read");
+      previousActive = obj;
+
+      document.getElementById("display").style.paddingTop = document.getElementById("navbar").offsetHeight + "px";
+    }
+
+    function loadDefault() {
+      document.getElementById("report").src = "overview.html";
+      document.getElementById("display").style.paddingTop = document.getElementById("navbar").offsetHeight + "px";
+    }
+
+    window.onscroll = function() {scrollFunction()};
+    var prevScrollpos = window.pageYOffset;
+
+    function scrollFunction() {
+      var currentScrollPos = window.pageYOffset;
+      if (prevScrollpos > currentScrollPos) {
+        document.getElementById("navbar").style.top = "0";
+      } else {
+        document.getElementById("navbar").style.top = document.getElementById('navbar').offsetHeight*(-1) +"px";
+      }
+      prevScrollpos = currentScrollPos;
+
+      if (document.body.scrollTop > 500 || document.documentElement.scrollTop > 500) {
+        document.getElementById("myBtn").style.display = "block";
+      }
+      else {
+        document.getElementById("myBtn").style.display = "none";
+      }
+    }
+
+    function topFunction() {
+      document.body.scrollTop = 0; // For Safari
+      document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+  </script>
+</body>
+</html>
