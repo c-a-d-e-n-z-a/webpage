@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>台股概念股 1/3/5/10/20 日強弱勢 TOP 5 戰情室</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root, [data-theme="light"] {
+      --bg-primary: #f1f5f9;
+      --bg-card: #ffffff;
+      --bg-card-header: #f8fafc;
+      --bg-item: #ffffff;
+      --bg-item-hover: #f8fafc;
+      --border-color: #e2e8f0;
+      --border-item: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --red-gain: #dc2626;
+      --green-loss: #059669;
+      --badge-gold: #d97706;
+      --badge-gold-bg: #fef3c7;
+      --badge-gold-text: #92400e;
+      --badge-blue: #0284c7;
+      --badge-blue-bg: #e0f2fe;
+      --badge-blue-text: #0369a1;
+      --filter-bar-bg: #eff6ff;
+      --filter-bar-border: #bfdbfe;
+      --filter-bar-text: #1e40af;
+      --super-card-bg: linear-gradient(135deg, #fffbeb 0%, #fef2f2 100%);
+      --super-card-border: #f59e0b;
+      --super-card-text: #92400e;
+      --super-tag-bg: #f59e0b;
+      --super-tag-text: #ffffff;
+      --super-tag-hover: #d97706;
+      --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      --item-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+    
+    [data-theme="dark"] {
+      --bg-primary: #0f172a;
+      --bg-card: #1e293b;
+      --bg-card-header: #334155;
+      --bg-item: #0f172a;
+      --bg-item-hover: #1e293b;
+      --border-color: #334155;
+      --border-item: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --red-gain: #ef4444;
+      --green-loss: #10b981;
+      --badge-gold: #f59e0b;
+      --badge-gold-bg: rgba(245, 158, 11, 0.18);
+      --badge-gold-text: #fef08a;
+      --badge-blue: #38bdf8;
+      --badge-blue-bg: rgba(56, 189, 248, 0.15);
+      --badge-blue-text: #bae6fd;
+      --filter-bar-bg: #1e293b;
+      --filter-bar-border: #3b82f6;
+      --filter-bar-text: #93c5fd;
+      --super-card-bg: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(239, 68, 68, 0.15));
+      --super-card-border: #f59e0b;
+      --super-card-text: #fbbf24;
+      --super-tag-bg: #78350f;
+      --super-tag-text: #fef3c7;
+      --super-tag-hover: #b45309;
+      --box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      --item-shadow: none;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+    }
+    
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      padding: 24px 20px;
+      line-height: 1.5;
+    }
+    
+    .container { max-width: 1680px; margin: 0 auto; }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 20px;
+    }
+    
+    .header-title h1 {
+      font-size: 26px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .header-title p {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-top: 4px;
+    }
+    
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .theme-toggle-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: var(--item-shadow);
+    }
+    .theme-toggle-btn:hover {
+      background: var(--bg-card-header);
+      border-color: var(--text-muted);
+    }
+    
+    .update-badge {
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 7px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+      box-shadow: var(--item-shadow);
+    }
+    
+    .filter-rule-bar {
+      background: var(--filter-bar-bg);
+      border: 1px solid var(--filter-bar-border);
+      border-radius: 8px;
+      padding: 10px 16px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: var(--filter-bar-text);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .special-alert-card {
+      background: var(--super-card-bg);
+      border: 2px solid var(--super-card-border);
+      border-radius: 12px;
+      padding: 18px 24px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      box-shadow: 0 10px 25px rgba(245, 158, 11, 0.12);
+    }
+    .special-alert-icon { font-size: 36px; }
+    .special-alert-content h3 { font-size: 17px; font-weight: 700; color: var(--super-card-text); margin-bottom: 4px; }
+    .special-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+    .special-tag {
+      background: var(--super-tag-bg);
+      color: var(--super-tag-text);
+      border: 1px solid var(--super-card-border);
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .special-tag:hover {
+      background: var(--super-tag-hover);
+      transform: translateY(-2px);
+    }
+    
+    .periods-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 18px;
+    }
+    
+    .period-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--box-shadow);
+    }
+    
+    .period-header {
+      background: var(--bg-card-header);
+      padding: 14px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .period-title { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .period-body { padding: 16px; display: flex; flex-direction: column; gap: 18px; }
+    
+    .section-title {
+      font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px; margin-bottom: 10px;
+    }
+    .section-title.strong { color: var(--red-gain); }
+    .section-title.weak { color: var(--green-loss); }
+    
+    .rank-list { display: flex; flex-direction: column; gap: 8px; }
+    
+    .rank-item {
+      background: var(--bg-item);
+      border: 1px solid var(--border-item);
+      border-radius: 8px;
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      text-decoration: none;
+      color: inherit;
+      box-shadow: var(--item-shadow);
+    }
+    .rank-item:hover {
+      background: var(--bg-item-hover);
+      border-color: #94a3b8;
+      transform: translateX(3px);
+    }
+    .rank-item.is-super-strong {
+      border: 1.5px solid var(--badge-gold);
+      background: var(--badge-gold-bg);
+    }
+    
+    .item-left { display: flex; align-items: center; gap: 10px; }
+    .rank-num { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; color: var(--text-muted); width: 18px; }
+    .item-info .concept-name { font-size: 14px; font-weight: 600; color: var(--text-main); display: flex; align-items: center; gap: 6px; }
+    .item-info .lead-stock { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    
+    .super-badge {
+      background: var(--badge-gold-bg);
+      border: 1px solid var(--badge-gold);
+      color: var(--badge-gold-text);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+    .dual-badge {
+      background: var(--badge-blue-bg);
+      border: 1px solid var(--badge-blue);
+      color: var(--badge-blue-text);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+    
+    .gain-val { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; text-align: right; }
+    .gain-val.gain { color: var(--red-gain); }
+    .gain-val.loss { color: var(--green-loss); }
+    .vol-info { font-size: 11px; color: var(--text-muted); margin-top: 2px; text-align: right; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-title">
+        <h1>📊 台股概念股 1 / 3 / 5 / 10 / 20 日強弱勢 TOP 5 戰情室</h1>
+        <p>依據 MoneyDJ 全市場 171 檔概念股「各週期成交量加權報酬率」多維度精準對應計算排序</p>
+      </div>
+      <div class="header-right">
+        <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">🌓 切換深色模式</button>
+        <div class="update-badge">資料更新: 2026-09-19 06:55</div>
+      </div>
+    </div>
+    
+    <div class="filter-rule-bar">
+      <span>🛡️ <b>精準雙重篩選規則：</b></span>
+      <span>① 該週期成交量加權漲幅 <b>&gt; 0%</b></span>
+      <span>② 該週期成分股上漲比率 <b>&ge; 50%</b>（確保全體齊揚）</span>
+      <span>③ 領頭羊個股自動對應 <b>該週期之累計漲跌幅</b></span>
+    </div>
+
+    <div class="special-alert-card" style="background: var(--bg-card); border-color: var(--border-color);">
+      <div class="special-alert-icon">💡</div>
+      <div class="special-alert-content">
+        <h3 style="color: var(--text-muted);">【跨週期綜合觀察】</h3>
+        <p style="font-size: 13px; color: var(--text-muted);">目前市場輪動快速，在雙重強勢標準（該週期加權漲幅&gt;0 且 齊揚率&ge;50%）下，暫無單一概念族群同時囊括 1日/3日/5日 榜首，資金呈現快速切換之板塊輪動態勢。</p>
+      </div>
+    </div>
+<div class="periods-grid">
+      <div class="period-card">
+        <div class="period-header">
+          <div class="period-title">⏱️ 1 日 (當日漲跌)</div>
+          <span style="font-size: 12px; color: var(--text-muted);">TOP 5 榜單</span>
+        </div>
+        <div class="period-body">
+          <div>
+            <div class="section-title strong">🚀 1日 領漲強勢 (齊揚雙重驗證)</div>
+            <div class="rank-list">
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH090285_1.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#1</div>
+                  <div class="item-info">
+                    <div class="concept-name">外泌體概念股  <span class="dual-badge">齊揚率 53.8%</span></div>
+                    <div class="lead-stock">1日領頭: 世紀* (+9.91%)</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val gain">+9.75%</div>
+                  <div class="vol-info">128,799 張 (13檔)</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001060_1.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#2</div>
+                  <div class="item-info">
+                    <div class="concept-name">資安概念股  <span class="dual-badge">齊揚率 90.0%</span></div>
+                    <div class="lead-stock">1日領頭: 華經 (+9.95%)</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val gain">+6.88%</div>
+                  <div class="vol-info">56,386 張 (40檔)</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH000256_1.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#3</div>
+                  <div class="item-info">
+                    <div class="concept-name">高速傳輸介面概念股  <span class="dual-badge">齊揚率 90.9%</span></div>
+                    <div class="lead-stock">1日領頭: 創意 (+10.00%)</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val gain">+6.23%</div>
+                  <div class="vol-info">74,657 張 (22檔)</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001285_1.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#4</div>
+                  <div class="item-info">
+                    <div class="concept-name">磷化銦概念股  <span class="dual-badge">齊揚率 100.0%</span></div>
+                    <div class="lead-stock">1日領頭: 環宇-KY (+9.98%)</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val gain">+6.01%</div>
+                  <div class="vol-info">77,591 張 (5檔)</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH000035_1.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#5</div>
+                  <div class="item-info">
+                    <div class="concept-name">富櫃50指數成分股  <span class="dual-badge">齊揚率 96.0%</span></div>
+                    <div class="lead-stock">1日領頭: 精測 (+10.00%)</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val gain">+5.82%</div>
+                  <div class="vol-info">547,499 張 (50檔)</div>
+                </div>
+              </a>
+
+            </div>
+          </div>
+          <div>
+            <div class="section-title weak">🔻 1日 領跌弱勢 (Volume-Weighted)</div>
+            <div class="rank-list">
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001113_1.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#1</div>
+                  <div class="item-info">
+                    <div class="concept-name">精準醫療概念股</div>
+                    <div class="lead-stock">成分股: 12 檔</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val loss">-2.08%</div>
+                  <div class="vol-info">2,521 張</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001073_1.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#2</div>
+                  <div class="item-info">
+                    <div class="concept-name">節水概念股</div>
+                    <div class="lead-stock">成分股: 14 檔</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val loss">-0.76%</div>
+                  <div class="vol-info">40,350 張</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH000068_1.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#3</div>
+                  <div class="item-info">
+                    <div class="concept-name">台商越南概念股</div>
+                    <div class="lead-stock">成分股: 84 檔</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val loss">-0.66%</div>
+                  <div class="vol-info">359,019 張</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001129_1.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#4</div>
+                  <div class="item-info">
+                    <div class="concept-name">電子商務(電商)概念股</div>
+                    <div class="lead-stock">成分股: 39 檔</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val loss">-0.60%</div>
+                  <div class="vol-info">341,583 張</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001156_1.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#5</div>
+                  <div class="item-info">
+                    <div class="concept-name">中元節概念股</div>
+                    <div class="lead-stock">成分股: 6 檔</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val loss">-0.46%</div>
+                  <div class="vol-info">19,512 張</div>
+                </div>
+              </a>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="period-card">
+        <div class="period-header">
+          <div class="period-title">⏱️ 3 日 (3日累積漲跌)</div>
+          <span style="font-size: 12px; color: var(--text-muted);">TOP 5 榜單</span>
+        </div>
+        <div class="period-body">
+          <div>
+            <div class="section-title strong">🚀 3日 領漲強勢 (齊揚雙重驗證)</div>
+            <div class="rank-list">
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH000256_3.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#1</div>
+                  <div class="item-info">
+                    <div class="concept-name">高速傳輸介面概念股  <span class="dual-badge">齊揚率 100.0%</span></div>
+                    <div class="lead-stock">3日領頭: 嘉基 (+21.12%)</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val gain">+10.45%</div>
+                  <div class="vol-info">171,663 張 (22檔)</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH000118_3.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#2</div>
+                  <div class="item-info">
+                    <div class="concept-name">台積電概念股  <span class="dual-badge">齊揚率 98.1%</span></div>
+                    <div class="lead-stock">3日領頭: 中砂 (+21.90%)</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val gain">+10.16%</div>
+                  <div class="vol-info">1,475,328 張 (104檔)</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001187_3.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#3</div>
+                  <div class="item-info">
+                    <div class="concept-name">氫能概念股  <span class="dual-badge">齊揚率 78.3%</span></div>
+                    <div class="lead-stock">3日領頭: 大甲 (+32.67%)</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val gain">+10.09%</div>
+                  <div class="vol-info">134,021 張 (23檔)</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001171_3.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#4</div>
+                  <div class="item-info">
+                    <div class="concept-name">Micro LED概念股  <span class="dual-badge">齊揚率 100.0%</span></div>
+                    <div class="lead-stock">3日領頭: 宏齊 (+32.82%)</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val gain">+9.85%</div>
+                  <div class="vol-info">2,631,357 張 (24檔)</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001283_3.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#5</div>
+                  <div class="item-info">
+                    <div class="concept-name">CoPoS概念股  <span class="dual-badge">齊揚率 100.0%</span></div>
+                    <div class="lead-stock">3日領頭: 東捷 (+25.93%)</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val gain">+9.70%</div>
+                  <div class="vol-info">168,134 張 (15檔)</div>
+                </div>
+              </a>
+
+            </div>
+          </div>
+          <div>
+            <div class="section-title weak">🔻 3日 領跌弱勢 (Volume-Weighted)</div>
+            <div class="rank-list">
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH090285_3.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#1</div>
+                  <div class="item-info">
+                    <div class="concept-name">外泌體概念股</div>
+                    <div class="lead-stock">成分股: 13 檔</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val loss">-10.45%</div>
+                  <div class="vol-info">175,322 張</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001113_3.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#2</div>
+                  <div class="item-info">
+                    <div class="concept-name">精準醫療概念股</div>
+                    <div class="lead-stock">成分股: 12 檔</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val loss">-0.39%</div>
+                  <div class="vol-info">9,851 張</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH090280_3.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#3</div>
+                  <div class="item-info">
+                    <div class="concept-name">會員經濟概念股</div>
+                    <div class="lead-stock">成分股: 22 檔</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val loss">+0.30%</div>
+                  <div class="vol-info">59,381 張</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH090153_3.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#4</div>
+                  <div class="item-info">
+                    <div class="concept-name">軟板概念股</div>
+                    <div class="lead-stock">成分股: 14 檔</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val loss">+0.69%</div>
+                  <div class="vol-info">382,106 張</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001156_3.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#5</div>
+                  <div class="item-info">
+                    <div class="concept-name">中元節概念股</div>
+                    <div class="lead-stock">成分股: 6 檔</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val loss">+0.86%</div>
+                  <div class="vol-info">39,025 張</div>
+                </div>
+              </a>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="period-card">
+        <div class="period-header">
+          <div class="period-title">⏱️ 5 日 (5日累積漲跌)</div>
+          <span style="font-size: 12px; color: var(--text-muted);">TOP 5 榜單</span>
+        </div>
+        <div class="period-body">
+          <div>
+            <div class="section-title strong">🚀 5日 領漲強勢 (齊揚雙重驗證)</div>
+            <div class="rank-list">
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001060_5.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#1</div>
+                  <div class="item-info">
+                    <div class="concept-name">資安概念股  <span class="dual-badge">齊揚率 95.0%</span></div>
+                    <div class="lead-stock">5日領頭: 訊達 (+31.33%)</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val gain">+14.83%</div>
+                  <div class="vol-info">353,405 張 (40檔)</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001170_5.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#2</div>
+                  <div class="item-info">
+                    <div class="concept-name">智慧音箱概念股  <span class="dual-badge">齊揚率 84.4%</span></div>
+                    <div class="lead-stock">5日領頭: 光鼎 (+52.33%)</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val gain">+13.40%</div>
+                  <div class="vol-info">1,634,706 張 (32檔)</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001179_5.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#3</div>
+                  <div class="item-info">
+                    <div class="concept-name">MOSFET(電晶體)概念股  <span class="dual-badge">齊揚率 100.0%</span></div>
+                    <div class="lead-stock">5日領頭: 力士 (+17.60%)</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val gain">+11.22%</div>
+                  <div class="vol-info">387,586 張 (8檔)</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001285_5.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#4</div>
+                  <div class="item-info">
+                    <div class="concept-name">磷化銦概念股  <span class="dual-badge">齊揚率 100.0%</span></div>
+                    <div class="lead-stock">5日領頭: 穩懋 (+14.29%)</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val gain">+11.12%</div>
+                  <div class="vol-info">293,424 張 (5檔)</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001187_5.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#5</div>
+                  <div class="item-info">
+                    <div class="concept-name">氫能概念股  <span class="dual-badge">齊揚率 73.9%</span></div>
+                    <div class="lead-stock">5日領頭: 大甲 (+33.65%)</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val gain">+9.74%</div>
+                  <div class="vol-info">209,810 張 (23檔)</div>
+                </div>
+              </a>
+
+            </div>
+          </div>
+          <div>
+            <div class="section-title weak">🔻 5日 領跌弱勢 (Volume-Weighted)</div>
+            <div class="rank-list">
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH090285_5.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#1</div>
+                  <div class="item-info">
+                    <div class="concept-name">外泌體概念股</div>
+                    <div class="lead-stock">成分股: 13 檔</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val loss">-26.44%</div>
+                  <div class="vol-info">199,349 張</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH090153_5.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#2</div>
+                  <div class="item-info">
+                    <div class="concept-name">軟板概念股</div>
+                    <div class="lead-stock">成分股: 14 檔</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val loss">-1.05%</div>
+                  <div class="vol-info">555,848 張</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001275_5.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#3</div>
+                  <div class="item-info">
+                    <div class="concept-name">無人船概念股</div>
+                    <div class="lead-stock">成分股: 8 檔</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val loss">-0.62%</div>
+                  <div class="vol-info">147,529 張</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH000088_5.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#4</div>
+                  <div class="item-info">
+                    <div class="concept-name">水資源概念股</div>
+                    <div class="lead-stock">成分股: 31 檔</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val loss">-0.12%</div>
+                  <div class="vol-info">165,188 張</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH090156_5.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#5</div>
+                  <div class="item-info">
+                    <div class="concept-name">HDI板概念股</div>
+                    <div class="lead-stock">成分股: 28 檔</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val loss">-0.11%</div>
+                  <div class="vol-info">551,039 張</div>
+                </div>
+              </a>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="period-card">
+        <div class="period-header">
+          <div class="period-title">⏱️ 10 日 (10日累積漲跌)</div>
+          <span style="font-size: 12px; color: var(--text-muted);">TOP 5 榜單</span>
+        </div>
+        <div class="period-body">
+          <div>
+            <div class="section-title strong">🚀 10日 領漲強勢 (齊揚雙重驗證)</div>
+            <div class="rank-list">
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001060_10.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#1</div>
+                  <div class="item-info">
+                    <div class="concept-name">資安概念股  <span class="dual-badge">齊揚率 72.5%</span></div>
+                    <div class="lead-stock">10日領頭: 驊宏資 (+39.09%)</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val gain">+17.99%</div>
+                  <div class="vol-info">421,500 張 (40檔)</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001171_10.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#2</div>
+                  <div class="item-info">
+                    <div class="concept-name">Micro LED概念股  <span class="dual-badge">齊揚率 58.3%</span></div>
+                    <div class="lead-stock">10日領頭: 宏齊 (+33.73%)</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val gain">+10.63%</div>
+                  <div class="vol-info">9,687,631 張 (24檔)</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001264_10.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#3</div>
+                  <div class="item-info">
+                    <div class="concept-name">FOPLP概念股  <span class="dual-badge">齊揚率 57.1%</span></div>
+                    <div class="lead-stock">10日領頭: 頎邦 (+25.48%)</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val gain">+10.39%</div>
+                  <div class="vol-info">7,807,612 張 (28檔)</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH000121_10.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#4</div>
+                  <div class="item-info">
+                    <div class="concept-name">碳權概念股  <span class="dual-badge">齊揚率 51.9%</span></div>
+                    <div class="lead-stock">10日領頭: 驊宏資 (+39.09%)</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val gain">+10.10%</div>
+                  <div class="vol-info">4,545,018 張 (79檔)</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001030_10.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#5</div>
+                  <div class="item-info">
+                    <div class="concept-name">基金加碼股  <span class="dual-badge">齊揚率 66.7%</span></div>
+                    <div class="lead-stock">10日領頭: 頎邦 (+25.48%)</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val gain">+10.02%</div>
+                  <div class="vol-info">15,317,493 張 (30檔)</div>
+                </div>
+              </a>
+
+            </div>
+          </div>
+          <div>
+            <div class="section-title weak">🔻 10日 領跌弱勢 (Volume-Weighted)</div>
+            <div class="rank-list">
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001269_10.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#1</div>
+                  <div class="item-info">
+                    <div class="concept-name">BBU概念股</div>
+                    <div class="lead-stock">成分股: 17 檔</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val loss">-6.34%</div>
+                  <div class="vol-info">458,355 張</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001268_10.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#2</div>
+                  <div class="item-info">
+                    <div class="concept-name">超級電容概念股</div>
+                    <div class="lead-stock">成分股: 3 檔</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val loss">-5.32%</div>
+                  <div class="vol-info">90,533 張</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH000246_10.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#3</div>
+                  <div class="item-info">
+                    <div class="concept-name">自行車概念股</div>
+                    <div class="lead-stock">成分股: 14 檔</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val loss">-4.66%</div>
+                  <div class="vol-info">123,184 張</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH090285_10.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#4</div>
+                  <div class="item-info">
+                    <div class="concept-name">外泌體概念股</div>
+                    <div class="lead-stock">成分股: 13 檔</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val loss">-4.49%</div>
+                  <div class="vol-info">335,537 張</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001278_10.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#5</div>
+                  <div class="item-info">
+                    <div class="concept-name">星際之門計畫概念股</div>
+                    <div class="lead-stock">成分股: 10 檔</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val loss">-3.62%</div>
+                  <div class="vol-info">1,623,754 張</div>
+                </div>
+              </a>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="period-card">
+        <div class="period-header">
+          <div class="period-title">⏱️ 20 日 (20日累積漲跌)</div>
+          <span style="font-size: 12px; color: var(--text-muted);">TOP 5 榜單</span>
+        </div>
+        <div class="period-body">
+          <div>
+            <div class="section-title strong">🚀 20日 領漲強勢 (齊揚雙重驗證)</div>
+            <div class="rank-list">
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001285_20.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#1</div>
+                  <div class="item-info">
+                    <div class="concept-name">磷化銦概念股  <span class="dual-badge">齊揚率 60.0%</span></div>
+                    <div class="lead-stock">20日領頭: 全新 (+36.95%)</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val gain">+27.35%</div>
+                  <div class="vol-info">1,114,909 張 (5檔)</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001185_20.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#2</div>
+                  <div class="item-info">
+                    <div class="concept-name">3D感測概念股  <span class="dual-badge">齊揚率 71.4%</span></div>
+                    <div class="lead-stock">20日領頭: 玉晶光 (+49.08%)</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val gain">+23.50%</div>
+                  <div class="vol-info">2,152,413 張 (14檔)</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001030_20.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#3</div>
+                  <div class="item-info">
+                    <div class="concept-name">基金加碼股  <span class="dual-badge">齊揚率 73.3%</span></div>
+                    <div class="lead-stock">20日領頭: 頎邦 (+46.33%)</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val gain">+19.07%</div>
+                  <div class="vol-info">27,489,057 張 (30檔)</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH000035_20.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#4</div>
+                  <div class="item-info">
+                    <div class="concept-name">富櫃50指數成分股  <span class="dual-badge">齊揚率 65.3%</span></div>
+                    <div class="lead-stock">20日領頭: 雍智科技 (+56.07%)</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val gain">+18.58%</div>
+                  <div class="vol-info">8,079,326 張 (49檔)</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001171_20.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#5</div>
+                  <div class="item-info">
+                    <div class="concept-name">Micro LED概念股  <span class="dual-badge">齊揚率 83.3%</span></div>
+                    <div class="lead-stock">20日領頭: 宏齊 (+53.25%)</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val gain">+18.51%</div>
+                  <div class="vol-info">16,874,308 張 (24檔)</div>
+                </div>
+              </a>
+
+            </div>
+          </div>
+          <div>
+            <div class="section-title weak">🔻 20日 領跌弱勢 (Volume-Weighted)</div>
+            <div class="rank-list">
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001265_20.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#1</div>
+                  <div class="item-info">
+                    <div class="concept-name">再生醫療概念股</div>
+                    <div class="lead-stock">成分股: 23 檔</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val loss">-6.77%</div>
+                  <div class="vol-info">370,368 張</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001077_20.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#2</div>
+                  <div class="item-info">
+                    <div class="concept-name">運動休閒概念股</div>
+                    <div class="lead-stock">成分股: 32 檔</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val loss">-6.45%</div>
+                  <div class="vol-info">723,511 張</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH000246_20.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#3</div>
+                  <div class="item-info">
+                    <div class="concept-name">自行車概念股</div>
+                    <div class="lead-stock">成分股: 14 檔</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val loss">-5.00%</div>
+                  <div class="vol-info">254,541 張</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH001113_20.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#4</div>
+                  <div class="item-info">
+                    <div class="concept-name">精準醫療概念股</div>
+                    <div class="lead-stock">成分股: 12 檔</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val loss">-4.30%</div>
+                  <div class="vol-info">50,485 張</div>
+                </div>
+              </a>
+
+              <a class="rank-item" href="https://www.moneydj.com/z/zg/zge_EH090280_20.djhtm" target="_blank">
+                <div class="item-left">
+                  <div class="rank-num">#5</div>
+                  <div class="item-info">
+                    <div class="concept-name">會員經濟概念股</div>
+                    <div class="lead-stock">成分股: 22 檔</div>
+                  </div>
+                </div>
+                <div class="item-right">
+                  <div class="gain-val loss">-4.08%</div>
+                  <div class="vol-info">307,168 張</div>
+                </div>
+              </a>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function updateThemeButton(theme) {
+      const btn = document.getElementById('themeBtn');
+      if (theme === 'dark') {
+        btn.innerHTML = '☀️ 切換淺色模式';
+      } else {
+        btn.innerHTML = '🌙 切換深色模式';
+      }
+    }
+
+    function toggleTheme() {
+      const htmlEl = document.documentElement;
+      const currentTheme = htmlEl.getAttribute('data-theme') || 'light';
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      htmlEl.setAttribute('data-theme', newTheme);
+      localStorage.setItem('concept_dashboard_theme', newTheme);
+      updateThemeButton(newTheme);
+    }
+
+    function sendHeight() {
+      const container = document.querySelector('.container') || document.body;
+      const height = container.offsetHeight + 60;
+      parent.postMessage("RP H=" + height, "*");
+    }
+
+    (function initTheme() {
+      const savedTheme = localStorage.getItem('concept_dashboard_theme') || 'light';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateThemeButton(savedTheme);
+      setTimeout(sendHeight, 150);
+    })();
+
+    window.addEventListener('load', function() {
+      setTimeout(sendHeight, 200);
+    });
+  </script>
+</body>
+</html>
