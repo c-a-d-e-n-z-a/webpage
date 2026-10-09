@@ -1,0 +1,313 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+<title>7887.TWO</title>
+<head>
+  <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <style>
+  * {
+    font-size: 12px;
+    font-family: Arial, Helvetica, sans-serif, Microsoft JhengHei;
+  }
+  
+  .is-negative {
+    color: #008000;
+  }
+  
+  .is-positive {
+    color: #ff0000;
+  }
+
+  .snapshot-td2
+  {
+    color:#000000;
+    text-decoration:none;
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3d3;
+    white-space:nowrap;
+  }
+
+  .snapshot-td2-cp
+  {
+    color:#000000;
+    text-decoration:none;
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3d3;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+
+  .fullview-ratings-outer
+  {
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3c3;
+  }
+
+  td.fullview-ratings-inner
+  {
+    border-width: 1px 1px 1px 1px;
+    border-style: solid;
+    border-color: #d3d3c3;
+  }
+
+  .t3r1
+  {
+    color:#ff0000;
+  }
+
+  .body-table-rating-downgrade
+  {
+    color:#dd3333;
+    text-decoration:none;
+    background:#fff0f0;
+  }
+
+  .body-table-rating-upgrade
+  {
+    color:#009900;
+    text-decoration:none;
+    background:#f0fff0;
+  }
+
+  .body-table-rating-neutral
+  {
+    color:#333333;
+    text-decoration:none;
+    background:#f0f0f0;
+  }
+
+  table {
+    border-collapse: collapse;
+  }
+
+  td, th {
+    border: 1px solid #FDEBD2;
+    text-align: left;
+    padding: 5px;
+  }
+  </style>
+  <script>
+    function swap(img){
+      if (img.style.width === "100%"){
+        var realWidth = document.querySelector("#stock").naturalWidth;
+        img.style.width = realWidth + "px";
+        parent.postMessage("RP W=" + realWidth, "*");
+      }
+      else{
+        img.style.width = "100%";
+        parent.postMessage("RP W=" + 0, "*");
+      }
+    }
+
+    var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+    var eventer = window[eventMethod];
+    var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+
+    // Listen to message from child window
+    eventer(messageEvent,function(e) {
+      console.log (e.data);
+      if (typeof e.data == "string")
+      {
+        if (e.data.indexOf("SD H=") > -1)
+        {
+          document.getElementById("stockdog").height = e.data.substring(5) + 'px';
+          console.log("RP R:" + document.getElementById("stockdog").height)
+
+          actual_height = document.body.scrollHeight+100;
+          console.log("RP T:" + actual_height)
+          parent.postMessage("RP H=" + actual_height, "*");
+        }
+      }
+    }, false);
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/12.3.0/highcharts.min.js"></script>
+</head>
+<body>
+  <hr color="#ff8000" align="center" size="5">
+  <p align="center"><b>Stock (2026-10-10 06:52):</b>&emsp;<a href="https://www.wantgoo.com/stock/7887/enterprise-value/price-to-earning-ratio" target="_blank">PE Chart</a>&emsp;<a href="https://www.wantgoo.com/stock/7887/enterprise-value/price-book-ratio" target="_blank">PB Chart</a>&emsp;<a href="" target="_blank">PS Chart</a>&emsp;<a href="https://www.wsj.com/market-data/quotes/TW/7887/financials/quarter/cash-flow" target="_blank">Finance</a>&emsp;<a href="https://www.ptt.cc/bbs/Stock/search?q=宇川精材" target="_blank">PTT Search</a>&emsp;<a href="https://www.cmoney.tw/follow/channel/stock-7887?chart=d&type=Personal" target="_blank">CMoney Forum</a></p>
+  <hr color="#ff8000" align="center" size="5">
+   <div align="center"><iframe id="stock" src="7887.TWO_EC.html" frameborder="0" width="100%" height="1600px" scrolling="no"></iframe></div>
+  <hr color="#ff8000" align="center">
+  <br>
+  <div align="center">
+    <table class="t01" border="0" cellspacing="1" cellpadding="1">
+    <tr><td colspan="11">
+    <select name="D" onchange="goA();">
+    <option value="0">請選擇</option>
+    <option value="1">近五日</option>
+    <option value="2">近十日</option>
+    <option value="3" selected="selected">近20日</option>
+    <option value="4">近40日</option>
+    </select>
+     自設區間：
+    <script language="JavaScript" src="/z/js/month.djjs"/>
+    從　<select name="Y2" onchange="javascript:SetMonthDate(document.F.Y2,document.F.M2,document.F.D2);">
+    	<option value="91"/>
+    </select>年 
+    <select name="M2" onchange="javascript:SetMonthDate(document.F.Y2,document.F.M2,document.F.D2);">
+    	<option value="-1"/>
+    </select>月 
+    <select name="D2">
+    	<option value="-1"/>
+    </select>日 
+     ∼ 
+    <select name="Y1" onchange="javascript:SetMonthDate(document.F.Y1,document.F.M1,document.F.D1);">
+    	<option value="91"/>
+    </select>年 
+    <select name="M1" onchange="javascript:SetMonthDate(document.F.Y1,document.F.M1,document.F.D1);">
+    	<option value="-1"/>
+    </select>月 
+    <select name="D1">
+    	<option value="-1"/>
+    </select>日 
+    <input type="hidden" name="bDate"/>
+    <input type="hidden" name="eDate"/>
+    <script language="javascript">&lt;!--
+    	var toDay ='2026/10/10'
+    	var getYMD1 = '2026/10/9';
+    	var getYMD2 = '2025/10/10';
+    	PageInit(document.F);
+    	function PageInit(obj)
+    	{	//在 BODY onLoad 時候的初始化
+    		ShowYear(obj.Y1,'2026/10/10',1,'N');
+    		ShowYear(obj.Y2,'2026/10/10',1,'N');
+    		SetOptionValue(obj.M1,1,12);
+    		SetOptionValue(obj.M2,1,12);
+    		//設定初始值
+    		var YMDary1,Hary1;
+    		if (getYMD1.indexOf(' ') &gt; -1 ) {
+    			YMDary1 = getYMD1.split(' ')[0].split('/');
+    		}else {
+    			YMDary1 = getYMD1.split('/');
+    		}
+    		SetFocus(obj.Y1,YMDary1[0]);
+    		SetFocus(obj.M1,YMDary1[1]);
+    		var YMDary2,Hary2;
+    		if (getYMD2.indexOf(' ') &gt; -1 ) {
+    			YMDary2 = getYMD2.split(' ')[0].split('/');
+    		}else {
+    			YMDary2 = getYMD2.split('/');
+    		}
+    		SetFocus(obj.Y2,YMDary2[0]);
+    		SetFocus(obj.M2,YMDary2[1]);
+    		SetMonthDate(obj.Y1,obj.M1,obj.D1);
+    		SetMonthDate(obj.Y2,obj.M2,obj.D2);
+    		SetFocus(obj.D2,YMDary2[2]);
+    		SetFocus(obj.D1,YMDary1[2]);
+    		removeToday(obj.Y1,obj.M1,obj.D1,toDay);
+    		removeToday(obj.Y2,obj.M2,obj.D2,toDay);
+    	}
+    	function CheckDate()
+    	{
+    		var Frm = document.F;
+    		var y1 = parseInt(Frm.Y1.options[Frm.Y1.selectedIndex].value);
+    		var m1 = parseInt(Frm.M1.options[Frm.M1.selectedIndex].value);
+    		var d1 = parseInt(Frm.D1.options[Frm.D1.selectedIndex].value);
+    		var y2 = parseInt(Frm.Y2.options[Frm.Y2.selectedIndex].value);
+    		var m2 = parseInt(Frm.M2.options[Frm.M2.selectedIndex].value);
+    		var d2 = parseInt(Frm.D2.options[Frm.D2.selectedIndex].value);
+    		var sEDate = y1 + '-' + m1 + '-' + d1;
+    		var sBDate = y2 + '-' + m2 + '-' + d2;
+    		Frm.bDate.value = sBDate;
+    		Frm.eDate.value = sEDate;
+    		return checkBEdate(sBDate,sEDate);
+    	}
+    	function checkBEdate(sBDate,sEDate)
+    	{
+    		var aymd1 = sBDate.split(' ')[0].split('-');
+    		var aymd2 = sEDate.split(' ')[0].split('-');
+    		if (aymd1.length &lt; 3 || aymd2.length &lt; 3 ) {
+    			alert ('日期選擇錯誤!!');
+    			return false;
+    		}
+    		var nbdate = parseInt(aymd1[0])*1000000 + parseInt(aymd1[1])*10000 + parseInt(aymd1[2])*100;
+    		var nedate = parseInt(aymd2[0])*1000000 + parseInt(aymd2[1])*10000 + parseInt(aymd2[2])*100;
+    		if (nbdate &gt; nedate) {
+    			alert('您所輸入的起始日期大於結束日期');
+    			return false;
+    		}
+    		return true;
+    	}
+    //--&gt;</script>
+    <input type="button" name="BB" value="查詢" onclick="javascript:goC();"/>
+    </td></tr>
+    <tr align="center">
+    <td nowrap="nowrap"> </td>
+    <td colspan="4" nowrap="nowrap">買賣超</td>
+    <td colspan="4" nowrap="nowrap">估計持股</td>
+    <td colspan="2" nowrap="nowrap">持股比重</td>
+    </tr>
+    <tr align="center">
+    <td nowrap="nowrap">日期</td>
+    <td nowrap="nowrap">外資</td>
+    <td nowrap="nowrap">投信</td>
+    <td nowrap="nowrap">自營商</td>
+    <td nowrap="nowrap">單日合計</td>
+    <td nowrap="nowrap">外資</td>
+    <td nowrap="nowrap">投信</td>
+    <td nowrap="nowrap">自營商</td>
+    <td nowrap="nowrap">單日合計</td>
+    <td nowrap="nowrap">外資</td>
+    <td nowrap="nowrap">三大法人</td>
+    </tr>
+    <tr><td colspan="11" align="center">查無(7887)法人持股資料</td></tr>
+    </table>
+  <br>
+</div>
+  <br>
+  <div align="center">
+    <table class="t01" border="0" width="50%">
+    <tr><td colspan="2">所選個股代碼錯誤</td></tr></table>
+    
+
+  <br>
+</div>  <hr color="#ff8000" align="center"><br>
+<div id="majorchartweek_container" align="center">
+<script type="text/javascript">var majorchartweek;
+
+	majorchartweek = new Highcharts.Chart({
+		chart: { renderTo:'majorchartweek_container', height: 400, width: 1000 }, 
+		legend: { align: 'left', floating: true, layout: 'horizontal', verticalAlign: 'top', x: 70, y: 0 }, 
+		plotOptions: { area: { fillColor: { linearGradient: [0, 0, 0, 250], stops: [[0, '#7CB5EC'], [1, '#FFFFFF']] }, lineWidth: 2, marker: { radius: 2 }, states: { hover: { lineWidth: 1 } } } }, 
+		title: { style: { font: 'normal 6px Verdana, sans-serif' }, text: '' }, 
+		xAxis: { categories: ['20260327', '20260402', '20260410', '20260417', '20260424', '20260430', '20260508', '20260515', '20260522', '20260529', '20260605', '20260612', '20260618', '20260626', '20260703', '20260709', '20260717', '20260724', '20260731', '20260807', '20260814', '20260821', '20260828', '20260904', '20260911', '20260918', '20260924', '20261002', '20261008'], labels: { rotation: -90, style: { font: 'normal Verdana, sans-serif' } }, showLastLabel: true }, 
+		yAxis: [{ max: 17370.75, min: 6009.5, title: { style: { font: 'normal 6px Verdana, sans-serif' }, text: '總股東人數' } }, { labels: { format: '{value}%' }, max: 48.63, min: 25.545, opposite: true, title: { style: { font: 'normal 6px Verdana, sans-serif' }, text: '大股東持有率' } }], 
+		series: [{ data: [7070, 7888, 9383, 11112, 14587, 14871, 15105, 15049, 14858, 14786, 14618, 14459, 14398, 14300, 14193, 14229, 14186, 14137, 14039, 14038, 14088, 14042, 14012, 14000, 13997, 13958, 13959, 13932, 13955], name: '總股東人數', type: 'column', yAxis: 0, color: '#AFD8F8', borderColor: 'black', borderWidth: 0.1, colorByPoint: false, groupPadding: 0, shadow: true }, { data: [48.63, 48.50, 48.58, 47.84, 45.36, 44.68, 44.31, 43.66, 44.32, 44.22, 43.96, 43.52, 43.42, 43.41, 43.10, 43.04, 43.12, 43.29, 43.45, 43.43, 43.42, 43.38, 43.38, 43.35, 43.36, 43.42, 42.87, 42.87, 42.36], name: '大股東持有率(>400張)', type: 'line', yAxis: 1, color: '#FF5904', allowPointSelect: true, marker: { fillColor: 'whitesmoke', lineColor: 'darkslategray', lineWidth: 1, radius: 2, symbol: 'circle' }, tooltip: { pointFormat: '{series.name}: {point.y} <br/>', valueSuffix: '%' } }, { data: [32.37, 32.04, 30.87, 31.38, 29.40, 29.40, 29.16, 27.92, 27.92, 27.92, 27.45, 26.20, 26.20, 26.20, 27.47, 27.48, 27.52, 27.58, 27.58, 28.84, 28.86, 28.84, 28.84, 28.84, 28.84, 28.88, 28.90, 28.90, 28.89], name: '大股東持有率(>1000張)', type: 'line', yAxis: 1, color: '#058DC7', allowPointSelect: true, marker: { fillColor: 'whitesmoke', lineColor: 'darkslategray', lineWidth: 1, radius: 2, symbol: 'circle' }, tooltip: { pointFormat: '{series.name}: {point.y} <br/>', valueSuffix: '%' } }]
+
+});
+</script>
+</div>
+<br>
+<div id ='D2' align="center" >
+                                    <table cellpadding="0" cellspacing="1" border="0">
+                                        <tr>
+                                            <td align='center' valign = 'bottom' class="table" style="width:1024px;BORDER-TOP: 1px solid #DFDFDF;">
+                                                <table width='100%' border='0' cellpadding='2' cellspacing='0'  class='display' id='details' ><thead><tr class='lLS'><td colspan = '7'>&nbsp;</td><td colspan = '6' align='right' style='color: #4A4A4A'>* 顏色識別: 紅色-成長, 綠色-下降, 黑色-持平</td><td>&nbsp;</td></tr><tr class=''><th rowspan='1'  colspan='2'>&nbsp;</th><th align='center' style='border-bottom: 1px solid #000;' colspan='3'>20261008</th><th >&nbsp;</th><th align='center' style='border-bottom: 1px solid #000;' colspan='3'>20261002</th><th >&nbsp;</th><th align='center' style='border-bottom: 1px solid #000;' colspan='3'>20260924</th><th >&nbsp;</th></tr><tr class='lDS'><td>&nbsp;</td><td>持股張數分級</td><td style='color: #800000'>人數</td><td>張數</td><td>百分比%</td><td>&nbsp;</td><td style='color: #800000'>人數</td><td>張數</td><td>百分比%</td><td>&nbsp;</td><td style='color: #800000'>人數</td><td>張數</td><td>百分比%</td><td>&nbsp;</td></tr></thead><tbody><tr class='lLS '><td>&nbsp;</td><td style='color: #4A4A4A'>* 400 張以上 </td><td  style='color: #669900'>32</td><td  style='color: #669900'>34,620</td><td  style='color: #669900'>42.35</td><td>&nbsp;</td><td  style='color: #4A4A4A'>33</td><td  style='color: #FF0000'>35,037</td><td  style='color: #FF0000'>42.87</td><td>&nbsp;</td><td  style='color: #669900'>33</td><td  style='color: #669900'>35,033</td><td  style='color: #669900'>42.86</td><td>&nbsp;</td></tr><tr class='lLS '><td>&nbsp;</td><td style='color: #4A4A4A'>* 600 張以上</td><td  style='color: #4A4A4A'>21</td><td  style='color: #669900'>29,429</td><td  style='color: #669900'>36.00</td><td>&nbsp;</td><td  style='color: #4A4A4A'>21</td><td  style='color: #FF0000'>29,430</td><td  style='color: #FF0000'>36.01</td><td>&nbsp;</td><td  style='color: #4A4A4A'>21</td><td  style='color: #FF0000'>29,426</td><td  style='color: #FF0000'>36.00</td><td>&nbsp;</td></tr><tr class='lLS '><td>&nbsp;</td><td style='color: #4A4A4A'>* 800 張以上</td><td  style='color: #4A4A4A'>18</td><td  style='color: #669900'>27,266</td><td  style='color: #669900'>33.36</td><td>&nbsp;</td><td  style='color: #4A4A4A'>18</td><td  style='color: #669900'>27,271</td><td  style='color: #4A4A4A'>33.37</td><td>&nbsp;</td><td  style='color: #4A4A4A'>18</td><td  style='color: #FF0000'>27,273</td><td  style='color: #FF0000'>33.37</td><td>&nbsp;</td></tr><tr class='lLS ' ><td>&nbsp;</td><td style='color: #4A4A4A'>* 1000 張以上</td><td  style='color: #4A4A4A'>14</td><td  style='color: #669900'>23,613</td><td  style='color: #669900'>28.89</td><td>&nbsp;</td><td  style='color: #4A4A4A'>14</td><td  style='color: #669900'>23,618</td><td  style='color: #4A4A4A'>28.90</td><td>&nbsp;</td><td  style='color: #4A4A4A'>14</td><td  style='color: #FF0000'>23,620</td><td  style='color: #FF0000'>28.90</td><td>&nbsp;</td></tr><tr><td style='border-bottom: 1px solid #000; color: #000' colspan='14'></td></tr><tr class='lLS'><td>&nbsp;</td><td>1-999股</td><td  style='color: #669900'>7,146</td><td  style='color: #FF0000'>1,138</td><td  style='color: #FF0000'>1.39</td><td>&nbsp;</td><td  style='color: #669900'>7,150</td><td  style='color: #669900'>1,135</td><td  style='color: #669900'>1.38</td><td>&nbsp;</td><td  style='color: #FF0000'>7,174</td><td  style='color: #FF0000'>1,138</td><td  style='color: #FF0000'>1.39</td><td>&nbsp;</td></tr><tr class='lDS'><td>&nbsp;</td><td>1-5張</td><td  style='color: #FF0000'>5,481</td><td  style='color: #FF0000'>10,545</td><td  style='color: #FF0000'>12.90</td><td>&nbsp;</td><td  style='color: #669900'>5,459</td><td  style='color: #FF0000'>10,515</td><td  style='color: #FF0000'>12.86</td><td>&nbsp;</td><td  style='color: #669900'>5,461</td><td  style='color: #669900'>10,502</td><td  style='color: #669900'>12.85</td><td>&nbsp;</td></tr><tr class='lLS'><td>&nbsp;</td><td>5-10張</td><td  style='color: #FF0000'>607</td><td  style='color: #FF0000'>4,587</td><td  style='color: #FF0000'>5.61</td><td>&nbsp;</td><td  style='color: #FF0000'>597</td><td  style='color: #FF0000'>4,514</td><td  style='color: #FF0000'>5.52</td><td>&nbsp;</td><td  style='color: #FF0000'>596</td><td  style='color: #FF0000'>4,505</td><td  style='color: #FF0000'>5.51</td><td>&nbsp;</td></tr><tr class='lDS'><td>&nbsp;</td><td>10-15張</td><td  style='color: #669900'>229</td><td  style='color: #669900'>2,892</td><td  style='color: #669900'>3.53</td><td>&nbsp;</td><td  style='color: #669900'>231</td><td  style='color: #669900'>2,919</td><td  style='color: #669900'>3.57</td><td>&nbsp;</td><td  style='color: #FF0000'>234</td><td  style='color: #FF0000'>2,959</td><td  style='color: #FF0000'>3.62</td><td>&nbsp;</td></tr><tr class='lLS'><td>&nbsp;</td><td>15-20張</td><td  style='color: #669900'>130</td><td  style='color: #669900'>2,352</td><td  style='color: #669900'>2.87</td><td>&nbsp;</td><td  style='color: #FF0000'>132</td><td  style='color: #FF0000'>2,402</td><td  style='color: #FF0000'>2.93</td><td>&nbsp;</td><td  style='color: #FF0000'>128</td><td  style='color: #FF0000'>2,325</td><td  style='color: #FF0000'>2.84</td><td>&nbsp;</td></tr><tr class='lDS'><td>&nbsp;</td><td>20-30張</td><td  style='color: #FF0000'>97</td><td  style='color: #FF0000'>2,511</td><td  style='color: #FF0000'>3.07</td><td>&nbsp;</td><td  style='color: #669900'>96</td><td  style='color: #669900'>2,469</td><td  style='color: #669900'>3.02</td><td>&nbsp;</td><td  style='color: #669900'>98</td><td  style='color: #669900'>2,528</td><td  style='color: #669900'>3.09</td><td>&nbsp;</td></tr><tr class='lLS'><td>&nbsp;</td><td>30-40張</td><td  style='color: #4A4A4A'>60</td><td  style='color: #4A4A4A'>2,131</td><td  style='color: #4A4A4A'>2.60</td><td>&nbsp;</td><td  style='color: #669900'>60</td><td  style='color: #669900'>2,131</td><td  style='color: #669900'>2.60</td><td>&nbsp;</td><td  style='color: #FF0000'>61</td><td  style='color: #FF0000'>2,164</td><td  style='color: #FF0000'>2.64</td><td>&nbsp;</td></tr><tr class='lDS'><td>&nbsp;</td><td>40-50張</td><td  style='color: #669900'>33</td><td  style='color: #669900'>1,519</td><td  style='color: #669900'>1.85</td><td>&nbsp;</td><td  style='color: #FF0000'>35</td><td  style='color: #FF0000'>1,598</td><td  style='color: #FF0000'>1.95</td><td>&nbsp;</td><td  style='color: #FF0000'>34</td><td  style='color: #FF0000'>1,552</td><td  style='color: #FF0000'>1.89</td><td>&nbsp;</td></tr><tr class='lLS'><td>&nbsp;</td><td>50-100張</td><td  style='color: #669900'>70</td><td  style='color: #669900'>4,774</td><td  style='color: #669900'>5.84</td><td>&nbsp;</td><td  style='color: #669900'>72</td><td  style='color: #669900'>4,968</td><td  style='color: #669900'>6.07</td><td>&nbsp;</td><td  style='color: #FF0000'>73</td><td  style='color: #FF0000'>4,996</td><td  style='color: #FF0000'>6.11</td><td>&nbsp;</td></tr><tr class='lDS'><td>&nbsp;</td><td>100-200張</td><td  style='color: #FF0000'>36</td><td  style='color: #FF0000'>4,602</td><td  style='color: #FF0000'>5.63</td><td>&nbsp;</td><td  style='color: #4A4A4A'>34</td><td  style='color: #FF0000'>4,385</td><td  style='color: #FF0000'>5.36</td><td>&nbsp;</td><td  style='color: #669900'>34</td><td  style='color: #669900'>4,378</td><td  style='color: #669900'>5.35</td><td>&nbsp;</td></tr><tr class='lLS'><td>&nbsp;</td><td>200-400張</td><td  style='color: #FF0000'>34</td><td  style='color: #FF0000'>10,049</td><td  style='color: #FF0000'>12.29</td><td>&nbsp;</td><td  style='color: #4A4A4A'>33</td><td  style='color: #FF0000'>9,647</td><td  style='color: #FF0000'>11.80</td><td>&nbsp;</td><td  style='color: #FF0000'>33</td><td  style='color: #FF0000'>9,643</td><td  style='color: #FF0000'>11.79</td><td>&nbsp;</td></tr><tr class='lDS'><td>&nbsp;</td><td>400-600張</td><td  style='color: #669900'>11</td><td  style='color: #669900'>5,191</td><td  style='color: #669900'>6.35</td><td>&nbsp;</td><td  style='color: #4A4A4A'>12</td><td  style='color: #4A4A4A'>5,607</td><td  style='color: #4A4A4A'>6.86</td><td>&nbsp;</td><td  style='color: #669900'>12</td><td  style='color: #669900'>5,607</td><td  style='color: #669900'>6.86</td><td>&nbsp;</td></tr><tr class='lLS'><td>&nbsp;</td><td>600-800張</td><td  style='color: #4A4A4A'>3</td><td  style='color: #FF0000'>2,163</td><td  style='color: #4A4A4A'>2.64</td><td>&nbsp;</td><td  style='color: #4A4A4A'>3</td><td  style='color: #FF0000'>2,159</td><td  style='color: #FF0000'>2.64</td><td>&nbsp;</td><td  style='color: #4A4A4A'>3</td><td  style='color: #669900'>2,153</td><td  style='color: #4A4A4A'>2.63</td><td>&nbsp;</td></tr><tr class='lDS'><td>&nbsp;</td><td>800-1,000張</td><td  style='color: #4A4A4A'>4</td><td  style='color: #4A4A4A'>3,653</td><td  style='color: #4A4A4A'>4.47</td><td>&nbsp;</td><td  style='color: #4A4A4A'>4</td><td  style='color: #4A4A4A'>3,653</td><td  style='color: #4A4A4A'>4.47</td><td>&nbsp;</td><td  style='color: #4A4A4A'>4</td><td  style='color: #4A4A4A'>3,653</td><td  style='color: #4A4A4A'>4.47</td><td>&nbsp;</td></tr><tr class='lLS'><td>&nbsp;</td><td>1,000張以上</td><td  style='color: #4A4A4A'>14</td><td  style='color: #669900'>23,613</td><td  style='color: #669900'>28.89</td><td>&nbsp;</td><td  style='color: #4A4A4A'>14</td><td  style='color: #669900'>23,618</td><td  style='color: #4A4A4A'>28.90</td><td>&nbsp;</td><td  style='color: #4A4A4A'>14</td><td  style='color: #FF0000'>23,620</td><td  style='color: #FF0000'>28.90</td><td>&nbsp;</td></tr><tr class='lDS'><td>&nbsp;</td><td>合計</td><td  style='color: #FF0000'>13,955</td><td  style='color: #4A4A4A'>81,720</td><td  style='color: #4A4A4A'>100.00</td><td>&nbsp;</td><td  style='color: #669900'>13,932</td><td  style='color: #4A4A4A'>81,720</td><td  style='color: #4A4A4A'>100.00</td><td>&nbsp;</td><td  style='color: #FF0000'>13,959</td><td  style='color: #4A4A4A'>81,720</td><td  style='color: #4A4A4A'>100.00</td><td>&nbsp;</td></tr></tbody></table>                                                  
+                                            </td>
+                                        </tr>
+                                    </table>
+		                        </div>
+<br>
+  <hr color="#ff8000" align="center">
+  <div align="center"><table><tbody><tr>
+  <td><iframe src="https://www.cmoney.tw/notice/chart/stockchart.aspx?action=v&id=7887" width="600" height="300" frameborder="0" scrolling="no"></iframe></td>
+  <td><iframe src="https://www.cmoney.tw/notice/chart/stockchart.aspx?action=f&id=7887" width="600" height="300" frameborder="0" scrolling="no"></iframe></td>
+  <td><iframe src="https://www.cmoney.tw/notice/chart/stockchart.aspx?action=e&id=7887" width="600" height="300" frameborder="0" scrolling="no"></iframe></td>
+  </tr><tr>
+  <td><iframe src="https://www.cmoney.tw/notice/chart/stockchart.aspx?action=p&id=7887" width="600" height="300" frameborder="0" scrolling="no"></iframe></td>
+  <td><a href="https://goodinfo.tw/tw/StockCashFlow.asp?RPT_CAT=M_YEAR&STOCK_ID=7887" target="_blank" style="display:block;width:600px;height:300px;line-height:300px;text-align:center;font-size:18px;text-decoration:none;color:#333;background:#f5f5f5;border:1px solid #ddd;">💰 現金流量 (GoodInfo)</a></td>
+  <td><a href="https://goodinfo.tw/tw/DayTrading.asp?STOCK_ID=7887" target="_blank" style="display:block;width:600px;height:300px;line-height:300px;text-align:center;font-size:18px;text-decoration:none;color:#333;background:#f5f5f5;border:1px solid #ddd;">📈 現股當沖 (GoodInfo)</a></td>
+  </tr></tbody></table></div>
+
+  <script language="javascript">
+  function reSize(){
+    actual_height = document.body.scrollHeight+50;
+    console.log("RP T:" + actual_height)
+    parent.postMessage("RP H=" + actual_height, "*");
+  }
+  window.onload=reSize;
+  </script>
+</body>
+</html>
