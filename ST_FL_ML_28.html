@@ -1,0 +1,1584 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>ST_FL_ML_28 — Strategy Entries & Flags</title>
+  <script src="https://unpkg.com/lightweight-charts@4.2.1/dist/lightweight-charts.standalone.production.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-size: 12px;
+      font-family: Arial, Helvetica, "Microsoft JhengHei", -apple-system, sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 8px 28px 16px;
+      background-color: #faf9f6;
+      color: #1c1917;
+    }
+    .rp-header {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-top: 3px solid #FA8123;
+      border-radius: 6px;
+      padding: 6px 10px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+    .rp-title-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .rp-ticker {
+      font-size: 17px;
+      font-weight: 800;
+      color: #1c1917;
+      letter-spacing: 0.3px;
+    }
+    .rp-desc {
+      font-size: 14px;
+      font-weight: 700;
+      color: #FA8123;
+    }
+    .rp-time {
+      font-size: 11px;
+      color: #78716c;
+      background: #f5f3ef;
+      padding: 1px 7px;
+      border-radius: 999px;
+    }
+    .rp-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .rp-pill-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 9px;
+      border-radius: 5px;
+      background: #faf9f6;
+      border: 1px solid #d6d1c7;
+      color: #44403c;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.12s ease;
+    }
+    .rp-pill-link:hover {
+      background: #fff5eb;
+      border-color: #FA8123;
+      color: #d9650f;
+    }
+    .rp-tabs-bar {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 4px 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      position: sticky;
+      top: 2px;
+      z-index: 50;
+      box-shadow: 0 1px 4px rgba(28, 25, 23, 0.05);
+    }
+    .rp-tab {
+      border: 1px solid transparent;
+      background: #f5f3ef;
+      color: #57534e;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+    .rp-tab:hover {
+      background: #fff5eb;
+      border-color: #fdba8c;
+      color: #d9650f;
+    }
+    .rp-tab.active {
+      background: #FA8123;
+      color: #ffffff;
+      box-shadow: 0 1px 3px rgba(250, 129, 35, 0.35);
+    }
+    .rp-sec-pane {
+      width: 100%;
+      margin: 0 0 4px;
+    }
+    .rp-card {
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 6px 8px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+      overflow-x: auto;
+    }
+    .rp-card h2 {
+      font-size: 14px;
+      color: #1c1917;
+      border-left: 4px solid #FA8123;
+      padding-left: 6px;
+      margin: 0 0 6px;
+    }
+    .rp-card h3 {
+      font-size: 12px;
+      color: #44403c;
+      margin: 6px 0 4px;
+    }
+    .st-banner {
+      background: #fff9f4;
+      border-left: 4px solid #FA8123;
+      padding: 5px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      line-height: 1.5;
+      margin-bottom: 6px;
+      color: #292524;
+    }
+    .st-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+    .st-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 8px;
+      margin: 8px 0 12px;
+    }
+    .st-kpi-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 8px 10px;
+      text-align: center;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+      transition: all 0.15s ease;
+    }
+    .st-kpi-card:hover {
+      border-color: #FA8123;
+      box-shadow: 0 2px 6px rgba(250, 129, 35, 0.12);
+    }
+    .st-kpi-title {
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 600;
+      margin-bottom: 3px;
+      white-space: nowrap;
+    }
+    .st-kpi-val {
+      font-size: 16px;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.25;
+      margin-bottom: 2px;
+    }
+    .st-kpi-sub {
+      font-size: 10.5px;
+      color: #94a3b8;
+      white-space: nowrap;
+    }
+    .st-val-up {
+      color: #dc2626 !important;
+    }
+    .st-val-down {
+      color: #16a34a !important;
+    }
+    .st-badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .st-badge-active {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+    .st-badge-closed {
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+    }
+    .st-section-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1c1917;
+      margin: 14px 0 6px;
+    }
+    .st-table-wrap {
+      overflow-x: auto;
+      margin: 4px 0 6px;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+    }
+    .st-table-wrap table {
+      margin: 0;
+      border: none;
+      width: 100%;
+    }
+    .st-card-box {
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 6px 8px;
+    }
+    .st-empty-box {
+      font-size: 12px;
+      color: #64748b;
+      padding: 10px;
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      border-radius: 6px;
+      text-align: center;
+      margin: 6px 0;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 4px 0;
+    }
+    td, th {
+      border: 1px solid #e6e2dc;
+      text-align: left;
+      padding: 5px 7px;
+      vertical-align: middle;
+    }
+    th {
+      background-color: #f6f4f0;
+      color: #1c1917;
+      font-weight: 700;
+    }
+    tr:nth-child(even) {
+      background-color: #fcfbf9;
+    }
+    td img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+      display: block;
+      cursor: zoom-in;
+    }
+    .st-stock-name {
+      margin-top: 3px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #44403c;
+      white-space: nowrap;
+      text-align: center;
+    }
+    #imgZoomBox {
+      display: none;
+      position: absolute;
+      z-index: 9999;
+      pointer-events: none;
+      background: #ffffff;
+      border: 2px solid #FA8123;
+      border-radius: 8px;
+      padding: 6px;
+      box-shadow: 0 12px 32px rgba(28, 25, 23, 0.28);
+    }
+    #imgZoomBox img {
+      display: block;
+      width: auto;
+      height: auto;
+      max-width: none;
+      max-height: none;
+      border-radius: 4px;
+    }
+    /* Stock Drawer Styles - Warm Light Card Theme matching Webpage (#faf9f6 / #FA8123) */
+    .sd-backdrop {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(28, 25, 23, 0.4); z-index: 9998;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+    }
+    .sd-backdrop.open { opacity: 1; pointer-events: auto; }
+
+    .sd-drawer {
+      position: fixed; top: 0; right: 0; width: 580px; max-width: 96vw; height: 100vh;
+      background: #faf9f6; color: #1c1917; z-index: 9999;
+      box-shadow: -6px 0 28px rgba(28, 25, 23, 0.16);
+      transform: translateX(100%); transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex; flex-direction: column; overflow: hidden; font-size: 12px;
+      border-left: 1px solid #e6e2dc;
+    }
+    .sd-drawer.open { transform: translateX(0); }
+
+    .sd-header {
+      padding: 10px 16px; border-bottom: 1px solid #e6e2dc; border-top: 3px solid #FA8123;
+      background: #ffffff;
+      display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-shrink: 0;
+      box-shadow: 0 1px 3px rgba(28, 25, 23, 0.03);
+    }
+    .sd-title-wrap { display: flex; align-items: baseline; gap: 8px; }
+    .sd-code { font-size: 18px; font-weight: 800; color: #1c1917; }
+    .sd-name { font-size: 15px; font-weight: 700; color: #FA8123; }
+    .sd-price-wrap { display: flex; align-items: baseline; gap: 6px; }
+    .sd-price { font-size: 17px; font-weight: 800; color: #1c1917; }
+    .sd-change { font-size: 13px; font-weight: 700; padding: 2px 6px; border-radius: 4px; }
+    .sd-change.up { color: #dc2626; background: #fef2f2; border: 1px solid #fecaca; }
+    .sd-change.down { color: #059669; background: #ecfdf5; border: 1px solid #a7f3d0; }
+    .sd-close-btn {
+      border: 1px solid #e6e2dc; background: #f5f3ef; color: #78716c; width: 28px; height: 28px;
+      border-radius: 50%; font-size: 14px; font-weight: bold; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; transition: all 0.12s;
+    }
+    .sd-close-btn:hover { background: #e6e2dc; color: #1c1917; }
+
+    .sd-body {
+      flex: 1; overflow-y: auto; padding: 12px 14px; display: flex; flex-direction: column; gap: 10px;
+    }
+    .sd-body::-webkit-scrollbar { width: 5px; }
+    .sd-body::-webkit-scrollbar-thumb { background: #d6d1c7; border-radius: 4px; }
+
+    .sd-range-bar { display: flex; gap: 4px; align-items: center; }
+    .sd-range-btn {
+      flex: 1; padding: 4px 0; border: 1px solid #d6d1c7; background: #ffffff;
+      border-radius: 4px; font-size: 11px; font-weight: 600; color: #57534e; cursor: pointer;
+      transition: all 0.12s ease;
+    }
+    .sd-range-btn.active, .sd-range-btn:hover {
+      background: #FA8123; border-color: #FA8123; color: #ffffff;
+      box-shadow: 0 1px 3px rgba(250, 129, 35, 0.3);
+    }
+    .sd-chart-box {
+      width: 100%; height: 260px; position: relative; border: 1px solid #e6e2dc;
+      border-radius: 6px; background: #ffffff; overflow: hidden; flex-shrink: 0;
+      box-shadow: 0 1px 3px rgba(28, 25, 23, 0.03);
+    }
+    .sd-legend {
+      font-size: 11px; color: #78716c; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 1px;
+    }
+    .sd-legend span { font-weight: 700; color: #1c1917; }
+
+    /* Light Theme Chart Cards matching .rp-card */
+    .sd-card {
+      background: #ffffff; border: 1px solid #e6e2dc; border-radius: 6px; padding: 10px 12px;
+      box-shadow: 0 1px 3px rgba(28, 25, 23, 0.03);
+    }
+    .sd-card-hdr {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;
+    }
+    .sd-card-title {
+      font-size: 13px; font-weight: 700; color: #1c1917;
+      border-left: 3px solid #FA8123; padding-left: 6px;
+    }
+    .sd-card-val { font-size: 13px; font-weight: 800; color: #dc2626; }
+    .sd-card-sub { font-size: 11px; color: #b91c1c; margin-bottom: 8px; line-height: 1.4; }
+    .sd-card-sub.muted { color: #57534e; }
+
+    .sd-row-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .sd-row-3col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+    .sd-subcol { display: flex; flex-direction: column; gap: 2px; }
+    .sd-subcol-title { font-size: 11px; color: #78716c; font-weight: 600; }
+    .sd-subcol-stat { font-size: 11px; font-weight: 700; margin-top: 2px; }
+    .sd-dates-row {
+      display: flex; justify-content: space-between; font-size: 10px; color: #a8a29e; margin-top: 2px;
+    }
+
+    /* Fundamental Metric Items */
+    .sd-metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .sd-metric-item {
+      background: #faf9f6; border: 1px solid #ede9e3; border-radius: 4px; padding: 6px; text-align: center;
+    }
+    .sd-metric-lbl { font-size: 11px; color: #78716c; margin-bottom: 2px; }
+    .sd-metric-val { font-size: 13px; font-weight: 800; color: #1c1917; }
+
+    /* Links */
+    .sd-links {
+      display: flex; flex-wrap: wrap; gap: 6px; padding-top: 6px; border-top: 1px solid #e6e2dc;
+    }
+    .sd-ext-link {
+      flex: 1; min-width: 80px; text-align: center; padding: 6px 0; border-radius: 4px;
+      background: #ffffff; border: 1px solid #d6d1c7; color: #44403c; text-decoration: none;
+      font-size: 11px; font-weight: 600; transition: all 0.12s ease;
+    }
+    .sd-ext-link:hover { background: #fff5eb; border-color: #FA8123; color: #d9650f; }
+
+    .sd-loading {
+      display: flex; align-items: center; justify-content: center; height: 160px;
+      color: #78716c; font-weight: 600;
+    }
+  </style>
+  <script>
+    function switchStTab(btn) {
+      if (!btn) return;
+      var target = btn.getAttribute("data-target") || "all";
+      document.querySelectorAll(".rp-tab").forEach(function(b) {
+        b.classList.remove("active");
+      });
+      btn.classList.add("active");
+      document.querySelectorAll(".rp-sec-pane").forEach(function(pane) {
+        pane.style.display = (target === "all" || pane.id === target) ? "block" : "none";
+      });
+    }
+    function initImgZoom() {
+      var box = document.getElementById("imgZoomBox");
+      if (!box) {
+        box = document.createElement("div");
+        box.id = "imgZoomBox";
+        box.innerHTML = '<img id="imgZoomTarget" src="">';
+        document.body.appendChild(box);
+      }
+      var targetImg = document.getElementById("imgZoomTarget");
+      function placeBox(e) {
+        var docW = document.documentElement.clientWidth || window.innerWidth;
+        var docH = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+        var bw = box.offsetWidth || 560;
+        var bh = box.offsetHeight || 380;
+        var left = (e.pageX < docW / 2) ? (e.pageX + 18) : Math.max(8, e.pageX - bw - 18);
+        if (left + bw > docW - 8) left = Math.max(8, docW - bw - 8);
+        var top = Math.max(8, e.pageY - Math.round(bh / 2));
+        if (top + bh > docH - 8) top = Math.max(8, docH - bh - 8);
+        box.style.left = left + "px";
+        box.style.top = top + "px";
+      }
+      document.querySelectorAll("#sec-entries td img").forEach(function(img) {
+        img.addEventListener("mouseenter", function(e) {
+          targetImg.src = img.src;
+          box.style.display = "block";
+          placeBox(e);
+        });
+        img.addEventListener("mousemove", placeBox);
+        img.addEventListener("mouseleave", function() {
+          box.style.display = "none";
+        });
+      });
+    }
+    var stockCache = {};
+    var currentChart = null;
+    var currentCandleSeries = null;
+    var currentCandleData = [];
+    var currentStockId = null;
+
+    function calculateMA(data, period) {
+      var res = [];
+      var sum = 0;
+      for (var i = 0; i < data.length; i++) {
+        sum += data[i].close;
+        if (i >= period) sum -= data[i - period].close;
+        if (i >= period - 1) {
+          res.push({ time: data[i].time, value: parseFloat((sum / period).toFixed(2)) });
+        }
+      }
+      return res;
+    }
+
+    // SVG Sparkline Helpers
+    function buildBarSvg(arr, w, h, isBi, fillColor) {
+      if (!arr || !arr.length) return '';
+      var n = arr.length;
+      var bw = Math.max(5, (w - (n - 1) * 3) / n);
+      var rects = '';
+      if (!isBi) {
+        var max = Math.max.apply(null, arr);
+        if (max <= 0) max = 1;
+        for (var i = 0; i < n; i++) {
+          var barH = Math.max(3, (arr[i] / max) * (h - 4));
+          var x = i * (bw + 3);
+          var y = h - barH;
+          var op = (i === n - 1) ? 1.0 : 0.65;
+          rects += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + barH.toFixed(1) + '" fill="' + (fillColor || '#ef4444') + '" rx="1.5" opacity="' + op + '"/>';
+        }
+      } else {
+        var absMax = 1;
+        for (var i = 0; i < n; i++) {
+          if (Math.abs(arr[i]) > absMax) absMax = Math.abs(arr[i]);
+        }
+        var midY = h / 2;
+        rects += '<line x1="0" y1="' + midY + '" x2="' + w + '" y2="' + midY + '" stroke="#e6e2dc" stroke-width="1"/>';
+        for (var i = 0; i < n; i++) {
+          var barH = Math.max(2, (Math.abs(arr[i]) / absMax) * (h / 2 - 2));
+          var x = i * (bw + 3);
+          var y = arr[i] >= 0 ? (midY - barH) : midY;
+          var col = arr[i] >= 0 ? '#dc2626' : '#059669';
+          rects += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + barH.toFixed(1) + '" fill="' + col + '" rx="1"/>';
+        }
+      }
+      return '<svg width="100%" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '">' + rects + '</svg>';
+    }
+
+    function buildLineSvg(arr, w, h, col) {
+      if (!arr || arr.length < 2) return '';
+      var min = Math.min.apply(null, arr);
+      var max = Math.max.apply(null, arr);
+      var range = max - min || 1;
+      var n = arr.length;
+      var pad = 4;
+      var pts = [];
+      for (var i = 0; i < n; i++) {
+        var x = pad + (i / (n - 1)) * (w - pad * 2);
+        var y = h - pad - ((arr[i] - min) / range) * (h - pad * 2);
+        pts.push(x.toFixed(1) + ',' + y.toFixed(1));
+      }
+      var d = 'M ' + pts.join(' L ');
+      var last = pts[pts.length - 1].split(',');
+      return '<svg width="100%" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '">' +
+        '<path d="' + d + '" fill="none" stroke="' + col + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<circle cx="' + last[0] + '" cy="' + last[1] + '" r="3" fill="' + col + '"/>' +
+        '</svg>';
+    }
+
+    function fmtWan(v) {
+      if (v == null || isNaN(v)) return '-';
+      var s = v > 0 ? '+' : '';
+      if (Math.abs(v) >= 10000) return s + Math.round(v / 10000).toLocaleString() + '萬';
+      return s + Math.round(v).toLocaleString();
+    }
+
+    function openStockDrawer(stockId, stockName) {
+      currentStockId = stockId;
+      var drawer = document.getElementById("stockDrawer");
+      var backdrop = document.getElementById("stockDrawerBackdrop");
+      if (drawer) drawer.classList.add("open");
+      if (backdrop) backdrop.classList.add("open");
+
+      var elCode = document.getElementById("sdStockCode");
+      var elName = document.getElementById("sdStockName");
+      if (elCode) elCode.textContent = stockId;
+      if (elName) elName.textContent = stockName || "";
+
+      var lnkTV = document.getElementById("lnkTV");
+      var lnkGI = document.getElementById("lnkGoodinfo");
+      var lnkYH = document.getElementById("lnkYahoo");
+      var lnkWG = document.getElementById("lnkWantgoo");
+      if (lnkTV) lnkTV.href = "https://tw.tradingview.com/chart/?symbol=TWSE:" + stockId;
+      if (lnkGI) lnkGI.href = "https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=" + stockId;
+      if (lnkYH) lnkYH.href = "https://tw.stock.yahoo.com/quote/" + stockId + ".TW";
+      if (lnkWG) lnkWG.href = "https://www.wantgoo.com/stock/" + stockId;
+
+      var loadEl = document.getElementById("sdLoading");
+      if (stockCache[stockId]) {
+        renderStockData(stockCache[stockId]);
+      } else {
+        if (loadEl) {
+          loadEl.style.display = "flex";
+          loadEl.innerHTML = "⏳ 載入 K 線與技術指標中...";
+        }
+        fetch("https://r2.finlab.finance/td-stock-panel/tw/" + stockId + ".json")
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            stockCache[stockId] = data;
+            if (currentStockId === stockId) {
+              renderStockData(data);
+            }
+          })
+          .catch(function(err) {
+            console.error("Fetch error:", err);
+            if (loadEl) loadEl.innerHTML = "❌ 載入失敗，請點下方外部鏈結";
+          });
+      }
+    }
+
+    function closeStockDrawer() {
+      var drawer = document.getElementById("stockDrawer");
+      var backdrop = document.getElementById("stockDrawerBackdrop");
+      if (drawer) drawer.classList.remove("open");
+      if (backdrop) backdrop.classList.remove("open");
+    }
+
+    function renderStockData(data) {
+      var loadEl = document.getElementById("sdLoading");
+      if (loadEl) loadEl.style.display = "none";
+
+      // 1. Header Price & Change
+      var chartBars = data.chart || [];
+      if (chartBars.length >= 2) {
+        var lastBar = chartBars[chartBars.length - 1];
+        var prevBar = chartBars[chartBars.length - 2];
+        var lastPrice = lastBar[4];
+        var prevPrice = prevBar[4];
+        var diff = lastPrice - prevPrice;
+        var diffPct = (diff / prevPrice) * 100;
+        var up = diff >= 0;
+
+        var priceEl = document.getElementById("sdPrice");
+        var chgEl = document.getElementById("sdChange");
+        if (priceEl) priceEl.textContent = lastPrice.toFixed(1);
+        if (chgEl) {
+          chgEl.textContent = (up ? "+" : "") + diff.toFixed(1) + " (" + (up ? "+" : "") + diffPct.toFixed(2) + "%)";
+          chgEl.className = "sd-change " + (up ? "up" : "down");
+        }
+      }
+
+      var info = data.info || {};
+
+      // 2. Revenue Section (Snap11)
+      var rev = info.revenue || [];
+      if (rev.length) {
+        var lastRev = rev[rev.length - 1];
+        var revYi = (lastRev.value / 100000).toFixed(1);
+        var revYoy = (lastRev.yoy != null ? lastRev.yoy.toFixed(1) : "0");
+        var consec = 0;
+        for (var i = rev.length - 1; i >= 0; i--) {
+          if (rev[i].yoy > 0) consec++;
+          else break;
+        }
+        var revHdr = document.getElementById("revHdrStat");
+        var revSub = document.getElementById("revSubText");
+        if (revHdr) revHdr.textContent = revYi + "億 +" + revYoy + "%";
+        if (revSub) revSub.textContent = "營收 " + revYi + "億，YoY +" + revYoy + "%，連續 " + consec + " 月成長";
+
+        var revVals = rev.map(function(r) { return r.value; });
+        var revYoys = rev.map(function(r) { return r.yoy; });
+        var bSvg1 = document.getElementById("revBarSvg1");
+        var bSvg2 = document.getElementById("revBarSvg2");
+        if (bSvg1) bSvg1.innerHTML = buildBarSvg(revVals, 250, 48, false, "#ef4444");
+        if (bSvg2) bSvg2.innerHTML = buildBarSvg(revYoys, 250, 48, true);
+        var rD1 = document.getElementById("revD1");
+        var rD2 = document.getElementById("revD2");
+        var rD3 = document.getElementById("revD3");
+        var rD4 = document.getElementById("revD4");
+        if (rD1) rD1.textContent = rev[0].date;
+        if (rD2) rD2.textContent = rev[rev.length - 1].date;
+        if (rD3) rD3.textContent = rev[0].date;
+        if (rD4) rD4.textContent = rev[rev.length - 1].date;
+      }
+
+      // 3. Institutional Section (Snap11)
+      var fArr = (info.foreign_net || []).map(function(x) { return x.value; });
+      var uArr = (info.fund_net || []).map(function(x) { return x.value; });
+      var dArr = (info.dealer_net || []).map(function(x) { return x.value; });
+      var fSum = fArr.reduce(function(a, b) { return a + b; }, 0);
+      var uSum = uArr.reduce(function(a, b) { return a + b; }, 0);
+      var dSum = dArr.reduce(function(a, b) { return a + b; }, 0);
+      var totInst = fSum + uSum + dSum;
+
+      var instSub = document.getElementById("instSubText");
+      if (instSub) instSub.textContent = "三大法人買賣超，合計 " + fmtWan(totInst);
+      var fSvg = document.getElementById("instForeignSvg");
+      var uSvg = document.getElementById("instFundSvg");
+      var dSvg = document.getElementById("instDealerSvg");
+      if (fSvg) fSvg.innerHTML = buildBarSvg(fArr, 160, 45, true);
+      if (uSvg) uSvg.innerHTML = buildBarSvg(uArr, 160, 45, true);
+      if (dSvg) dSvg.innerHTML = buildBarSvg(dArr, 160, 45, true);
+
+      var fStat = document.getElementById("instForeignStat");
+      var uStat = document.getElementById("instFundStat");
+      var dStat = document.getElementById("instDealerStat");
+      if (fStat) {
+        fStat.textContent = "Σ " + fmtWan(fSum);
+        fStat.style.color = fSum >= 0 ? "#dc2626" : "#059669";
+      }
+      if (uStat) {
+        uStat.textContent = "Σ " + fmtWan(uSum);
+        uStat.style.color = uSum >= 0 ? "#dc2626" : "#059669";
+      }
+      if (dStat) {
+        dStat.textContent = "Σ " + fmtWan(dSum);
+        dStat.style.color = dSum >= 0 ? "#dc2626" : "#059669";
+      }
+
+      // 4. Margin Section (Snap11)
+      var mHist = info.margin_history || [];
+      var sHist = info.short_history || [];
+      var mVals = mHist.map(function(x) { return x.value; });
+      var sVals = sHist.map(function(x) { return x.value; });
+      var mDelta = mVals.length >= 2 ? (mVals[mVals.length - 1] - mVals[mVals.length - 2]) : 0;
+      var sDelta = sVals.length >= 2 ? (sVals[sVals.length - 1] - sVals[sVals.length - 2]) : 0;
+
+      var mTrend = (mDelta >= 0 ? "融資增加 " : "融資減少 ") + Math.abs(Math.round(mDelta)).toLocaleString() + " 張<br>";
+      var sTrend = (sDelta >= 0 ? "融券增加 " : "融券減少 ") + Math.abs(Math.round(sDelta)).toLocaleString() + " 張<br>";
+      var syncTrend = (mDelta >= 0 && sDelta >= 0) ? "融資融券同步上升" : (mDelta < 0 && sDelta < 0 ? "融資融券同步下降" : "資券背離");
+      var mSub = document.getElementById("marginSubText");
+      if (mSub) mSub.innerHTML = mTrend + sTrend + syncTrend;
+
+      var mUtil = document.getElementById("mUtilVal");
+      var sUtil = document.getElementById("sUtilVal");
+      if (mUtil) mUtil.textContent = (info.margin_utilization ? info.margin_utilization.toFixed(1) + "%" : "-") + (info.margin_util_rank ? " #" + info.margin_util_rank : "");
+      if (sUtil) sUtil.textContent = (info.short_utilization ? info.short_utilization.toFixed(1) + "%" : "-") + (info.short_util_rank ? " #" + info.short_util_rank : "");
+
+      var lastM = mVals.length ? mVals[mVals.length - 1] : 0;
+      var lastS = sVals.length ? sVals[sVals.length - 1] : 0;
+      var mBal = document.getElementById("mBalVal");
+      var sBal = document.getElementById("sBalVal");
+      if (mBal) mBal.textContent = fmtWan(lastM) + " (" + (mDelta >= 0 ? "+" : "") + Math.round(mDelta) + ")";
+      if (sBal) sBal.textContent = Math.round(lastS).toLocaleString() + " (" + (sDelta >= 0 ? "+" : "") + Math.round(sDelta) + ")";
+
+      var mLSvg = document.getElementById("marginLineSvg");
+      var sLSvg = document.getElementById("shortLineSvg");
+      if (mLSvg) mLSvg.innerHTML = buildLineSvg(mVals, 250, 48, "#0284c7");
+      if (sLSvg) sLSvg.innerHTML = buildLineSvg(sVals, 250, 48, "#059669");
+      if (mHist.length) {
+        var mD1 = document.getElementById("mD1");
+        var mD2 = document.getElementById("mD2");
+        if (mD1) mD1.textContent = mHist[0].date.slice(-5);
+        if (mD2) mD2.textContent = mHist[mHist.length - 1].date.slice(-5);
+      }
+      if (sHist.length) {
+        var sD1 = document.getElementById("sD1");
+        var sD2 = document.getElementById("sD2");
+        if (sD1) sD1.textContent = sHist[0].date.slice(-5);
+        if (sD2) sD2.textContent = sHist[sHist.length - 1].date.slice(-5);
+      }
+
+      // 5. Holders Section (Snap11)
+      var oddHist = info.odd_lot_holders || [];
+      var bigHist = info.big400_holders || [];
+      var oddVals = oddHist.map(function(x) { return x.value; });
+      var bigVals = bigHist.map(function(x) { return x.value; });
+      var oddDelta = oddVals.length >= 2 ? (oddVals[oddVals.length - 1] - oddVals[oddVals.length - 2]) : 0;
+      var bigDelta = bigVals.length >= 2 ? (bigVals[bigVals.length - 1] - bigVals[bigVals.length - 2]) : 0;
+
+      var oddTrend = (oddDelta >= 0 ? "零股股東增加 " : "零股股東減少 ") + Math.abs(Math.round(oddDelta)).toLocaleString() + " 人<br>";
+      var bigTrend = (bigDelta >= 0 ? "大戶持股增加 " : "大戶持股減少 ") + Math.abs(Math.round(bigDelta)).toLocaleString() + " 張<br>";
+      var holderSync = (oddDelta >= 0 && bigDelta >= 0) ? "散戶大戶同增" : (oddDelta < 0 && bigDelta < 0 ? "散戶大戶同減" : "籌碼流向集中/發散");
+      var hSub = document.getElementById("holderSubText");
+      if (hSub) hSub.innerHTML = oddTrend + bigTrend + holderSync;
+
+      var hTot = document.getElementById("hTotalVal");
+      var hBigCnt = document.getElementById("hBigCountVal");
+      if (hTot) hTot.textContent = info.total_holders ? fmtWan(info.total_holders) : "-";
+      if (hBigCnt) hBigCnt.textContent = info.large_holders_count != null ? info.large_holders_count : "-";
+
+      var lastOdd = oddVals.length ? oddVals[oddVals.length - 1] : 0;
+      var lastBig = bigVals.length ? bigVals[bigVals.length - 1] : 0;
+      var hOdd = document.getElementById("hOddVal");
+      var hBig = document.getElementById("hBigVal");
+      if (hOdd) hOdd.textContent = fmtWan(lastOdd) + " (" + (oddDelta >= 0 ? "+" : "") + Math.round(oddDelta) + ")";
+      if (hBig) hBig.textContent = Math.round(lastBig) + " (" + (bigDelta >= 0 ? "+" : "") + Math.round(bigDelta) + ")";
+
+      var oddSvg = document.getElementById("oddLineSvg");
+      var bigSvg = document.getElementById("bigLineSvg");
+      if (oddSvg) oddSvg.innerHTML = buildLineSvg(oddVals, 250, 48, "#0284c7");
+      if (bigSvg) bigSvg.innerHTML = buildLineSvg(bigVals, 250, 48, "#dc2626");
+      if (oddHist.length) {
+        var hD1 = document.getElementById("hD1");
+        var hD2 = document.getElementById("hD2");
+        if (hD1) hD1.textContent = oddHist[0].date.slice(-5);
+        if (hD2) hD2.textContent = oddHist[oddHist.length - 1].date.slice(-5);
+      }
+      if (bigHist.length) {
+        var hD3 = document.getElementById("hD3");
+        var hD4 = document.getElementById("hD4");
+        if (hD3) hD3.textContent = bigHist[0].date.slice(-5);
+        if (hD4) hD4.textContent = bigHist[bigHist.length - 1].date.slice(-5);
+      }
+
+      // 6. Metrics 6-grid
+      function setVal(id, val) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = (val != null) ? val : "-";
+      }
+      setVal("mPE", info.pe_ratio != null ? info.pe_ratio.toFixed(2) : "-");
+      setVal("mPB", info.pb_ratio != null ? info.pb_ratio.toFixed(2) : "-");
+      setVal("mDiv", info.dividend_yield != null ? info.dividend_yield.toFixed(2) + "%" : "-");
+      setVal("mEPS", info.eps != null ? info.eps.toFixed(2) : "-");
+      setVal("mROE", info.roe != null ? (info.roe * 100).toFixed(1) + "%" : "-");
+      setVal("mNetMargin", info.net_margin != null ? (info.net_margin * 100).toFixed(1) + "%" : "-");
+
+      renderChart(chartBars);
+    }
+
+    function renderChart(chartBars) {
+      var container = document.getElementById("sdChartContainer");
+      if (!container || typeof LightweightCharts === "undefined") return;
+
+      if (currentChart) {
+        currentChart.remove();
+        currentChart = null;
+      }
+
+      currentCandleData = [];
+      var volumeData = [];
+      for (var i = 0; i < chartBars.length; i++) {
+        var row = chartBars[i];
+        currentCandleData.push({
+          time: row[0],
+          open: row[1],
+          high: row[2],
+          low: row[3],
+          close: row[4]
+        });
+        var isUp = row[4] >= row[1];
+        volumeData.push({
+          time: row[0],
+          value: row[5],
+          color: isUp ? "rgba(220, 38, 38, 0.35)" : "rgba(5, 150, 105, 0.35)"
+        });
+      }
+
+      var chart = LightweightCharts.createChart(container, {
+        width: container.clientWidth || 552,
+        height: 260,
+        layout: {
+          background: { color: "#ffffff" },
+          textColor: "#78716c",
+          fontSize: 11
+        },
+        grid: {
+          vertLines: { color: "#f5f3ef" },
+          horzLines: { color: "#f5f3ef" }
+        },
+        rightPriceScale: {
+          borderColor: "#e6e2dc",
+          scaleMargins: { top: 0.08, bottom: 0.22 }
+        },
+        timeScale: {
+          borderColor: "#e6e2dc",
+          timeVisible: false
+        },
+        crosshair: {
+          mode: LightweightCharts.CrosshairMode.Normal
+        }
+      });
+      currentChart = chart;
+
+      var candleSeries = chart.addCandlestickSeries({
+        upColor: "#dc2626",
+        downColor: "#059669",
+        borderUpColor: "#dc2626",
+        borderDownColor: "#059669",
+        wickUpColor: "#dc2626",
+        wickDownColor: "#059669"
+      });
+      candleSeries.setData(currentCandleData);
+      currentCandleSeries = candleSeries;
+
+      var ma20 = chart.addLineSeries({ color: "#f59e0b", lineWidth: 1.5, title: "MA20" });
+      ma20.setData(calculateMA(currentCandleData, 20));
+
+      var ma60 = chart.addLineSeries({ color: "#0284c7", lineWidth: 1.5, title: "MA60" });
+      ma60.setData(calculateMA(currentCandleData, 60));
+
+      var ma120 = chart.addLineSeries({ color: "#ea580c", lineWidth: 1.5, title: "MA120" });
+      ma120.setData(calculateMA(currentCandleData, 120));
+
+      var volumeSeries = chart.addHistogramSeries({
+        priceFormat: { type: "volume" },
+        priceScaleId: "",
+        scaleMargins: { top: 0.8, bottom: 0 }
+      });
+      volumeSeries.setData(volumeData);
+
+      var total = currentCandleData.length;
+      chart.timeScale().setVisibleLogicalRange({
+        from: Math.max(0, total - 250),
+        to: total - 1
+      });
+
+      chart.subscribeCrosshairMove(function(param) {
+        if (!param || !param.time || !param.seriesPrices) return;
+        var m20 = param.seriesPrices.get(ma20);
+        var m60 = param.seriesPrices.get(ma60);
+        var m120 = param.seriesPrices.get(ma120);
+        var vol = param.seriesPrices.get(volumeSeries);
+        var elM20 = document.getElementById("legMA20");
+        var elM60 = document.getElementById("legMA60");
+        var elM120 = document.getElementById("legMA120");
+        var elVol = document.getElementById("legVol");
+        if (elM20 && m20) elM20.textContent = m20.toFixed(1);
+        if (elM60 && m60) elM60.textContent = m60.toFixed(1);
+        if (elM120 && m120) elM120.textContent = m120.toFixed(1);
+        if (elVol && vol) elVol.textContent = Math.round(vol / 1000).toLocaleString() + "張";
+      });
+
+      window.addEventListener("resize", function() {
+        if (currentChart && container) {
+          currentChart.applyOptions({ width: container.clientWidth });
+        }
+      });
+    }
+
+    function setChartRange(bars, btn) {
+      if (!currentChart || !currentCandleData.length) return;
+      document.querySelectorAll(".sd-range-btn").forEach(function(b) { b.classList.remove("active"); });
+      if (btn) btn.classList.add("active");
+
+      var total = currentCandleData.length;
+      if (bars === "all") {
+        currentChart.timeScale().fitContent();
+      } else {
+        currentChart.timeScale().setVisibleLogicalRange({
+          from: Math.max(0, total - bars),
+          to: total - 1
+        });
+      }
+    }
+
+    // CLICK-ONLY EVENT BINDING (NO HOVER!)
+    function initStockDrawer() {
+      document.querySelectorAll(".stock-pop-trigger").forEach(function(el) {
+        el.addEventListener("click", function(e) {
+          e.preventDefault();
+          var stockId = el.getAttribute("data-stock");
+          var stockName = el.getAttribute("data-name");
+          openStockDrawer(stockId, stockName);
+        });
+      });
+
+      window.addEventListener("keydown", function(e) {
+        if (e.key === "Escape") closeStockDrawer();
+      });
+    }
+
+    window.addEventListener("load", function() {
+      initImgZoom();
+      initStockDrawer();
+    });
+  </script>
+</head>
+<body>
+  <div class="rp-header">
+    <div class="rp-title-wrap">
+      <span class="rp-ticker">🧭 ST_FL_ML_28</span>
+      <span class="rp-desc">量化選股策略訊號與持倉追蹤</span>
+      <span class="rp-time">更新: 2026-11-07 12:30</span>
+    </div>
+    <div class="rp-links">
+      <a class="rp-pill-link" href="ST_FL_ML_28_strategy.html" target="_blank">📊 FinLab 完整回測報告</a>
+    </div>
+  </div>
+<div class="rp-tabs-bar"><button class="rp-tab active" data-target="all" onclick="switchStTab(this)">📋 全部展開</button><button class="rp-tab" data-target="sec-pos" onclick="switchStTab(this)">💼 部位與權重配置</button><button class="rp-tab" data-target="sec-omega" onclick="switchStTab(this)">📊 報酬分佈 (Omega)</button><button class="rp-tab" data-target="sec-entries" onclick="switchStTab(this)">📈 進場標的與圖表 (3)</button></div>
+<div class="rp-sec-pane" id="sec-pos"><div class="rp-card"><h2>💼 策略部位、權重與出場條件</h2><style>
+  .st-kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin: 8px 0 12px; }
+  .st-kpi-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 10px; text-align: center; box-shadow: 0 1px 2px rgba(0,0,0,0.03); transition: all 0.15s ease; }
+  .st-kpi-card:hover { border-color: #FA8123; box-shadow: 0 2px 6px rgba(250, 129, 35, 0.12); }
+  .st-kpi-title { font-size: 11px; color: #64748b; font-weight: 600; margin-bottom: 3px; white-space: nowrap; }
+  .st-kpi-val { font-size: 16px; font-weight: 800; color: #0f172a; line-height: 1.25; margin-bottom: 2px; }
+  .st-kpi-sub { font-size: 10.5px; color: #94a3b8; white-space: nowrap; }
+  .st-val-up { color: #dc2626 !important; }
+  .st-val-down { color: #16a34a !important; }
+  .st-badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+  .st-badge-active { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+  .st-badge-closed { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+  .st-section-title { font-size: 13px; font-weight: 700; color: #1c1917; margin: 14px 0 6px; }
+  .st-table-wrap { overflow-x: auto; margin: 4px 0 6px; border: 1px solid #e6e2dc; border-radius: 6px; }
+  .st-table-wrap table { margin: 0; border: none; width: 100%; }
+  .st-card-box { background: #ffffff; border: 1px solid #e6e2dc; border-radius: 6px; padding: 6px 8px; }
+  .st-empty-box { font-size: 12px; color: #64748b; padding: 10px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 6px; text-align: center; margin: 6px 0; }
+</style><div class="st-kpi-grid">
+  <div class="st-kpi-card">
+    <div class="st-kpi-title">年化報酬率 (CAGR)</div>
+    <div class="st-kpi-val st-val-up">+95.88%</div>
+    <div class="st-kpi-sub">總報酬 <span class="st-val-up">+2509.76%</span></div>
+  </div>
+  <div class="st-kpi-card">
+    <div class="st-kpi-title">最大回撤 (MDD)</div>
+    <div class="st-kpi-val st-val-down">-28.99%</div>
+    <div class="st-kpi-sub">歷史最大淨值跌幅</div>
+  </div>
+  <div class="st-kpi-card">
+    <div class="st-kpi-title">夏普比率 (Sharpe)</div>
+    <div class="st-kpi-val">2.00</div>
+    <div class="st-kpi-sub">超額報酬 / 總風險</div>
+  </div>
+  <div class="st-kpi-card">
+    <div class="st-kpi-title">索提諾比率 (Sortino)</div>
+    <div class="st-kpi-val">3.29</div>
+    <div class="st-kpi-sub">超額報酬 / 下行風險</div>
+  </div>
+  <div class="st-kpi-card">
+    <div class="st-kpi-title">交易勝率 (Win Rate)</div>
+    <div class="st-kpi-val">47.77%</div>
+    <div class="st-kpi-sub">總交易筆數 160 筆</div>
+  </div>
+  <div class="st-kpi-card">
+    <div class="st-kpi-title">獲利因子 (Profit Factor)</div>
+    <div class="st-kpi-val">2.73</div>
+    <div class="st-kpi-sub">毛獲利 / 毛虧損</div>
+  </div>
+  <div class="st-kpi-card">
+    <div class="st-kpi-title">卡瑪比率 (Calmar)</div>
+    <div class="st-kpi-val">3.31</div>
+    <div class="st-kpi-sub">CAGR / |MDD|</div>
+  </div>
+  <div class="st-kpi-card">
+    <div class="st-kpi-title">年化波動度 (Vol)</div>
+    <div class="st-kpi-val">37.55%</div>
+    <div class="st-kpi-sub">日報酬年化標準差</div>
+  </div>
+</div><div class="st-banner"><b>🎯 出場條件：</b>Exit: 1. every 4W 2. stop loss 8% 3. trail stop 15%</div><div class="st-table-wrap">
+<table>
+  <thead><tr><th>資料更新日期<div style="font-size:10px;color:#78716c;font-weight:normal;">update_date</div></th><th>下次交易日<div style="font-size:10px;color:#78716c;font-weight:normal;">next_trading_date</div></th><th>下單時機<div style="font-size:10px;color:#78716c;font-weight:normal;">trade_at</div></th><th>換股頻率<div style="font-size:10px;color:#78716c;font-weight:normal;">freq</div></th><th>市場類別<div style="font-size:10px;color:#78716c;font-weight:normal;">market</div></th><th>停損機制<div style="font-size:10px;color:#78716c;font-weight:normal;">stop_loss</div></th><th>停利機制<div style="font-size:10px;color:#78716c;font-weight:normal;">take_profit</div></th></tr></thead>
+  <tbody><tr><td>2026-11-29</td><td>2026-11-29</td><td>open</td><td>1D</td><td>tw_stock</td><td>8.0%</td><td>未設定</td></tr></tbody>
+</table>
+</div><h3 class="st-section-title">🔄 最新交易進出場明細 (Recent Trade History)</h3>
+<div class="st-table-wrap">
+<table>
+  <thead>
+    <tr>
+      <th style="text-align:center;width:75px;">狀態</th>
+      <th>標的代號 / 名稱</th>
+      <th>進場日期</th>
+      <th style="text-align:right;">進場價格</th>
+      <th>出場日期</th>
+      <th style="text-align:right;">出場價格</th>
+      <th style="text-align:right;">報酬率</th>
+      <th style="text-align:center;">持有天數</th>
+      <th style="text-align:right;">最大浮虧(MAE)</th>
+      <th style="text-align:right;">最大浮盈(MFE)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+  <td style="text-align:center;"><span class="st-badge st-badge-closed">已出場</span></td>
+  <td><b>3230 錦明</b></td>
+  <td style="white-space:nowrap;">2026-11-02</td>
+  <td style="text-align:right;">24.65</td>
+  <td style="white-space:nowrap;">2026-11-06</td>
+  <td style="text-align:right;">20.90</td>
+  <td style="text-align:right;"><span class="st-val-down" style="font-weight:700;">-15.54%</span></td>
+  <td style="text-align:center;">4 日</td>
+  <td style="text-align:right;"><span class="st-val-down">-10.38%</span></td>
+  <td style="text-align:right;"><span class="st-val-up">+2.19%</span></td>
+</tr><tr>
+  <td style="text-align:center;"><span class="st-badge st-badge-closed">已出場</span></td>
+  <td><b>5904 寶雅*</b></td>
+  <td style="white-space:nowrap;">2026-10-05</td>
+  <td style="text-align:right;">68.60</td>
+  <td style="white-space:nowrap;">2026-11-02</td>
+  <td style="text-align:right;">72.60</td>
+  <td style="text-align:right;"><span class="st-val-up" style="font-weight:700;">+5.47%</span></td>
+  <td style="text-align:center;">17 日</td>
+  <td style="text-align:right;"><span class="st-val-down">0.00%</span></td>
+  <td style="text-align:right;"><span class="st-val-up">+7.73%</span></td>
+</tr><tr>
+  <td style="text-align:center;"><span class="st-badge st-badge-closed">已出場</span></td>
+  <td><b>6949 沛爾生醫*-創</b></td>
+  <td style="white-space:nowrap;">2026-10-05</td>
+  <td style="text-align:right;">45.20</td>
+  <td style="white-space:nowrap;">2026-10-15</td>
+  <td style="text-align:right;">40.00</td>
+  <td style="text-align:right;"><span class="st-val-down" style="font-weight:700;">-11.85%</span></td>
+  <td style="text-align:center;">7 日</td>
+  <td style="text-align:right;"><span class="st-val-down">-13.75%</span></td>
+  <td style="text-align:right;"><span class="st-val-up">+5.26%</span></td>
+</tr><tr>
+  <td style="text-align:center;"><span class="st-badge st-badge-closed">已出場</span></td>
+  <td><b>2233 宇隆</b></td>
+  <td style="white-space:nowrap;">2026-09-07</td>
+  <td style="text-align:right;">170.00</td>
+  <td style="white-space:nowrap;">2026-10-05</td>
+  <td style="text-align:right;">172.00</td>
+  <td style="text-align:right;"><span class="st-val-up" style="font-weight:700;">+0.79%</span></td>
+  <td style="text-align:center;">18 日</td>
+  <td style="text-align:right;"><span class="st-val-down">-7.98%</span></td>
+  <td style="text-align:right;"><span class="st-val-up">+0.00%</span></td>
+</tr><tr>
+  <td style="text-align:center;"><span class="st-badge st-badge-closed">已出場</span></td>
+  <td><b>5314 世紀*</b></td>
+  <td style="white-space:nowrap;">2026-09-07</td>
+  <td style="text-align:right;">32.55</td>
+  <td style="white-space:nowrap;">2026-09-15</td>
+  <td style="text-align:right;">34.20</td>
+  <td style="text-align:right;"><span class="st-val-up" style="font-weight:700;">+4.66%</span></td>
+  <td style="text-align:center;">6 日</td>
+  <td style="text-align:right;"><span class="st-val-down">0.00%</span></td>
+  <td style="text-align:right;"><span class="st-val-up">+43.72%</span></td>
+</tr><tr>
+  <td style="text-align:center;"><span class="st-badge st-badge-closed">已出場</span></td>
+  <td><b>5904 寶雅*</b></td>
+  <td style="white-space:nowrap;">2026-09-07</td>
+  <td style="text-align:right;">72.10</td>
+  <td style="white-space:nowrap;">2026-10-05</td>
+  <td style="text-align:right;">68.60</td>
+  <td style="text-align:right;"><span class="st-val-down" style="font-weight:700;">-4.90%</span></td>
+  <td style="text-align:center;">18 日</td>
+  <td style="text-align:right;"><span class="st-val-down">-5.17%</span></td>
+  <td style="text-align:right;"><span class="st-val-up">+2.04%</span></td>
+</tr><tr>
+  <td style="text-align:center;"><span class="st-badge st-badge-closed">已出場</span></td>
+  <td><b>3207 耀勝</b></td>
+  <td style="white-space:nowrap;">2026-08-10</td>
+  <td style="text-align:right;">41.15</td>
+  <td style="white-space:nowrap;">2026-09-07</td>
+  <td style="text-align:right;">39.85</td>
+  <td style="text-align:right;"><span class="st-val-down" style="font-weight:700;">-3.53%</span></td>
+  <td style="text-align:center;">20 日</td>
+  <td style="text-align:right;"><span class="st-val-down">-6.24%</span></td>
+  <td style="text-align:right;"><span class="st-val-up">+6.88%</span></td>
+</tr><tr>
+  <td style="text-align:center;"><span class="st-badge st-badge-closed">已出場</span></td>
+  <td><b>5475 德宏</b></td>
+  <td style="white-space:nowrap;">2026-08-10</td>
+  <td style="text-align:right;">122.00</td>
+  <td style="white-space:nowrap;">2026-08-25</td>
+  <td style="text-align:right;">156.00</td>
+  <td style="text-align:right;"><span class="st-val-up" style="font-weight:700;">+27.38%</span></td>
+  <td style="text-align:center;">11 日</td>
+  <td style="text-align:right;"><span class="st-val-down">0.00%</span></td>
+  <td style="text-align:right;"><span class="st-val-up">+49.53%</span></td>
+</tr><tr>
+  <td style="text-align:center;"><span class="st-badge st-badge-closed">已出場</span></td>
+  <td><b>1591 駿吉-KY</b></td>
+  <td style="white-space:nowrap;">2026-07-13</td>
+  <td style="text-align:right;">—</td>
+  <td style="white-space:nowrap;">2026-07-30</td>
+  <td style="text-align:right;">40.00</td>
+  <td style="text-align:right;"><span class="st-val-up" style="font-weight:700;">+16.39%</span></td>
+  <td style="text-align:center;">13 日</td>
+  <td style="text-align:right;"><span class="st-val-down">0.00%</span></td>
+  <td style="text-align:right;"><span class="st-val-up">+32.85%</span></td>
+</tr><tr>
+  <td style="text-align:center;"><span class="st-badge st-badge-closed">已出場</span></td>
+  <td><b>6994 富威電力</b></td>
+  <td style="white-space:nowrap;">2026-07-13</td>
+  <td style="text-align:right;">41.40</td>
+  <td style="white-space:nowrap;">2026-07-31</td>
+  <td style="text-align:right;">38.95</td>
+  <td style="text-align:right;"><span class="st-val-down" style="font-weight:700;">-6.28%</span></td>
+  <td style="text-align:center;">14 日</td>
+  <td style="text-align:right;"><span class="st-val-down">-11.39%</span></td>
+  <td style="text-align:right;"><span class="st-val-up">+0.68%</span></td>
+</tr><tr>
+  <td style="text-align:center;"><span class="st-badge st-badge-closed">已出場</span></td>
+  <td><b>1591 駿吉-KY</b></td>
+  <td style="white-space:nowrap;">2026-06-15</td>
+  <td style="text-align:right;">—</td>
+  <td style="white-space:nowrap;">2026-07-13</td>
+  <td style="text-align:right;">—</td>
+  <td style="text-align:right;"><span class="st-val-down" style="font-weight:700;">-0.04%</span></td>
+  <td style="text-align:center;">18 日</td>
+  <td style="text-align:right;"><span class="st-val-down">-0.04%</span></td>
+  <td style="text-align:right;"><span class="st-val-up">+0.00%</span></td>
+</tr><tr>
+  <td style="text-align:center;"><span class="st-badge st-badge-closed">已出場</span></td>
+  <td><b>8937 合騏*</b></td>
+  <td style="white-space:nowrap;">2026-06-15</td>
+  <td style="text-align:right;">25.25</td>
+  <td style="white-space:nowrap;">2026-06-29</td>
+  <td style="text-align:right;">27.80</td>
+  <td style="text-align:right;"><span class="st-val-up" style="font-weight:700;">+9.67%</span></td>
+  <td style="text-align:center;">9 日</td>
+  <td style="text-align:right;"><span class="st-val-down">0.00%</span></td>
+  <td style="text-align:right;"><span class="st-val-up">+26.28%</span></td>
+</tr><tr>
+  <td style="text-align:center;"><span class="st-badge st-badge-closed">已出場</span></td>
+  <td><b>3086 華義*</b></td>
+  <td style="white-space:nowrap;">2026-05-18</td>
+  <td style="text-align:right;">37.00</td>
+  <td style="white-space:nowrap;">2026-05-28</td>
+  <td style="text-align:right;">31.60</td>
+  <td style="text-align:right;"><span class="st-val-down" style="font-weight:700;">-14.92%</span></td>
+  <td style="text-align:center;">8 日</td>
+  <td style="text-align:right;"><span class="st-val-down">-17.74%</span></td>
+  <td style="text-align:right;"><span class="st-val-up">+0.00%</span></td>
+</tr><tr>
+  <td style="text-align:center;"><span class="st-badge st-badge-closed">已出場</span></td>
+  <td><b>6994 富威電力</b></td>
+  <td style="white-space:nowrap;">2026-05-18</td>
+  <td style="text-align:right;">51.80</td>
+  <td style="white-space:nowrap;">2026-06-12</td>
+  <td style="text-align:right;">56.60</td>
+  <td style="text-align:right;"><span class="st-val-up" style="font-weight:700;">+8.85%</span></td>
+  <td style="text-align:center;">19 日</td>
+  <td style="text-align:right;"><span class="st-val-down">-1.59%</span></td>
+  <td style="text-align:right;"><span class="st-val-up">+27.36%</span></td>
+</tr><tr>
+  <td style="text-align:center;"><span class="st-badge st-badge-closed">已出場</span></td>
+  <td><b>1589 永冠-KY</b></td>
+  <td style="white-space:nowrap;">2026-04-20</td>
+  <td style="text-align:right;">—</td>
+  <td style="white-space:nowrap;">2026-05-18</td>
+  <td style="text-align:right;">—</td>
+  <td style="text-align:right;">—</td>
+  <td style="text-align:center;">19 日</td>
+  <td style="text-align:right;">—</td>
+  <td style="text-align:right;">—</td>
+</tr><tr>
+  <td style="text-align:center;"><span class="st-badge st-badge-closed">已出場</span></td>
+  <td><b>2230 泰茂</b></td>
+  <td style="white-space:nowrap;">2026-04-20</td>
+  <td style="text-align:right;">30.50</td>
+  <td style="white-space:nowrap;">2026-04-28</td>
+  <td style="text-align:right;">27.70</td>
+  <td style="text-align:right;"><span class="st-val-down" style="font-weight:700;">-9.49%</span></td>
+  <td style="text-align:center;">6 日</td>
+  <td style="text-align:right;"><span class="st-val-down">-11.15%</span></td>
+  <td style="text-align:right;"><span class="st-val-up">+0.00%</span></td>
+</tr><tr>
+  <td style="text-align:center;"><span class="st-badge st-badge-closed">已出場</span></td>
+  <td><b>2230 泰茂</b></td>
+  <td style="white-space:nowrap;">2026-03-23</td>
+  <td style="text-align:right;">32.30</td>
+  <td style="white-space:nowrap;">2026-04-20</td>
+  <td style="text-align:right;">30.50</td>
+  <td style="text-align:right;"><span class="st-val-down" style="font-weight:700;">-5.61%</span></td>
+  <td style="text-align:center;">18 日</td>
+  <td style="text-align:right;"><span class="st-val-down">-6.70%</span></td>
+  <td style="text-align:right;"><span class="st-val-up">+1.81%</span></td>
+</tr><tr>
+  <td style="text-align:center;"><span class="st-badge st-badge-closed">已出場</span></td>
+  <td><b>2429 銘旺科</b></td>
+  <td style="white-space:nowrap;">2026-02-23</td>
+  <td style="text-align:right;">56.30</td>
+  <td style="white-space:nowrap;">2026-03-05</td>
+  <td style="text-align:right;">52.00</td>
+  <td style="text-align:right;"><span class="st-val-down" style="font-weight:700;">-7.99%</span></td>
+  <td style="text-align:center;">7 日</td>
+  <td style="text-align:right;"><span class="st-val-down">-8.56%</span></td>
+  <td style="text-align:right;"><span class="st-val-up">+8.48%</span></td>
+</tr><tr>
+  <td style="text-align:center;"><span class="st-badge st-badge-closed">已出場</span></td>
+  <td><b>3056 富華新</b></td>
+  <td style="white-space:nowrap;">2026-02-23</td>
+  <td style="text-align:right;">17.15</td>
+  <td style="white-space:nowrap;">2026-03-12</td>
+  <td style="text-align:right;">15.60</td>
+  <td style="text-align:right;"><span class="st-val-down" style="font-weight:700;">-9.39%</span></td>
+  <td style="text-align:center;">12 日</td>
+  <td style="text-align:right;"><span class="st-val-down">-11.41%</span></td>
+  <td style="text-align:right;"><span class="st-val-up">+0.00%</span></td>
+</tr><tr>
+  <td style="text-align:center;"><span class="st-badge st-badge-closed">已出場</span></td>
+  <td><b>8422 可寧衛*</b></td>
+  <td style="white-space:nowrap;">2026-02-23</td>
+  <td style="text-align:right;">33.00</td>
+  <td style="white-space:nowrap;">2026-03-10</td>
+  <td style="text-align:right;">30.95</td>
+  <td style="text-align:right;"><span class="st-val-down" style="font-weight:700;">-6.57%</span></td>
+  <td style="text-align:center;">10 日</td>
+  <td style="text-align:right;"><span class="st-val-down">-8.83%</span></td>
+  <td style="text-align:right;"><span class="st-val-up">+7.83%</span></td>
+</tr><tr>
+  <td style="text-align:center;"><span class="st-badge st-badge-closed">已出場</span></td>
+  <td><b>2313 華通</b></td>
+  <td style="white-space:nowrap;">2026-01-26</td>
+  <td style="text-align:right;">174.00</td>
+  <td style="white-space:nowrap;">2026-02-23</td>
+  <td style="text-align:right;">194.50</td>
+  <td style="text-align:right;"><span class="st-val-up" style="font-weight:700;">+11.35%</span></td>
+  <td style="text-align:center;">13 日</td>
+  <td style="text-align:right;"><span class="st-val-down">-2.92%</span></td>
+  <td style="text-align:right;"><span class="st-val-up">+17.77%</span></td>
+</tr><tr>
+  <td style="text-align:center;"><span class="st-badge st-badge-closed">已出場</span></td>
+  <td><b>3149 正達</b></td>
+  <td style="white-space:nowrap;">2026-01-26</td>
+  <td style="text-align:right;">59.30</td>
+  <td style="white-space:nowrap;">2026-02-02</td>
+  <td style="text-align:right;">51.60</td>
+  <td style="text-align:right;"><span class="st-val-down" style="font-weight:700;">-13.32%</span></td>
+  <td style="text-align:center;">5 日</td>
+  <td style="text-align:right;"><span class="st-val-down">-12.52%</span></td>
+  <td style="text-align:right;"><span class="st-val-up">+1.47%</span></td>
+</tr><tr>
+  <td style="text-align:center;"><span class="st-badge st-badge-closed">已出場</span></td>
+  <td><b>8046 南電</b></td>
+  <td style="white-space:nowrap;">2026-01-26</td>
+  <td style="text-align:right;">374.00</td>
+  <td style="white-space:nowrap;">2026-02-23</td>
+  <td style="text-align:right;">448.50</td>
+  <td style="text-align:right;"><span class="st-val-up" style="font-weight:700;">+19.46%</span></td>
+  <td style="text-align:center;">13 日</td>
+  <td style="text-align:right;"><span class="st-val-down">-1.65%</span></td>
+  <td style="text-align:right;"><span class="st-val-up">+22.27%</span></td>
+</tr><tr>
+  <td style="text-align:center;"><span class="st-badge st-badge-closed">已出場</span></td>
+  <td><b>6806 森崴能源</b></td>
+  <td style="white-space:nowrap;">2025-12-29</td>
+  <td style="text-align:right;">39.60</td>
+  <td style="white-space:nowrap;">2026-01-26</td>
+  <td style="text-align:right;">57.10</td>
+  <td style="text-align:right;"><span class="st-val-up" style="font-weight:700;">+43.70%</span></td>
+  <td style="text-align:center;">19 日</td>
+  <td style="text-align:right;"><span class="st-val-down">-4.92%</span></td>
+  <td style="text-align:right;"><span class="st-val-up">+41.41%</span></td>
+</tr><tr>
+  <td style="text-align:center;"><span class="st-badge st-badge-closed">已出場</span></td>
+  <td><b>6869 雲豹能源</b></td>
+  <td style="white-space:nowrap;">2025-12-29</td>
+  <td style="text-align:right;">96.20</td>
+  <td style="white-space:nowrap;">2026-01-26</td>
+  <td style="text-align:right;">122.50</td>
+  <td style="text-align:right;"><span class="st-val-up" style="font-weight:700;">+26.85%</span></td>
+  <td style="text-align:center;">19 日</td>
+  <td style="text-align:right;"><span class="st-val-down">-5.76%</span></td>
+  <td style="text-align:right;"><span class="st-val-up">+24.69%</span></td>
+</tr>
+  </tbody>
+</table>
+</div>
+<div style="font-size:11px;color:#64748b;margin-top:4px;text-align:right;">* 顯示最近 25 筆進出場明細（按日期倒序），策略歷史共 160 筆交易，完整交易明細請參閱 Excel 報表之 trade 工作表。</div><div class="st-grid-2"><div class="st-card-box"><h3>Current Weight (目前持倉權重)</h3><table class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th></th>
+      <th>權重 (Weight)</th>
+    </tr>
+    <tr>
+      <th>instrument</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>3230 錦明</th>
+      <td>0.0%</td>
+    </tr>
+  </tbody>
+</table></div><div class="st-card-box"><h3>Next Weight (下期目標權重)</h3><table class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th></th>
+      <th>目標權重 (Target)</th>
+    </tr>
+    <tr>
+      <th>instrument</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>6949 沛爾生醫*-創</th>
+      <td>100.0%</td>
+    </tr>
+  </tbody>
+</table></div></div><h3 class="st-section-title">📋 目前持倉部位明細 (Position Info)</h3><table class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th></th>
+      <th>status</th>
+      <th>weight</th>
+      <th>next_weight</th>
+      <th>entry_date</th>
+      <th>exit_date</th>
+      <th>return</th>
+      <th>entry_price</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>5904 寶雅*</th>
+      <td>exit</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>2026-10-02T00:00:00</td>
+      <td>2026-10-30T00:00:00</td>
+      <td>0.054682</td>
+      <td>68.6</td>
+    </tr>
+    <tr>
+      <th>3230 錦明</th>
+      <td>sl_</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>2026-10-30T00:00:00</td>
+      <td>2026-11-05T00:00:00</td>
+      <td>-0.155397</td>
+      <td>24.65</td>
+    </tr>
+    <tr>
+      <th>6949 沛爾生醫*-創</th>
+      <td>enter</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>2026-11-29T00:00:00</td>
+      <td>NaT</td>
+      <td>NaN</td>
+      <td>35.55</td>
+    </tr>
+  </tbody>
+</table></div></div>
+<div class="rp-sec-pane" id="sec-omega"><div class="rp-card"><h2>📊 歷史交易報酬累積分佈 (Omega Ratio)</h2><div style="text-align:center"><img src="ST_FL_ML_28.jpg" alt="Omega Ratio" style="max-width:100%;height:auto;border-radius:6px"></div></div></div>
+<div class="rp-sec-pane" id="sec-entries"><div class="rp-card"><h2>📈 近期進場訊號與基本面/技術面圖表 (3 檔)</h2><table class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th>Date</th>
+      <th>Name</th>
+      <th>Value</th>
+      <th>PB</th>
+      <th>Chart</th>
+      <th>VP PoC</th>
+      <th>Revenue</th>
+      <th>Profit</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2026-11-29</td>
+      <td><div style="text-align:center"><a class="rp-pill-link stock-pop-trigger" href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=6949" data-stock="6949" data-name="沛爾生醫*-創" target="_blank">6949</a><div class="st-stock-name">沛爾生醫*-創</div></div></td>
+      <td>49,250,617,550.0</td>
+      <td>19.16</td>
+      <td><a href="https://tw.tradingview.com/chart/mBGugBFU/?symbol=TWSE:6949" target="_blank"><img src="https://stock.wearn.com/finance_chart.asp?stockid=6949&timeblock=365&sma1=10&sma2=20&sma3=60&volume=1"></a></td>
+      <td><  39.47</td>
+      <td><a href="https://goodinfo.tw/StockInfo/ShowSaleMonChart.asp?STOCK_ID=6949" target="_blank"><img src="https://stock.wearn.com/sale_chart.asp?stockid=6949"></a></td>
+      <td><a href="https://goodinfo.tw/StockInfo/StockBzPerformance.asp?STOCK_ID=6949" target="_blank"><img src="https://stock.wearn.com/income_chart.asp?stockid=6949"></a></td>
+    </tr>
+    <tr>
+      <td>2026-10-30</td>
+      <td><div style="text-align:center"><a class="rp-pill-link stock-pop-trigger" href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=3230" data-stock="3230" data-name="錦明" target="_blank">3230</a><div class="st-stock-name">錦明</div></div></td>
+      <td>1,900,840,890.0000002</td>
+      <td>2.11</td>
+      <td><a href="https://tw.tradingview.com/chart/mBGugBFU/?symbol=TPEX:3230" target="_blank"><img src="https://stock.wearn.com/finance_chart.asp?stockid=3230&timeblock=365&sma1=10&sma2=20&sma3=60&volume=1"></a></td>
+      <td><  25.37</td>
+      <td><a href="https://goodinfo.tw/StockInfo/ShowSaleMonChart.asp?STOCK_ID=3230" target="_blank"><img src="https://stock.wearn.com/sale_chart.asp?stockid=3230"></a></td>
+      <td><a href="https://goodinfo.tw/StockInfo/StockBzPerformance.asp?STOCK_ID=3230" target="_blank"><img src="https://stock.wearn.com/income_chart.asp?stockid=3230"></a></td>
+    </tr>
+    <tr>
+      <td>2026-10-02</td>
+      <td><div style="text-align:center"><a class="rp-pill-link stock-pop-trigger" href="https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=5904" data-stock="5904" data-name="寶雅*" target="_blank">5904</a><div class="st-stock-name">寶雅*</div></div></td>
+      <td>78,768,431,240.0</td>
+      <td>9.52</td>
+      <td><a href="https://tw.tradingview.com/chart/mBGugBFU/?symbol=TPEX:5904" target="_blank"><img src="https://stock.wearn.com/finance_chart.asp?stockid=5904&timeblock=365&sma1=10&sma2=20&sma3=60&volume=1"></a></td>
+      <td>>= 73.38</td>
+      <td><a href="https://goodinfo.tw/StockInfo/ShowSaleMonChart.asp?STOCK_ID=5904" target="_blank"><img src="https://stock.wearn.com/sale_chart.asp?stockid=5904"></a></td>
+      <td><a href="https://goodinfo.tw/StockInfo/StockBzPerformance.asp?STOCK_ID=5904" target="_blank"><img src="https://stock.wearn.com/income_chart.asp?stockid=5904"></a></td>
+    </tr>
+  </tbody>
+</table></div></div>
+  <div id="stockDrawerBackdrop" class="sd-backdrop" onclick="closeStockDrawer()"></div>
+  <aside id="stockDrawer" class="sd-drawer">
+    <div class="sd-header">
+      <div class="sd-title-wrap">
+        <span id="sdStockCode" class="sd-code">-</span>
+        <span id="sdStockName" class="sd-name">-</span>
+      </div>
+      <div class="sd-price-wrap">
+        <span id="sdPrice" class="sd-price">-</span>
+        <span id="sdChange" class="sd-change">-</span>
+      </div>
+      <button class="sd-close-btn" onclick="closeStockDrawer()">✕</button>
+    </div>
+    <div class="sd-body">
+      <!-- Lightweight Chart -->
+      <div class="sd-range-bar">
+        <button class="sd-range-btn" onclick="setChartRange(22, this)">1M</button>
+        <button class="sd-range-btn" onclick="setChartRange(66, this)">3M</button>
+        <button class="sd-range-btn" onclick="setChartRange(125, this)">6M</button>
+        <button class="sd-range-btn active" onclick="setChartRange(250, this)">1Y</button>
+        <button class="sd-range-btn" onclick="setChartRange('all', this)">ALL</button>
+      </div>
+      <div id="sdChartContainer" class="sd-chart-box">
+        <div id="sdLoading" class="sd-loading">⏳ 載入 K 線與技術指標中...</div>
+      </div>
+      <div id="sdLegend" class="sd-legend">
+        MA20: <span id="legMA20" style="color:#f59e0b">-</span> |
+        MA60: <span id="legMA60" style="color:#38bdf8">-</span> |
+        MA120: <span id="legMA120" style="color:#fb923c">-</span> |
+        量: <span id="legVol">-</span>
+      </div>
+
+      <!-- 1. 營收 (Snap11) -->
+      <div class="sd-card">
+        <div class="sd-card-hdr">
+          <span class="sd-card-title">營收</span>
+          <span id="revHdrStat" class="sd-card-val">-</span>
+        </div>
+        <div id="revSubText" class="sd-card-sub">-</div>
+        <div class="sd-row-2col">
+          <div class="sd-subcol">
+            <div id="revBarSvg1"></div>
+            <div class="sd-dates-row"><span id="revD1">-</span><span id="revD2">-</span></div>
+          </div>
+          <div class="sd-subcol">
+            <div id="revBarSvg2"></div>
+            <div class="sd-dates-row"><span id="revD3">-</span><span id="revD4">-</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. 法人動向 (Snap11) -->
+      <div class="sd-card">
+        <div class="sd-card-hdr">
+          <span class="sd-card-title">法人動向</span>
+        </div>
+        <div id="instSubText" class="sd-card-sub">-</div>
+        <div class="sd-row-3col">
+          <div class="sd-subcol">
+            <span class="sd-subcol-title">外資</span>
+            <div id="instForeignSvg"></div>
+            <span id="instForeignStat" class="sd-subcol-stat">-</span>
+          </div>
+          <div class="sd-subcol">
+            <span class="sd-subcol-title">投信</span>
+            <div id="instFundSvg"></div>
+            <span id="instFundStat" class="sd-subcol-stat">-</span>
+          </div>
+          <div class="sd-subcol">
+            <span class="sd-subcol-title">自營商</span>
+            <div id="instDealerSvg"></div>
+            <span id="instDealerStat" class="sd-subcol-stat">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. 融資融券 (Snap11) -->
+      <div class="sd-card">
+        <div class="sd-card-hdr">
+          <span class="sd-card-title">融資融券</span>
+        </div>
+        <div id="marginSubText" class="sd-card-sub muted" style="line-height:1.5">-</div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:#d4d4d8;margin-bottom:6px;">
+          <span>融資使用率 <b id="mUtilVal">-</b></span>
+          <span>券資比 <b id="sUtilVal">-</b></span>
+        </div>
+        <div class="sd-row-2col">
+          <div class="sd-subcol">
+            <div style="font-size:11px;color:#a1a1aa">融資餘額 <span id="mBalVal" style="color:#ffffff;font-weight:700">-</span></div>
+            <div id="marginLineSvg"></div>
+            <div class="sd-dates-row"><span id="mD1">-</span><span id="mD2">-</span></div>
+          </div>
+          <div class="sd-subcol">
+            <div style="font-size:11px;color:#a1a1aa">融券餘額 <span id="sBalVal" style="color:#ffffff;font-weight:700">-</span></div>
+            <div id="shortLineSvg"></div>
+            <div class="sd-dates-row"><span id="sD1">-</span><span id="sD2">-</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. 持股分布 (Snap11) -->
+      <div class="sd-card">
+        <div class="sd-card-hdr">
+          <span class="sd-card-title">持股分布</span>
+        </div>
+        <div id="holderSubText" class="sd-card-sub muted" style="line-height:1.5">-</div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:#d4d4d8;margin-bottom:6px;">
+          <span>總股東數 <b id="hTotalVal">-</b></span>
+          <span>大戶人數 <b id="hBigCountVal">-</b></span>
+        </div>
+        <div class="sd-row-2col">
+          <div class="sd-subcol">
+            <div style="font-size:11px;color:#a1a1aa">零股股東 <span id="hOddVal" style="color:#ffffff;font-weight:700">-</span></div>
+            <div id="oddLineSvg"></div>
+            <div class="sd-dates-row"><span id="hD1">-</span><span id="hD2">-</span></div>
+          </div>
+          <div class="sd-subcol">
+            <div style="font-size:11px;color:#a1a1aa">大戶持股 <span id="hBigVal" style="color:#ffffff;font-weight:700">-</span></div>
+            <div id="bigLineSvg"></div>
+            <div class="sd-dates-row"><span id="hD3">-</span><span id="hD4">-</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. 基本面評價 -->
+      <div class="sd-card">
+        <div class="sd-card-hdr">
+          <span class="sd-card-title">基本面評價</span>
+        </div>
+        <div class="sd-metrics-grid">
+          <div class="sd-metric-item"><div class="sd-metric-lbl">本益比 P/E</div><div id="mPE" class="sd-metric-val">-</div></div>
+          <div class="sd-metric-item"><div class="sd-metric-lbl">股價淨值比 P/B</div><div id="mPB" class="sd-metric-val">-</div></div>
+          <div class="sd-metric-item"><div class="sd-metric-lbl">殖利率</div><div id="mDiv" class="sd-metric-val">-</div></div>
+          <div class="sd-metric-item"><div class="sd-metric-lbl">每股盈餘 EPS</div><div id="mEPS" class="sd-metric-val">-</div></div>
+          <div class="sd-metric-item"><div class="sd-metric-lbl">ROE</div><div id="mROE" class="sd-metric-val">-</div></div>
+          <div class="sd-metric-item"><div class="sd-metric-lbl">稅後淨利率</div><div id="mNetMargin" class="sd-metric-val">-</div></div>
+        </div>
+      </div>
+
+      <!-- 6. 外部鏈結 -->
+      <div class="sd-links">
+        <a id="lnkTV" class="sd-ext-link" href="#" target="_blank">TradingView</a>
+        <a id="lnkGoodinfo" class="sd-ext-link" href="#" target="_blank">Goodinfo</a>
+        <a id="lnkYahoo" class="sd-ext-link" href="#" target="_blank">Yahoo 奇摩</a>
+        <a id="lnkWantgoo" class="sd-ext-link" href="#" target="_blank">玩股網</a>
+      </div>
+    </div>
+  </aside>
+</body>
+</html>

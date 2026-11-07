@@ -1,0 +1,2327 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>REZ — iShares Residential and Multisector Real Estate ETF</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-size: 12px;
+      font-family: Arial, Helvetica, "Microsoft JhengHei", -apple-system, sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 8px 28px 16px;
+      background-color: #faf9f6;
+      color: #1c1917;
+    }
+
+    /* Header Bar */
+    .rp-header {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-top: 3px solid #FA8123;
+      border-radius: 6px;
+      padding: 6px 10px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+    .rp-title-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .rp-ticker {
+      font-size: 17px;
+      font-weight: 800;
+      color: #1c1917;
+      letter-spacing: 0.3px;
+    }
+    .rp-desc {
+      font-size: 15px;
+      font-weight: 700;
+      color: #FA8123;
+    }
+    .rp-time {
+      font-size: 11px;
+      color: #78716c;
+      background: #f5f3ef;
+      padding: 1px 7px;
+      border-radius: 999px;
+    }
+    .rp-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .rp-pill-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: #faf9f6;
+      border: 1px solid #d6d1c7;
+      color: #44403c;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.12s ease;
+    }
+    .rp-pill-link:hover {
+      background: #fff5eb;
+      border-color: #FA8123;
+      color: #d9650f;
+    }
+
+    /* Pyecharts Container Card */
+    .rp-chart-box {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 2px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+
+    /* Sub-Tabs Bar */
+    .rp-tabs-bar {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 4px 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      position: sticky;
+      top: 2px;
+      z-index: 50;
+      box-shadow: 0 1px 4px rgba(28, 25, 23, 0.05);
+    }
+    .rp-tab {
+      border: 1px solid transparent;
+      background: #f5f3ef;
+      color: #57534e;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+    .rp-tab:hover {
+      background: #fff5eb;
+      border-color: #fdba8c;
+      color: #d9650f;
+    }
+    .rp-tab.active {
+      background: #FA8123;
+      color: #ffffff;
+      box-shadow: 0 1px 3px rgba(250, 129, 35, 0.35);
+    }
+
+    /* Section Card */
+    .rp-sec-pane {
+      width: 100%;
+      margin: 0 0 4px;
+    }
+    .rp-card {
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 6px 8px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+      overflow-x: auto;
+    }
+    .rp-divider {
+      border: 0;
+      border-top: 1px solid #e6e2dc;
+      margin: 6px 0;
+    }
+
+    /* Modernized Tables (FBS / Pyramid / FinViz) */
+    .is-negative { color: #00994d; font-weight: 600; }
+    .is-positive { color: #cc2929; font-weight: 600; }
+    .snapshot-td2, .snapshot-td2-cp {
+      color: #1c1917;
+      text-decoration: none;
+      border: 1px solid #e6e2dc;
+      white-space: nowrap;
+    }
+    .snapshot-td2-cp { cursor: pointer; }
+    .fullview-ratings-outer, td.fullview-ratings-inner {
+      border: 1px solid #e6e2dc;
+    }
+    .t3r1 { color: #cc2929; font-weight: 700; }
+    .body-table-rating-downgrade { color: #cc2929; background: #fef2f2; }
+    .body-table-rating-upgrade { color: #00994d; background: #f0fdf4; }
+    .body-table-rating-neutral { color: #44403c; background: #faf9f6; }
+
+    table {
+      border-collapse: collapse;
+      margin: 6px auto;
+    }
+    td, th {
+      border: 1px solid #e6e2dc;
+      text-align: left;
+      padding: 6px 8px;
+    }
+    th {
+      background-color: #f6f4f0;
+      color: #1c1917;
+      font-weight: 700;
+    }
+    tr:nth-child(even) {
+      background-color: #fcfbf9;
+    }
+  </style>
+  <script>
+    function switchRpTab(btn) {
+      if (!btn) return;
+      var target = btn.getAttribute("data-target") || "all";
+      document.querySelectorAll(".rp-tab").forEach(function(b) {
+        b.classList.remove("active");
+      });
+      btn.classList.add("active");
+
+      document.querySelectorAll(".rp-sec-pane").forEach(function(pane) {
+        if (target === "all" || pane.id === target) {
+          pane.style.display = "block";
+        } else {
+          pane.style.display = "none";
+        }
+      });
+
+      try {
+        sessionStorage.setItem("sr_active_rp_tab", target);
+      } catch (e) {}
+
+      window.dispatchEvent(new Event("resize"));
+    }
+
+    window.addEventListener("load", function() {
+      try {
+        var saved = sessionStorage.getItem("sr_active_rp_tab");
+        if (saved && saved !== "all") {
+          var btn = document.querySelector('.rp-tab[data-target="' + saved + '"]');
+          if (btn) switchRpTab(btn);
+        }
+      } catch (e) {}
+    });
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/12.3.0/highcharts.min.js"></script>
+</head>
+<body>
+  <div class="rp-header">
+    <div class="rp-title-wrap">
+      <span class="rp-ticker">REZ</span>
+      <span class="rp-desc">iShares Residential and Multisector Real Estate ETF</span>
+      <span class="rp-time">更新: 2026-11-07 12:34</span>
+    </div>
+    <div class="rp-links">
+      <a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=REZ&type=pe-ratio&statement=price-ratios&freq=Q" target="_blank">📈 PE Chart</a><a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=REZ&type=price-book&statement=price-ratios&freq=Q" target="_blank">📊 PB Chart</a><a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=REZ&type=price-sales&statement=price-ratios&freq=Q" target="_blank">📉 PS Chart</a><a class="rp-pill-link" href="https://www.wsj.com/market-data/quotes/REZ/financials/quarter/cash-flow" target="_blank">💵 Finance</a><a class="rp-pill-link" href="https://www.dataroma.com/m/stock.php?sym=REZ" target="_blank">🏛️ Ownership</a><a class="rp-pill-link" href="https://hedgefollow.com/stocks/REZ" target="_blank">🏦 Institute</a><a class="rp-pill-link" href="https://unusualwhales.com/stock/REZ/greek-exposure" target="_blank">⚡ GEX</a><a class="rp-pill-link" href="https://www.ptt.cc/bbs/Stock/search?q=REZ" target="_blank">💬 PTT Search</a>
+    </div>
+  </div>
+
+  <div class="rp-chart-box" align="center">
+    <iframe id="stock" src="REZ_EC.html" frameborder="0" width="100%" height="1600px" scrolling="no"></iframe>
+  </div>
+
+  <div class="rp-tabs-bar"><button class="rp-tab active" data-target="all" onclick="switchRpTab(this)">📋 全部展開</button><button class="rp-tab" data-target="sec-quant" onclick="switchRpTab(this)">🧮 量化與主動ETF</button><button class="rp-tab" data-target="sec-stockdog" onclick="switchRpTab(this)">🐶 主力籌碼</button><button class="rp-tab" data-target="sec-finviz" onclick="switchRpTab(this)">🌎 FinViz 美股基本面</button></div>
+  <div class="rp-sec-pane" id="sec-quant"><style>.pq-wrap{width:100%;margin:0;font-family:Arial,Helvetica,"Microsoft JhengHei",sans-serif;color:#222}.pq-sec{background:#fff;border:1px solid #e6e2dc;border-radius:6px;padding:6px 8px;margin-bottom:4px;box-shadow:0 1px 2px rgba(28,25,23,.03)}.pq-sec h2{font-size:14px;color:#1c1917;border-left:4px solid #FA8123;padding-left:6px;margin:0 0 6px}.pq-sec h3{font-size:12px;color:#44403c;margin:6px 0 4px}.pq-banner{background:#fff9f4;border-left:4px solid #FA8123;padding:5px 8px;border-radius:4px;font-size:12px;line-height:1.5;margin-bottom:6px;color:#292524}.pq-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:6px}table.pq-tbl{width:100%;border-collapse:collapse;font-size:12px;font-family:Arial,Helvetica,"Microsoft JhengHei",sans-serif}table.pq-tbl th,table.pq-tbl td{border:1px solid #e6e2dc !important;padding:4px 6px !important;text-align:right}table.pq-tbl th{background:#f6f4f0 !important;color:#1c1917 !important;font-weight:bold}table.pq-tbl tr:nth-child(even){background:#fcfbf9}</style><div class="pq-wrap">
+
+    <div class="pq-sec">
+      <h2>🧮 量化風險、波動率體制與因子 Alpha 拆解 (REZ)</h2>
+      <div class="pq-banner">
+        <b>現價：</b> <b>94.87</b> ｜
+        <b>動能 (1D / 5D / 20D / 60D / 1Y / 12-1M)：</b> <span style="color:#00994d;font-weight:bold">-0.38%</span> / <span style="color:#cc2929;font-weight:bold">+4.36%</span> / <span style="color:#cc2929;font-weight:bold">+8.00%</span> / <span style="color:#cc2929;font-weight:bold">+0.28%</span> / <span style="color:#cc2929;font-weight:bold">+17.36%</span> / <span style="color:#cc2929;font-weight:bold">+7.53%</span> ｜
+        <b>200D Volume Profile：</b> POC <b>87.89</b> (VAH <b>94.12</b> / VAL <b>85.77</b>)<br>
+        <b>尾部風險與風險調整指標 (1Y)：</b> 年化波動率 <b>16.29%</b> (GARCH 1D預測 <b>21.30%</b>) ｜
+        Sortino <b>1.28</b> ｜ Calmar <b>1.41</b> ｜
+        最大回撤 (MDD) <span style="color:#00994d;font-weight:bold">-12.86%</span> ｜
+        95% VaR / CVaR: <span style="color:#00994d;font-weight:bold">-1.61% / -2.19%</span> ｜
+        <b>Lo-MacKinlay VR(5/10/20)：</b> 0.914(z*=-0.66) / 0.775(z*=-1.18) / 0.709(z*=-1.12)
+        <br><b>今日觸發技術訊號：</b> [BUY]     :  ｜ [SELL]    : 日KD死亡交叉 ｜ [OTHER]   : 
+      </div>
+      <table class="pq-tbl" style="margin-top:8px"><thead><tr><th style="text-align:left">Benchmark</th><th>20D (Stock / Bench)</th><th>20D Rel Excess</th><th>60D Rel Excess</th><th>1Y Rel Excess</th><th>1Y Beta (β)</th><th>R²</th><th>1Y Residual Alpha (α)</th></tr></thead><tbody><tr><td style="text-align:left"><b>^GSPC</b></td><td><span style="color:#cc2929;font-weight:bold">+8.00%</span> / <span style="color:#00994d;font-weight:bold">-5.56%</span></td><td><span style="color:#cc2929;font-weight:bold">+13.57%</span></td><td><span style="color:#cc2929;font-weight:bold">+5.69%</span></td><td><span style="color:#cc2929;font-weight:bold">+8.08%</span></td><td><b>0.10</b></td><td>0.01</td><td><span style="color:#cc2929;font-weight:bold">+12.17%</span></td></tr><tr><td style="text-align:left"><b>QQQ</b></td><td><span style="color:#cc2929;font-weight:bold">+8.00%</span> / <span style="color:#00994d;font-weight:bold">-12.67%</span></td><td><span style="color:#cc2929;font-weight:bold">+20.67%</span></td><td><span style="color:#cc2929;font-weight:bold">+10.65%</span></td><td><span style="color:#cc2929;font-weight:bold">+11.36%</span></td><td><b>-0.10</b></td><td>0.02</td><td><span style="color:#cc2929;font-weight:bold">+12.75%</span></td></tr><tr><td style="text-align:left"><b>SOXX</b></td><td><span style="color:#cc2929;font-weight:bold">+8.00%</span> / <span style="color:#00994d;font-weight:bold">-26.78%</span></td><td><span style="color:#cc2929;font-weight:bold">+34.78%</span></td><td><span style="color:#cc2929;font-weight:bold">+25.90%</span></td><td><span style="color:#00994d;font-weight:bold">-17.46%</span></td><td><b>-0.07</b></td><td>0.04</td><td><span style="color:#cc2929;font-weight:bold">+14.73%</span></td></tr></tbody></table>
+    </div>
+    
+</div></div>
+<div class="rp-sec-pane" id="sec-stockdog"><div class="rp-card" align="center"><iframe id="stockdog" src="REZ_SD.html" frameborder="0" width="100%" height="1000px" scrolling="no"></iframe></div></div>
+<div class="rp-sec-pane" id="sec-finviz"><div class="rp-card"><div align="center"><a href="https://www.marketwatch.com/investing/stock/REZ/analystestimates" target="_blank"><img style="max-height:100%; max-width:100%; object-fit:contain" src=https://app.quotemedia.com/quotetools/getChart?webmasterId=91386&symbol=REZ&chtype=FinancialLine&chcon=on&chdon=on&chfrmon=on&chscale=1d&chton=on&chwid=800&chhig=380&chln=ffa500&chfill=ffa500&chfnts=10&chbdr=000000&chbgch=ffffffff&chgrd=cccccc&svg=false&lang=en&locale=en></a></div>
+
+<hr class="rp-divider">
+<table align="center" class="snapshot-table2" align="center" style="width:100%; border-collapse:collapse; font-size:12px; margin:auto;">
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Single category of the ETF"><div class="snapshot-td-label">Category</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" title="US Equities - Industry Sector" style=""><div class="snapshot-td-content"><b>US Equities - Industry Sector</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="The asset type of the ETF"><div class="snapshot-td-label">Asset Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" title="Equities (Stocks)" style=""><div class="snapshot-td-content"><b>Equities (Stocks)</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/screener/etf?v=181&amp;ft=4&amp;f=etf_tags_us" class="hover:underline" target="_blank"><b>U.S.</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="1-Year Annualized Return"><div class="snapshot-td-label">Return% 1Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">17.93%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Total count of all holdings in the ETF"><div class="snapshot-td-label">Total Holdings</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>41</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Week, Excl. Dividends)"><div class="snapshot-td-label">Perf Week</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">4.36%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="The fund manager (ETF) or issuing bank (ETN)"><div class="snapshot-td-label">Sponsor</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" title="Blackrock (iShares)" style=""><div class="snapshot-td-content"><b>Blackrock (iShares)</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="A simple, broad categorization of each ETF based on its asset class and geographical exposure"><div class="snapshot-td-label">ETF Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/screener/etf?v=181&amp;ft=4&amp;f=etf_tags_equity" class="hover:underline" target="_blank"><b>equity</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="3-Year Annualized Return"><div class="snapshot-td-label">Return% 3Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">18.00%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Assets Under Management"><div class="snapshot-td-label">AUM</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>842.54M</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Month, Excl. Dividends)"><div class="snapshot-td-label">Perf Month</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">9.13%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Fund family to which the ETF belongs, as categorized by the ETF Sponsor"><div class="snapshot-td-label">Fund Family</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Type of bonds held in the ETF"><div class="snapshot-td-label">Bond Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/screener/etf?v=181&amp;ft=4&amp;f=etf_tags_reits" class="hover:underline" target="_blank"><b>REITs</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="5-Year Annualized Return"><div class="snapshot-td-label">Return% 5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">3.17%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Net Asset Value per Share"><div class="snapshot-td-label">NAV/sh</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Quarter, Excl. Dividends)"><div class="snapshot-td-label">Perf Quarter</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-0.21%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Name of the underlying index tracked by the ETF, if applicable"><div class="snapshot-td-label">Index</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" title="FTSE NAREIT All Residential Capped Indx" style=""><div class="snapshot-td-content"><b>FTSE NAREIT All Residential Capped Indx</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Targeted exposure to securities of a specific maturity range of bond ETFs"><div class="snapshot-td-label">Average Maturity</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/screener/etf?v=181&amp;ft=4&amp;f=etf_tags_realestate" class="hover:underline" target="_blank"><b>real-estate</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="10-Year Annualized Return"><div class="snapshot-td-label">Return% 10Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 52-Week High"><div class="snapshot-td-label">52W High</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>100.43 <small class="text-2xs"><span class="color-text is-negative">-5.54%</span></small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Half Year, Excl. Dividends)"><div class="snapshot-td-label">Perf Half Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">4.06%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="For ETFs that track an underlying index, this field provides detail on the index weighting type"><div class="snapshot-td-label">Index Weighting</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Type of commodities held in the ETF"><div class="snapshot-td-label">Commodity Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Annualized Return Since Inception"><div class="snapshot-td-label">Return% SI</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 52-Week Low"><div class="snapshot-td-label">52W Low</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>81.62 <small class="text-2xs"><span class="color-text is-positive">16.23%</span></small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Year To Date, Excl. Dividends)"><div class="snapshot-td-label">Perf YTD</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">14.80%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Actively managed or passively index-linked ETF"><div class="snapshot-td-label">Active/Passive</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Proprietary quant model used as the underlying strategy for the ETF"><div class="snapshot-td-label">Quant Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="1-Month Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% 1M</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-0.51%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Volatility (Week, Month)"><div class="snapshot-td-label">Volatility</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">1.89% 1.52%</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Year, Excl. Dividends)"><div class="snapshot-td-label">Perf Year</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">14.79%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Trailing 12 Months Dividend"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=REZ&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank">Dividend TTM</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=REZ&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank"><b>1.95 (2.05%)</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF's strategy involves providing exposure to a specific social or environmental theme"><div class="snapshot-td-label">ESG Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="3-Month Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% 3M</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-1.51%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Average True Range (14)"><div class="snapshot-td-label">ATR (14)</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>1.62</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (3 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 3Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">47.13%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Ex-Dividend Date"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=REZ&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank">Dividend Ex-Date</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=REZ&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank"><b>Sep 15, 2026</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Intended investment objective of holding dividend-oriented stocks as stated in the ETF prospectus"><div class="snapshot-td-label">Dividend Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Targeted exposure to a sector or theme of the ETF"><div class="snapshot-td-label">Sector/Theme</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Year-to-date Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% YTD</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-5.62%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Relative Strength Index"><div class="snapshot-td-label">RSI (14)</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>64.29</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (5 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">3.76%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Dividend growth over 3 and 5 years"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=REZ&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank">Dividend Gr. 3/5Y</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=REZ&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank"><b><small class="text-2xs"><span class="color-text is-negative">-0.49%</span> 1.08%</small></b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="&lt;span class='font-semibold'&gt;Legal Structure&lt;/span&gt;&lt;br&gt;AST (Active Semi Transparent)&lt;br&gt;ETC&lt;br&gt;ETF (Open end fund)&lt;br&gt;ETN"><div class="snapshot-td-label">Structure Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Targeted exposure to a specific type of geography‐based grouping"><div class="snapshot-td-label">Region</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="1-Year Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% 1Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Beta"><div class="snapshot-td-label">Beta</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.80</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (10 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 10Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">56.40%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Gross expense net of fee waivers, as a % of net assets as published by the ETF Issuer"><div class="snapshot-td-label">Expense</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">0.48%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Growth or Value based on the stated style tilt in the ETF prospectus"><div class="snapshot-td-label">Growth/Value</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 20-Day Simple Moving Average"><div class="snapshot-td-label">SMA20</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">4.32%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="3-Year Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% 3Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Relative volume"><div class="snapshot-td-label">Rel Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.84</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Previous close"><div class="snapshot-td-label">Prev Close</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>95.23</b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Inverse or leveraged ETF"><div class="snapshot-td-label">Inverse/Leveraged</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Market capitalization range of the underlying securities"><div class="snapshot-td-label">Market Cap</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 50-Day Simple Moving Average"><div class="snapshot-td-label">SMA50</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">4.63%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="5-Year Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% 5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Average volume (3 month)"><div class="snapshot-td-label">Avg Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>95.15K</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Current stock price"><div class="snapshot-td-label">Price</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>94.87</b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="IPO Date"><div class="snapshot-td-label">IPO</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>May 04, 2007</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Stock has options trading on a market exchange / Stock is available to sell short"><div class="snapshot-td-label">Option/Short</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">Yes / Yes</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 200-Day Simple Moving Average"><div class="snapshot-td-label">SMA200</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">4.71%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Trades"><div class="snapshot-td-label">Trades</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Volume"><div class="snapshot-td-label">Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>80,377</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (today)"><div class="snapshot-td-label">Change %</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-0.38%</span></b></div></td>
+</tr>
+</table>
+
+
+<hr class="rp-divider">
+<div class="body-table-news-wrapper news-table_wrapper is-collapsed"><table align="center" align="center" width="70%" cellpadding="1" cellspacing="0" border="0" id="news-table" class="fullview-news-outer news-table" data-ticker="REZ">
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/rezolve-ai-revenue-jumps-nearly-155400575.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-01-26 11:54AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/rezolve-ai-revenue-jumps-nearly-155400575.html" target="_blank" rel="nofollow">&#13;
+                        Rezolve AI revenue jumps nearly 20-fold in H1, but losses widen and shares slide&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Proactive)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/7ffd8bf4-31a5-333b-afc3-8a11ba6170a8/rezolve-ai-launches-hostile.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Apr-08-26 10:06AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/7ffd8bf4-31a5-333b-afc3-8a11ba6170a8/rezolve-ai-launches-hostile.html" target="_blank" rel="nofollow">&#13;
+                        Rezolve AI launches hostile takeover bid for Commerce.com&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Proactive)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/82c4f0cb-82c1-32ad-b328-971b8a9385e0/rezolve-ai-tops-2025-earnings.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-30-26 10:06AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/82c4f0cb-82c1-32ad-b328-971b8a9385e0/rezolve-ai-tops-2025-earnings.html" target="_blank" rel="nofollow">&#13;
+                        Rezolve AI tops 2025 earnings estimates, raises guidance&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Proactive)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/4dd6173c-e43e-3652-903d-873cfa92e451/avalonbay-communities-stock.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-19-26 10:36AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/4dd6173c-e43e-3652-903d-873cfa92e451/avalonbay-communities-stock.html" target="_blank" rel="nofollow">&#13;
+                        AvalonBay Communities Stock Outlook: Is Wall Street Bullish or Bearish?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barchart)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/9321991a-e369-3797-87f6-0c8b200d7bd4/how-is-udr%27s-stock.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Dec-15-25 07:40AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/9321991a-e369-3797-87f6-0c8b200d7bd4/how-is-udr%27s-stock.html" target="_blank" rel="nofollow">&#13;
+                        How Is UDR's Stock Performance Compared to Other Residential and Multisector Real Estate Stocks?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barchart)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781166-household-struggles-weigh-on-real-estate-and-spending?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            May-02-25 11:07AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781166-household-struggles-weigh-on-real-estate-and-spending?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Household Struggles Weigh On Real Estate And Spending&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781010-priced-for-perfection?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:40AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781010-priced-for-perfection?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Priced For Perfection&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4778452-existing-home-sales-sink-5-9-percent-march?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Apr-26-25 03:40AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4778452-existing-home-sales-sink-5-9-percent-march?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Existing Home Sales Sink 5.9% In March&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4778439-office-vacancy-rate-us-worsens-record-22-6-percent-q1-amid-federal-government-lease-terminations?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            01:50AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4778439-office-vacancy-rate-us-worsens-record-22-6-percent-q1-amid-federal-government-lease-terminations?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Office Vacancy Rate In The U.S. Worsens To Record 22.6% In Q1 Amid Federal Government Lease Terminations&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4777607-new-home-market-may-have-grown-first-time-since-july-2024?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Apr-24-25 09:50AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4777607-new-home-market-may-have-grown-first-time-since-july-2024?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        New Home Market May Have Grown For First Time Since July 2024&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4777403-new-home-sales-reach-six-month-high-in-march?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Apr-23-25 08:25PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4777403-new-home-sales-reach-six-month-high-in-march?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        New Home Sales Reach Six-Month High In March&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4776714-rez-etf-capturing-solid-demand-healthcare-self-storage?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Apr-22-25 03:34AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4776714-rez-etf-capturing-solid-demand-healthcare-self-storage?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        REZ: Capturing Solid Demand In Healthcare And Self-Storage&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4776600-the-state-of-reits-april-2025-edition?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Apr-21-25 12:22PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4776600-the-state-of-reits-april-2025-edition?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        The State Of REITs: April 2025 Edition&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4776335-powell-on-the-hot-seat?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Apr-20-25 09:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4776335-powell-on-the-hot-seat?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Powell On The Hot Seat&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4776252-zillow-home-value-index-real-home-values-lowest-level-since-may-2021?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            12:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4776252-zillow-home-value-index-real-home-values-lowest-level-since-may-2021?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Zillow Home Value Index: 'Real' Home Values At Lowest Level Since May 2021&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4776212-institutional-retail-investors-shed-27b-in-us-stocks-in-early-april-sell-off?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Apr-18-25 01:40PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4776212-institutional-retail-investors-shed-27b-in-us-stocks-in-early-april-sell-off?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Institutional, Retail Investors Shed $27B In U.S. Stocks In Early April Sell-Off&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4776062-housing-starts-plummet-11-4-percent-in-march?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Apr-17-25 08:45PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4776062-housing-starts-plummet-11-4-percent-in-march?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Housing Starts Plummet 11.4% In March&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4775451-q1-2025-economic-update?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Apr-16-25 03:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4775451-q1-2025-economic-update?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Q1 2025 Economic Update&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4775205-us-office-market-report-office-valuations-remain-under-pressure?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Apr-15-25 06:35AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4775205-us-office-market-report-office-valuations-remain-under-pressure?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        U.S. Office Market Report: Office Valuations Remain Under Pressure&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4773724-expert-perspectives-liberation-day-tariffs-unpacked?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Apr-08-25 09:40AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4773724-expert-perspectives-liberation-day-tariffs-unpacked?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Expert Perspectives: 'Liberation Day' Tariffs Unpacked&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4772996-new-tariffs-impact-investment-portfolio-2025?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Apr-04-25 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4772996-new-tariffs-impact-investment-portfolio-2025?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        How Will New Tariffs Impact Your Investment Portfolio In 2025?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">&#13;
+         -5.20%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4772808-new-home-affordability-crisis-enters-35th-month?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Apr-03-25 11:05AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4772808-new-home-affordability-crisis-enters-35th-month?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        New Home Affordability Crisis Enters 35th Month&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4772473-great-transformation-riding-wave-of-change?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Apr-02-25 07:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4772473-great-transformation-riding-wave-of-change?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        The Great Transformation: Riding The Wave Of Change&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4771604-countdown-to-tariff-day?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-30-25 09:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4771604-countdown-to-tariff-day?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Countdown To Tariff Day&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4771503-pending-home-sales-rebound-2-0-percent-in-february?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            12:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4771503-pending-home-sales-rebound-2-0-percent-in-february?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Pending Home Sales Rebound 2.0% In February&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4771139-zero-down-day?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-27-25 11:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4771139-zero-down-day?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        A Zero Down Day&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(SeekingAlpha)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4771013-state-of-reits-the-dark-age-is-over?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            04:47PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4771013-state-of-reits-the-dark-age-is-over?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        State Of REITs: The 'Dark Age' Is Over&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(SeekingAlpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4770511-us-new-home-market-shrinks-for-seventh-consecutive-month?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-26-25 07:20AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4770511-us-new-home-market-shrinks-for-seventh-consecutive-month?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        U.S. New Home Market Shrinks For Seventh Consecutive Month&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(SeekingAlpha)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4770102-zillow-home-value-index-real-home-values-hit-lowest-level-since-may-2021?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-24-25 10:50PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4770102-zillow-home-value-index-real-home-values-hit-lowest-level-since-may-2021?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Zillow Home Value Index: 'Real' Home Values Hit Lowest Level Since May 2021&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(SeekingAlpha)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4769653-sales-existing-homes-worst-february-since-2009-inventory-surges?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-22-25 02:35AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4769653-sales-existing-homes-worst-february-since-2009-inventory-surges?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Buyers Strike Not Letting Up: Sales Of Existing Homes Have Worst February Since 2009, As Inventory Surges&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(SeekingAlpha)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4769627-business-conditions-monthly-january-2025?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-21-25 11:20PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4769627-business-conditions-monthly-january-2025?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Business Conditions Monthly January 2025&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(SeekingAlpha)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4769298-existing-home-sales-rebound-4-2-percent-in-february?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-20-25 08:50PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4769298-existing-home-sales-rebound-4-2-percent-in-february?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Existing Home Sales Rebound 4.2% In February&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(SeekingAlpha)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/real-estate-etf-rez-hits-110000756.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-23-24 07:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/real-estate-etf-rez-hits-110000756.html" target="_blank" rel="nofollow">&#13;
+                        Real Estate ETF (REZ) Hits New 52-Week High&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/real-estate-etf-rez-hits-110000873.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-07-24 07:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/real-estate-etf-rez-hits-110000873.html" target="_blank" rel="nofollow">&#13;
+                        Real Estate ETF (REZ) Hits New 52-Week High&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/383f4cce-7754-36b5-b184-f985b80c23e1/helping-clients-invest-in.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            May-02-24 08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/383f4cce-7754-36b5-b184-f985b80c23e1/helping-clients-invest-in.html" target="_blank" rel="nofollow">&#13;
+                        Helping Clients Invest in Real Estate&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/cb3b635f-9a91-3e86-87f2-29f14a40e6a5/housing-etfs-may-feel-impact.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Apr-29-24 04:19PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/cb3b635f-9a91-3e86-87f2-29f14a40e6a5/housing-etfs-may-feel-impact.html" target="_blank" rel="nofollow">&#13;
+                        Housing ETFs May Feel Impact of Potential Legislation&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/real-estate-etfs-investors-anticipate-150000613.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-14-23 11:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/real-estate-etfs-investors-anticipate-150000613.html" target="_blank" rel="nofollow">&#13;
+                        Real Estate ETFs Up as Investors Anticipate Fed Easing on Interest Rates&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.investopedia.com/articles/etfs/top-real-estate-etfs/?utm_campaign=quote-yahoo\u0026utm_source=yahoo\u0026utm_medium=referral', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-22-22 04:50PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.investopedia.com/articles/etfs/top-real-estate-etfs/?utm_campaign=quote-yahoo&amp;utm_source=yahoo&amp;utm_medium=referral" target="_blank" rel="nofollow">&#13;
+                        Best REIT ETFs for Q4 2022&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investopedia)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/housing-etfs-stay-depressed-amid-191500362.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-20-22 03:15PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/housing-etfs-stay-depressed-amid-191500362.html" target="_blank" rel="nofollow">&#13;
+                        Housing ETFs Stay Depressed Amid Falling Sales&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ETF.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/housing-etfs-cool-off-home-184500879.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            May-20-22 02:45PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/housing-etfs-cool-off-home-184500879.html" target="_blank" rel="nofollow">&#13;
+                        Housing ETFs Cool Off With Home Sales&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ETF.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/global-battery-metals-clarifies-news-130800686.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-28-22 09:08AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/global-battery-metals-clarifies-news-130800686.html" target="_blank" rel="nofollow">&#13;
+                        Global Battery Metals Clarifies News Release&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Newsfile)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/global-battery-metals-receives-drill-120000641.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-24-22 08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/global-battery-metals-receives-drill-120000641.html" target="_blank" rel="nofollow">&#13;
+                        Global Battery Metals Receives Drill Permit for Lithium King Property&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Newsfile)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/video/etf-opportunities-amid-hot-housing-193551710.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-26-21 03:35PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/video/etf-opportunities-amid-hot-housing-193551710.html" target="_blank" rel="nofollow">&#13;
+                        ETF opportunities amid a hot housing market&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance Video)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/residential-reits-etfs-capitalize-increased-231552585.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-11-20 06:15PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/residential-reits-etfs-capitalize-increased-231552585.html" target="_blank" rel="nofollow">&#13;
+                        Residential REITs ETFs to Capitalize on Increased Trend for Renting&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ETF Trends)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/residential-reits-etf-could-support-212223043.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-18-19 05:22PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/residential-reits-etf-could-support-212223043.html" target="_blank" rel="nofollow">&#13;
+                        Residential REITs ETF Could Find Support from a Growing Generation of Renters&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ETF Trends)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/residential-real-estate-rez-hits-104210600.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-10-19 06:42AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/residential-real-estate-rez-hits-104210600.html" target="_blank" rel="nofollow">&#13;
+                        Residential Real Estate (REZ) Hits New 52-Week High&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/homebuilder-reit-etfs-booming-falling-155503306.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-06-19 11:55AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/homebuilder-reit-etfs-booming-falling-155503306.html" target="_blank" rel="nofollow">&#13;
+                        Homebuilder, REIT ETFs Booming on Falling Mortgage Rates&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/real-estate-tops-ytd-5-145502522.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-04-19 11:31AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/real-estate-tops-ytd-5-145502522.html" target="_blank" rel="nofollow">&#13;
+                        Real Estate Tops YTD: 5 Best ETFs &amp; Stocks&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/sensing-september-slump-buy-6-120012570.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/sensing-september-slump-buy-6-120012570.html" target="_blank" rel="nofollow">&#13;
+                        Sensing a September Slump? Buy These 6 ETFs&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/heres-why-many-real-estate-170005270.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-12-19 01:35PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/heres-why-many-real-estate-170005270.html" target="_blank" rel="nofollow">&#13;
+                        Here's Why So Many Real Estate ETFs Near 52-Week High&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/reit-etfs-capitalize-increasing-number-195503658.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-02-19 03:55PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/reit-etfs-capitalize-increasing-number-195503658.html" target="_blank" rel="nofollow">&#13;
+                        REIT ETFs That Capitalize on the Increasing Number of Renters&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ETF Trends)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/story/5-ways-to-invest-in-real-estate-if-youre-not-rich-2019-07-18?siteid=yhoof2', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-26-19 07:56AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/5-ways-to-invest-in-real-estate-if-youre-not-rich-2019-07-18?siteid=yhoof2" target="_blank" rel="nofollow">&#13;
+                        5 ways to invest in real estate if youre not rich&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.investopedia.com/top-performing-real-estate-etfs-of-2018-4582731?utm_campaign=quote-yahoo\u0026utm_source=yahoo\u0026utm_medium=referral', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jun-25-19 11:02AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.investopedia.com/top-performing-real-estate-etfs-of-2018-4582731?utm_campaign=quote-yahoo&amp;utm_source=yahoo&amp;utm_medium=referral" target="_blank" rel="nofollow">&#13;
+                        Top Performing Real Estate ETFs of 2018&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investopedia)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/etf-winners-losers-post-fed-120012854.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jun-20-19 08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/etf-winners-losers-post-fed-120012854.html" target="_blank" rel="nofollow">&#13;
+                        ETF Winners &amp; Losers Post Fed Meet&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/bet-blackrocks-megatrends-etfs-170005536.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jun-14-19 01:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/bet-blackrocks-megatrends-etfs-170005536.html" target="_blank" rel="nofollow">&#13;
+                        Bet on BlackRock's Megatrends With These ETFs&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/zacks-analyst-blog-highlights-gld-132201561.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jun-06-19 09:22AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/zacks-analyst-blog-highlights-gld-132201561.html" target="_blank" rel="nofollow">&#13;
+                        The Zacks Analyst Blog Highlights: GLD, BTAL, REZ, EWZ and OUSA&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/6-etfs-june-120012816.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jun-05-19 08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/6-etfs-june-120012816.html" target="_blank" rel="nofollow">&#13;
+                        6 ETFs for June&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/real-estate-etf-rez-hits-113511450.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            May-15-19 07:35AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/real-estate-etf-rez-hits-113511450.html" target="_blank" rel="nofollow">&#13;
+                        Real Estate ETF (REZ) Hits New 52-Week High&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/momentum-etf-etfs-172417246.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Apr-01-19 01:24PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/momentum-etf-etfs-172417246.html" target="_blank" rel="nofollow">&#13;
+                        Get Some Momentum With This ETF of ETFs&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ETF Trends)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/7-etfs-buy-ride-longevity-155538683.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-14-19 11:55AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/7-etfs-buy-ride-longevity-155538683.html" target="_blank" rel="nofollow">&#13;
+                        7 ETFs to Buy to Ride the Longevity Economy&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/one-trade-spat-5-etf-180006485.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-04-19 01:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/one-trade-spat-5-etf-180006485.html" target="_blank" rel="nofollow">&#13;
+                        One Year of Trade Spat: 5 ETF Winners&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/risk-another-housing-market-crash-130032544.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-14-19 08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/risk-another-housing-market-crash-130032544.html" target="_blank" rel="nofollow">&#13;
+                        The Risk Of Another Housing Market Crash&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Benzinga)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/real-estate-etfs-hit-highs-150503280.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-12-19 10:05AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/real-estate-etfs-hit-highs-150503280.html" target="_blank" rel="nofollow">&#13;
+                        Real Estate ETFs Hit New Highs&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/real-estate-large-cap-2-165004907.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-05-19 11:50AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/real-estate-large-cap-2-165004907.html" target="_blank" rel="nofollow">&#13;
+                        Real Estate and Large-Cap: 2 ETFs to Watch on Outsized Volume&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/u-china-trade-talks-begin-180006941.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-30-19 01:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/u-china-trade-talks-begin-180006941.html" target="_blank" rel="nofollow">&#13;
+                        U.S.-China Trade Talks Begin: 5 Safe ETFs to Follow&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/real-estate-etf-rez-hits-121412403.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:14AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/real-estate-etf-rez-hits-121412403.html" target="_blank" rel="nofollow">&#13;
+                        Real Estate ETF (REZ) Hits New 52-Week High&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/complete-reit-etf-guide-212454125.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-04-19 04:24PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/complete-reit-etf-guide-212454125.html" target="_blank" rel="nofollow">&#13;
+                        Your Complete REIT ETF Guide&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Motley Fool)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/specialized-reits-etfs-support-rising-202958963.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Dec-21-18 03:29PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/specialized-reits-etfs-support-rising-202958963.html" target="_blank" rel="nofollow">&#13;
+                        Specialized REITs ETFs Find Support from Rising Demand for Self Storage&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ETF Trends)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/real-estate-etfs-outperforming-broader-205213782.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Dec-18-18 03:52PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/real-estate-etfs-outperforming-broader-205213782.html" target="_blank" rel="nofollow">&#13;
+                        Real Estate ETFs Are Outperforming the Broader U.S. Markets&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ETF Trends)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/market-correction-5-etfs-surviving-152003234.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Dec-17-18 10:20AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/market-correction-5-etfs-surviving-152003234.html" target="_blank" rel="nofollow">&#13;
+                        Market in Correction: 5 ETFs Surviving the Slump&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/real-estate-etfs-one-month-193007428.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Dec-07-18 02:30PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/real-estate-etfs-one-month-193007428.html" target="_blank" rel="nofollow">&#13;
+                        Real Estate ETFs at One-Month High: Here's Why&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/real-estate-etf-rez-hits-144502061.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-29-18 09:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/real-estate-etf-rez-hits-144502061.html" target="_blank" rel="nofollow">&#13;
+                        Real Estate ETF (REZ) Hits New 52-Week High&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/seek-shelter-7-reit-utilities-201613609.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-14-18 03:16PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/seek-shelter-7-reit-utilities-201613609.html" target="_blank" rel="nofollow">&#13;
+                        Seek Shelter With These 7 REIT and Utilities ETFs&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/7-real-estate-funds-buy-191632133.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-27-18 03:16PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/7-real-estate-funds-buy-191632133.html" target="_blank" rel="nofollow">&#13;
+                        7 Real Estate Funds to Buy&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/top-flop-etfs-last-week-192007235.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-20-18 03:20PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/top-flop-etfs-last-week-192007235.html" target="_blank" rel="nofollow">&#13;
+                        Top and FLOP ETFs of Last Week&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/consider-reit-etfs-rates-rise-214957594.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            May-30-18 05:49PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/consider-reit-etfs-rates-rise-214957594.html" target="_blank" rel="nofollow">&#13;
+                        Consider REIT ETFs as Rates Rise?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ETF Trends)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/7-great-ways-move-real-110005991.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            May-18-18 07:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/7-great-ways-move-real-110005991.html" target="_blank" rel="nofollow">&#13;
+                        7 Great Ways to Move Into Real Estate Investing&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorPlace)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/real-estate-etf-rez-hits-000012683.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-13-18 07:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/real-estate-etf-rez-hits-000012683.html" target="_blank" rel="nofollow">&#13;
+                        Real Estate ETF (REZ) Hits a New 52-Week Low&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/top-flop-etfs-january-2018-200908446.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-31-18 03:09PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/top-flop-etfs-january-2018-200908446.html" target="_blank" rel="nofollow">&#13;
+                        Top and Flop ETFs of January 2018&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('http://marketrealist.com/2018/01/wall-street-analysts-think-equity-residential/?utm_source=yahoo\u0026utm_medium=feed', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-10-18 09:02AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="http://marketrealist.com/2018/01/wall-street-analysts-think-equity-residential/?utm_source=yahoo&amp;utm_medium=feed" target="_blank" rel="nofollow">&#13;
+                        What Do Wall Street Analysts Think of Equity Residential?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Market Realist)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('http://www.forbes.com/sites/adamsarhan/2018/01/03/reits-are-a-big-winner-from-the-2017-tax-cut-heres-why/?utm_source=yahoo\u0026utm_medium=partner\u0026utm_campaign=yahootix\u0026partner=yahootix', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jan-03-18 01:21PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="http://www.forbes.com/sites/adamsarhan/2018/01/03/reits-are-a-big-winner-from-the-2017-tax-cut-heres-why/?utm_source=yahoo&amp;utm_medium=partner&amp;utm_campaign=yahootix&amp;partner=yahootix" target="_blank" rel="nofollow">&#13;
+                        REITs Are A Big Winner From The 2017 Tax Cut &amp; Here's Why&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Forbes)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('http://marketrealist.com/2017/11/this-ism-index-hit-a-lifetime-high-in-october/?utm_source=yahoo\u0026utm_medium=feed', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-13-17 03:03PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="http://marketrealist.com/2017/11/this-ism-index-hit-a-lifetime-high-in-october/?utm_source=yahoo&amp;utm_medium=feed" target="_blank" rel="nofollow">&#13;
+                        This ISM Index Hit a Lifetime High in October&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Market Realist)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('http://marketrealist.com/2017/09/how-has-the-us-economy-fared-since-the-last-fomc-meeting/?utm_source=yahoo\u0026utm_medium=feed', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-19-17 04:36PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="http://marketrealist.com/2017/09/how-has-the-us-economy-fared-since-the-last-fomc-meeting/?utm_source=yahoo&amp;utm_medium=feed" target="_blank" rel="nofollow">&#13;
+                        How Has the US Economy Fared since the Last FOMC Meeting?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Market Realist)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('http://marketrealist.com/2017/09/why-improving-economic-conditions-arent-enough-for-the-fed/?utm_source=yahoo\u0026utm_medium=feed', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-01-17 10:37AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="http://marketrealist.com/2017/09/why-improving-economic-conditions-arent-enough-for-the-fed/?utm_source=yahoo&amp;utm_medium=feed" target="_blank" rel="nofollow">&#13;
+                        Why Improving Economic Conditions Arent Enough for the FED&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Market Realist)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('http://marketrealist.com/2017/07/how-does-wall-street-rate-essex-property-trust/?utm_source=yahoo\u0026utm_medium=feed', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-12-17 09:06AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="http://marketrealist.com/2017/07/how-does-wall-street-rate-essex-property-trust/?utm_source=yahoo&amp;utm_medium=feed" target="_blank" rel="nofollow">&#13;
+                        How Does Wall Street Rate Essex Property Trust?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Market Realist)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('http://marketrealist.com/2017/07/how-essex-property-trust-compares-to-other-industry-players/?utm_source=yahoo\u0026utm_medium=feed', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:36AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="http://marketrealist.com/2017/07/how-essex-property-trust-compares-to-other-industry-players/?utm_source=yahoo&amp;utm_medium=feed" target="_blank" rel="nofollow">&#13;
+                        How Essex Property Trust Compares to Other Industry Players&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Market Realist)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('http://marketrealist.com/2017/07/how-well-does-essex-property-manage-its-balance-sheet/?utm_source=yahoo\u0026utm_medium=feed', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-11-17 10:36AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="http://marketrealist.com/2017/07/how-well-does-essex-property-manage-its-balance-sheet/?utm_source=yahoo&amp;utm_medium=feed" target="_blank" rel="nofollow">&#13;
+                        How Well Does Essex Property Manage Its Balance Sheet?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Market Realist)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('http://marketrealist.com/2017/07/how-well-does-essex-property-return-value-to-its-shareholders/?utm_source=yahoo\u0026utm_medium=feed', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            09:06AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="http://marketrealist.com/2017/07/how-well-does-essex-property-return-value-to-its-shareholders/?utm_source=yahoo&amp;utm_medium=feed" target="_blank" rel="nofollow">&#13;
+                        How Well Does Essex Property Return Value to Its Shareholders?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Market Realist)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('http://marketrealist.com/2017/07/are-trump-and-the-rate-hike-blessings-in-disguise-for-ess/?utm_source=yahoo\u0026utm_medium=feed', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:36AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="http://marketrealist.com/2017/07/are-trump-and-the-rate-hike-blessings-in-disguise-for-ess/?utm_source=yahoo&amp;utm_medium=feed" target="_blank" rel="nofollow">&#13;
+                        Are Trump and the Rate Hike Blessings in Disguise for ESS?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Market Realist)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('http://marketrealist.com/2017/07/how-high-interest-could-affect-ess-and-residential-reits/?utm_source=yahoo\u0026utm_medium=feed', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-10-17 10:36AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="http://marketrealist.com/2017/07/how-high-interest-could-affect-ess-and-residential-reits/?utm_source=yahoo&amp;utm_medium=feed" target="_blank" rel="nofollow">&#13;
+                        How High Interest Could Affect ESS and Residential REITs&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Market Realist)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('http://marketrealist.com/2017/07/development-projects-helps-essex-property-combat-reit-headwinds/?utm_source=yahoo\u0026utm_medium=feed', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            09:08AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="http://marketrealist.com/2017/07/development-projects-helps-essex-property-combat-reit-headwinds/?utm_source=yahoo&amp;utm_medium=feed" target="_blank" rel="nofollow">&#13;
+                        Development Projects Helps Essex Property Combat REIT Headwinds&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Market Realist)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('http://marketrealist.com/2017/07/essex-property-to-see-growth-due-to-winning-strategies/?utm_source=yahoo\u0026utm_medium=feed', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:38AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="http://marketrealist.com/2017/07/essex-property-to-see-growth-due-to-winning-strategies/?utm_source=yahoo&amp;utm_medium=feed" target="_blank" rel="nofollow">&#13;
+                        Essex Property to See Growth due to Winning Strategies&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Market Realist)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('http://marketrealist.com/2017/07/essex-property-and-residential-reits-are-poised-to-grow/?utm_source=yahoo\u0026utm_medium=feed', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-07-17 05:35PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="http://marketrealist.com/2017/07/essex-property-and-residential-reits-are-poised-to-grow/?utm_source=yahoo&amp;utm_medium=feed" target="_blank" rel="nofollow">&#13;
+                        Essex Property and Residential REITs Are Poised to Grow&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Market Realist)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('http://marketrealist.com/2017/07/how-essex-property-maintains-its-revenue-growth/?utm_source=yahoo\u0026utm_medium=feed', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            04:06PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="http://marketrealist.com/2017/07/how-essex-property-maintains-its-revenue-growth/?utm_source=yahoo&amp;utm_medium=feed" target="_blank" rel="nofollow">&#13;
+                        How Essex Property Maintains Its Revenue Growth&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Market Realist)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('http://marketrealist.com/2017/07/essex-property-an-apartment-reit-standing-strong-amid-headwinds/?utm_source=yahoo\u0026utm_medium=feed', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            02:32PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="http://marketrealist.com/2017/07/essex-property-an-apartment-reit-standing-strong-amid-headwinds/?utm_source=yahoo&amp;utm_medium=feed" target="_blank" rel="nofollow">&#13;
+                        Essex Property: An Apartment REIT Standing Strong amid Headwinds&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Market Realist)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('http://marketrealist.com/2017/06/how-wall-street-analysts-view-avalonbay-stock/?utm_source=yahoo\u0026utm_medium=feed', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jun-19-17 07:35AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="http://marketrealist.com/2017/06/how-wall-street-analysts-view-avalonbay-stock/?utm_source=yahoo&amp;utm_medium=feed" target="_blank" rel="nofollow">&#13;
+                        How Wall Street Analysts View AvalonBay Stock&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Market Realist)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('http://marketrealist.com/2017/06/avalonbay-comparison-with-other-retail-reits-in-its-industry/?utm_source=yahoo\u0026utm_medium=feed', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jun-16-17 10:35AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="http://marketrealist.com/2017/06/avalonbay-comparison-with-other-retail-reits-in-its-industry/?utm_source=yahoo&amp;utm_medium=feed" target="_blank" rel="nofollow">&#13;
+                        AvalonBayComparison with Other Retail REITs in Its Industry&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Market Realist)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('http://marketrealist.com/2017/06/how-avalonbay-communities-leverages-its-balance-sheet/?utm_source=yahoo\u0026utm_medium=feed', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            09:06AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="http://marketrealist.com/2017/06/how-avalonbay-communities-leverages-its-balance-sheet/?utm_source=yahoo&amp;utm_medium=feed" target="_blank" rel="nofollow">&#13;
+                        How AvalonBay Communities Leverages Its Balance Sheet&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Market Realist)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('http://marketrealist.com/2017/06/avalonbay-communities-a-rewarding-stock-for-shareholders/?utm_source=yahoo\u0026utm_medium=feed', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:36AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="http://marketrealist.com/2017/06/avalonbay-communities-a-rewarding-stock-for-shareholders/?utm_source=yahoo&amp;utm_medium=feed" target="_blank" rel="nofollow">&#13;
+                        AvalonBay Communities: A Rewarding Stock for Shareholders&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Market Realist)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('http://marketrealist.com/2017/06/avalonbay-residential-reits-target-headwinds-diversification/?utm_source=yahoo\u0026utm_medium=feed', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jun-15-17 10:36AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="http://marketrealist.com/2017/06/avalonbay-residential-reits-target-headwinds-diversification/?utm_source=yahoo&amp;utm_medium=feed" target="_blank" rel="nofollow">&#13;
+                        AvalonBay, Residential REITs Target Headwinds through Diversification&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Market Realist)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+</table>
+</div>
+
+</div></div>
+</body>
+</html>
