@@ -1,0 +1,2297 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>ARKK — ARK Innovation ETF</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-size: 12px;
+      font-family: Arial, Helvetica, "Microsoft JhengHei", -apple-system, sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 8px 28px 16px;
+      background-color: #faf9f6;
+      color: #1c1917;
+    }
+
+    /* Header Bar */
+    .rp-header {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-top: 3px solid #FA8123;
+      border-radius: 6px;
+      padding: 6px 10px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+    .rp-title-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .rp-ticker {
+      font-size: 17px;
+      font-weight: 800;
+      color: #1c1917;
+      letter-spacing: 0.3px;
+    }
+    .rp-desc {
+      font-size: 15px;
+      font-weight: 700;
+      color: #FA8123;
+    }
+    .rp-time {
+      font-size: 11px;
+      color: #78716c;
+      background: #f5f3ef;
+      padding: 1px 7px;
+      border-radius: 999px;
+    }
+    .rp-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .rp-pill-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: #faf9f6;
+      border: 1px solid #d6d1c7;
+      color: #44403c;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.12s ease;
+    }
+    .rp-pill-link:hover {
+      background: #fff5eb;
+      border-color: #FA8123;
+      color: #d9650f;
+    }
+
+    /* Pyecharts Container Card */
+    .rp-chart-box {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 2px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+
+    /* Sub-Tabs Bar */
+    .rp-tabs-bar {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 4px 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      position: sticky;
+      top: 2px;
+      z-index: 50;
+      box-shadow: 0 1px 4px rgba(28, 25, 23, 0.05);
+    }
+    .rp-tab {
+      border: 1px solid transparent;
+      background: #f5f3ef;
+      color: #57534e;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+    .rp-tab:hover {
+      background: #fff5eb;
+      border-color: #fdba8c;
+      color: #d9650f;
+    }
+    .rp-tab.active {
+      background: #FA8123;
+      color: #ffffff;
+      box-shadow: 0 1px 3px rgba(250, 129, 35, 0.35);
+    }
+
+    /* Section Card */
+    .rp-sec-pane {
+      width: 100%;
+      margin: 0 0 4px;
+    }
+    .rp-card {
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 6px 8px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+      overflow-x: auto;
+    }
+    .rp-divider {
+      border: 0;
+      border-top: 1px solid #e6e2dc;
+      margin: 6px 0;
+    }
+
+    /* Modernized Tables (FBS / Pyramid / FinViz) */
+    .is-negative { color: #00994d; font-weight: 600; }
+    .is-positive { color: #cc2929; font-weight: 600; }
+    .snapshot-td2, .snapshot-td2-cp {
+      color: #1c1917;
+      text-decoration: none;
+      border: 1px solid #e6e2dc;
+      white-space: nowrap;
+    }
+    .snapshot-td2-cp { cursor: pointer; }
+    .fullview-ratings-outer, td.fullview-ratings-inner {
+      border: 1px solid #e6e2dc;
+    }
+    .t3r1 { color: #cc2929; font-weight: 700; }
+    .body-table-rating-downgrade { color: #cc2929; background: #fef2f2; }
+    .body-table-rating-upgrade { color: #00994d; background: #f0fdf4; }
+    .body-table-rating-neutral { color: #44403c; background: #faf9f6; }
+
+    table {
+      border-collapse: collapse;
+      margin: 6px auto;
+    }
+    td, th {
+      border: 1px solid #e6e2dc;
+      text-align: left;
+      padding: 6px 8px;
+    }
+    th {
+      background-color: #f6f4f0;
+      color: #1c1917;
+      font-weight: 700;
+    }
+    tr:nth-child(even) {
+      background-color: #fcfbf9;
+    }
+  </style>
+  <script>
+    function switchRpTab(btn) {
+      if (!btn) return;
+      var target = btn.getAttribute("data-target") || "all";
+      document.querySelectorAll(".rp-tab").forEach(function(b) {
+        b.classList.remove("active");
+      });
+      btn.classList.add("active");
+
+      document.querySelectorAll(".rp-sec-pane").forEach(function(pane) {
+        if (target === "all" || pane.id === target) {
+          pane.style.display = "block";
+        } else {
+          pane.style.display = "none";
+        }
+      });
+
+      try {
+        sessionStorage.setItem("sr_active_rp_tab", target);
+      } catch (e) {}
+
+      window.dispatchEvent(new Event("resize"));
+    }
+
+    window.addEventListener("load", function() {
+      try {
+        var saved = sessionStorage.getItem("sr_active_rp_tab");
+        if (saved && saved !== "all") {
+          var btn = document.querySelector('.rp-tab[data-target="' + saved + '"]');
+          if (btn) switchRpTab(btn);
+        }
+      } catch (e) {}
+    });
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/12.3.0/highcharts.min.js"></script>
+</head>
+<body>
+  <div class="rp-header">
+    <div class="rp-title-wrap">
+      <span class="rp-ticker">ARKK</span>
+      <span class="rp-desc">ARK Innovation ETF</span>
+      <span class="rp-time">更新: 2026-11-14 06:57</span>
+    </div>
+    <div class="rp-links">
+      <a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=ARKK&type=pe-ratio&statement=price-ratios&freq=Q" target="_blank">📈 PE Chart</a><a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=ARKK&type=price-book&statement=price-ratios&freq=Q" target="_blank">📊 PB Chart</a><a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=ARKK&type=price-sales&statement=price-ratios&freq=Q" target="_blank">📉 PS Chart</a><a class="rp-pill-link" href="https://www.wsj.com/market-data/quotes/ARKK/financials/quarter/cash-flow" target="_blank">💵 Finance</a><a class="rp-pill-link" href="https://www.dataroma.com/m/stock.php?sym=ARKK" target="_blank">🏛️ Ownership</a><a class="rp-pill-link" href="https://hedgefollow.com/stocks/ARKK" target="_blank">🏦 Institute</a><a class="rp-pill-link" href="https://unusualwhales.com/stock/ARKK/greek-exposure" target="_blank">⚡ GEX</a><a class="rp-pill-link" href="https://www.ptt.cc/bbs/Stock/search?q=ARKK" target="_blank">💬 PTT Search</a>
+    </div>
+  </div>
+
+  <div class="rp-chart-box" align="center">
+    <iframe id="stock" src="ARKK_EC.html" frameborder="0" width="100%" height="1600px" scrolling="no"></iframe>
+  </div>
+
+  <div class="rp-tabs-bar"><button class="rp-tab active" data-target="all" onclick="switchRpTab(this)">📋 全部展開</button><button class="rp-tab" data-target="sec-quant" onclick="switchRpTab(this)">🧮 量化與主動ETF</button><button class="rp-tab" data-target="sec-stockdog" onclick="switchRpTab(this)">🐶 主力籌碼</button><button class="rp-tab" data-target="sec-finviz" onclick="switchRpTab(this)">🌎 FinViz 美股基本面</button></div>
+  <div class="rp-sec-pane" id="sec-quant"><style>.pq-wrap{width:100%;margin:0;font-family:Arial,Helvetica,"Microsoft JhengHei",sans-serif;color:#222}.pq-sec{background:#fff;border:1px solid #e6e2dc;border-radius:6px;padding:6px 8px;margin-bottom:4px;box-shadow:0 1px 2px rgba(28,25,23,.03)}.pq-sec h2{font-size:14px;color:#1c1917;border-left:4px solid #FA8123;padding-left:6px;margin:0 0 6px}.pq-sec h3{font-size:12px;color:#44403c;margin:6px 0 4px}.pq-banner{background:#fff9f4;border-left:4px solid #FA8123;padding:5px 8px;border-radius:4px;font-size:12px;line-height:1.5;margin-bottom:6px;color:#292524}.pq-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:6px}table.pq-tbl{width:100%;border-collapse:collapse;font-size:12px;font-family:Arial,Helvetica,"Microsoft JhengHei",sans-serif}table.pq-tbl th,table.pq-tbl td{border:1px solid #e6e2dc !important;padding:4px 6px !important;text-align:right}table.pq-tbl th{background:#f6f4f0 !important;color:#1c1917 !important;font-weight:bold}table.pq-tbl tr:nth-child(even){background:#fcfbf9}</style><div class="pq-wrap">
+
+    <div class="pq-sec">
+      <h2>🧮 量化風險、波動率體制與因子 Alpha 拆解 (ARKK)</h2>
+      <div class="pq-banner">
+        <b>現價：</b> <b>74.99</b> ｜
+        <b>動能 (1D / 5D / 20D / 60D / 1Y / 12-1M)：</b> <span style="color:#00994d;font-weight:bold">-1.97%</span> / <span style="color:#00994d;font-weight:bold">-0.62%</span> / <span style="color:#00994d;font-weight:bold">-8.16%</span> / <span style="color:#00994d;font-weight:bold">-9.94%</span> / <span style="color:#00994d;font-weight:bold">-2.72%</span> / <span style="color:#cc2929;font-weight:bold">+11.16%</span> ｜
+        <b>200D Volume Profile：</b> POC <b>72.08</b> (VAH <b>80.16</b> / VAL <b>68.89</b>)<br>
+        <b>尾部風險與風險調整指標 (1Y)：</b> 年化波動率 <b>38.43%</b> (GARCH 1D預測 <b>50.73%</b>) ｜
+        Sortino <b>-0.18</b> ｜ Calmar <b>-0.03</b> ｜
+        最大回撤 (MDD) <span style="color:#00994d;font-weight:bold">-23.66%</span> ｜
+        95% VaR / CVaR: <span style="color:#00994d;font-weight:bold">-3.56% / -5.00%</span> ｜
+        <b>Lo-MacKinlay VR(5/10/20)：</b> 0.846(z*=-1.34) / 0.832(z*=-0.96) / 0.822(z*=-0.71)
+        <br><b>今日觸發技術訊號：</b> [BUY]     : 週KD黃金交叉 ｜ [SELL]    : 日KD死亡交叉 | 月KD死亡交叉 | 量大收黑 | 量漲價跌 ｜ [OTHER]   :  ｜ [KD-CRS]: 買點-週K上穿週D
+      </div>
+      <table class="pq-tbl" style="margin-top:8px"><thead><tr><th style="text-align:left">Benchmark</th><th>20D (Stock / Bench)</th><th>20D Rel Excess</th><th>60D Rel Excess</th><th>1Y Rel Excess</th><th>1Y Beta (β)</th><th>R²</th><th>1Y Residual Alpha (α)</th></tr></thead><tbody><tr><td style="text-align:left"><b>^GSPC</b></td><td><span style="color:#00994d;font-weight:bold">-8.16%</span> / <span style="color:#00994d;font-weight:bold">-1.28%</span></td><td><span style="color:#00994d;font-weight:bold">-6.88%</span></td><td><span style="color:#00994d;font-weight:bold">-8.90%</span></td><td><span style="color:#00994d;font-weight:bold">-18.20%</span></td><td><b>2.23</b></td><td>0.63</td><td><span style="color:#00994d;font-weight:bold">-26.05%</span></td></tr><tr><td style="text-align:left"><b>QQQ</b></td><td><span style="color:#00994d;font-weight:bold">-8.16%</span> / <span style="color:#00994d;font-weight:bold">-4.21%</span></td><td><span style="color:#00994d;font-weight:bold">-3.94%</span></td><td><span style="color:#00994d;font-weight:bold">-5.58%</span></td><td><span style="color:#00994d;font-weight:bold">-17.30%</span></td><td><b>1.40</b></td><td>0.62</td><td><span style="color:#00994d;font-weight:bold">-19.51%</span></td></tr><tr><td style="text-align:left"><b>SOXX</b></td><td><span style="color:#00994d;font-weight:bold">-8.16%</span> / <span style="color:#00994d;font-weight:bold">-9.22%</span></td><td><span style="color:#cc2929;font-weight:bold">+1.06%</span></td><td><span style="color:#cc2929;font-weight:bold">+4.31%</span></td><td><span style="color:#00994d;font-weight:bold">-57.29%</span></td><td><b>0.49</b></td><td>0.40</td><td><span style="color:#00994d;font-weight:bold">-34.01%</span></td></tr></tbody></table>
+    </div>
+    
+</div></div>
+<div class="rp-sec-pane" id="sec-stockdog"><div class="rp-card" align="center"><iframe id="stockdog" src="ARKK_SD.html" frameborder="0" width="100%" height="1000px" scrolling="no"></iframe></div></div>
+<div class="rp-sec-pane" id="sec-finviz"><div class="rp-card"><div align="center"><a href="https://www.marketwatch.com/investing/stock/ARKK/analystestimates" target="_blank"><img style="max-height:100%; max-width:100%; object-fit:contain" src=https://app.quotemedia.com/quotetools/getChart?webmasterId=91386&symbol=ARKK&chtype=FinancialLine&chcon=on&chdon=on&chfrmon=on&chscale=1d&chton=on&chwid=800&chhig=380&chln=ffa500&chfill=ffa500&chfnts=10&chbdr=000000&chbgch=ffffffff&chgrd=cccccc&svg=false&lang=en&locale=en></a></div>
+
+<hr class="rp-divider">
+<table align="center" class="snapshot-table2" align="center" style="width:100%; border-collapse:collapse; font-size:12px; margin:auto;">
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Single category of the ETF"><div class="snapshot-td-label">Category</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" title="US Equities - Factor &amp; Thematic" style=""><div class="snapshot-td-content"><b>US Equities - Factor &amp; Thematic</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="The asset type of the ETF"><div class="snapshot-td-label">Asset Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" title="Equities (Stocks)" style=""><div class="snapshot-td-content"><b>Equities (Stocks)</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/screener/etf?v=181&amp;ft=4&amp;f=etf_tags_global" class="hover:underline" target="_blank"><b>Global</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="1-Year Annualized Return"><div class="snapshot-td-label">Return% 1Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-6.76%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Total count of all holdings in the ETF"><div class="snapshot-td-label">Total Holdings</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>43</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Week, Excl. Dividends)"><div class="snapshot-td-label">Perf Week</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-0.62%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="The fund manager (ETF) or issuing bank (ETN)"><div class="snapshot-td-label">Sponsor</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>ARK Funds</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="A simple, broad categorization of each ETF based on its asset class and geographical exposure"><div class="snapshot-td-label">ETF Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/screener/etf?v=181&amp;ft=4&amp;f=etf_tags_equity" class="hover:underline" target="_blank"><b>equity</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="3-Year Annualized Return"><div class="snapshot-td-label">Return% 3Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">23.20%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Assets Under Management"><div class="snapshot-td-label">AUM</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>7.36B</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Month, Excl. Dividends)"><div class="snapshot-td-label">Perf Month</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-12.49%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Fund family to which the ETF belongs, as categorized by the ETF Sponsor"><div class="snapshot-td-label">Fund Family</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Type of bonds held in the ETF"><div class="snapshot-td-label">Bond Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/screener/etf?v=181&amp;ft=4&amp;f=etf_tags_technology" class="hover:underline" target="_blank"><b>technology</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="5-Year Annualized Return"><div class="snapshot-td-label">Return% 5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-9.16%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Net Asset Value per Share"><div class="snapshot-td-label">NAV/sh</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Quarter, Excl. Dividends)"><div class="snapshot-td-label">Perf Quarter</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-8.27%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Name of the underlying index tracked by the ETF, if applicable"><div class="snapshot-td-label">Index</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Targeted exposure to securities of a specific maturity range of bond ETFs"><div class="snapshot-td-label">Average Maturity</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/screener/etf?v=181&amp;ft=4&amp;f=etf_tags_disruptive" class="hover:underline" target="_blank"><b>disruptive</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="10-Year Annualized Return"><div class="snapshot-td-label">Return% 10Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 52-Week High"><div class="snapshot-td-label">52W High</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>94.82 <small class="text-2xs"><span class="color-text is-negative">-20.91%</span></small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Half Year, Excl. Dividends)"><div class="snapshot-td-label">Perf Half Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">0.12%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="For ETFs that track an underlying index, this field provides detail on the index weighting type"><div class="snapshot-td-label">Index Weighting</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Type of commodities held in the ETF"><div class="snapshot-td-label">Commodity Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/screener/etf?v=181&amp;ft=4&amp;f=etf_tags_innovation" class="hover:underline" target="_blank"><b>innovation</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Annualized Return Since Inception"><div class="snapshot-td-label">Return% SI</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 52-Week Low"><div class="snapshot-td-label">52W Low</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>62.94 <small class="text-2xs"><span class="color-text is-positive">19.14%</span></small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Year To Date, Excl. Dividends)"><div class="snapshot-td-label">Perf YTD</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-2.51%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Actively managed or passively index-linked ETF"><div class="snapshot-td-label">Active/Passive</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Proprietary quant model used as the underlying strategy for the ETF"><div class="snapshot-td-label">Quant Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="1-Month Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% 1M</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">28.40%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Volatility (Week, Month)"><div class="snapshot-td-label">Volatility</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">3.48% 3.62%</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Year, Excl. Dividends)"><div class="snapshot-td-label">Perf Year</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-2.72%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Trailing 12 Months Dividend"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=ARKK&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank">Dividend TTM</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=ARKK&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank"><b>-</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF's strategy involves providing exposure to a specific social or environmental theme"><div class="snapshot-td-label">ESG Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="3-Month Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% 3M</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">22.18%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Average True Range (14)"><div class="snapshot-td-label">ATR (14)</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>3.22</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (3 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 3Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">87.90%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Ex-Dividend Date"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=ARKK&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank">Dividend Ex-Date</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=ARKK&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank"><b>Dec 29, 2021</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Intended investment objective of holding dividend-oriented stocks as stated in the ETF prospectus"><div class="snapshot-td-label">Dividend Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Targeted exposure to a sector or theme of the ETF"><div class="snapshot-td-label">Sector/Theme</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Year-to-date Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% YTD</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">7.69%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Relative Strength Index"><div class="snapshot-td-label">RSI (14)</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>38.61</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (5 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-36.19%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Dividend growth over 3 and 5 years"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=ARKK&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank">Dividend Gr. 3/5Y</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=ARKK&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank"><b><small class="text-2xs">- -</small></b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="&lt;span class='font-semibold'&gt;Legal Structure&lt;/span&gt;&lt;br&gt;AST (Active Semi Transparent)&lt;br&gt;ETC&lt;br&gt;ETF (Open end fund)&lt;br&gt;ETN"><div class="snapshot-td-label">Structure Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Targeted exposure to a specific type of geography‐based grouping"><div class="snapshot-td-label">Region</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="1-Year Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% 1Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Beta"><div class="snapshot-td-label">Beta</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>2.02</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (10 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 10Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">294.95%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Gross expense net of fee waivers, as a % of net assets as published by the ETF Issuer"><div class="snapshot-td-label">Expense</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.75%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Growth or Value based on the stated style tilt in the ETF prospectus"><div class="snapshot-td-label">Growth/Value</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 20-Day Simple Moving Average"><div class="snapshot-td-label">SMA20</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-6.77%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="3-Year Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% 3Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Relative volume"><div class="snapshot-td-label">Rel Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>2.15</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Previous close"><div class="snapshot-td-label">Prev Close</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>76.50</b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Inverse or leveraged ETF"><div class="snapshot-td-label">Inverse/Leveraged</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Market capitalization range of the underlying securities"><div class="snapshot-td-label">Market Cap</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 50-Day Simple Moving Average"><div class="snapshot-td-label">SMA50</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-11.47%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="5-Year Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% 5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Average volume (3 month)"><div class="snapshot-td-label">Avg Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>4.87M</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Current stock price"><div class="snapshot-td-label">Price</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>74.99</b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="IPO Date"><div class="snapshot-td-label">IPO</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>Oct 31, 2014</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Stock has options trading on a market exchange / Stock is available to sell short"><div class="snapshot-td-label">Option/Short</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">Yes / Yes</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 200-Day Simple Moving Average"><div class="snapshot-td-label">SMA200</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-4.04%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Trades"><div class="snapshot-td-label">Trades</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Volume"><div class="snapshot-td-label">Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>10,476,883</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (today)"><div class="snapshot-td-label">Change %</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-1.97%</span></b></div></td>
+</tr>
+</table>
+
+
+<hr class="rp-divider">
+<div class="body-table-news-wrapper news-table_wrapper is-collapsed"><table align="center" align="center" width="70%" cellpadding="1" cellspacing="0" border="0" id="news-table" class="fullview-news-outer news-table" data-ticker="ARKK">
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/cathie-woods-ark-invest-buys-074631993.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-12-26 02:46AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/cathie-woods-ark-invest-buys-074631993.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood's ARK Invest Buys $3M In KTOS Stock  Kratos Defense Eyes 22% Revenue Growth In 2027&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/cathie-wood-ark-invest-adds-045408962.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-11-26 11:54PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/cathie-wood-ark-invest-adds-045408962.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Woods ARK Invest Adds Another $1.7M In ACHR Stock For Second Straight Day Retail Turns Bullish&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/cathie-woods-ark-investment-buys-065721772.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-10-26 01:57AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/cathie-woods-ark-investment-buys-065721772.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood's ARK Investment Buys $6.8M Worth Of SOFI: Retail Calls It Dead Stock&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/cathie-wood-led-ark-loads-060020729.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-07-26 01:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/cathie-wood-led-ark-loads-060020729.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood-Led Ark Loads Up On GOOG, AMD, NVDA And Biotech Stocks  But Sells CRWV, AVGO, LLY&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/crypto/articles/cathie-wood-ark-adds-coinbase-132900154.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-03-26 08:29AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/crypto/articles/cathie-wood-ark-adds-coinbase-132900154.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Woods ARK Adds Coinbase, Circle and Robinhood, Trims Bullish, After Crypto Stock Slide&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(CryptoProwl)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/cathie-wood-buys-coin-stock-104319972.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            05:43AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/cathie-wood-buys-coin-stock-104319972.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood Buys COIN Stock After Post-Earnings Slide, Adds CRCL Shares Before Its Results&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.investors.com/news/cathie-wood-ark-buys-sells-these-crypto-names-as-binance-bleeds?mod=IBD_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-02-26 11:59AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.investors.com/news/cathie-wood-ark-buys-sells-these-crypto-names-as-binance-bleeds?mod=IBD_FV" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood's ARK Buys, Sells These Crypto Names As Binance Bleeds&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investor's Business Daily)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/healthcare/articles/cathie-wood-loads-tem-ilmn-050541922.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-31-26 01:05AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/healthcare/articles/cathie-wood-loads-tem-ilmn-050541922.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood Loads Up On TEM, ILMN And Biotech Stocks  But Pares Stake In This Pharma Giant That Had A Blowout Q3&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/maytech-global-growth-etf-mtgg-182448627.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-30-26 02:24PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/maytech-global-growth-etf-mtgg-182448627.html" target="_blank" rel="nofollow">&#13;
+                        MayTech Global Growth ETF (MTGG) Launches on Nasdaq&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">&#13;
+         -6.07%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/hood-stock-heads-worst-month-054741191.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-29-26 01:47AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/hood-stock-heads-worst-month-054741191.html" target="_blank" rel="nofollow">&#13;
+                        HOOD Stock Heads For Worst Month Since February: Cathie Wood's ARK Loads Up Amid Dip&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/economy/articles/cathie-wood-says-tesla-spacex-014951274.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-26-26 09:49PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/economy/articles/cathie-wood-says-tesla-spacex-014951274.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood Says Tesla, SpaceX Could Drive Up To 9% GDP Growth: ARK Sees Merger As Win For Both Shareholder Bases&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/cathie-wood-led-ark-invest-052955889.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-24-26 01:29AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/cathie-wood-led-ark-invest-052955889.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood-Led Ark Invest Sells PLTR, GOOG, SHOP Stocks  But Loads Up On PACB, FRNM And Other Biotech Firms&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/cathie-woods-ark-loads-38-110535567.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-23-26 07:05AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/cathie-woods-ark-loads-38-110535567.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood's ARK Loads Up 38,110 Meta Shares Across 3 ETFs Despite Mounting AI Spending Concerns&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/crwv-stock-dips-overnight-cathie-024506195.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-19-26 10:45PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/crwv-stock-dips-overnight-cathie-024506195.html" target="_blank" rel="nofollow">&#13;
+                        CRWV Stock Dips Overnight: Cathie Wood's ARK Investment Loads Up On Neocloud Despite Recent Market Selloff&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/rklb-stock-slide-hits-day-012041888.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-15-26 09:20PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/rklb-stock-slide-hits-day-012041888.html" target="_blank" rel="nofollow">&#13;
+                        RKLB Stocks Slide Hits Day 7: Cathie Woods ARK Buys The Dip As Rocket Lab Touts Mars Record Amid Neutron Delay&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/coreweave-selloff-cathie-wood-case-to-buy-ab8ac6d1?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            09:48AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/coreweave-selloff-cathie-wood-case-to-buy-ab8ac6d1?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood's ARK Buys CoreWeave. The Case for Buying Now.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/healthcare/articles/cathie-wood-led-ark-invest-060232303.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-10-26 02:02AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/healthcare/articles/cathie-wood-led-ark-invest-060232303.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood-Led Ark Invest Sells AMD, SPCX, GOOG Stocks  But Loads Up On CMPS, NTLA, CRSP And Other Healthcare Firms&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/options/articles/daily-etf-flows-arkk-takes-210004217.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-09-26 05:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/options/articles/daily-etf-flows-arkk-takes-210004217.html" target="_blank" rel="nofollow">&#13;
+                        Daily ETF Flows: ARKK Takes No. 1 Spot&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/ark-buys-19-million-coreweave-145011217.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-08-26 10:50AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/ark-buys-19-million-coreweave-145011217.html" target="_blank" rel="nofollow">&#13;
+                        ARK buys about $19 million of CoreWeave shares as stock falls 3.6%&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Blockspace)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/cathie-wood-ark-invest-adds-065452210.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            02:54AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/cathie-wood-ark-invest-adds-065452210.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Woods ARK Invest Adds Kratos Defense, AeroVironment Stocks As Pentagon Bets On Drones To Drive Future Warfare&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/cathie-wood-ark-invest-loads-032826778.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-06-26 11:28PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/cathie-wood-ark-invest-loads-032826778.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Woods ARK Invest Loads Up On Joby, Archer Aviation As Airtaxi, Defense Prospects Grow&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/healthcare/articles/cathie-wood-loads-biotech-stocks-121618269.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            08:16AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/healthcare/articles/cathie-wood-loads-biotech-stocks-121618269.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood Loads Up On These Biotech Stocks After Strong Rallies  Unloads $18M Worth Of TWST Shares&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/rklb-stock-rises-overnight-cathie-063508427.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            02:35AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/rklb-stock-rises-overnight-cathie-063508427.html" target="_blank" rel="nofollow">&#13;
+                        RKLB Stock Rises Overnight: Cathie Woods ARK Sees Enormous Opportunity As SpaceX Eyes Falcon 9 Retirement&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/healthcare/articles/cathie-wood-arkg-crushing-her-064411709.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-05-26 02:44AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/healthcare/articles/cathie-wood-arkg-crushing-her-064411709.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Woods ARKG Is Crushing Her Other ETFs: 2 Biotech Bets Have Surged Nearly 6X This Year&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/cathie-wood-just-bought-16-121823661.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-02-26 08:18AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/cathie-wood-just-bought-16-121823661.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood Just Bought $16 Million of Rocket Lab--and Sold Palantir&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/cathie-wood-doubles-down-elon-172253736.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-01-26 01:22PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/cathie-wood-doubles-down-elon-172253736.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood Doubles Down on Elon Musk-Linked Stocks&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/cathie-wood-loads-rklb-stock-113215227.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-23-26 07:32AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/cathie-wood-loads-rklb-stock-113215227.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood Loads Up On RKLB Stock  Cantor Pegs Iridium And Neutron As Major Catalysts For Rocket Lab&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/daily-etf-flows-arkk-enters-210004371.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-22-26 05:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/daily-etf-flows-arkk-enters-210004371.html" target="_blank" rel="nofollow">&#13;
+                        Daily ETF Flows: ARKK Enters Top 10&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/healthcare/articles/beyond-meta-cathie-wood-arkg-111005337.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:10AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/healthcare/articles/beyond-meta-cathie-wood-arkg-111005337.html" target="_blank" rel="nofollow">&#13;
+                        Beyond Meta, Cathie Woods ARKG Loads Up On These 4 Biotech Names&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/cathie-wood-makes-big-ai-192343518.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-21-26 03:23PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/cathie-wood-makes-big-ai-192343518.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood Makes a Big AI Bet and Cuts Bitcoin Exposure&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/crypto/articles/ark-trade-watch-cathie-wood-213830364.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-18-26 05:38PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/crypto/articles/ark-trade-watch-cathie-wood-213830364.html" target="_blank" rel="nofollow">&#13;
+                        The ARK Trade Watch: Cathie Wood Cuts Crypto Exposure, Then Reverses Course On CoreWeave&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/387f5416-d902-372f-b1a2-c4be25753267/crwv-stock-rebounds-from.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            01:37AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/387f5416-d902-372f-b1a2-c4be25753267/crwv-stock-rebounds-from.html" target="_blank" rel="nofollow">&#13;
+                        CRWV Stock Rebounds From 1-Month Low  Cathie Woods ARK Bets $19M As Retail Favors CoreWeave Over Nebius&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/tempus-ai-stock-revenue-medicare-10a5329f?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-17-26 02:34PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/tempus-ai-stock-revenue-medicare-10a5329f?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Tempus AI Stock Surges as Revenue Optimism Boosts Winning Streak&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/cathie-woods-ark-invest-buys-103155027.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-16-26 06:31AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/cathie-woods-ark-invest-buys-103155027.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood's ARK Invest Buys AVAV Stock Again, Trims GOOGL Stake And Sells Iridium&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.investors.com/news/cathie-wood-ark-invest-crypto-stocks-coinbase-bullish-circle-bitcoin-etf-clarity-act-vote?mod=IBD_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-15-26 08:52AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.investors.com/news/cathie-wood-ark-invest-crypto-stocks-coinbase-bullish-circle-bitcoin-etf-clarity-act-vote?mod=IBD_FV" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood Dumps $60 Million In Crypto Stock Ahead Of Clarity Act Vote&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investor's Business Daily)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/crypto/articles/cathie-woods-ark-invest-sells-124048230.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            08:40AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/crypto/articles/cathie-woods-ark-invest-sells-124048230.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood's ARK Invest Sells Over 1.5M Shares Of Its Own Bitcoin ETF: Also Cuts COIN, CRCL, BMNR Exposure Ahead Of CLARITY Act Vote&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/f00023e4-6bbd-377a-9fc0-70b6d1f89b81/meta-vs-googl%3A-cathie-wood%E2%80%99s.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-10-26 02:12AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/f00023e4-6bbd-377a-9fc0-70b6d1f89b81/meta-vs-googl%3A-cathie-wood%E2%80%99s.html" target="_blank" rel="nofollow">&#13;
+                        META Vs GOOGL: Cathie Woods ARK Makes A Nearly $56M Mega-Cap Tech Rotation&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/cathie-wood-buying-archer-while-163533472.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-09-26 12:35PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/cathie-wood-buying-archer-while-163533472.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood Is Buying Archer While Trimming Palantir&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/1fddb9fe-6408-35a5-8772-8017b74f8e82/cathie-wood%E2%80%99s-ark-invest-buys.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-05-26 08:46AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/1fddb9fe-6408-35a5-8772-8017b74f8e82/cathie-wood%E2%80%99s-ark-invest-buys.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Woods Ark Invest Buys HOOD Stock As Robinhood Sees Its Third-Best Week In Six Months&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/2f2375f1-6cd9-3b78-bffd-b1c25a55b12f/shop-stock-heads-for-weekly.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-03-26 12:37AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/2f2375f1-6cd9-3b78-bffd-b1c25a55b12f/shop-stock-heads-for-weekly.html" target="_blank" rel="nofollow">&#13;
+                        SHOP Stock Heads For Weekly Loss As Cathie Woods ARK Trims Stake After 25% August Rally: Valuation Nears 100x Earnings&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/aa0eb28e-d3cf-3090-bf40-2d15b769ad00/cathie-wood%E2%80%99s-ark-invest-buys.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-01-26 12:13PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/aa0eb28e-d3cf-3090-bf40-2d15b769ad00/cathie-wood%E2%80%99s-ark-invest-buys.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Woods Ark Invest Buys $37 Million in Bitcoin and Payments Firm Block&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(decrypt)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/cathie-wood-drops-124-million-014651640.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-31-26 09:46PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/cathie-wood-drops-124-million-014651640.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood Drops $124 Million on AI Stocks, Dumps AMD&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/f052b184-b0b3-32d4-9980-dd29c2b9f38e/rklb-stock-rises-overnight.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            09:25PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/f052b184-b0b3-32d4-9980-dd29c2b9f38e/rklb-stock-rises-overnight.html" target="_blank" rel="nofollow">&#13;
+                        RKLB Stock Rises Overnight Despite Electron Delay  Cathie Woods ARK Buy And BofAs Bullish Call Lift Sentiment&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/cathie-wood-ark-invest-nvidia-stock-buy-1d5f3ff6?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            09:52AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/cathie-wood-ark-invest-nvidia-stock-buy-1d5f3ff6?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood Is Buying Nvidia Again. Why the Chip Maker Is a Bargain.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/nvidia-stock-growth-cathie-wood-1d5f3ff6?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            08:19AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/nvidia-stock-growth-cathie-wood-1d5f3ff6?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Nvidia Looks Like a Growth Stock Again. Watch Cathie Wood.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/cathie-wood-just-sold-another-121454057.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-28-26 08:14AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/cathie-wood-just-sold-another-121454057.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood Just Sold Another $18 Million of AMD Stock&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/article/bitcoin-and-cathie-wood-are-partying-like-its-2021-again-chart-of-the-day-100100242.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            06:01AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/article/bitcoin-and-cathie-wood-are-partying-like-its-2021-again-chart-of-the-day-100100242.html" target="_blank" rel="nofollow">&#13;
+                        Bitcoin and Cathie Wood are partying like it's 2021 again: Chart of the Day&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/cathie-wood-ark-sells-amd-stock-476a7789?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-27-26 11:48AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/cathie-wood-ark-sells-amd-stock-476a7789?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood's ARK Just Dumped AMD Stock. What She's Buying Instead.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/amd-stock-price-cathie-wood-ark-476a7789?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            11:08AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/amd-stock-price-cathie-wood-ark-476a7789?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        AMD Stock Offloaded by Cathie Wood's ARK. She's Investing in These AI Chip Rivals.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/97d3a6de-94d0-37d3-b88f-62fa33eb70a4/on-nvidia-earnings-day%2C.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            12:44AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/97d3a6de-94d0-37d3-b88f-62fa33eb70a4/on-nvidia-earnings-day%2C.html" target="_blank" rel="nofollow">&#13;
+                        On Nvidia Earnings Day, Cathie Woods ARK Loaded Up $20M On Rival Chip Stock&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/small-caps-bitcoin-cathie-wood-buffer-etfs-9b8ac710?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-26-26 03:30PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/small-caps-bitcoin-cathie-wood-buffer-etfs-9b8ac710?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Small-Caps, Bitcoin, and a Cathie Wood Buffer: 3 New ETFs&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/cathie-wood-isnt-backing-away-125724160.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            08:57AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/cathie-wood-isnt-backing-away-125724160.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood Isn't Backing Away From SpaceX Stock&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/f9cdec55-ee3a-37ca-9e98-d190637f5975/cbrs-stock-tumbles-toward.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            04:23AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/f9cdec55-ee3a-37ca-9e98-d190637f5975/cbrs-stock-tumbles-toward.html" target="_blank" rel="nofollow">&#13;
+                        CBRS Stock Tumbles Toward Fourth Red Month: Cathie Wood Loads Up More With $17M Purchase&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/1bbc5978-90f7-3879-af82-3547ea575f6a/cathie-wood-is-betting.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-19-26 02:26AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/1bbc5978-90f7-3879-af82-3547ea575f6a/cathie-wood-is-betting.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood Is Betting Against The AI Memory Boom  And On Cerebras To Make HBM Less Necessary&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">&#13;
+         +5.26%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/nvidia-stock-buy-cathie-wood-ark-sell-amd-c0694a5b?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-18-26 10:53AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/nvidia-stock-buy-cathie-wood-ark-sell-amd-c0694a5b?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood's ARK Bought Nvidia Stock. Here's What It Sold.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/nvidia-stock-amd-cathie-wood-c0694a5b?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            08:53AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/nvidia-stock-amd-cathie-wood-c0694a5b?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Nvidia Stock Is in for Cathie Wood's ARK and This AI Play Is Out&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/1de33720-dec3-3d44-a7cd-8b0dfa17330e/cathie-wood%27s-ark-invest-adds.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            06:14AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/1de33720-dec3-3d44-a7cd-8b0dfa17330e/cathie-wood%27s-ark-invest-adds.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood's ARK Invest Adds Nvidia Stake, Sells AMD Stock Across Four ETFs&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/5b8c2f63-f006-31f0-a5ac-fbab39ec410f/ark-invest-boosts-crypto.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            05:44AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/5b8c2f63-f006-31f0-a5ac-fbab39ec410f/ark-invest-boosts-crypto.html" target="_blank" rel="nofollow">&#13;
+                        ARK Invest Boosts Crypto Exposure With Block, Securitize, And Solana ETF Buys&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/cathie-wood-pours-27-million-200518494.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-17-26 04:05PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/cathie-wood-pours-27-million-200518494.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood Pours $27 Million Into Major AI Stock&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/1cfe1d26-c200-3610-b2f2-ab66646c4370/cathie-wood%27s-ark-invest-buys.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-14-26 10:02AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/1cfe1d26-c200-3610-b2f2-ab66646c4370/cathie-wood%27s-ark-invest-buys.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood's ARK Invest Buys $28M Of Nvidia Rival Cerebras Amid Earnings Selloff&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/article/wall-streets-riskiest-trades-are-suddenly-back-on-top-chart-of-the-day-100100027.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            06:01AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/article/wall-streets-riskiest-trades-are-suddenly-back-on-top-chart-of-the-day-100100027.html" target="_blank" rel="nofollow">&#13;
+                        Wall Street's riskiest trades are suddenly back on top: Chart of the Day&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/cathie-wood-doubles-down-spacex-193358148.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-12-26 03:33PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/cathie-wood-doubles-down-spacex-193358148.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood Doubles Down on SpaceX Competitor After Earnings&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/9197345b-446d-3851-8156-648dc68f444c/cathie-wood-bought-the-nvda.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-11-26 06:42AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/9197345b-446d-3851-8156-648dc68f444c/cathie-wood-bought-the-nvda.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood Bought The NVDA Dip Across Five Funds  Heres What Else ARK Bought And Sold&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/cathie-wood-invests-36-9-201143798.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-10-26 04:11PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/cathie-wood-invests-36-9-201143798.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood Invests $36.9 Million in Surging Stock&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/cathie-wood-keeps-buying-space-152027854.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            11:20AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/cathie-wood-keeps-buying-space-152027854.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood Keeps Buying This Space Stock&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/cf82327e-5122-3712-93fc-f4cc45f72225/cathie-wood%27s-ark-invest.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-06-26 01:20PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/cf82327e-5122-3712-93fc-f4cc45f72225/cathie-wood%27s-ark-invest.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood's Ark Invest Makes SpaceX, Circle Top Holdings After Latest Buying Spree&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(decrypt)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/9039557e-95a0-3853-9f20-ecc216551f46/investor-cathie-wood-buys.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-04-26 09:31AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/9039557e-95a0-3853-9f20-ecc216551f46/investor-cathie-wood-buys.html" target="_blank" rel="nofollow">&#13;
+                        Investor Cathie Wood Buys Coinbase And Circle Stocks&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(CryptoProwl)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/cathie-wood-spends-26-million-183842300.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-03-26 02:38PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/cathie-wood-spends-26-million-183842300.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood Spends $26 Million On Battered Tech Stock&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/cathie-wood-leaning-harder-her-162345430.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            12:23PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/cathie-wood-leaning-harder-her-162345430.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood Is Leaning Harder Into Her Highest-Conviction Themes&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/5df47d5f-bba9-33f9-ae76-fbd4b09cf1b6/ark-invest-rotates-%2443.5m.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-02-26 02:33AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/5df47d5f-bba9-33f9-ae76-fbd4b09cf1b6/ark-invest-rotates-%2443.5m.html" target="_blank" rel="nofollow">&#13;
+                        Ark Invest Rotates $43.5M Into Coinbase and Circle as Bullish and Bitmine Exit&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(99bitcoins)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/1fc9bb73-7e89-32f1-889f-dd4a7984fad1/ark-invest-buys-%246.7-million.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-01-26 05:04AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/1fc9bb73-7e89-32f1-889f-dd4a7984fad1/ark-invest-buys-%246.7-million.html" target="_blank" rel="nofollow">&#13;
+                        ARK Invest Buys $6.7 Million Of CRCL Stock, Adds CoreWeave And Solana ETF, Sells Shopify&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/spacex-tesla-stock-baron-ark-elon-musk-4d970069?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-30-26 01:01PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/spacex-tesla-stock-baron-ark-elon-musk-4d970069?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        SpaceX Stock Is Tumbling. Baron and ARK Are Feeling the Pain.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/4ce941f0-19af-37aa-8317-5e09e7cf641a/cathie-wood%27s-ark-trims-bmnr.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:10AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/4ce941f0-19af-37aa-8317-5e09e7cf641a/cathie-wood%27s-ark-trims-bmnr.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood's Ark Trims BMNR Stock Exposure Despite Calling Its Ethereum Strategy Exponential  Sells BLSH, HOOD, XYZ Shares Too&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/97731c8b-fa39-39e6-9adf-945c0636e11e/tsm-stock-snaps-6-day-slide.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            04:35AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/97731c8b-fa39-39e6-9adf-945c0636e11e/tsm-stock-snaps-6-day-slide.html" target="_blank" rel="nofollow">&#13;
+                        TSM Stock Snaps 6-Day Slide Premarket: Cathie Woods ARK Adds $20M Stake&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/tesla-stock-price-cathie-wood-ark-buy-4eb33bbe?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-28-26 02:20PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/tesla-stock-price-cathie-wood-ark-buy-4eb33bbe?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Tesla Keeps Falling and ARK's Cathie Wood Keeps Buying&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/tesla-stock-spacex-cathie-wood-ark-invest-4eb33bbe?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            06:49AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/tesla-stock-spacex-cathie-wood-ark-invest-4eb33bbe?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Tesla and SpaceX Stocks Fall and Cathie Wood Buys More of Both&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/94511c08-352f-3f0e-8423-64d5d795cfee/why-are-crcl%2C-coin-stocks.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-24-26 09:07AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/94511c08-352f-3f0e-8423-64d5d795cfee/why-are-crcl%2C-coin-stocks.html" target="_blank" rel="nofollow">&#13;
+                        Why Are CRCL, COIN Stocks Rising Pre-Market Despite Bitcoins Dip, Price Target Cuts?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/tesla-stock-price-cathie-wood-ark-d81fdb3e?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/tesla-stock-price-cathie-wood-ark-d81fdb3e?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood's Ark Bought the Dip in Tesla Stock&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/a28fd955-a567-336c-81f0-0b894aea565b/cathie-wood-adds-more-spcx.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-23-26 07:43AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/a28fd955-a567-336c-81f0-0b894aea565b/cathie-wood-adds-more-spcx.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood Adds More SPCX Stock With Elon Musks SpaceX Hitting Fresh Record Lows&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/0b0ab06a-9eb7-3824-a15a-cbe88bfc375d/cathie-wood%E2%80%99s-ark-sells-hood.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            06:52AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/0b0ab06a-9eb7-3824-a15a-cbe88bfc375d/cathie-wood%E2%80%99s-ark-sells-hood.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Woods ARK Sells HOOD Stock Again  Even As Robinhood Hits 1M Gold Cards, Launches Platinum Card&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.investors.com/news/cathie-wood-ark-invest-spacex-stock-aerovironment-kratos-defense-spcx-avav-ktos?mod=IBD_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-20-26 01:37PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.investors.com/news/cathie-wood-ark-invest-spacex-stock-aerovironment-kratos-defense-spcx-avav-ktos?mod=IBD_FV" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood Adds $18 Million Worth Of SpaceX, These Defense Names&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investor's Business Daily)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/spacex-stock-tumbling-cathie-wood-190541369.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-16-26 03:05PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/spacex-stock-tumbling-cathie-wood-190541369.html" target="_blank" rel="nofollow">&#13;
+                        SpaceX Stock Is Tumbling. Cathie Wood Is Buying the Dip&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/spacex-stock-price-ipo-ark-cathie-wood-04f3c7a0?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            09:01AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/spacex-stock-price-ipo-ark-cathie-wood-04f3c7a0?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        SpaceX Stock Tests $135 IPO Price-and Cathie Wood Keeps Buying the Dip&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/spacex-stock-starship-launch-cathie-wood-04f3c7a0?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:32AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/spacex-stock-starship-launch-cathie-wood-04f3c7a0?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood's ARK Buys SpaceX Stock Ahead of Starship Test 13.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/6b458ef1-a7e1-318f-8642-eb75a08e7cca/cathie-wood%E2%80%99s-ark-invest.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-15-26 07:41AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/6b458ef1-a7e1-318f-8642-eb75a08e7cca/cathie-wood%E2%80%99s-ark-invest.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Woods ARK Invest Doubles Down On Circle In Two Funds At Once, Trims Robinhood Again&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/44320317-27d7-3be5-a167-3cff23739132/nancy-pelosi-vs-cathie-wood%3A.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-12-26 03:31PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/44320317-27d7-3be5-a167-3cff23739132/nancy-pelosi-vs-cathie-wood%3A.html" target="_blank" rel="nofollow">&#13;
+                        Nancy Pelosi vs Cathie Wood: Whose Trades Timed It Better?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(BeInCrypto)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/8ace283f-ae16-3751-8f39-f10e31973d7f/cathie-wood-led-ark-invest.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-11-26 11:14AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/8ace283f-ae16-3751-8f39-f10e31973d7f/cathie-wood-led-ark-invest.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood-led ARK Invest Buys Coinbase, Trails Only SpaceX Among Friday's Top Buys&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/circle-stock-price-crypto-bank-approval-ark-cathie-wood-f195bca3?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-10-26 08:52AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/circle-stock-price-crypto-bank-approval-ark-cathie-wood-f195bca3?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Circle Stock Soars on Crypto Bank Approval -and Cathie Wood Timed It Perfectly&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/circle-internet-stock-crypto-bank-cathie-wood-f195bca3?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:31AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/circle-internet-stock-crypto-bank-cathie-wood-f195bca3?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Circle Internet Stock Soars on Approval for Crypto Bank. This Tech Investor Timed a Perfect Buy.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/709d7529-c51a-374a-8ca4-093b1bb0db24/your-fund-may-carry-an.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-09-26 05:14PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/709d7529-c51a-374a-8ca4-093b1bb0db24/your-fund-may-carry-an.html" target="_blank" rel="nofollow">&#13;
+                        Your Fund May Carry An Unearned Price&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Trefis)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/96631bb8-816b-3e63-90aa-f656ca2c7fb0/arkk%27s-dip-history-comes-with.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-08-26 04:46PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/96631bb8-816b-3e63-90aa-f656ca2c7fb0/arkk%27s-dip-history-comes-with.html" target="_blank" rel="nofollow">&#13;
+                        ARKK's Dip History Comes With A Warning&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Trefis)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/bc49b944-621d-365b-8528-cf7b0722fd1f/arkk-etf-is-a-sharper-bet.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-07-26 06:36PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/bc49b944-621d-365b-8528-cf7b0722fd1f/arkk-etf-is-a-sharper-bet.html" target="_blank" rel="nofollow">&#13;
+                        ARKK ETF Is A Sharper Bet Than Its Name Suggests&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Trefis)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/cathie-wood-doubles-down-tesla-174536336.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-06-26 01:45PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/cathie-wood-doubles-down-tesla-174536336.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood Doubles Down on Tesla and SoFi With Fresh Million-Dollar Buys&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/a6eedf45-2320-3548-b8fd-ffa8fa6a0757/sofi-stock-rises-overnight%3A.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:06AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/a6eedf45-2320-3548-b8fd-ffa8fa6a0757/sofi-stock-rises-overnight%3A.html" target="_blank" rel="nofollow">&#13;
+                        SOFI Stock Rises Overnight: Cathie Woods ARK Invest Has Boosted Stake By $1M&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/52804f7d-b2f6-37c4-a583-c1b237174b08/cathie-wood%27s-ark-bought-over.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-01-26 02:20AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/52804f7d-b2f6-37c4-a583-c1b237174b08/cathie-wood%27s-ark-bought-over.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood's ARK Bought Over 200K SOFI Shares On Small Business Loan Launch Day: Analyst Says Don't Expect Quick Results&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/5dfe0ce9-e736-3ac1-98c5-88c31df6d133/cathie-wood%E2%80%99s-ark-buys-more.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jun-30-26 08:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/5dfe0ce9-e736-3ac1-98c5-88c31df6d133/cathie-wood%E2%80%99s-ark-buys-more.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Woods ARK Buys More Coinbase, Circle And Bullish Shares  While Cutting Alibaba, Baidu&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/14f2a7e8-db55-3973-9a25-f48119a4f9ef/cathie-wood%27s-ark-invest.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jun-27-26 12:56PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/14f2a7e8-db55-3973-9a25-f48119a4f9ef/cathie-wood%27s-ark-invest.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood's Ark Invest Resumes Buying Crypto Stocks After A Week-Long Pause&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/palantir-finds-powerful-buyer-hitting-173344434.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jun-26-26 01:33PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/palantir-finds-powerful-buyer-hitting-173344434.html" target="_blank" rel="nofollow">&#13;
+                        Why Palantir Stock Popped Today&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/palantir-stock-losing-streak-cathie-wood-a3ef41c7?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:42AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/palantir-stock-losing-streak-cathie-wood-a3ef41c7?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Palantir Stock Could Snap Its 7-Day Losing Streak. It's Been a Rough Month.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/cathie-wood-snaps-9-5-184618988.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jun-25-26 02:46PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/cathie-wood-snaps-9-5-184618988.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood Snaps $9.5 Million on Palantir Stock During Market Selloff&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+</table>
+</div>
+
+</div></div>
+</body>
+</html>

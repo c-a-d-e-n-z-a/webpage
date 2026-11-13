@@ -1,0 +1,2740 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>ALLO — Allogene Therapeutics</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-size: 12px;
+      font-family: Arial, Helvetica, "Microsoft JhengHei", -apple-system, sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 8px 28px 16px;
+      background-color: #faf9f6;
+      color: #1c1917;
+    }
+
+    /* Header Bar */
+    .rp-header {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-top: 3px solid #FA8123;
+      border-radius: 6px;
+      padding: 6px 10px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+    .rp-title-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .rp-ticker {
+      font-size: 17px;
+      font-weight: 800;
+      color: #1c1917;
+      letter-spacing: 0.3px;
+    }
+    .rp-desc {
+      font-size: 15px;
+      font-weight: 700;
+      color: #FA8123;
+    }
+    .rp-time {
+      font-size: 11px;
+      color: #78716c;
+      background: #f5f3ef;
+      padding: 1px 7px;
+      border-radius: 999px;
+    }
+    .rp-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .rp-pill-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: #faf9f6;
+      border: 1px solid #d6d1c7;
+      color: #44403c;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.12s ease;
+    }
+    .rp-pill-link:hover {
+      background: #fff5eb;
+      border-color: #FA8123;
+      color: #d9650f;
+    }
+
+    /* Pyecharts Container Card */
+    .rp-chart-box {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 2px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+
+    /* Sub-Tabs Bar */
+    .rp-tabs-bar {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 4px 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      position: sticky;
+      top: 2px;
+      z-index: 50;
+      box-shadow: 0 1px 4px rgba(28, 25, 23, 0.05);
+    }
+    .rp-tab {
+      border: 1px solid transparent;
+      background: #f5f3ef;
+      color: #57534e;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+    .rp-tab:hover {
+      background: #fff5eb;
+      border-color: #fdba8c;
+      color: #d9650f;
+    }
+    .rp-tab.active {
+      background: #FA8123;
+      color: #ffffff;
+      box-shadow: 0 1px 3px rgba(250, 129, 35, 0.35);
+    }
+
+    /* Section Card */
+    .rp-sec-pane {
+      width: 100%;
+      margin: 0 0 4px;
+    }
+    .rp-card {
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 6px 8px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+      overflow-x: auto;
+    }
+    .rp-divider {
+      border: 0;
+      border-top: 1px solid #e6e2dc;
+      margin: 6px 0;
+    }
+
+    /* Modernized Tables (FBS / Pyramid / FinViz) */
+    .is-negative { color: #00994d; font-weight: 600; }
+    .is-positive { color: #cc2929; font-weight: 600; }
+    .snapshot-td2, .snapshot-td2-cp {
+      color: #1c1917;
+      text-decoration: none;
+      border: 1px solid #e6e2dc;
+      white-space: nowrap;
+    }
+    .snapshot-td2-cp { cursor: pointer; }
+    .fullview-ratings-outer, td.fullview-ratings-inner {
+      border: 1px solid #e6e2dc;
+    }
+    .t3r1 { color: #cc2929; font-weight: 700; }
+    .body-table-rating-downgrade { color: #cc2929; background: #fef2f2; }
+    .body-table-rating-upgrade { color: #00994d; background: #f0fdf4; }
+    .body-table-rating-neutral { color: #44403c; background: #faf9f6; }
+
+    table {
+      border-collapse: collapse;
+      margin: 6px auto;
+    }
+    td, th {
+      border: 1px solid #e6e2dc;
+      text-align: left;
+      padding: 6px 8px;
+    }
+    th {
+      background-color: #f6f4f0;
+      color: #1c1917;
+      font-weight: 700;
+    }
+    tr:nth-child(even) {
+      background-color: #fcfbf9;
+    }
+  </style>
+  <script>
+    function switchRpTab(btn) {
+      if (!btn) return;
+      var target = btn.getAttribute("data-target") || "all";
+      document.querySelectorAll(".rp-tab").forEach(function(b) {
+        b.classList.remove("active");
+      });
+      btn.classList.add("active");
+
+      document.querySelectorAll(".rp-sec-pane").forEach(function(pane) {
+        if (target === "all" || pane.id === target) {
+          pane.style.display = "block";
+        } else {
+          pane.style.display = "none";
+        }
+      });
+
+      try {
+        sessionStorage.setItem("sr_active_rp_tab", target);
+      } catch (e) {}
+
+      window.dispatchEvent(new Event("resize"));
+    }
+
+    window.addEventListener("load", function() {
+      try {
+        var saved = sessionStorage.getItem("sr_active_rp_tab");
+        if (saved && saved !== "all") {
+          var btn = document.querySelector('.rp-tab[data-target="' + saved + '"]');
+          if (btn) switchRpTab(btn);
+        }
+      } catch (e) {}
+    });
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/12.3.0/highcharts.min.js"></script>
+</head>
+<body>
+  <div class="rp-header">
+    <div class="rp-title-wrap">
+      <span class="rp-ticker">ALLO</span>
+      <span class="rp-desc">Allogene Therapeutics</span>
+      <span class="rp-time">更新: 2026-11-14 06:57</span>
+    </div>
+    <div class="rp-links">
+      <a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=ALLO&type=pe-ratio&statement=price-ratios&freq=Q" target="_blank">📈 PE Chart</a><a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=ALLO&type=price-book&statement=price-ratios&freq=Q" target="_blank">📊 PB Chart</a><a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=ALLO&type=price-sales&statement=price-ratios&freq=Q" target="_blank">📉 PS Chart</a><a class="rp-pill-link" href="https://www.wsj.com/market-data/quotes/ALLO/financials/quarter/cash-flow" target="_blank">💵 Finance</a><a class="rp-pill-link" href="https://www.dataroma.com/m/stock.php?sym=ALLO" target="_blank">🏛️ Ownership</a><a class="rp-pill-link" href="https://hedgefollow.com/stocks/ALLO" target="_blank">🏦 Institute</a><a class="rp-pill-link" href="https://unusualwhales.com/stock/ALLO/greek-exposure" target="_blank">⚡ GEX</a><a class="rp-pill-link" href="https://www.ptt.cc/bbs/Stock/search?q=ALLO" target="_blank">💬 PTT Search</a>
+    </div>
+  </div>
+
+  <div class="rp-chart-box" align="center">
+    <iframe id="stock" src="ALLO_EC.html" frameborder="0" width="100%" height="1600px" scrolling="no"></iframe>
+  </div>
+
+  <div class="rp-tabs-bar"><button class="rp-tab active" data-target="all" onclick="switchRpTab(this)">📋 全部展開</button><button class="rp-tab" data-target="sec-quant" onclick="switchRpTab(this)">🧮 量化與主動ETF</button><button class="rp-tab" data-target="sec-stockdog" onclick="switchRpTab(this)">🐶 主力籌碼</button><button class="rp-tab" data-target="sec-finviz" onclick="switchRpTab(this)">🌎 FinViz 美股基本面</button></div>
+  <div class="rp-sec-pane" id="sec-quant"><style>.pq-wrap{width:100%;margin:0;font-family:Arial,Helvetica,"Microsoft JhengHei",sans-serif;color:#222}.pq-sec{background:#fff;border:1px solid #e6e2dc;border-radius:6px;padding:6px 8px;margin-bottom:4px;box-shadow:0 1px 2px rgba(28,25,23,.03)}.pq-sec h2{font-size:14px;color:#1c1917;border-left:4px solid #FA8123;padding-left:6px;margin:0 0 6px}.pq-sec h3{font-size:12px;color:#44403c;margin:6px 0 4px}.pq-banner{background:#fff9f4;border-left:4px solid #FA8123;padding:5px 8px;border-radius:4px;font-size:12px;line-height:1.5;margin-bottom:6px;color:#292524}.pq-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:6px}table.pq-tbl{width:100%;border-collapse:collapse;font-size:12px;font-family:Arial,Helvetica,"Microsoft JhengHei",sans-serif}table.pq-tbl th,table.pq-tbl td{border:1px solid #e6e2dc !important;padding:4px 6px !important;text-align:right}table.pq-tbl th{background:#f6f4f0 !important;color:#1c1917 !important;font-weight:bold}table.pq-tbl tr:nth-child(even){background:#fcfbf9}</style><div class="pq-wrap">
+
+    <div class="pq-sec">
+      <h2>🧮 量化風險、波動率體制與因子 Alpha 拆解 (ALLO)</h2>
+      <div class="pq-banner">
+        <b>現價：</b> <b>0.84</b> ｜
+        <b>動能 (1D / 5D / 20D / 60D / 1Y / 12-1M)：</b> <span style="color:#cc2929;font-weight:bold">+1.05%</span> / <span style="color:#00994d;font-weight:bold">-19.36%</span> / <span style="color:#00994d;font-weight:bold">-35.98%</span> / <span style="color:#00994d;font-weight:bold">-60.06%</span> / <span style="color:#00994d;font-weight:bold">-30.11%</span> / <span style="color:#cc2929;font-weight:bold">+11.67%</span> ｜
+        <b>200D Volume Profile：</b> POC <b>2.0576</b> (VAH <b>2.4944</b> / VAL <b>1.5965</b>)<br>
+        <b>尾部風險與風險調整指標 (1Y)：</b> 年化波動率 <b>83.67%</b> (GARCH 1D預測 <b>83.99%</b>) ｜
+        Sortino <b>-0.13</b> ｜ Calmar <b>-0.05</b> ｜
+        最大回撤 (MDD) <span style="color:#00994d;font-weight:bold">-72.88%</span> ｜
+        95% VaR / CVaR: <span style="color:#00994d;font-weight:bold">-7.55% / -10.23%</span> ｜
+        <b>Lo-MacKinlay VR(5/10/20)：</b> 0.932(z*=-0.4) / 0.807(z*=-0.88) / 0.626(z*=-1.34)
+        <br><b>今日觸發技術訊號：</b> [BUY]     : 低於買點 | 日週K小於20 ｜ [SELL]    :  ｜ [OTHER]   : 三月KD由上往下 ｜ [MA200-DIFF]: 買點-負乖離極值勾頭
+      </div>
+      <table class="pq-tbl" style="margin-top:8px"><thead><tr><th style="text-align:left">Benchmark</th><th>20D (Stock / Bench)</th><th>20D Rel Excess</th><th>60D Rel Excess</th><th>1Y Rel Excess</th><th>1Y Beta (β)</th><th>R²</th><th>1Y Residual Alpha (α)</th></tr></thead><tbody><tr><td style="text-align:left"><b>^GSPC</b></td><td><span style="color:#00994d;font-weight:bold">-35.98%</span> / <span style="color:#00994d;font-weight:bold">-1.28%</span></td><td><span style="color:#00994d;font-weight:bold">-34.70%</span></td><td><span style="color:#00994d;font-weight:bold">-59.02%</span></td><td><span style="color:#00994d;font-weight:bold">-42.19%</span></td><td><b>1.93</b></td><td>0.10</td><td><span style="color:#00994d;font-weight:bold">-48.13%</span></td></tr><tr><td style="text-align:left"><b>QQQ</b></td><td><span style="color:#00994d;font-weight:bold">-35.98%</span> / <span style="color:#00994d;font-weight:bold">-4.21%</span></td><td><span style="color:#00994d;font-weight:bold">-31.76%</span></td><td><span style="color:#00994d;font-weight:bold">-55.70%</span></td><td><span style="color:#00994d;font-weight:bold">-41.28%</span></td><td><b>1.06</b></td><td>0.07</td><td><span style="color:#00994d;font-weight:bold">-41.62%</span></td></tr><tr><td style="text-align:left"><b>SOXX</b></td><td><span style="color:#00994d;font-weight:bold">-35.98%</span> / <span style="color:#00994d;font-weight:bold">-9.22%</span></td><td><span style="color:#00994d;font-weight:bold">-26.76%</span></td><td><span style="color:#00994d;font-weight:bold">-45.81%</span></td><td><span style="color:#00994d;font-weight:bold">-81.28%</span></td><td><b>0.36</b></td><td>0.05</td><td><span style="color:#00994d;font-weight:bold">-52.28%</span></td></tr></tbody></table>
+    </div>
+    
+</div></div>
+<div class="rp-sec-pane" id="sec-stockdog"><div class="rp-card" align="center"><iframe id="stockdog" src="ALLO_SD.html" frameborder="0" width="100%" height="1000px" scrolling="no"></iframe></div></div>
+<div class="rp-sec-pane" id="sec-finviz"><div class="rp-card"><div align="center"><a href="https://www.marketwatch.com/investing/stock/ALLO/analystestimates" target="_blank"><img style="max-height:100%; max-width:100%; object-fit:contain" src=https://app.quotemedia.com/quotetools/getChart?webmasterId=91386&symbol=ALLO&chtype=FinancialLine&chcon=on&chdon=on&chfrmon=on&chscale=1d&chton=on&chwid=800&chhig=380&chln=ffa500&chfill=ffa500&chfnts=10&chbdr=000000&chbgch=ffffffff&chgrd=cccccc&svg=false&lang=en&locale=en></a></div>
+
+<hr class="rp-divider">
+<table align="center" class="snapshot-table2" align="center" style="width:100%; border-collapse:collapse; font-size:12px; margin:auto;">
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Major index membership"><div class="snapshot-td-label">Index</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">RUT</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price-to-Earnings (ttm)"><div class="snapshot-td-label">P/E</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Diluted EPS (ttm)"><div class="snapshot-td-label">EPS (ttm)</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-0.62</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Insider ownership"><div class="snapshot-td-label">Insider Own</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>25.37%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Shares outstanding"><div class="snapshot-td-label">Shs Outstand</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>346.28M</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Week, Excl. Dividends)"><div class="snapshot-td-label">Perf Week</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-19.36%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Market capitalization"><div class="snapshot-td-label">Market Cap</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>290.58M</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Forward Price-to-Earnings (next fiscal year)"><div class="snapshot-td-label">Forward P/E</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="EPS estimate for next year"><div class="snapshot-td-label">EPS next Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-0.64</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Insider transactions (6-Month change in Insider Ownership)"><div class="snapshot-td-label">Insider Trans</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-0.08%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Shares float"><div class="snapshot-td-label">Shs Float</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>258.56M</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Month, Excl. Dividends)"><div class="snapshot-td-label">Perf Month</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-37.41%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Enterprise Value"><div class="snapshot-td-label">Enterprise Value</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">74.56M</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price-to-Earnings-to-Growth"><div class="snapshot-td-label">PEG</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="EPS estimate for next quarter"><div class="snapshot-td-label">EPS next Q</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-0.16</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Institutional ownership"><div class="snapshot-td-label">Inst Own</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>72.92%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Short interest share"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=ALLO&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank">Short Float</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=ALLO&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank"><b>19.83%</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Quarter, Excl. Dividends)"><div class="snapshot-td-label">Perf Quarter</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-59.68%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Income (ttm)"><div class="snapshot-td-label">Income</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-174.46M</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price-to-Sales (ttm)"><div class="snapshot-td-label">P/S</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">62.63</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="EPS growth this year"><div class="snapshot-td-label">EPS this Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">30.57%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Institutional transactions (3-Month change in Institutional Ownership)"><div class="snapshot-td-label">Inst Trans</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">26.90%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Short interest ratio"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=ALLO&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank">Short Ratio</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=ALLO&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank"><b>7.04</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Half Year, Excl. Dividends)"><div class="snapshot-td-label">Perf Half Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-58.07%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Revenue (ttm)"><div class="snapshot-td-label">Sales</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>4.64M</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price-to-Book (mrq)"><div class="snapshot-td-label">P/B</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">0.74</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="EPS growth next year"><div class="snapshot-td-label">EPS next Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-6.36%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Return on Assets (ttm)"><div class="snapshot-td-label">ROA</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-36.69%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Short interest"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=ALLO&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank">Short Interest</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=ALLO&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank"><b data-boxover-html="Settlement Date: 10/30/2026">51.29M</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Year To Date, Excl. Dividends)"><div class="snapshot-td-label">Perf YTD</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-38.78%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Book value per share (mrq)"><div class="snapshot-td-label">Book/sh</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>1.13</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price to cash per share (mrq)"><div class="snapshot-td-label">P/C</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">0.99</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Long term annual growth estimate (5 years)"><div class="snapshot-td-label">EPS next 5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>12.94%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Return on Equity (ttm)"><div class="snapshot-td-label">ROE</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-49.29%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 52-Week High"><div class="snapshot-td-label">52W High</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>4.46 <small class="text-2xs"><span class="color-text is-negative">-81.20%</span></small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Year, Excl. Dividends)"><div class="snapshot-td-label">Perf Year</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-30.11%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Cash per share (mrq)"><div class="snapshot-td-label">Cash/sh</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.85</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price to Free Cash Flow (ttm)"><div class="snapshot-td-label">P/FCF</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Annual EPS growth past 3 and 5 years"><div class="snapshot-td-label">EPS past 3/5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs"><span class="color-text is-positive">28.61%</span> 16.08%</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Return on Invested Capital (ttm)"><div class="snapshot-td-label">ROIC</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-37.88%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 52-Week Low"><div class="snapshot-td-label">52W Low</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.82 <small class="text-2xs"><span class="color-text is-positive">2.09%</span></small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (3 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 3Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-65.34%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Analysts' Dividend Estimate (Fiscal Year)"><div class="snapshot-td-label">Dividend Est.</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Enterprise Value to EBITDA"><div class="snapshot-td-label">EV/EBITDA</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Annual sales growth past 3 and 5 years"><div class="snapshot-td-label">Sales past 3/5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">- -</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Gross Margin (ttm)"><div class="snapshot-td-label">Gross Margin</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-140.45%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Volatility (Week, Month)"><div class="snapshot-td-label">Volatility</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">12.08% 8.76%</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (5 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-95.65%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Trailing 12 Months Dividend"><div class="snapshot-td-label">Dividend TTM</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Enterprise Value to Revenues"><div class="snapshot-td-label">EV/Sales</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">16.07</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="EPS growth TTM"><div class="snapshot-td-label">EPS Y/Y TTM</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">36.37%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Operating Margin (ttm)"><div class="snapshot-td-label">Oper. Margin</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-4099.33%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Average True Range (14)"><div class="snapshot-td-label">ATR (14)</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.10</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (10 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 10Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Ex-Dividend Date"><div class="snapshot-td-label">Dividend Ex-Date</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Quick Ratio (mrq)"><div class="snapshot-td-label">Quick Ratio</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">7.79</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Sales growth TTM"><div class="snapshot-td-label">Sales Y/Y TTM</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-100.00%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Net Profit Margin (ttm)"><div class="snapshot-td-label">Profit Margin</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-3759.98%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Relative Strength Index"><div class="snapshot-td-label">RSI (14)</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">23.48</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Analysts' mean recommendation (1=Buy 5=Sell)"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=ALLO&amp;ta=1&amp;p=d&amp;ty=fc" class="hover:underline" target="_blank">Recom</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=ALLO&amp;ta=1&amp;p=d&amp;ty=fc" class="hover:underline" target="_blank"><b><span class="color-text is-positive">1.27</span></b></a></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Dividend growth over 3 and 5 years"><div class="snapshot-td-label">Dividend Gr. 3/5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">- -</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Current Ratio (mrq)"><div class="snapshot-td-label">Current Ratio</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">7.79</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Quarterly earnings growth (YoY)"><div class="snapshot-td-label">EPS Q/Q</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>21.94%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 20-Day Simple Moving Average"><div class="snapshot-td-label">SMA20</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-26.16%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Beta"><div class="snapshot-td-label">Beta</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.80</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Analysts' mean target price"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=ALLO&amp;ta=1&amp;p=d&amp;ty=fc" class="hover:underline" target="_blank">Target Price</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=ALLO&amp;ta=1&amp;p=d&amp;ty=fc" class="hover:underline" target="_blank"><b><span class="color-text is-positive">8.75</span></b></a></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Dividend Payout Ratio (ttm)"><div class="snapshot-td-label">Payout</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Total Debt to Equity (mrq)"><div class="snapshot-td-label">Debt/Eq</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.20</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Quarterly revenue growth (YoY)"><div class="snapshot-td-label">Sales Q/Q</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 50-Day Simple Moving Average"><div class="snapshot-td-label">SMA50</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-40.60%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Relative volume"><div class="snapshot-td-label">Rel Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>1.59</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Previous close"><div class="snapshot-td-label">Prev Close</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.83</b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Full time employees"><div class="snapshot-td-label">Employees</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>152</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Long Term Debt to Equity (mrq)"><div class="snapshot-td-label">LT Debt/Eq</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.17</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Earnings date&lt;br&gt;&lt;br&gt;BMO = Before Market Open&lt;br&gt;AMC = After Market Close"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=ALLO&amp;ta=1&amp;p=d&amp;ty=ea" class="hover:underline" target="_blank">Earnings</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=ALLO&amp;ta=1&amp;p=d&amp;ty=ea" class="hover:underline" target="_blank"><b><small class="text-2xs">Nov 05 AMC</small></b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 200-Day Simple Moving Average"><div class="snapshot-td-label">SMA200</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-57.00%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Average volume (3 month)"><div class="snapshot-td-label">Avg Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>7.28M</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Current stock price"><div class="snapshot-td-label">Price</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.84</b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="IPO Date"><div class="snapshot-td-label">IPO</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>Oct 11, 2018</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Stock has options trading on a market exchange / Stock is available to sell short"><div class="snapshot-td-label">Option/Short</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">Yes / Yes</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Last quarter EPS and Revenue surprise"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=ALLO&amp;ta=1&amp;p=d&amp;ty=ea" class="hover:underline" target="_blank">EPS/Sales Surpr.</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=ALLO&amp;ta=1&amp;p=d&amp;ty=ea" class="hover:underline" target="_blank"><b><small class="text-2xs"><span class="color-text is-negative">-2.32%</span> <span class="color-text is-negative">-100.00%</span></small></b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Trades"><div class="snapshot-td-label">Trades</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Volume"><div class="snapshot-td-label">Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>11,558,613</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (today)"><div class="snapshot-td-label">Change %</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">1.41%</span></b></div></td>
+</tr>
+</table>
+
+
+<hr class="rp-divider">
+<table align="center" class="styled-table-new is-rounded is-small w-full" cellpadding="0" cellspacing="0">
+  <thead>
+    <tr>
+      <th align="left" class="whitespace-nowrap">Date</th>
+      <th align="left" class="whitespace-nowrap">Action</th>
+      <th align="left" class="whitespace-nowrap">Analyst</th>
+      <th align="left" class="whitespace-nowrap">Rating Change</th>
+      <th align="left" class="whitespace-nowrap">Price Target Change</th>
+      <th align="left" class="whitespace-nowrap">Implied Upside</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Apr 16, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/JPM.svg&quot;)"><img src="https://logo.finviz.com/JPM.svg" alt="JPM logo" crossorigin="anonymous"/><span>J</span></span>JP Morgan</div>
+      </td>
+      <td class="text-left color-text is-positive">Underweight → Neutral</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no"/>
+      <td class="whitespace-nowrap"/>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Apr 10, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Resumed</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/JEF.svg&quot;)"><img src="https://logo.finviz.com/JEF.svg" alt="JEF logo" crossorigin="anonymous"/><span>J</span></span>Jefferies</div>
+      </td>
+      <td class="text-left">Buy</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$6</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+615.4%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Jan 09, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>C</span></span>Citizens JMP</div>
+      </td>
+      <td class="text-left color-text is-positive">Mkt Perform → Mkt Outperform</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no">$5</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+496.2%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Oct 10, 2025</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/JPM.svg&quot;)"><img src="https://logo.finviz.com/JPM.svg" alt="JPM logo" crossorigin="anonymous"/><span>J</span></span>JP Morgan</div>
+      </td>
+      <td class="text-left color-text is-negative">Neutral → Underweight</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no"/>
+      <td class="whitespace-nowrap"/>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">May 14, 2025</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>C</span></span>Citizens JMP</div>
+      </td>
+      <td class="text-left color-text is-negative">Mkt Outperform → Mkt Perform</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no"/>
+      <td class="whitespace-nowrap"/>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Mar 14, 2025</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>C</span></span>Citizens JMP</div>
+      </td>
+      <td class="text-left color-text is-positive">Mkt Perform → Mkt Outperform</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no">$5</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+496.2%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Aug 08, 2024</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Resumed</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/OPY.svg&quot;)"><img src="https://logo.finviz.com/OPY.svg" alt="OPY logo" crossorigin="anonymous"/><span>O</span></span>Oppenheimer</div>
+      </td>
+      <td class="text-left">Outperform</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$13 → $11</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+1,211.6%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">May 31, 2024</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Initiated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>P</span></span>Piper Sandler</div>
+      </td>
+      <td class="text-left">Overweight</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$11</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+1,211.6%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Jan 05, 2024</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>J</span></span>JMP Securities</div>
+      </td>
+      <td class="text-left color-text is-negative">Mkt Outperform → Mkt Perform</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no"/>
+      <td class="whitespace-nowrap"/>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text is-last">
+      <td class="whitespace-nowrap">Jan 05, 2024</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>G</span></span>Guggenheim</div>
+      </td>
+      <td class="text-left color-text is-negative">Buy → Neutral</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no"/>
+      <td class="whitespace-nowrap"/>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Dec 08, 2023</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Initiated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/C.svg&quot;)"><img src="https://logo.finviz.com/C.svg" alt="C logo" crossorigin="anonymous"/><span>C</span></span>Citigroup</div>
+      </td>
+      <td class="text-left">Buy</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$7</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+734.6%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Dec 08, 2023</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Initiated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/C.svg&quot;)"><img src="https://logo.finviz.com/C.svg" alt="C logo" crossorigin="anonymous"/><span>C</span></span>Citigroup</div>
+      </td>
+      <td class="text-left">Buy</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no"/>
+      <td class="whitespace-nowrap"/>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Jun 26, 2023</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Resumed</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/OPY.svg&quot;)"><img src="https://logo.finviz.com/OPY.svg" alt="OPY logo" crossorigin="anonymous"/><span>O</span></span>Oppenheimer</div>
+      </td>
+      <td class="text-left">Outperform</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$28</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+3,238.5%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Mar 21, 2023</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Initiated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>B</span></span>Bernstein</div>
+      </td>
+      <td class="text-left">Mkt Perform</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$6</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+615.4%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Jan 24, 2023</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/JPM.svg&quot;)"><img src="https://logo.finviz.com/JPM.svg" alt="JPM logo" crossorigin="anonymous"/><span>J</span></span>JP Morgan</div>
+      </td>
+      <td class="text-left color-text is-positive">Neutral → Overweight</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no">$20 → $11</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+1,211.6%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Jan 06, 2023</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>R</span></span>Robert W. Baird</div>
+      </td>
+      <td class="text-left color-text is-positive">Neutral → Outperform</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no">$12</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+1,330.8%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Dec 12, 2022</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/BAC.svg&quot;)"><img src="https://logo.finviz.com/BAC.svg" alt="BAC logo" crossorigin="anonymous"/><span>B</span></span>BofA Securities</div>
+      </td>
+      <td class="text-left color-text is-negative">Buy → Underperform</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no">$24 → $9</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+973.1%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Aug 10, 2022</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/RJF.svg&quot;)"><img src="https://logo.finviz.com/RJF.svg" alt="RJF logo" crossorigin="anonymous"/><span>R</span></span>Raymond James</div>
+      </td>
+      <td class="text-left color-text is-negative">Outperform → Mkt Perform</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no"/>
+      <td class="whitespace-nowrap"/>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Jul 15, 2022</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/GS.svg&quot;)"><img src="https://logo.finviz.com/GS.svg" alt="GS logo" crossorigin="anonymous"/><span>G</span></span>Goldman</div>
+      </td>
+      <td class="text-left color-text is-positive">Neutral → Buy</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no">$9 → $32</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+3,715.4%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Jun 03, 2022</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Initiated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>R</span></span>Robert W. Baird</div>
+      </td>
+      <td class="text-left">Neutral</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$11</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+1,211.6%</span>
+        </span>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<hr class="rp-divider">
+<table align="center" cellpadding="0" cellspacing="0" align="center" width="70%" class="body-table styled-table-new is-rounded p-0 mt-2">
+<thead>
+<tr>
+<th align="left">Insider Trading</th>
+<th align="left">Relationship</th>
+<th align="left">Date</th>
+<th align="center">Transaction</th>
+<th align="right">Cost</th>
+<th align="right">#Shares</th>
+<th align="right">Value ($)</th>
+<th align="right">#Shares Total</th>
+<th align="center">SEC Form 4</th>
+</tr>
+</thead>
+<tr class="fv-insider-row is-sale-1" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1491874&amp;tc=7" class="tab-link" target="_blank">Parker Geoffrey M.</a></td><td style="white-space:nowrap">CHIEF FINANCIAL OFFICER</td><td>Oct 21 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1.34</td><td class="value" align="right">36,342</td><td class="value" align="right">48,698</td><td class="value" align="right">1,045,877</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1491874/000149187426000005/xslF345X06/wk-form4_1792788493.xml" class="tab-link" target="_blank">Oct 23 04:48 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-1" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1491874&amp;tc=7" class="tab-link" target="_blank">Parker Geoffrey M.</a></td><td style="white-space:nowrap">Officer</td><td>Oct 21 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">1.34</td><td class="value" align="right">36,342</td><td class="value" align="right">48,698</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1491874/000149187426000003/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Oct 21 07:48 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1362155&amp;tc=7" class="tab-link" target="_blank">Douglas Earl Martin</a></td><td style="white-space:nowrap">SVP, General Counsel</td><td>Aug 21 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">2.12</td><td class="value" align="right">29,697</td><td class="value" align="right">62,958</td><td class="value" align="right">488,267</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1362155/000162828026058920/xslF345X06/wk-form4_1787690594.xml" class="tab-link" target="_blank">Aug 25 04:43 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-1" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1362155&amp;tc=7" class="tab-link" target="_blank">Douglas Earl Martin</a></td><td style="white-space:nowrap">Officer</td><td>Aug 21 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">2.12</td><td class="value" align="right">29,697</td><td class="value" align="right">62,958</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1362155/000173728726000023/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Aug 21 07:26 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1221355&amp;tc=7" class="tab-link" target="_blank">Kazam Joshua A</a></td><td style="white-space:nowrap">Director</td><td>Jun 18 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">47,700</td><td class="value" align="right">0</td><td class="value" align="right">398,463</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1221355/000122135526000002/xslF345X06/wk-form4_1782246909.xml" class="tab-link" target="_blank">Jun 23 04:35 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1835208&amp;tc=7" class="tab-link" target="_blank">Yoshiyama Annie</a></td><td style="white-space:nowrap">SVP, Finance</td><td>Apr 21 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">2.31</td><td class="value" align="right">9,586</td><td class="value" align="right">22,144</td><td class="value" align="right">124,517</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1737287/000183520826000003/xslF345X06/wk-form4_1776975369.xml" class="tab-link" target="_blank">Apr 23 04:16 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-1" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1835208&amp;tc=7" class="tab-link" target="_blank">Yoshiyama Annie</a></td><td style="white-space:nowrap">Officer</td><td>Apr 21 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">2.31</td><td class="value" align="right">9,586</td><td class="value" align="right">22,103</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1737287/000183520826000001/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Apr 21 08:22 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="https://finviz.com/insidertrading?oc=2057918&amp;tc=7" class="tab-link" target="_blank">Beneski Benjamin Machinas</a></td><td style="white-space:nowrap">SVP, Chief Technical Officer</td><td>Mar 31 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">2.50</td><td class="value" align="right">2,867</td><td class="value" align="right">7,168</td><td class="value" align="right">195,338</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1737287/000205791826000007/xslF345X06/wk-form4_1775162856.xml" class="tab-link" target="_blank">Apr 02 04:47 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-1" valign="top"><td><a href="https://finviz.com/insidertrading?oc=2057918&amp;tc=7" class="tab-link" target="_blank">Beneski Benjamin Machinas</a></td><td style="white-space:nowrap">Officer</td><td>Apr 01 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">2.50</td><td class="value" align="right">2,867</td><td class="value" align="right">7,168</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1737287/000205791826000005/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Apr 01 07:13 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="https://finviz.com/insidertrading?oc=2057918&amp;tc=7" class="tab-link" target="_blank">Beneski Benjamin Machinas</a></td><td style="white-space:nowrap">SVP, Chief Technical Officer</td><td>Mar 16 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">2.47</td><td class="value" align="right">4,835</td><td class="value" align="right">11,942</td><td class="value" align="right">198,205</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1737287/000173728726000015/xslF345X06/wk-form4_1773864406.xml" class="tab-link" target="_blank">Mar 18 04:06 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1611024&amp;tc=7" class="tab-link" target="_blank">Chang David D</a></td><td style="white-space:nowrap">President and CEO</td><td>Mar 16 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">2.47</td><td class="value" align="right">47,763</td><td class="value" align="right">117,975</td><td class="value" align="right">5,150,599</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1611024/000173728726000013/xslF345X06/wk-form4_1773864344.xml" class="tab-link" target="_blank">Mar 18 04:05 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-1" valign="top"><td><a href="https://finviz.com/insidertrading?oc=2057918&amp;tc=7" class="tab-link" target="_blank">Beneski Benjamin Machinas</a></td><td style="white-space:nowrap">Officer</td><td>Mar 16 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">2.47</td><td class="value" align="right">4,835</td><td class="value" align="right">11,928</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1737287/000205791826000004/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Mar 16 08:20 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1611024&amp;tc=7" class="tab-link" target="_blank">Chang David D</a></td><td style="white-space:nowrap">Officer</td><td>Mar 16 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">2.47</td><td class="value" align="right">47,763</td><td class="value" align="right">117,827</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1611024/000161102426000003/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Mar 16 08:05 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="https://finviz.com/insidertrading?oc=2057918&amp;tc=7" class="tab-link" target="_blank">Beneski Benjamin Machinas</a></td><td style="white-space:nowrap">SVP, Chief Technical Officer</td><td>Mar 02 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">2.60</td><td class="value" align="right">7,132</td><td class="value" align="right">18,543</td><td class="value" align="right">203,040</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1737287/000205791826000003/xslF345X05/wk-form4_1772664133.xml" class="tab-link" target="_blank">Mar 04 05:42 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-1" valign="top"><td><a href="https://finviz.com/insidertrading?oc=2057918&amp;tc=7" class="tab-link" target="_blank">Beneski Benjamin Machinas</a></td><td style="white-space:nowrap">Officer</td><td>Mar 02 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">2.60</td><td class="value" align="right">7,132</td><td class="value" align="right">18,541</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1737287/000205791826000001/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Mar 02 09:04 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="https://finviz.com/insidertrading?oc=2057918&amp;tc=7" class="tab-link" target="_blank">Beneski Benjamin Machinas</a></td><td style="white-space:nowrap">SVP, Chief Technical Officer</td><td>Feb 02 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1.73</td><td class="value" align="right">7,549</td><td class="value" align="right">13,060</td><td class="value" align="right">210,172</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1737287/000173728726000011/xslF345X05/wk-form4_1770243619.xml" class="tab-link" target="_blank">Feb 04 05:20 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1611024&amp;tc=7" class="tab-link" target="_blank">Chang David D</a></td><td style="white-space:nowrap">President and CEO</td><td>Feb 02 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1.80</td><td class="value" align="right">95,269</td><td class="value" align="right">171,484</td><td class="value" align="right">5,185,862</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1611024/000173728726000009/xslF345X05/wk-form4_1770243495.xml" class="tab-link" target="_blank">Feb 04 05:18 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1491874&amp;tc=7" class="tab-link" target="_blank">Parker Geoffrey M.</a></td><td style="white-space:nowrap">CHIEF FINANCIAL OFFICER</td><td>Feb 02 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1.76</td><td class="value" align="right">24,001</td><td class="value" align="right">42,242</td><td class="value" align="right">1,252,795</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1491874/000173728726000007/xslF345X05/wk-form4_1770243376.xml" class="tab-link" target="_blank">Feb 04 05:16 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1362155&amp;tc=7" class="tab-link" target="_blank">Douglas Earl Martin</a></td><td style="white-space:nowrap">SVP, General Counsel</td><td>Feb 02 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1.76</td><td class="value" align="right">22,900</td><td class="value" align="right">40,304</td><td class="value" align="right">564,948</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1362155/000136215526000002/xslF345X05/wk-form4_1770243135.xml" class="tab-link" target="_blank">Feb 04 05:12 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1835208&amp;tc=7" class="tab-link" target="_blank">Yoshiyama Annie</a></td><td style="white-space:nowrap">SVP, Finance</td><td>Feb 02 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1.72</td><td class="value" align="right">4,167</td><td class="value" align="right">7,167</td><td class="value" align="right">130,322</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1737287/000173728726000005/xslF345X05/wk-form4_1770242977.xml" class="tab-link" target="_blank">Feb 04 05:09 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1851044&amp;tc=7" class="tab-link" target="_blank">Roberts Zachary</a></td><td style="white-space:nowrap">EVP of R&amp;D</td><td>Feb 02 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1.77</td><td class="value" align="right">35,700</td><td class="value" align="right">63,189</td><td class="value" align="right">581,166</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1737287/000173728726000002/xslF345X05/wk-form4_1770242855.xml" class="tab-link" target="_blank">Feb 04 05:07 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-1" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1362155&amp;tc=7" class="tab-link" target="_blank">EARL DOUGLAS</a></td><td style="white-space:nowrap">Officer</td><td>Feb 02 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">1.76</td><td class="value" align="right">22,900</td><td class="value" align="right">40,215</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1362155/000195004726000851/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Feb 02 05:17 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-1" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1491874&amp;tc=7" class="tab-link" target="_blank">GEOFFREY M PARKER</a></td><td style="white-space:nowrap">Officer</td><td>Feb 02 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">1.76</td><td class="value" align="right">24,001</td><td class="value" align="right">42,189</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1491874/000195004726000850/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Feb 02 05:16 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-1" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1851044&amp;tc=7" class="tab-link" target="_blank">ZACHARY J ROBERTS</a></td><td style="white-space:nowrap">Officer</td><td>Feb 02 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">1.77</td><td class="value" align="right">35,700</td><td class="value" align="right">63,353</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1737287/000195004726000849/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Feb 02 05:16 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-1" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1835208&amp;tc=7" class="tab-link" target="_blank">ANNIE T YOSHIYAMA</a></td><td style="white-space:nowrap">Officer</td><td>Feb 02 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">1.72</td><td class="value" align="right">4,167</td><td class="value" align="right">7,178</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1737287/000195004726000848/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Feb 02 05:15 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1611024&amp;tc=7" class="tab-link" target="_blank">DAVID CHANG</a></td><td style="white-space:nowrap">Officer</td><td>Feb 02 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">1.80</td><td class="value" align="right">243,976</td><td class="value" align="right">438,522</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1611024/000195004726000843/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Feb 02 04:51 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-1" valign="top"><td><a href="https://finviz.com/insidertrading?oc=2057918&amp;tc=7" class="tab-link" target="_blank">BENJAMIN M BENESKI</a></td><td style="white-space:nowrap">Officer</td><td>Feb 02 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">1.73</td><td class="value" align="right">16,823</td><td class="value" align="right">29,052</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1737287/000195004726000842/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Feb 02 04:49 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1851044&amp;tc=7" class="tab-link" target="_blank">Roberts Zachary</a></td><td style="white-space:nowrap">EVP of R&amp;D</td><td>Jan 21 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1.56</td><td class="value" align="right">26,269</td><td class="value" align="right">40,980</td><td class="value" align="right">616,866</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1737287/000185104426000003/xslF345X05/wk-form4_1769202908.xml" class="tab-link" target="_blank">Jan 23 04:15 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-1" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1851044&amp;tc=7" class="tab-link" target="_blank">Roberts Zachary</a></td><td style="white-space:nowrap">Officer</td><td>Jan 21 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">1.56</td><td class="value" align="right">26,269</td><td class="value" align="right">40,929</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1737287/000185104426000001/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Jan 21 07:53 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1221355&amp;tc=7" class="tab-link" target="_blank">Kazam Joshua A</a></td><td style="white-space:nowrap">Director</td><td>Dec 18 '25</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">47,700</td><td class="value" align="right">0</td><td class="value" align="right">350,763</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1221355/000122135525000005/xslF345X05/wk-form4_1766447828.xml" class="tab-link" target="_blank">Dec 22 06:57 PM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="https://finviz.com/insidertrading?oc=2057918&amp;tc=7" class="tab-link" target="_blank">Beneski Benjamin Machinas</a></td><td style="white-space:nowrap">SVP, Chief Technical Officer</td><td>Nov 17 '25</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">1.22</td><td class="value" align="right">786</td><td class="value" align="right">959</td><td class="value" align="right">217,721</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1737287/000173728725000094/xslF345X05/wk-form4_1763586562.xml" class="tab-link" target="_blank">Nov 19 04:09 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-1" valign="top"><td><a href="https://finviz.com/insidertrading?oc=2057918&amp;tc=7" class="tab-link" target="_blank">Beneski Benjamin Machinas</a></td><td style="white-space:nowrap">Officer</td><td>Nov 17 '25</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">1.22</td><td class="value" align="right">786</td><td class="value" align="right">959</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1737287/000205791825000002/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Nov 17 07:14 PM</a></td></tr></table>
+
+
+
+<hr class="rp-divider">
+<div class="body-table-news-wrapper news-table_wrapper is-collapsed"><table align="center" align="center" width="70%" cellpadding="1" cellspacing="0" border="0" id="news-table" class="fullview-news-outer news-table" data-ticker="ALLO">
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Nov-09-26 08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/419005/allogene-therapeutics-reports-first-clinical-data-from-phase-1-resolution-study-of-allo-329-in-autoimmune-disease" target="_blank">&#13;
+                        Allogene Therapeutics Reports First Clinical Data from Phase 1 RESOLUTION Study of ALLO-329 in Autoimmune Disease&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Nov-05-26 09:12PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/418102/allogene-misses-on-a-wider-loss-as-alpha3-enrollment-accelerates-but-interim-data-expectations-cool" target="_blank">&#13;
+                        Allogene Misses On A Wider Loss As ALPHA3 Enrollment Accelerates But Interim-Data Expectations Cool&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Earnings Whispers)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">&#13;
+         -8.40%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/healthcare/articles/allogene-therapeutics-q3-earnings-snapshot-213347381.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            04:33PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/healthcare/articles/allogene-therapeutics-q3-earnings-snapshot-213347381.html" target="_blank" rel="nofollow">&#13;
+                        Allogene Therapeutics: Q3 Earnings Snapshot&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Associated Press)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            04:02PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/417604/allogene-therapeutics-reports-third-quarter-2026-financial-results-and-business-update" target="_blank">&#13;
+                        Allogene Therapeutics Reports Third Quarter 2026 Financial Results and Business Update&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Nov-03-26 08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/414174/allogene-highlights-clinical-progress-and-next-generation-innovation-across-its-off-the-shelf-car-t-platform-at-sitc-annual-meeting" target="_blank">&#13;
+                        Allogene Highlights Clinical Progress and Next-Generation Innovation Across Its Off-the-Shelf CAR T Platform at SITC Annual Meeting&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Oct-29-26 12:02PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/411818/allogenes-39-slide-puts-cash-runway-and-alpha-3-execution-under-the-microscope" target="_blank">&#13;
+                        Allogene's 39% Slide Puts Cash Runway And Alpha-3 Execution Under The Microscope&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Earnings Whispers)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/411524/allogene-therapeutics-announces-november-investor-events-highlighting-q3-results-and-initial-allo-329-autoimmune-clinical-data" target="_blank">&#13;
+                        Allogene Therapeutics Announces November Investor Events Highlighting Q3 Results and Initial ALLO-329 Autoimmune Clinical Data&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Oct-26-26 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/407704/allogene-therapeutics-announces-participation-in-upcoming-investor-conferences" target="_blank">&#13;
+                        Allogene Therapeutics Announces Participation in Upcoming Investor Conferences&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/healthcare/articles/clls-stock-heads-14-month-111144679.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-15-26 07:11AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/healthcare/articles/clls-stock-heads-14-month-111144679.html" target="_blank" rel="nofollow">&#13;
+                        CLLS Stock Heads For 14-Month Low After 40% Rout: Citizens Flags Delayed Cellectis Catalysts After Cancer Pipeline Pivot&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/healthcare/articles/autoimmune-car-t-faces-tough-123200550.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-02-26 08:32AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/healthcare/articles/autoimmune-car-t-faces-tough-123200550.html" target="_blank" rel="nofollow">&#13;
+                        Autoimmune CAR-T faces tough questions after Novartis, Bristol Myers study halts&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(BioPharma Dive)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/388047/allogene-therapeutics-announces-retirement-of-chief-financial-officer-geoffrey-parker" target="_blank">&#13;
+                        Allogene Therapeutics Announces Retirement of Chief Financial Officer Geoffrey Parker&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Aug-31-26 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/386901/allogene-therapeutics-announces-participation-in-september-investor-conference" target="_blank">&#13;
+                        Allogene Therapeutics Announces Participation in September Investor Conference&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/healthcare/articles/allogene-therapeutics-inc-allo-q2-050122847.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-13-26 01:01AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/healthcare/articles/allogene-therapeutics-inc-allo-q2-050122847.html" target="_blank" rel="nofollow">&#13;
+                        Allogene Therapeutics Inc (ALLO) (Q2 2026) Earnings Call Highlights: RMAT Designation and Rapid ...&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/healthcare/articles/allogene-therapeutics-q2-earnings-snapshot-201205230.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-12-26 04:12PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/healthcare/articles/allogene-therapeutics-q2-earnings-snapshot-201205230.html" target="_blank" rel="nofollow">&#13;
+                        Allogene Therapeutics: Q2 Earnings Snapshot&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Associated Press)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            04:05PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/381354/allogene-therapeutics-reports-second-quarter-2026-financial-results-and-business-update" target="_blank">&#13;
+                        Allogene Therapeutics Reports Second Quarter 2026 Financial Results and Business Update&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/healthcare/articles/allogene-therapeutics-inc-allo-q2-132012829.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-11-26 09:20AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/healthcare/articles/allogene-therapeutics-inc-allo-q2-132012829.html" target="_blank" rel="nofollow">&#13;
+                        Allogene Therapeutics Inc (ALLO) Q2 2026 Earnings Report Preview: What To Look For&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Aug-04-26 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/376746/allogene-therapeutics-to-report-second-quarter-2026-financial-results-and-provide-business-update" target="_blank">&#13;
+                        Allogene Therapeutics to Report Second Quarter 2026 Financial Results and Provide Business Update&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Jul-29-26 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/374158/allogene-therapeutics-receives-fda-regenerative-medicine-advanced-therapy-rmat-designation-for-cemacabtagene-ansegedleucel-cema-cel-as-first-line-consolidation-therapy-for-large-b-cell-lymphoma" target="_blank">&#13;
+                        Allogene Therapeutics Receives FDA Regenerative Medicine Advanced Therapy (RMAT) Designation for Cemacabtagene Ansegedleucel (Cema-Cel) as First-Line Consolidation Therapy for Large B-Cell Lymphoma&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">&#13;
+         +9.04%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Jul-15-26 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/368466/allogene-therapeutics-announces-journal-of-clinical-oncology-publication-of-phase-1-results-of-allo-316-highlighting-first-durable-remissions-following-allogeneic-car-t-for-treatment-of-metastatic-solid-tumors" target="_blank">&#13;
+                        Allogene Therapeutics Announces Journal of Clinical Oncology Publication of Phase 1 Results of ALLO-316 Highlighting First Durable Remissions Following Allogeneic CAR T for Treatment of Metastatic Solid Tumors&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/2b2259ee-8129-3d6e-8054-c7d9ae1a27a0/imviva-biotech-granted-fda.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jun-30-26 04:10PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/2b2259ee-8129-3d6e-8054-c7d9ae1a27a0/imviva-biotech-granted-fda.html" target="_blank" rel="nofollow">&#13;
+                        Imviva Biotech Granted FDA IDE Authorization for Cancer Treatment Trial&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Exec Edge)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">&#13;
+         -6.31%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/dd66aabe-fb65-36fd-8cbe-f8f8e4c00268/fda-clears-imviva%E2%80%99s.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jun-09-26 05:19PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/dd66aabe-fb65-36fd-8cbe-f8f8e4c00268/fda-clears-imviva%E2%80%99s.html" target="_blank" rel="nofollow">&#13;
+                        FDA Clears Imvivas Dual-Target CAR-T for Autoimmune Diseases&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Exec Edge)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            May-28-26 05:02PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/358018/allogene-therapeutics-announces-planned-ceo-succession" target="_blank">&#13;
+                        Allogene Therapeutics Announces Planned CEO Succession&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            May-26-26 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/356949/allogene-therapeutics-announces-participation-in-upcoming-investor-conferences" target="_blank">&#13;
+                        Allogene Therapeutics Announces Participation in Upcoming Investor Conferences&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">&#13;
+         +6.00%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/sectors/healthcare/articles/allogene-therapeutics-inc-allo-q1-050051543.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            May-14-26 01:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/sectors/healthcare/articles/allogene-therapeutics-inc-allo-q1-050051543.html" target="_blank" rel="nofollow">&#13;
+                        Allogene Therapeutics Inc (ALLO) Q1 2026 Earnings Call Highlights: Promising Trial Results and ...&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">&#13;
+         -8.15%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/allogene-therapeutics-q1-earnings-snapshot-200820312.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            May-13-26 04:08PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/allogene-therapeutics-q1-earnings-snapshot-200820312.html" target="_blank" rel="nofollow">&#13;
+                        Allogene Therapeutics: Q1 Earnings Snapshot&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Associated Press)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            04:02PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/354058/allogene-therapeutics-reports-first-quarter-2026-financial-results-and-business-update" target="_blank">&#13;
+                        Allogene Therapeutics Reports First Quarter 2026 Financial Results and Business Update&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            May-06-26 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/351328/allogene-therapeutics-to-report-first-quarter-financial-results-and-provide-business-update" target="_blank">&#13;
+                        Allogene Therapeutics to Report First Quarter Financial Results and Provide Business Update&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">&#13;
+         +6.45%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Apr-21-26 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/346175/allogene-therapeutics-expands-pivotal-phase-2-alpha3-trial-to-south-korea-and-australia" target="_blank">&#13;
+                        Allogene Therapeutics Expands Pivotal Phase 2 ALPHA3 Trial to South Korea and Australia&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Apr-20-26 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/345785/allogene-therapeutics-showcases-momentum-with-clinical-and-platform-advancements-in-allogeneic-car-t-at-aacr-2026" target="_blank">&#13;
+                        Allogene Therapeutics Showcases Momentum with Clinical and Platform Advancements in Allogeneic CAR T at AACR 2026&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Apr-16-26 04:01PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/345325/allogene-therapeutics-announces-closing-of-2004-million-public-offering-of-common-stock" target="_blank">&#13;
+                        Allogene Therapeutics Announces Closing of $200.4 Million Public Offering of Common Stock&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">&#13;
+         +9.22%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/bc-most-active-stocks-143025195.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Apr-15-26 10:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/bc-most-active-stocks-143025195.html" target="_blank" rel="nofollow">&#13;
+                        BC-Most Active Stocks&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Associated Press)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/344778/allogene-therapeutics-announces-nature-communications-publication-highlighting-pre-clinical-data-for-allo-329-a-next-generation-dual-targeted-cd19cd70-allogeneic-car-t-for-autoimmune-diseases" target="_blank">&#13;
+                        Allogene Therapeutics Announces Nature Communications Publication Highlighting Pre-Clinical Data for ALLO-329, a Next Generation Dual-Targeted CD19/CD70 Allogeneic CAR T for Autoimmune Diseases&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Apr-14-26 09:50PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/344620/allogene-therapeutics-announces-pricing-of-public-offering-of-common-stock" target="_blank">&#13;
+                        Allogene Therapeutics Announces Pricing of Public Offering of Common Stock&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">&#13;
+         -25.49%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Apr-13-26 04:01PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/344172/allogene-therapeutics-announces-proposed-public-offering-of-175-million-of-common-stock" target="_blank">&#13;
+                        Allogene Therapeutics Announces Proposed Public Offering of $175 Million of Common Stock&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">&#13;
+         +12.50%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/bc-most-active-stocks-143018936.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            10:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/bc-most-active-stocks-143018936.html" target="_blank" rel="nofollow">&#13;
+                        BC-Most Active Stocks&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Associated Press)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.businesswire.com/news/home/20260413928881/en/', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20260413928881/en/" target="_blank" rel="nofollow">&#13;
+                        Natera Highlights Positive Interim Futility Analysis from Allogene Therapeutics MRD-Guided ALPHA3 Trial in Large B-Cell Lymphoma&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Business Wire)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            07:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/343988/allogene-therapeutics-reports-interim-futility-analysis-from-pivotal-alpha3-trial-showing-583-mrd-clearance-with-cemacabtagene-ansegedleucel-cema-cel-vs-167-in-observation-arm-in-first-line-consolidation-lbcl" target="_blank">&#13;
+                        Allogene Therapeutics Reports Interim Futility Analysis from Pivotal ALPHA3 Trial Showing 58.3% MRD Clearance with Cemacabtagene Ansegedleucel (Cema-Cel) vs. 16.7% in Observation Arm in First-Line Consolidation LBCL&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Apr-10-26 04:02PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/343872/allogene-therapeutics-to-announce-interim-futility-analysis-data-from-its-pivotal-phase-2-alpha3-trial-with-cemacabtagene-ansegedleucel-cema-cel-in-first-line-consolidation-lbcl-on-monday-april-13-2026" target="_blank">&#13;
+                        Allogene Therapeutics to Announce Interim Futility Analysis Data from its Pivotal Phase 2 ALPHA3 Trial with Cemacabtagene Ansegedleucel (Cema-Cel) in First-Line Consolidation LBCL on Monday, April 13, 2026&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">&#13;
+         -6.53%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/allogene-therapeutics-inc-allo-q4-030320432.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-12-26 11:03PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/allogene-therapeutics-inc-allo-q4-030320432.html" target="_blank" rel="nofollow">&#13;
+                        Allogene Therapeutics Inc (ALLO) Q4 2025 Earnings Call Highlights: Financial Stability and ...&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">&#13;
+         -6.08%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/allogene-therapeutics-q4-earnings-snapshot-201324345.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            04:13PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/allogene-therapeutics-q4-earnings-snapshot-201324345.html" target="_blank" rel="nofollow">&#13;
+                        Allogene Therapeutics: Q4 Earnings Snapshot&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Associated Press Finance)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            04:02PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/337001/allogene-therapeutics-reports-fourth-quarter-and-full-year-2025-financial-results-and-business-update" target="_blank">&#13;
+                        Allogene Therapeutics Reports Fourth Quarter and Full Year 2025 Financial Results and Business Update&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Mar-09-26 09:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/333729/take-the-zacks-approach-to-beat-the-markets-starbucks-amgen-allogene-in-focus" target="_blank">&#13;
+                        Take the Zacks Approach to Beat the Markets: Starbucks, Amgen, Allogene in Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">&#13;
+         +8.70%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/242dd828-807c-3710-9503-7123341a7a95/allogene-therapeutics-teases.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Mar-03-26 10:34PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/242dd828-807c-3710-9503-7123341a7a95/allogene-therapeutics-teases.html" target="_blank" rel="nofollow">&#13;
+                        Allogene Therapeutics Teases April ALPHA3 Futility Data, Details Autoimmune CAR-T Program at TD Cowen&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketBeat)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Mar-02-26 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/326805/allogene-therapeutics-to-report-fourth-quarter-and-full-year-2025-financial-results-and-provide-business-update" target="_blank">&#13;
+                        Allogene Therapeutics to Report Fourth Quarter and Full Year 2025 Financial Results and Provide Business Update&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Feb-26-26 11:44AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/323880/viatris-q4-eps-tops-brands-drive-revenue-growth-stock-up" target="_blank">&#13;
+                        Viatris Q4 EPS Tops, Brands Drive Revenue Growth, Stock Up&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">&#13;
+         +7.91%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            10:54AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/323752/adma-q4-eps-up-14-yy-revenues-gain-from-strong-asceniv-performance" target="_blank">&#13;
+                        ADMA Q4 EPS Up 14% Y/Y, Revenues Gain From Strong Asceniv Performance&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/b5bf3cdd-5c43-3303-b8aa-c13a0373acf6/allogene-therapeutics-teases.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Feb-18-26 07:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/b5bf3cdd-5c43-3303-b8aa-c13a0373acf6/allogene-therapeutics-teases.html" target="_blank" rel="nofollow">&#13;
+                        Allogene Therapeutics Teases April ALPHA3 Data as cema-cel Targets MRD+ LBCL in Remission&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketBeat)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">&#13;
+         +5.09%&#13;
+    </span>&#13;
+  &#13;
+      <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200" title="Feb 19, 2026">&#13;
+        <svg width="12" height="12" class="fill-current">&#13;
+    <use href="/assets/dist-icons/icons.1f7da9e4.svg#nextday"/>&#13;
+</svg> -6.17%&#13;
+    </span>&#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Feb-11-26 09:40AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/307550/are-medical-stocks-lagging-allogene-therapeutics-allo-this-year" target="_blank">&#13;
+                        Are Medical Stocks Lagging  Allogene Therapeutics (ALLO) This Year?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Feb-05-26 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/301218/allogene-therapeutics-announces-participation-in-upcoming-investor-conferences" target="_blank">&#13;
+                        Allogene Therapeutics Announces Participation in Upcoming Investor Conferences&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">&#13;
+         -9.44%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            07:58AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/301304/rapid-innovation-is-reshaping-oncology-stocks-in-focus" target="_blank">&#13;
+                        Rapid Innovation is Reshaping Oncology: Stocks in Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Jan-26-26 09:40AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/287075/is-allogene-therapeutics-allo-stock-outpacing-its-medical-peers-this-year" target="_blank">&#13;
+                        Is Allogene Therapeutics (ALLO) Stock Outpacing Its Medical Peers This Year?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">&#13;
+         -12.21%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Jan-09-26 09:40AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/272135/are-medical-stocks-lagging-allogene-therapeutics-allo-this-year" target="_blank">&#13;
+                        Are Medical Stocks Lagging  Allogene Therapeutics (ALLO) This Year?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">&#13;
+         +14.77%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Jan-08-26 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/270595/allogene-therapeutics-positions-2026-as-a-program-defining-year-for-scalable-real-world-allogeneic-car-t" target="_blank">&#13;
+                        Allogene Therapeutics Positions 2026 as a Program-Defining Year for Scalable, Real-World Allogeneic CAR T&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Dec-15-25 05:39PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/254661/allogene-therapeutics-reports-favorable-result-for-servier-in-arbitration-with-cellectis" target="_blank">&#13;
+                        Allogene Therapeutics Reports Favorable Result for Servier in Arbitration with Cellectis&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Nov-10-25 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/224530/allogene-therapeutics-announces-participation-in-upcoming-investor-conferences" target="_blank">&#13;
+                        Allogene Therapeutics Announces Participation in Upcoming Investor Conferences&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Nov-07-25 11:20AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/223296/allogene-posts-narrower-than-expected-loss-in-q3-nil-sales" target="_blank">&#13;
+                        Allogene Posts Narrower-Than-Expected Loss in Q3, Nil Sales&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">&#13;
+         +12.38%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/allogene-therapeutics-inc-allo-q3-051145624.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            12:11AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/allogene-therapeutics-inc-allo-q3-051145624.html" target="_blank" rel="nofollow">&#13;
+                        Allogene Therapeutics Inc (ALLO) Q3 2025 Earnings Call Highlights: Strategic Advances and ...&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/allogene-therapeutics-q3-earnings-snapshot-212637839.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-06-25 04:26PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/allogene-therapeutics-q3-earnings-snapshot-212637839.html" target="_blank" rel="nofollow">&#13;
+                        Allogene Therapeutics: Q3 Earnings Snapshot&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Associated Press Finance)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">&#13;
+         -5.41%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            04:05PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/221938/allogene-therapeutics-reports-third-quarter-2025-financial-results-and-business-update" target="_blank">&#13;
+                        Allogene Therapeutics Reports Third Quarter 2025 Financial Results and Business Update&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Nov-03-25 09:04AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/215027/allogene-therapeutics-announces-alpha3-trial-in-progress-poster-presentation-at-ash-annual-meeting" target="_blank">&#13;
+                        Allogene Therapeutics Announces ALPHA3 Trial-in-Progress Poster Presentation at ASH Annual Meeting&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Oct-30-25 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/211013/allogene-therapeutics-to-report-third-quarter-2025-financial-results-and-provide-business-update" target="_blank">&#13;
+                        Allogene Therapeutics to Report Third Quarter 2025 Financial Results and Provide Business Update&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Oct-14-25 11:24AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/192401/tvrd-stock-plunges-84-after-phase-ii-fibrosis-study-misses-key-goals" target="_blank">&#13;
+                        TVRD Stock Plunges 84% After Phase II Fibrosis Study Misses Key Goals&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Oct-13-25 01:06PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/191197/zoetis-gains-cvmp-backing-for-lenivia-eyes-eu-approval-in-dog-oa-pain" target="_blank">&#13;
+                        Zoetis Gains CVMP Backing for Lenivia, Eyes EU Approval in Dog OA Pain&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            10:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/190977/teva-gets-fda-nod-for-uzedy-label-expansion-in-bipolar-i-disorder" target="_blank">&#13;
+                        TEVA Gets FDA Nod for Uzedy Label Expansion in Bipolar I Disorder&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Oct-10-25 12:21PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/189679/cdtx-stock-up-on-fdas-breakthrough-therapy-tag-for-cd388-in-influenza" target="_blank">&#13;
+                        CDTX Stock Up on FDA's Breakthrough Therapy Tag for CD388 in Influenza&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">&#13;
+         -18.54%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            10:27AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/189464/ovid-stock-soars-39-in-a-month-following-upbeat-epilepsy-study-data" target="_blank">&#13;
+                        OVID Stock Soars 39% in a Month Following Upbeat Epilepsy Study Data&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Oct-08-25 11:18AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/187290/kala-stock-crashes-88-in-a-month-following-eye-disorder-study-failure" target="_blank">&#13;
+                        KALA Stock Crashes 88% in a Month Following Eye Disorder Study Failure&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">&#13;
+         +8.89%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            11:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/187287/astrazenecas-baxdrostat-meets-goal-in-resistant-hypertension-study" target="_blank">&#13;
+                        AstraZeneca's Baxdrostat Meets Goal in Resistant Hypertension Study&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Oct-07-25 11:56AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/186095/mrk-expands-tulisokibart-program-in-three-new-inflammatory-diseases" target="_blank">&#13;
+                        MRK Expands Tulisokibart Program in Three New Inflammatory Diseases&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Sep-16-25 12:54PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/167690/krystal-biotech-stock-up-on-fda-nod-to-vyjuvek-label-update" target="_blank">&#13;
+                        Krystal Biotech Stock Up on FDA Nod to Vyjuvek Label Update&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Sep-12-25 11:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/165103/why-is-allogene-therapeutics-allo-up-94-since-last-earnings-report" target="_blank">&#13;
+                        Why Is Allogene Therapeutics (ALLO) Up 9.4% Since Last Earnings Report?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Sep-08-25 09:42AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/160093/investing-in-oncology-3-cancer-stocks-with-promising-pipelines" target="_blank">&#13;
+                        Investing in Oncology: 3 Cancer Stocks With Promising Pipelines&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Sep-05-25 11:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/158983/aqst-stock-up-as-fda-skips-advisory-meeting-to-discuss-anaphylm-nda" target="_blank">&#13;
+                        AQST Stock Up as FDA Skips Advisory Meeting to Discuss Anaphylm NDA&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            10:04AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/158914/agio-stock-falls-as-fda-delays-decision-on-pyrukynd-for-thalassemia" target="_blank">&#13;
+                        AGIO Stock Falls as FDA Delays Decision on Pyrukynd for Thalassemia&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Aug-27-25 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/150909/allogene-therapeutics-announces-participation-in-upcoming-investor-conference" target="_blank">&#13;
+                        Allogene Therapeutics Announces Participation in Upcoming Investor Conference&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Aug-14-25 11:11AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/140935/allogenes-q2-loss-narrower-than-expected-pipeline-in-focus" target="_blank">&#13;
+                        Allogene's Q2 Loss Narrower Than Expected, Pipeline in Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/allogene-therapeutics-inc-allo-q2-071539567.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/allogene-therapeutics-inc-allo-q2-071539567.html" target="_blank" rel="nofollow">&#13;
+                        Allogene Therapeutics Inc (ALLO) Q2 2025 Earnings Call Highlights: Strategic Advancements Amid ...&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/allogene-therapeutics-q2-earnings-snapshot-201225149.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-13-25 04:12PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/allogene-therapeutics-q2-earnings-snapshot-201225149.html" target="_blank" rel="nofollow">&#13;
+                        Allogene Therapeutics: Q2 Earnings Snapshot&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Associated Press Finance)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            04:05PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/139830/allogene-therapeutics-reports-second-quarter-2025-financial-results-and-business-update" target="_blank">&#13;
+                        Allogene Therapeutics Reports Second Quarter 2025 Financial Results and Business Update&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/allogene-therapeutics-inc-allo-q2-133411480.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-12-25 09:34AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/allogene-therapeutics-inc-allo-q2-133411480.html" target="_blank" rel="nofollow">&#13;
+                        Allogene Therapeutics Inc (ALLO) Q2 2025 Earnings Report Preview: What To Expect&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Aug-06-25 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/129704/allogene-therapeutics-to-report-second-quarter-2025-financial-results-and-provide-business-update" target="_blank">&#13;
+                        Allogene Therapeutics to Report Second Quarter 2025 Financial Results and Provide Business Update&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">&#13;
+         -5.36%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Aug-01-25 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/124435/allogene-therapeutics-moves-forward-with-standard-fludarabine-and-cyclophosphamide-fc-lymphodepletion-regimen-in-the-alpha3-trial-for-cemacabtagene-ansegedleucel-cema-cel-in-first-line-consolidation-for-large-b-cell-lymphoma" target="_blank">&#13;
+                        Allogene Therapeutics Moves Forward with Standard Fludarabine and Cyclophosphamide (FC) Lymphodepletion Regimen in the ALPHA3 Trial for Cemacabtagene Ansegedleucel (Cema-Cel) in First-Line Consolidation for Large B-Cell Lymphoma&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">&#13;
+         -12.20%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/1997eb1b-2933-3051-9968-d6840fc9367b/regeneron-cancer-bispecific.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:10AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/1997eb1b-2933-3051-9968-d6840fc9367b/regeneron-cancer-bispecific.html" target="_blank" rel="nofollow">&#13;
+                        Regeneron cancer bispecific rejected again; Allogene discloses trial death&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(BioPharma Dive)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Jul-23-25 09:26AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/112050/high-growth-oncology-market-projected-for-us900bn-in-revenue-despite-policy-headwinds" target="_blank">&#13;
+                        High-Growth Oncology Market Projected For US$900bn in Revenue Despite Policy Headwinds&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">&#13;
+         +16.90%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Jul-21-25 09:41AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/109434/betting-big-on-cancer-3-oncology-stocks-set-to-surge-in-2025" target="_blank">&#13;
+                        Betting Big on Cancer: 3 Oncology Stocks Set to Surge in 2025&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">&#13;
+         +5.60%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Jun-12-25 11:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/79575/why-is-allogene-therapeutics-allo-up-522-since-last-earnings-report" target="_blank">&#13;
+                        Why Is Allogene Therapeutics (ALLO) Up 52.2% Since Last Earnings Report?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Jun-04-25 12:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/73546/all-you-need-to-know-about-allogene-therapeutics-allo-rating-upgrade-to-buy" target="_blank">&#13;
+                        All You Need to Know About Allogene Therapeutics (ALLO) Rating Upgrade to Buy&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Jun-01-25 10:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/70908/allogene-therapeutics-provides-updated-phase-1-data-highlighting-durable-responses-with-allo-316-in-heavily-pretreated-advanced-renal-cell-carcinoma-at-asco" target="_blank">&#13;
+                        Allogene Therapeutics Provides Updated Phase 1 Data Highlighting Durable Responses with ALLO-316 in Heavily Pretreated Advanced Renal Cell Carcinoma at ASCO&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            May-23-25 08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/65031/allogene-therapeutics-announces-participation-in-upcoming-investor-conferences" target="_blank">&#13;
+                        Allogene Therapeutics Announces Participation in Upcoming Investor Conferences&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            May-22-25 05:17PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/64580/allogene-therapeutics-announces-asco-2025-abstract-publication-featuring-oral-presentation-of-allo-316-in-kidney-cancer-and-alpha3-tip-poster-for-cema-cel" target="_blank">&#13;
+                        Allogene Therapeutics Announces ASCO 2025 Abstract Publication Featuring Oral Presentation of ALLO-316 in Kidney Cancer and ALPHA3 TIP Poster for Cema-Cel&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            May-20-25 09:11AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/61805/regn-signs-256m-buyout-deal-with-23andme-to-boost-genomics-research" target="_blank">&#13;
+                        REGN Signs $256M Buyout Deal With 23andMe to Boost Genomics Research&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">&#13;
+         +6.42%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/a0707555-af10-361d-be3c-77f32d3980d7/regeneron-defeats-amgen-in.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            May-16-25 06:36AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/a0707555-af10-361d-be3c-77f32d3980d7/regeneron-defeats-amgen-in.html" target="_blank" rel="nofollow">&#13;
+                        Regeneron defeats Amgen in PCSK9 case; 2 cell therapy biotechs cut staff&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(BioPharma Dive)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            May-15-25 11:04AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/58763/kodiak-q1-loss-wider-than-expected-pipeline-development-in-focus" target="_blank">&#13;
+                        Kodiak Q1 Loss Wider Than Expected, Pipeline Development in Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">&#13;
+         +14.40%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/allogene-allo-sinks-16-downgrade-134327751.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            09:43AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/allogene-allo-sinks-16-downgrade-134327751.html" target="_blank" rel="nofollow">&#13;
+                        Allogene (ALLO) Sinks 16% on Downgrade, Trial Delays&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            09:35AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/58625/allogene-therapeutics-allo-loses-3194-in-4-weeks-heres-why-a-trend-reversal-may-be-around-the-corner" target="_blank">&#13;
+                        Allogene Therapeutics (ALLO) Loses -31.94% in 4 Weeks, Here's Why a Trend Reversal May be Around the Corner&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            May-14-25 11:41AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/57668/fate-therapeutics-q1-earnings-revenues-beat-pipeline-in-focus" target="_blank">&#13;
+                        Fate Therapeutics' Q1 Earnings &amp; Revenues Beat, Pipeline in Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">&#13;
+         -15.68%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/q1-2025-allogene-therapeutics-inc-144639520.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            10:46AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/q1-2025-allogene-therapeutics-inc-144639520.html" target="_blank" rel="nofollow">&#13;
+                        Q1 2025 Allogene Therapeutics Inc Earnings Call&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Thomson Reuters StreetEvents)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            09:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/57349/exel-q1-earnings-beat-2025-sales-view-up-as-cabometyx-drives-top-line" target="_blank">&#13;
+                        EXEL Q1 Earnings Beat, 2025 Sales View Up as Cabometyx Drives Top Line&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            06:29AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/56995/allogenes-q1-earnings-in-line-with-estimates-sales-nil" target="_blank">&#13;
+                        Allogene's Q1 Earnings In Line With Estimates, Sales Nil&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/allogene-therapeutics-inc-allo-q1-071822792.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:18AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/allogene-therapeutics-inc-allo-q1-071822792.html" target="_blank" rel="nofollow">&#13;
+                        Allogene Therapeutics Inc (ALLO) Q1 2025 Earnings Call Highlights: Strategic Advances Amid ...&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+</table>
+</div>
+
+</div></div>
+</body>
+</html>

@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio Review Report</title>
+  <style>
+    :root {
+      --sb-width: 272px;
+      --sb-bg: #faf9f6;
+      --sb-surface: #ffffff;
+      --sb-hover: #f4f1ea;
+      --sb-border: #e6e2dc;
+      --sb-text: #1c1917;
+      --sb-muted: #78716c;
+      --accent: #FA8123;
+      --accent-dark: #d9650f;
+      --accent-bg: #fff5eb;
+      --read-dot: #10b981;
+      --top-h: 42px;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-size: 13px;
+      font-family: Arial, Helvetica, "Microsoft JhengHei", -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #faf9f6;
+      color: #1c1917;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Left Sidebar (Light Warm Theme) */
+    #sidebar {
+      width: var(--sb-width);
+      min-width: var(--sb-width);
+      background-color: var(--sb-bg);
+      color: var(--sb-text);
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--sb-border);
+      box-shadow: 1px 0 4px rgba(28, 25, 23, 0.03);
+      transition: transform 0.2s ease, width 0.2s ease;
+      user-select: none;
+    }
+    body.sb-collapsed #sidebar {
+      transform: translateX(-100%);
+    }
+
+    .sb-header {
+      padding: 12px 14px 10px;
+      border-bottom: 1px solid var(--sb-border);
+      background: #ffffff;
+    }
+    .sb-brand {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      color: #1c1917;
+      margin-bottom: 8px;
+    }
+    .sb-progress {
+      font-size: 11px;
+      font-weight: 600;
+      color: #57534e;
+      background: #f5f3ef;
+      border: 1px solid #e6e2dc;
+      padding: 2px 8px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.12s;
+    }
+    .sb-progress:hover {
+      color: var(--accent-dark);
+      background: var(--accent-bg);
+      border-color: #fdba8c;
+    }
+
+    .sb-search-wrap {
+      position: relative;
+    }
+    #sbSearch {
+      width: 100%;
+      padding: 6px 26px 6px 10px;
+      border-radius: 6px;
+      border: 1px solid #d6d1c7;
+      background: #faf9f6;
+      color: #1c1917;
+      font-size: 12px;
+      font-family: Arial, "Microsoft JhengHei", sans-serif;
+      outline: none;
+      transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+    }
+    #sbSearch:focus {
+      background: #ffffff;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(250, 129, 35, 0.15);
+    }
+    #sbSearch::placeholder {
+      color: #a8a29e;
+    }
+    .sb-search-clear {
+      position: absolute;
+      right: 7px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #a8a29e;
+      cursor: pointer;
+      font-size: 13px;
+      display: none;
+    }
+    .sb-search-clear:hover {
+      color: #44403c;
+    }
+
+    /* Navigation Scroll Area */
+    #navbar {
+      flex: 1;
+      overflow-y: auto;
+      padding: 6px 0 18px;
+      scrollbar-width: thin;
+      scrollbar-color: #d6d1c7 transparent;
+    }
+    #navbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    #navbar::-webkit-scrollbar-thumb {
+      background: #d6d1c7;
+      border-radius: 3px;
+    }
+
+    .nav-group {
+      margin-bottom: 4px;
+    }
+    .nav-group-hdr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #57534e;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+    .nav-group-hdr:hover {
+      color: var(--accent-dark);
+    }
+    .nav-group.collapsed .nav-group-body {
+      display: none;
+    }
+    .nav-badge {
+      background: #fff5eb;
+      color: var(--accent-dark);
+      border: 1px solid #fed7aa;
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+
+    /* Market Filter Pills inside Portfolio Group */
+    .mkt-pills {
+      display: flex;
+      gap: 4px;
+      padding: 2px 12px 6px;
+    }
+    .mkt-pill {
+      flex: 1;
+      text-align: center;
+      padding: 3px 0;
+      font-size: 11px;
+      border-radius: 4px;
+      background: #ffffff;
+      color: #78716c;
+      cursor: pointer;
+      border: 1px solid #e6e2dc;
+      transition: all 0.12s;
+    }
+    .mkt-pill:hover {
+      color: #1c1917;
+      background: #f4f1ea;
+    }
+    .mkt-pill.active {
+      color: var(--accent-dark);
+      background: var(--accent-bg);
+      border-color: #fdba8c;
+      font-weight: 700;
+    }
+
+    /* Individual Nav Item */
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 12px 5px 14px;
+      color: var(--sb-text);
+      text-decoration: none;
+      font-size: 12px;
+      border-left: 3px solid transparent;
+      transition: background 0.12s, color 0.12s;
+      line-height: 1.35;
+    }
+    .nav-item:hover {
+      background-color: var(--sb-hover);
+      color: #1c1917;
+    }
+    .nav-item.active {
+      background-color: var(--accent-bg);
+      color: var(--accent-dark);
+      border-left-color: var(--accent);
+      font-weight: 700;
+    }
+    .nav-item.read:not(.active) {
+      color: #78716c;
+    }
+    .nav-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: transparent;
+      flex-shrink: 0;
+    }
+    .nav-item.active .nav-dot {
+      background: var(--accent);
+      box-shadow: 0 0 5px rgba(250, 129, 35, 0.5);
+    }
+    .nav-item.read:not(.active) .nav-dot {
+      background: var(--read-dot);
+    }
+    .nav-code {
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 600;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .nav-sub {
+      color: #78716c;
+      font-size: 11px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-left: auto;
+      max-width: 128px;
+      text-align: right;
+    }
+    .nav-item.active .nav-sub {
+      color: var(--accent-dark);
+    }
+
+    .sb-footer {
+      padding: 8px 14px;
+      border-top: 1px solid var(--sb-border);
+      font-size: 11px;
+      color: #78716c;
+      background: #ffffff;
+      display: flex;
+      justify-content: space-between;
+    }
+    .kbd {
+      background: #f5f3ef;
+      border: 1px solid #d6d1c7;
+      border-radius: 3px;
+      padding: 0 4px;
+      font-size: 10px;
+      color: #44403c;
+      font-family: Consolas, monospace;
+    }
+
+    /* Main Content Area */
+    #main-wrap {
+      flex: 1;
+      margin-left: var(--sb-width);
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      transition: margin-left 0.2s ease;
+      height: 100vh;
+      overflow: hidden;
+    }
+    body.sb-collapsed #main-wrap {
+      margin-left: 0;
+    }
+
+    /* Sticky Top Toolbar */
+    #topbar {
+      height: var(--top-h);
+      background: #ffffff;
+      border-bottom: 1px solid #e6e2dc;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      box-shadow: 0 1px 3px rgba(28, 25, 23, 0.04);
+    }
+    .tb-left, .tb-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tb-btn {
+      background: #faf9f6;
+      border: 1px solid #d6d1c7;
+      color: #44403c;
+      border-radius: 5px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-family: Arial, "Microsoft JhengHei", sans-serif;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.12s;
+      text-decoration: none;
+    }
+    .tb-btn:hover {
+      background: var(--accent-bg);
+      border-color: var(--accent);
+      color: var(--accent-dark);
+    }
+    #currentTitle {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1c1917;
+      margin-left: 4px;
+    }
+
+    #display {
+      flex: 1;
+      width: 100%;
+      height: calc(100vh - var(--top-h));
+      background: #ffffff;
+      overflow: hidden;
+    }
+    #report {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+  </style>
+</head>
+<body onload="loadDefault()">
+
+  <!-- Left Sidebar -->
+  <aside id="sidebar">
+    <div class="sb-header">
+      <div class="sb-brand">
+        <span>📊 StockReview</span>
+        <span class="sb-progress" id="readCounter" title="點擊重置已讀狀態" onclick="resetReadState()">已讀 0 / 95</span>
+      </div>
+      <div class="sb-search-wrap">
+        <input type="text" id="sbSearch" placeholder="搜尋代號 / 股名 / 策略 (按 /)" oninput="filterNav()">
+        <span class="sb-search-clear" id="sbClear" onclick="clearSearch()">✕</span>
+      </div>
+    </div>
+
+    <div id="navbar">
+      <div class="nav-group" data-group="overview">
+        <div class="nav-group-hdr" onclick="toggleGroup(this)">
+          <span>📊 市場與總覽</span>
+          <span class="nav-badge">9</span>
+        </div>
+        <div class="nav-group-body">
+          <a class="nav-item active" href="#" id="overview.html" data-search="overview 市場總覽" data-title="Overview — 市場總覽" title="Overview 市場總覽" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">Overview</span><span class="nav-sub" title="市場總覽">市場總覽</span></a>
+          <a class="nav-item" href="#" id="taiex.html" data-search="taiex 大盤總覽" data-title="TAIEX — 大盤總覽" title="TAIEX 大盤總覽" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">TAIEX</span><span class="nav-sub" title="大盤總覽">大盤總覽</span></a>
+          <a class="nav-item" href="#" id="margin_ratio.html" data-search="margin ratio 大盤融資維持率" data-title="Margin Ratio — 大盤融資維持率" title="Margin Ratio 大盤融資維持率" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">Margin Ratio</span><span class="nav-sub" title="大盤融資維持率">大盤融資維持率</span></a>
+          <a class="nav-item" href="#" id="group_trend.html" data-search="group trend 概念族群強弱" data-title="Group Trend — 概念族群強弱" title="Group Trend 概念族群強弱" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">Group Trend</span><span class="nav-sub" title="概念族群強弱">概念族群強弱</span></a>
+          <a class="nav-item" href="#" id="exchange.html" data-search="exchange rate 全球匯率走勢" data-title="Exchange Rate — 全球匯率走勢" title="Exchange Rate 全球匯率走勢" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">Exchange Rate</span><span class="nav-sub" title="全球匯率走勢">全球匯率走勢</span></a>
+          <a class="nav-item" href="#" id="quickchart.html" data-search="quick chart 快速k線總覽" data-title="Quick Chart — 快速K線總覽" title="Quick Chart 快速K線總覽" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">Quick Chart</span><span class="nav-sub" title="快速K線總覽">快速K線總覽</span></a>
+          <a class="nav-item" href="#" id="breadth_high_low.html" data-search="market breadth (tw) 台股創高低家數" data-title="Market Breadth (TW) — 台股創高低家數" title="Market Breadth (TW) 台股創高低家數" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">Market Breadth (TW)</span><span class="nav-sub" title="台股創高低家數">台股創高低家數</span></a>
+          <a class="nav-item" href="#" id="sepa_us.html" data-search="sepa (us) 美股 sepa 篩選" data-title="SEPA (US) — 美股 SEPA 篩選" title="SEPA (US) 美股 SEPA 篩選" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">SEPA (US)</span><span class="nav-sub" title="美股 SEPA 篩選">美股 SEPA 篩選</span></a>
+          <a class="nav-item" href="#" id="sepa_us_track.html" data-search="sepa track (us) 美股 sepa 追蹤" data-title="SEPA Track (US) — 美股 SEPA 追蹤" title="SEPA Track (US) 美股 SEPA 追蹤" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">SEPA Track (US)</span><span class="nav-sub" title="美股 SEPA 追蹤">美股 SEPA 追蹤</span></a>
+        </div>
+      </div>
+
+      <div class="nav-group" data-group="strategy">
+        <div class="nav-group-hdr" onclick="toggleGroup(this)">
+          <span>🧭 量化選股策略</span>
+          <span class="nav-badge">6</span>
+        </div>
+        <div class="nav-group-body">
+          <a class="nav-item" href="#" id="ST_FL_BBS_18.html" data-search="st_fl_bbs_18 選股策略" data-title="ST_FL_BBS_18 — 選股策略" title="ST_FL_BBS_18 選股策略" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">ST_FL_BBS_18</span><span class="nav-sub" title="選股策略">選股策略</span></a>
+          <a class="nav-item" href="#" id="ST_FL_RM_06.html" data-search="st_fl_rm_06 選股策略" data-title="ST_FL_RM_06 — 選股策略" title="ST_FL_RM_06 選股策略" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">ST_FL_RM_06</span><span class="nav-sub" title="選股策略">選股策略</span></a>
+          <a class="nav-item" href="#" id="ST_FL_ML_28.html" data-search="st_fl_ml_28 選股策略" data-title="ST_FL_ML_28 — 選股策略" title="ST_FL_ML_28 選股策略" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">ST_FL_ML_28</span><span class="nav-sub" title="選股策略">選股策略</span></a>
+          <a class="nav-item" href="#" id="ST_FL_GA_02.html" data-search="st_fl_ga_02 選股策略" data-title="ST_FL_GA_02 — 選股策略" title="ST_FL_GA_02 選股策略" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">ST_FL_GA_02</span><span class="nav-sub" title="選股策略">選股策略</span></a>
+          <a class="nav-item" href="#" id="ST_FL_RD_02.html" data-search="st_fl_rd_02 選股策略" data-title="ST_FL_RD_02 — 選股策略" title="ST_FL_RD_02 選股策略" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">ST_FL_RD_02</span><span class="nav-sub" title="選股策略">選股策略</span></a>
+          <a class="nav-item" href="#" id="ST_FL_ETF_06.html" data-search="st_fl_etf_06 選股策略" data-title="ST_FL_ETF_06 — 選股策略" title="ST_FL_ETF_06 選股策略" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">ST_FL_ETF_06</span><span class="nav-sub" title="選股策略">選股策略</span></a>
+        </div>
+      </div>
+
+      <div class="nav-group" data-group="macromicro">
+        <div class="nav-group-hdr" onclick="toggleGroup(this)">
+          <span>🌐 總經圖表 (W平方)</span>
+          <span class="nav-badge">4</span>
+        </div>
+        <div class="nav-group-body">
+          <a class="nav-item" href="#" id="macromicro_1.html" data-search="macromicro-1 財經w平方" data-title="MACROMICRO-1 — 財經W平方" title="MACROMICRO-1 財經W平方" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">MACROMICRO-1</span><span class="nav-sub" title="財經W平方">財經W平方</span></a>
+          <a class="nav-item" href="#" id="macromicro_2.html" data-search="macromicro-2 財經w平方" data-title="MACROMICRO-2 — 財經W平方" title="MACROMICRO-2 財經W平方" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">MACROMICRO-2</span><span class="nav-sub" title="財經W平方">財經W平方</span></a>
+          <a class="nav-item" href="#" id="macromicro_3.html" data-search="macromicro-3 財經w平方" data-title="MACROMICRO-3 — 財經W平方" title="MACROMICRO-3 財經W平方" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">MACROMICRO-3</span><span class="nav-sub" title="財經W平方">財經W平方</span></a>
+          <a class="nav-item" href="#" id="macromicro_4.html" data-search="macromicro-4 財經w平方" data-title="MACROMICRO-4 — 財經W平方" title="MACROMICRO-4 財經W平方" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">MACROMICRO-4</span><span class="nav-sub" title="財經W平方">財經W平方</span></a>
+        </div>
+      </div>
+      <div class="nav-group" data-group="portfolio">
+        <div class="nav-group-hdr" onclick="toggleGroup(this)">
+          <span>📈 個股與指數清單</span>
+          <span class="nav-badge" id="stockBadge">95</span>
+        </div>
+        <div class="nav-group-body">
+          <div class="mkt-pills">
+            <span class="mkt-pill active" data-filter="all" onclick="setMktFilter(this)">全部</span>
+            <span class="mkt-pill" data-filter="tw" onclick="setMktFilter(this)">台股</span>
+            <span class="mkt-pill" data-filter="us" onclick="setMktFilter(this)">美股</span>
+            <span class="mkt-pill" data-filter="idx" onclick="setMktFilter(this)">指數</span>
+          </div>
+          <a class="nav-item" href="#" id="7776.TWO_RP.html" data-search="7776.two 奧孟亞" data-title="7776.TWO — 奧孟亞" data-mkt="tw" title="7776.TWO 奧孟亞" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">7776.TWO</span><span class="nav-sub" title="奧孟亞">奧孟亞</span></a>
+          <a class="nav-item" href="#" id="7887.TWO_RP.html" data-search="7887.two 宇川精材" data-title="7887.TWO — 宇川精材" data-mkt="tw" title="7887.TWO 宇川精材" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">7887.TWO</span><span class="nav-sub" title="宇川精材">宇川精材</span></a>
+          <a class="nav-item" href="#" id="^TWII_RP.html" data-search="^twii 台灣加權" data-title="^TWII — 台灣加權" data-mkt="idx" title="^TWII 台灣加權" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">^TWII</span><span class="nav-sub" title="台灣加權">台灣加權</span></a>
+          <a class="nav-item" href="#" id="^TWOII_RP.html" data-search="^twoii 台灣店頭" data-title="^TWOII — 台灣店頭" data-mkt="idx" title="^TWOII 台灣店頭" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">^TWOII</span><span class="nav-sub" title="台灣店頭">台灣店頭</span></a>
+          <a class="nav-item" href="#" id="TWA02_RP.html" data-search="twa02 台灣加權報酬指數" data-title="TWA02 — 台灣加權報酬指數" data-mkt="us" title="TWA02 台灣加權報酬指數" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">TWA02</span><span class="nav-sub" title="台灣加權報酬指數">台灣加權報酬指數</span></a>
+          <a class="nav-item" href="#" id="^TNX_RP.html" data-search="^tnx treasury yield 10 years" data-title="^TNX — Treasury Yield 10 Years" data-mkt="idx" title="^TNX Treasury Yield 10 Years" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">^TNX</span><span class="nav-sub" title="Treasury Yield 10 Years">Treasury Yield 10 Years</span></a>
+          <a class="nav-item" href="#" id="DX-Y.NYB_RP.html" data-search="dx-y.nyb ice us dollar index " data-title="DX-Y.NYB — ICE US Dollar Index " data-mkt="us" title="DX-Y.NYB ICE US Dollar Index " onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">DX-Y.NYB</span><span class="nav-sub" title="ICE US Dollar Index ">ICE US Dollar Index </span></a>
+          <a class="nav-item" href="#" id="USDTWD=X_RP.html" data-search="usdtwd=x usd/twd" data-title="USDTWD=X — USD/TWD" data-mkt="idx" title="USDTWD=X USD/TWD" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">USDTWD=X</span><span class="nav-sub" title="USD/TWD">USD/TWD</span></a>
+          <a class="nav-item" href="#" id="USDJPY=X_RP.html" data-search="usdjpy=x usd/jpy" data-title="USDJPY=X — USD/JPY" data-mkt="idx" title="USDJPY=X USD/JPY" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">USDJPY=X</span><span class="nav-sub" title="USD/JPY">USD/JPY</span></a>
+          <a class="nav-item" href="#" id="JPYTWD=X_RP.html" data-search="jpytwd=x jpy/twd" data-title="JPYTWD=X — JPY/TWD" data-mkt="idx" title="JPYTWD=X JPY/TWD" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">JPYTWD=X</span><span class="nav-sub" title="JPY/TWD">JPY/TWD</span></a>
+          <a class="nav-item" href="#" id="USDMYR=X_RP.html" data-search="usdmyr=x usd/myr" data-title="USDMYR=X — USD/MYR" data-mkt="idx" title="USDMYR=X USD/MYR" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">USDMYR=X</span><span class="nav-sub" title="USD/MYR">USD/MYR</span></a>
+          <a class="nav-item" href="#" id="^GSPC_RP.html" data-search="^gspc s&amp;p 500" data-title="^GSPC — S&amp;P 500" data-mkt="idx" title="^GSPC S&amp;P 500" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">^GSPC</span><span class="nav-sub" title="S&amp;P 500">S&amp;P 500</span></a>
+          <a class="nav-item" href="#" id="^IXIC_RP.html" data-search="^ixic nasdaq composite" data-title="^IXIC — NASDAQ Composite" data-mkt="idx" title="^IXIC NASDAQ Composite" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">^IXIC</span><span class="nav-sub" title="NASDAQ Composite">NASDAQ Composite</span></a>
+          <a class="nav-item" href="#" id="^DJI_RP.html" data-search="^dji dow jones industrial average" data-title="^DJI — Dow Jones Industrial Average" data-mkt="idx" title="^DJI Dow Jones Industrial Average" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">^DJI</span><span class="nav-sub" title="Dow Jones Industrial Average">Dow Jones Industrial Average</span></a>
+          <a class="nav-item" href="#" id="^VIX_RP.html" data-search="^vix cboe volatility index" data-title="^VIX — CBOE Volatility Index" data-mkt="idx" title="^VIX CBOE Volatility Index" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">^VIX</span><span class="nav-sub" title="CBOE Volatility Index">CBOE Volatility Index</span></a>
+          <a class="nav-item" href="#" id="^VXN_RP.html" data-search="^vxn cboe nasdaq 100 voltility" data-title="^VXN — CBOE NASDAQ 100 Voltility" data-mkt="idx" title="^VXN CBOE NASDAQ 100 Voltility" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">^VXN</span><span class="nav-sub" title="CBOE NASDAQ 100 Voltility">CBOE NASDAQ 100 Voltility</span></a>
+          <a class="nav-item" href="#" id="0050.TW_RP.html" data-search="0050.tw 元大台灣50" data-title="0050.TW — 元大台灣50" data-mkt="tw" title="0050.TW 元大台灣50" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">0050.TW</span><span class="nav-sub" title="元大台灣50">元大台灣50</span></a>
+          <a class="nav-item" href="#" id="00631L.TW_RP.html" data-search="00631l.tw 元大台灣50正2" data-title="00631L.TW — 元大台灣50正2" data-mkt="tw" title="00631L.TW 元大台灣50正2" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">00631L.TW</span><span class="nav-sub" title="元大台灣50正2">元大台灣50正2</span></a>
+          <a class="nav-item" href="#" id="VOO_RP.html" data-search="voo vanguard 500 index fund" data-title="VOO — Vanguard 500 Index Fund" data-mkt="us" title="VOO Vanguard 500 Index Fund" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">VOO</span><span class="nav-sub" title="Vanguard 500 Index Fund">Vanguard 500 Index Fund</span></a>
+          <a class="nav-item" href="#" id="SPMO_RP.html" data-search="spmo invesco s&amp;p 500 momentum etf" data-title="SPMO — Invesco S&amp;P 500 Momentum ETF" data-mkt="us" title="SPMO Invesco S&amp;P 500 Momentum ETF" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">SPMO</span><span class="nav-sub" title="Invesco S&amp;P 500 Momentum ETF">Invesco S&amp;P 500 Momentum ETF</span></a>
+          <a class="nav-item" href="#" id="QQQ_RP.html" data-search="qqq invesco nasdaq qqq trust" data-title="QQQ — Invesco NASDAQ QQQ Trust" data-mkt="us" title="QQQ Invesco NASDAQ QQQ Trust" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">QQQ</span><span class="nav-sub" title="Invesco NASDAQ QQQ Trust">Invesco NASDAQ QQQ Trust</span></a>
+          <a class="nav-item" href="#" id="QLD_RP.html" data-search="qld proshares ultra qqq" data-title="QLD — ProShares Ultra QQQ" data-mkt="us" title="QLD ProShares Ultra QQQ" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">QLD</span><span class="nav-sub" title="ProShares Ultra QQQ">ProShares Ultra QQQ</span></a>
+          <a class="nav-item" href="#" id="GLD_RP.html" data-search="gld sprd gold shares" data-title="GLD — SPRD Gold Shares" data-mkt="us" title="GLD SPRD Gold Shares" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">GLD</span><span class="nav-sub" title="SPRD Gold Shares">SPRD Gold Shares</span></a>
+          <a class="nav-item" href="#" id="TQQQ_RP.html" data-search="tqqq proshares ultrapro qqq" data-title="TQQQ — ProShares UltraPro QQQ" data-mkt="us" title="TQQQ ProShares UltraPro QQQ" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">TQQQ</span><span class="nav-sub" title="ProShares UltraPro QQQ">ProShares UltraPro QQQ</span></a>
+          <a class="nav-item" href="#" id="FNGU_RP.html" data-search="fngu fang+ index 3x" data-title="FNGU — FANG+ Index 3X" data-mkt="us" title="FNGU FANG+ Index 3X" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">FNGU</span><span class="nav-sub" title="FANG+ Index 3X">FANG+ Index 3X</span></a>
+          <a class="nav-item" href="#" id="XLF_RP.html" data-search="xlf financial select sector spdr fund" data-title="XLF — Financial Select Sector SPDR Fund" data-mkt="us" title="XLF Financial Select Sector SPDR Fund" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">XLF</span><span class="nav-sub" title="Financial Select Sector SPDR Fund">Financial Select Sector SPDR Fund</span></a>
+          <a class="nav-item" href="#" id="IWM_RP.html" data-search="iwm ishares russell 2000 etf" data-title="IWM — iShares Russell 2000 ETF" data-mkt="us" title="IWM iShares Russell 2000 ETF" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">IWM</span><span class="nav-sub" title="iShares Russell 2000 ETF">iShares Russell 2000 ETF</span></a>
+          <a class="nav-item" href="#" id="DRAM_RP.html" data-search="dram roundhill memory etf" data-title="DRAM — Roundhill Memory ETF" data-mkt="us" title="DRAM Roundhill Memory ETF" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">DRAM</span><span class="nav-sub" title="Roundhill Memory ETF">Roundhill Memory ETF</span></a>
+          <a class="nav-item" href="#" id="ARKK_RP.html" data-search="arkk ark innovation etf" data-title="ARKK — ARK Innovation ETF" data-mkt="us" title="ARKK ARK Innovation ETF" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">ARKK</span><span class="nav-sub" title="ARK Innovation ETF">ARK Innovation ETF</span></a>
+          <a class="nav-item" href="#" id="SMH_RP.html" data-search="smh vaneck vectors semiconductor etf" data-title="SMH — VanEck Vectors Semiconductor ETF" data-mkt="us" title="SMH VanEck Vectors Semiconductor ETF" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">SMH</span><span class="nav-sub" title="VanEck Vectors Semiconductor ETF">VanEck Vectors Semiconductor ETF</span></a>
+          <a class="nav-item" href="#" id="IGV_RP.html" data-search="igv tech-software sector etf" data-title="IGV — Tech-Software Sector ETF" data-mkt="us" title="IGV Tech-Software Sector ETF" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">IGV</span><span class="nav-sub" title="Tech-Software Sector ETF">Tech-Software Sector ETF</span></a>
+          <a class="nav-item" href="#" id="GNOM_RP.html" data-search="gnom global x genomics &amp; biotechnology etf" data-title="GNOM — Global X Genomics &amp; Biotechnology ETF" data-mkt="us" title="GNOM Global X Genomics &amp; Biotechnology ETF" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">GNOM</span><span class="nav-sub" title="Global X Genomics &amp; Biotechnology ETF">Global X Genomics &amp; Biotechnology ETF</span></a>
+          <a class="nav-item" href="#" id="MCHI_RP.html" data-search="mchi ishares msci china etf" data-title="MCHI — iShares MSCI China ETF" data-mkt="us" title="MCHI iShares MSCI China ETF" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">MCHI</span><span class="nav-sub" title="iShares MSCI China ETF">iShares MSCI China ETF</span></a>
+          <a class="nav-item" href="#" id="KWEB_RP.html" data-search="kweb kraneshares csi china internet etf" data-title="KWEB — KraneShares CSI China Internet ETF" data-mkt="us" title="KWEB KraneShares CSI China Internet ETF" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">KWEB</span><span class="nav-sub" title="KraneShares CSI China Internet ETF">KraneShares CSI China Internet ETF</span></a>
+          <a class="nav-item" href="#" id="REZ_RP.html" data-search="rez ishares residential and multisector real estate etf" data-title="REZ — iShares Residential and Multisector Real Estate ETF" data-mkt="us" title="REZ iShares Residential and Multisector Real Estate ETF" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">REZ</span><span class="nav-sub" title="iShares Residential and Multisector Real Estate ETF">iShares Residential and Multisector Real Estate ETF</span></a>
+          <a class="nav-item" href="#" id="ITB_RP.html" data-search="itb ishares u.s. home construction etf" data-title="ITB — iShares U.S. Home Construction ETF" data-mkt="us" title="ITB iShares U.S. Home Construction ETF" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">ITB</span><span class="nav-sub" title="iShares U.S. Home Construction ETF">iShares U.S. Home Construction ETF</span></a>
+          <a class="nav-item" href="#" id="FLIN_RP.html" data-search="flin franklin ftse india etf" data-title="FLIN — Franklin FTSE India ETF" data-mkt="us" title="FLIN Franklin FTSE India ETF" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">FLIN</span><span class="nav-sub" title="Franklin FTSE India ETF">Franklin FTSE India ETF</span></a>
+          <a class="nav-item" href="#" id="IEF_RP.html" data-search="ief ishare 7-10 year treasure bond etf" data-title="IEF — iShare 7-10 Year Treasure Bond ETF" data-mkt="us" title="IEF iShare 7-10 Year Treasure Bond ETF" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">IEF</span><span class="nav-sub" title="iShare 7-10 Year Treasure Bond ETF">iShare 7-10 Year Treasure Bond ETF</span></a>
+          <a class="nav-item" href="#" id="USL_RP.html" data-search="usl united states 12 month oil fund lp" data-title="USL — United States 12 Month Oil Fund LP" data-mkt="us" title="USL United States 12 Month Oil Fund LP" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">USL</span><span class="nav-sub" title="United States 12 Month Oil Fund LP">United States 12 Month Oil Fund LP</span></a>
+          <a class="nav-item" href="#" id="VGK_RP.html" data-search="vgk vanguard european stock index fund etf" data-title="VGK — Vanguard European Stock Index Fund ETF" data-mkt="us" title="VGK Vanguard European Stock Index Fund ETF" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">VGK</span><span class="nav-sub" title="Vanguard European Stock Index Fund ETF">Vanguard European Stock Index Fund ETF</span></a>
+          <a class="nav-item" href="#" id="VNM_RP.html" data-search="vnm vaneck vectors vietnam etf" data-title="VNM — VanEck Vectors Vietnam ETF" data-mkt="us" title="VNM VanEck Vectors Vietnam ETF" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">VNM</span><span class="nav-sub" title="VanEck Vectors Vietnam ETF">VanEck Vectors Vietnam ETF</span></a>
+          <a class="nav-item" href="#" id="EWY_RP.html" data-search="ewy ishares msci south korea capped etf" data-title="EWY — iShares MSCI South Korea Capped ETF" data-mkt="us" title="EWY iShares MSCI South Korea Capped ETF" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">EWY</span><span class="nav-sub" title="iShares MSCI South Korea Capped ETF">iShares MSCI South Korea Capped ETF</span></a>
+          <a class="nav-item" href="#" id="EWJ_RP.html" data-search="ewj ishares msci japan etf" data-title="EWJ — iShares MSCI Japan ETF" data-mkt="us" title="EWJ iShares MSCI Japan ETF" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">EWJ</span><span class="nav-sub" title="iShares MSCI Japan ETF">iShares MSCI Japan ETF</span></a>
+          <a class="nav-item" href="#" id="NLR_RP.html" data-search="nlr vaneck uranium and nuclear etf" data-title="NLR — VanEck Uranium and Nuclear ETF" data-mkt="us" title="NLR VanEck Uranium and Nuclear ETF" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">NLR</span><span class="nav-sub" title="VanEck Uranium and Nuclear ETF">VanEck Uranium and Nuclear ETF</span></a>
+          <a class="nav-item" href="#" id="NVDA_RP.html" data-search="nvda nvidia corporation" data-title="NVDA — NVIDIA Corporation" data-mkt="us" title="NVDA NVIDIA Corporation" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">NVDA</span><span class="nav-sub" title="NVIDIA Corporation">NVIDIA Corporation</span></a>
+          <a class="nav-item" href="#" id="INTC_RP.html" data-search="intc intel corporation" data-title="INTC — Intel Corporation" data-mkt="us" title="INTC Intel Corporation" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">INTC</span><span class="nav-sub" title="Intel Corporation">Intel Corporation</span></a>
+          <a class="nav-item" href="#" id="AMD_RP.html" data-search="amd advanced micro devices, inc." data-title="AMD — Advanced Micro Devices, Inc." data-mkt="us" title="AMD Advanced Micro Devices, Inc." onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">AMD</span><span class="nav-sub" title="Advanced Micro Devices, Inc.">Advanced Micro Devices, Inc.</span></a>
+          <a class="nav-item" href="#" id="AAPL_RP.html" data-search="aapl apple inc" data-title="AAPL — Apple Inc" data-mkt="us" title="AAPL Apple Inc" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">AAPL</span><span class="nav-sub" title="Apple Inc">Apple Inc</span></a>
+          <a class="nav-item" href="#" id="MSFT_RP.html" data-search="msft microsoft corporation" data-title="MSFT — Microsoft Corporation" data-mkt="us" title="MSFT Microsoft Corporation" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">MSFT</span><span class="nav-sub" title="Microsoft Corporation">Microsoft Corporation</span></a>
+          <a class="nav-item" href="#" id="GOOG_RP.html" data-search="goog alphabet inc." data-title="GOOG — Alphabet Inc." data-mkt="us" title="GOOG Alphabet Inc." onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">GOOG</span><span class="nav-sub" title="Alphabet Inc.">Alphabet Inc.</span></a>
+          <a class="nav-item" href="#" id="META_RP.html" data-search="meta meta platforms, inc." data-title="META — Meta Platforms, Inc." data-mkt="us" title="META Meta Platforms, Inc." onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">META</span><span class="nav-sub" title="Meta Platforms, Inc.">Meta Platforms, Inc.</span></a>
+          <a class="nav-item" href="#" id="AMZN_RP.html" data-search="amzn amazon.com inc." data-title="AMZN — Amazon.com Inc." data-mkt="us" title="AMZN Amazon.com Inc." onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">AMZN</span><span class="nav-sub" title="Amazon.com Inc.">Amazon.com Inc.</span></a>
+          <a class="nav-item" href="#" id="TSLA_RP.html" data-search="tsla tesla, inc." data-title="TSLA — Tesla, Inc." data-mkt="us" title="TSLA Tesla, Inc." onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">TSLA</span><span class="nav-sub" title="Tesla, Inc.">Tesla, Inc.</span></a>
+          <a class="nav-item" href="#" id="CRWD_RP.html" data-search="crwd crowdstrike holdings inc." data-title="CRWD — Crowdstrike Holdings Inc." data-mkt="us" title="CRWD Crowdstrike Holdings Inc." onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">CRWD</span><span class="nav-sub" title="Crowdstrike Holdings Inc.">Crowdstrike Holdings Inc.</span></a>
+          <a class="nav-item" href="#" id="PLTR_RP.html" data-search="pltr palantir technologies inc" data-title="PLTR — Palantir Technologies Inc" data-mkt="us" title="PLTR Palantir Technologies Inc" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">PLTR</span><span class="nav-sub" title="Palantir Technologies Inc">Palantir Technologies Inc</span></a>
+          <a class="nav-item" href="#" id="GRAB_RP.html" data-search="grab grab holdings ltd." data-title="GRAB — Grab Holdings Ltd." data-mkt="us" title="GRAB Grab Holdings Ltd." onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">GRAB</span><span class="nav-sub" title="Grab Holdings Ltd.">Grab Holdings Ltd.</span></a>
+          <a class="nav-item" href="#" id="BFLY_RP.html" data-search="bfly butterfly network ord shs class a" data-title="BFLY — Butterfly Network Ord Shs Class A" data-mkt="us" title="BFLY Butterfly Network Ord Shs Class A" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">BFLY</span><span class="nav-sub" title="Butterfly Network Ord Shs Class A">Butterfly Network Ord Shs Class A</span></a>
+          <a class="nav-item" href="#" id="XYZ_RP.html" data-search="xyz square inc" data-title="XYZ — Square Inc" data-mkt="us" title="XYZ Square Inc" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">XYZ</span><span class="nav-sub" title="Square Inc">Square Inc</span></a>
+          <a class="nav-item" href="#" id="STM_RP.html" data-search="stm stmicroelectronics n.v." data-title="STM — STMicroelectronics N.V." data-mkt="us" title="STM STMicroelectronics N.V." onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">STM</span><span class="nav-sub" title="STMicroelectronics N.V.">STMicroelectronics N.V.</span></a>
+          <a class="nav-item" href="#" id="DIS_RP.html" data-search="dis walt disney co" data-title="DIS — Walt Disney Co" data-mkt="us" title="DIS Walt Disney Co" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">DIS</span><span class="nav-sub" title="Walt Disney Co">Walt Disney Co</span></a>
+          <a class="nav-item" href="#" id="QCOM_RP.html" data-search="qcom qualcomm inc." data-title="QCOM — Qualcomm Inc." data-mkt="us" title="QCOM Qualcomm Inc." onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">QCOM</span><span class="nav-sub" title="Qualcomm Inc.">Qualcomm Inc.</span></a>
+          <a class="nav-item" href="#" id="DXYZ_RP.html" data-search="dxyz destiny tech100" data-title="DXYZ — Destiny Tech100" data-mkt="us" title="DXYZ Destiny Tech100" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">DXYZ</span><span class="nav-sub" title="Destiny Tech100">Destiny Tech100</span></a>
+          <a class="nav-item" href="#" id="ALLO_RP.html" data-search="allo allogene therapeutics" data-title="ALLO — Allogene Therapeutics" data-mkt="us" title="ALLO Allogene Therapeutics" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">ALLO</span><span class="nav-sub" title="Allogene Therapeutics">Allogene Therapeutics</span></a>
+          <a class="nav-item" href="#" id="BIDU_RP.html" data-search="bidu baidu inc" data-title="BIDU — Baidu Inc" data-mkt="us" title="BIDU Baidu Inc" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">BIDU</span><span class="nav-sub" title="Baidu Inc">Baidu Inc</span></a>
+          <a class="nav-item" href="#" id="2454.TW_RP.html" data-search="2454.tw 聯發科" data-title="2454.TW — 聯發科" data-mkt="tw" title="2454.TW 聯發科" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">2454.TW</span><span class="nav-sub" title="聯發科">聯發科</span></a>
+          <a class="nav-item" href="#" id="2330.TW_RP.html" data-search="2330.tw 台積電" data-title="2330.TW — 台積電" data-mkt="tw" title="2330.TW 台積電" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">2330.TW</span><span class="nav-sub" title="台積電">台積電</span></a>
+          <a class="nav-item" href="#" id="3711.TW_RP.html" data-search="3711.tw 日月光投控" data-title="3711.TW — 日月光投控" data-mkt="tw" title="3711.TW 日月光投控" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">3711.TW</span><span class="nav-sub" title="日月光投控">日月光投控</span></a>
+          <a class="nav-item" href="#" id="6488.TWO_RP.html" data-search="6488.two 環球晶" data-title="6488.TWO — 環球晶" data-mkt="tw" title="6488.TWO 環球晶" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">6488.TWO</span><span class="nav-sub" title="環球晶">環球晶</span></a>
+          <a class="nav-item" href="#" id="3008.TW_RP.html" data-search="3008.tw 大立光" data-title="3008.TW — 大立光" data-mkt="tw" title="3008.TW 大立光" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">3008.TW</span><span class="nav-sub" title="大立光">大立光</span></a>
+          <a class="nav-item" href="#" id="2317.TW_RP.html" data-search="2317.tw 鴻海" data-title="2317.TW — 鴻海" data-mkt="tw" title="2317.TW 鴻海" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">2317.TW</span><span class="nav-sub" title="鴻海">鴻海</span></a>
+          <a class="nav-item" href="#" id="6446.TW_RP.html" data-search="6446.tw 藥華藥" data-title="6446.TW — 藥華藥" data-mkt="tw" title="6446.TW 藥華藥" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">6446.TW</span><span class="nav-sub" title="藥華藥">藥華藥</span></a>
+          <a class="nav-item" href="#" id="0941.HK_RP.html" data-search="0941.hk 中國移動" data-title="0941.HK — 中國移動" data-mkt="us" title="0941.HK 中國移動" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">0941.HK</span><span class="nav-sub" title="中國移動">中國移動</span></a>
+          <a class="nav-item" href="#" id="0763.HK_RP.html" data-search="0763.hk 中興通訊" data-title="0763.HK — 中興通訊" data-mkt="us" title="0763.HK 中興通訊" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">0763.HK</span><span class="nav-sub" title="中興通訊">中興通訊</span></a>
+          <a class="nav-item" href="#" id="0981.HK_RP.html" data-search="0981.hk 中芯國際" data-title="0981.HK — 中芯國際" data-mkt="us" title="0981.HK 中芯國際" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">0981.HK</span><span class="nav-sub" title="中芯國際">中芯國際</span></a>
+          <a class="nav-item" href="#" id="3324.TWO_RP.html" data-search="3324.two 雙鴻" data-title="3324.TWO — 雙鴻" data-mkt="tw" title="3324.TWO 雙鴻" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">3324.TWO</span><span class="nav-sub" title="雙鴻">雙鴻</span></a>
+          <a class="nav-item" href="#" id="3017.TW_RP.html" data-search="3017.tw 奇鋐" data-title="3017.TW — 奇鋐" data-mkt="tw" title="3017.TW 奇鋐" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">3017.TW</span><span class="nav-sub" title="奇鋐">奇鋐</span></a>
+          <a class="nav-item" href="#" id="8069.TWO_RP.html" data-search="8069.two 元太" data-title="8069.TWO — 元太" data-mkt="tw" title="8069.TWO 元太" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">8069.TWO</span><span class="nav-sub" title="元太">元太</span></a>
+          <a class="nav-item" href="#" id="SE_RP.html" data-search="se sea limited (se)" data-title="SE — Sea Limited (SE)" data-mkt="us" title="SE Sea Limited (SE)" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">SE</span><span class="nav-sub" title="Sea Limited (SE)">Sea Limited (SE)</span></a>
+          <a class="nav-item" href="#" id="U_RP.html" data-search="u unity software inc." data-title="U — Unity Software Inc." data-mkt="us" title="U Unity Software Inc." onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">U</span><span class="nav-sub" title="Unity Software Inc.">Unity Software Inc.</span></a>
+          <a class="nav-item" href="#" id="BABA_RP.html" data-search="baba alibaba group holding limited" data-title="BABA — Alibaba Group Holding Limited" data-mkt="us" title="BABA Alibaba Group Holding Limited" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">BABA</span><span class="nav-sub" title="Alibaba Group Holding Limited">Alibaba Group Holding Limited</span></a>
+          <a class="nav-item" href="#" id="TCEHY_RP.html" data-search="tcehy tencent holdings limited" data-title="TCEHY — Tencent Holdings Limited" data-mkt="us" title="TCEHY Tencent Holdings Limited" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">TCEHY</span><span class="nav-sub" title="Tencent Holdings Limited">Tencent Holdings Limited</span></a>
+          <a class="nav-item" href="#" id="3690.HK_RP.html" data-search="3690.hk 美團-w" data-title="3690.HK — 美團-W" data-mkt="us" title="3690.HK 美團-W" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">3690.HK</span><span class="nav-sub" title="美團-W">美團-W</span></a>
+          <a class="nav-item" href="#" id="8299.TWO_RP.html" data-search="8299.two 群聯" data-title="8299.TWO — 群聯" data-mkt="tw" title="8299.TWO 群聯" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">8299.TWO</span><span class="nav-sub" title="群聯">群聯</span></a>
+          <a class="nav-item" href="#" id="2404.TW_RP.html" data-search="2404.tw 漢唐" data-title="2404.TW — 漢唐" data-mkt="tw" title="2404.TW 漢唐" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">2404.TW</span><span class="nav-sub" title="漢唐">漢唐</span></a>
+          <a class="nav-item" href="#" id="7822.TW_RP.html" data-search="7822.tw 倍利科" data-title="7822.TW — 倍利科" data-mkt="tw" title="7822.TW 倍利科" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">7822.TW</span><span class="nav-sub" title="倍利科">倍利科</span></a>
+          <a class="nav-item" href="#" id="6945.TWO_RP.html" data-search="6945.two 圓祥" data-title="6945.TWO — 圓祥" data-mkt="tw" title="6945.TWO 圓祥" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">6945.TWO</span><span class="nav-sub" title="圓祥">圓祥</span></a>
+          <a class="nav-item" href="#" id="1795.TW_RP.html" data-search="1795.tw 美時" data-title="1795.TW — 美時" data-mkt="tw" title="1795.TW 美時" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">1795.TW</span><span class="nav-sub" title="美時">美時</span></a>
+          <a class="nav-item" href="#" id="3037.TW_RP.html" data-search="3037.tw 欣興" data-title="3037.TW — 欣興" data-mkt="tw" title="3037.TW 欣興" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">3037.TW</span><span class="nav-sub" title="欣興">欣興</span></a>
+          <a class="nav-item" href="#" id="2337.TW_RP.html" data-search="2337.tw 旺宏" data-title="2337.TW — 旺宏" data-mkt="tw" title="2337.TW 旺宏" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">2337.TW</span><span class="nav-sub" title="旺宏">旺宏</span></a>
+          <a class="nav-item" href="#" id="8996.TW_RP.html" data-search="8996.tw 高力" data-title="8996.TW — 高力" data-mkt="tw" title="8996.TW 高力" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">8996.TW</span><span class="nav-sub" title="高力">高力</span></a>
+          <a class="nav-item" href="#" id="3653.TW_RP.html" data-search="3653.tw 健策" data-title="3653.TW — 健策" data-mkt="tw" title="3653.TW 健策" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">3653.TW</span><span class="nav-sub" title="健策">健策</span></a>
+          <a class="nav-item" href="#" id="ON_RP.html" data-search="on on semiconductor" data-title="ON — ON Semiconductor" data-mkt="us" title="ON ON Semiconductor" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">ON</span><span class="nav-sub" title="ON Semiconductor">ON Semiconductor</span></a>
+          <a class="nav-item" href="#" id="BTC-USD_RP.html" data-search="btc-usd bitcoin usd" data-title="BTC-USD — Bitcoin USD" data-mkt="idx" title="BTC-USD Bitcoin USD" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">BTC-USD</span><span class="nav-sub" title="Bitcoin USD">Bitcoin USD</span></a>
+          <a class="nav-item" href="#" id="ETH-USD_RP.html" data-search="eth-usd etc-usd" data-title="ETH-USD — ETC-USD" data-mkt="idx" title="ETH-USD ETC-USD" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">ETH-USD</span><span class="nav-sub" title="ETC-USD">ETC-USD</span></a>
+          <a class="nav-item" href="#" id="8081.TW_RP.html" data-search="8081.tw 致新" data-title="8081.TW — 致新" data-mkt="tw" title="8081.TW 致新" onclick="changeContent(this); return false;"><span class="nav-dot"></span><span class="nav-code">8081.TW</span><span class="nav-sub" title="致新">致新</span></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="sb-footer">
+      <span>切換: <span class="kbd">↑</span> <span class="kbd">↓</span> / <span class="kbd">J</span> <span class="kbd">K</span></span>
+      <span>側欄: <span class="kbd">[</span> 搜尋: <span class="kbd">/</span></span>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div id="main-wrap">
+    <header id="topbar">
+      <div class="tb-left">
+        <button class="tb-btn" onclick="toggleSidebar()" title="收折/展開側邊欄 (快捷鍵 [)">☰ 側欄</button>
+        <span id="currentTitle">Overview — 市場總覽</span>
+      </div>
+      <div class="tb-right">
+        <button class="tb-btn" onclick="stepNav(-1)" title="上一項目 (↑ 或 K)">◀ 上一頁</button>
+        <button class="tb-btn" onclick="stepNav(1)" title="下一項目 (↓ 或 J)">下一頁 ▶</button>
+        <a class="tb-btn" id="openNewTab" href="overview.html" target="_blank" title="在新分頁單獨開啟目前頁面">↗ 新分頁</a>
+      </div>
+    </header>
+
+    <div id="display" class="content" align="center">
+      <iframe id="report" src="overview.html" frameborder="0" width="100%" height="100%"></iframe>
+    </div>
+  </div>
+
+  <script>
+    var previousActive = document.getElementById("overview.html");
+    var currentMktFilter = "all";
+
+    function updateReadCounter() {
+      var total = document.querySelectorAll('.nav-group[data-group="portfolio"] .nav-item').length;
+      var readCount = document.querySelectorAll('.nav-group[data-group="portfolio"] .nav-item.read').length;
+      var el = document.getElementById("readCounter");
+      if (el) el.textContent = "已讀 " + readCount + " / " + total;
+    }
+
+    function resetReadState() {
+      document.querySelectorAll("#navbar .nav-item.read").forEach(function(el) {
+        el.classList.remove("read");
+      });
+      updateReadCounter();
+    }
+
+    function changeContent(obj) {
+      if (!obj) return;
+      var rpt = document.getElementById("report");
+      rpt.src = obj.id;
+
+      if (previousActive && previousActive !== obj) {
+        previousActive.classList.remove("active");
+        previousActive.classList.add("read");
+      }
+      obj.classList.add("active");
+      previousActive = obj;
+
+      var titleEl = document.getElementById("currentTitle");
+      if (titleEl) {
+        titleEl.textContent = obj.getAttribute("data-title") || obj.textContent;
+      }
+      var openBtn = document.getElementById("openNewTab");
+      if (openBtn) {
+        openBtn.href = obj.id;
+      }
+
+      obj.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      updateReadCounter();
+    }
+
+    function loadDefault() {
+      var first = document.getElementById("overview.html");
+      if (first) changeContent(first);
+    }
+
+    function toggleSidebar() {
+      document.body.classList.toggle("sb-collapsed");
+    }
+
+    function toggleGroup(hdr) {
+      if (hdr && hdr.parentElement) {
+        hdr.parentElement.classList.toggle("collapsed");
+      }
+    }
+
+    function setMktFilter(pill) {
+      document.querySelectorAll(".mkt-pill").forEach(function(p) {
+        p.classList.remove("active");
+      });
+      pill.classList.add("active");
+      currentMktFilter = pill.getAttribute("data-filter") || "all";
+      filterNav();
+    }
+
+    function filterNav() {
+      var q = (document.getElementById("sbSearch").value || "").trim().toLowerCase();
+      document.getElementById("sbClear").style.display = q ? "block" : "none";
+
+      var visibleStocks = 0;
+      document.querySelectorAll("#navbar .nav-item").forEach(function(item) {
+        var sText = item.getAttribute("data-search") || "";
+        var mkt = item.getAttribute("data-mkt") || "";
+        var matchQuery = !q || sText.indexOf(q) !== -1;
+        var matchMkt = !mkt || currentMktFilter === "all" || mkt === currentMktFilter;
+        var show = matchQuery && matchMkt;
+        item.style.display = show ? "flex" : "none";
+        if (mkt && show) visibleStocks++;
+      });
+      var badge = document.getElementById("stockBadge");
+      if (badge) badge.textContent = visibleStocks;
+    }
+
+    function clearSearch() {
+      var inp = document.getElementById("sbSearch");
+      inp.value = "";
+      filterNav();
+      inp.focus();
+    }
+
+    function getVisibleItems() {
+      var list = [];
+      document.querySelectorAll("#navbar .nav-item").forEach(function(el) {
+        var grp = el.closest(".nav-group");
+        var grpCollapsed = grp && grp.classList.contains("collapsed");
+        if (!grpCollapsed && el.style.display !== "none") {
+          list.push(el);
+        }
+      });
+      return list;
+    }
+
+    function stepNav(delta) {
+      var items = getVisibleItems();
+      if (!items.length) return;
+      var idx = items.indexOf(previousActive);
+      var nextIdx = idx === -1 ? 0 : (idx + delta + items.length) % items.length;
+      changeContent(items[nextIdx]);
+    }
+
+    document.addEventListener("keydown", function(e) {
+      var tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : "";
+      if (tag === "input" || tag === "textarea") {
+        if (e.key === "Escape") {
+          e.target.value = "";
+          filterNav();
+          e.target.blur();
+        } else if (e.key === "Enter") {
+          var vis = getVisibleItems();
+          if (vis.length > 0) changeContent(vis[0]);
+          e.target.blur();
+        }
+        return;
+      }
+      if (e.key === "/") {
+        e.preventDefault();
+        document.getElementById("sbSearch").focus();
+      } else if (e.key === "[") {
+        e.preventDefault();
+        toggleSidebar();
+      } else if (e.key === "ArrowDown" || e.key === "j" || e.key === "J") {
+        e.preventDefault();
+        stepNav(1);
+      } else if (e.key === "ArrowUp" || e.key === "k" || e.key === "K") {
+        e.preventDefault();
+        stepNav(-1);
+      }
+    });
+  </script>
+</body>
+</html>

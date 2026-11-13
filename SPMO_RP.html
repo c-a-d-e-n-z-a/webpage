@@ -1,0 +1,2233 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>SPMO — Invesco S&amp;P 500 Momentum ETF</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-size: 12px;
+      font-family: Arial, Helvetica, "Microsoft JhengHei", -apple-system, sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 8px 28px 16px;
+      background-color: #faf9f6;
+      color: #1c1917;
+    }
+
+    /* Header Bar */
+    .rp-header {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-top: 3px solid #FA8123;
+      border-radius: 6px;
+      padding: 6px 10px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+    .rp-title-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .rp-ticker {
+      font-size: 17px;
+      font-weight: 800;
+      color: #1c1917;
+      letter-spacing: 0.3px;
+    }
+    .rp-desc {
+      font-size: 15px;
+      font-weight: 700;
+      color: #FA8123;
+    }
+    .rp-time {
+      font-size: 11px;
+      color: #78716c;
+      background: #f5f3ef;
+      padding: 1px 7px;
+      border-radius: 999px;
+    }
+    .rp-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .rp-pill-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: #faf9f6;
+      border: 1px solid #d6d1c7;
+      color: #44403c;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.12s ease;
+    }
+    .rp-pill-link:hover {
+      background: #fff5eb;
+      border-color: #FA8123;
+      color: #d9650f;
+    }
+
+    /* Pyecharts Container Card */
+    .rp-chart-box {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 2px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+
+    /* Sub-Tabs Bar */
+    .rp-tabs-bar {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 4px 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      position: sticky;
+      top: 2px;
+      z-index: 50;
+      box-shadow: 0 1px 4px rgba(28, 25, 23, 0.05);
+    }
+    .rp-tab {
+      border: 1px solid transparent;
+      background: #f5f3ef;
+      color: #57534e;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+    .rp-tab:hover {
+      background: #fff5eb;
+      border-color: #fdba8c;
+      color: #d9650f;
+    }
+    .rp-tab.active {
+      background: #FA8123;
+      color: #ffffff;
+      box-shadow: 0 1px 3px rgba(250, 129, 35, 0.35);
+    }
+
+    /* Section Card */
+    .rp-sec-pane {
+      width: 100%;
+      margin: 0 0 4px;
+    }
+    .rp-card {
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 6px 8px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+      overflow-x: auto;
+    }
+    .rp-divider {
+      border: 0;
+      border-top: 1px solid #e6e2dc;
+      margin: 6px 0;
+    }
+
+    /* Modernized Tables (FBS / Pyramid / FinViz) */
+    .is-negative { color: #00994d; font-weight: 600; }
+    .is-positive { color: #cc2929; font-weight: 600; }
+    .snapshot-td2, .snapshot-td2-cp {
+      color: #1c1917;
+      text-decoration: none;
+      border: 1px solid #e6e2dc;
+      white-space: nowrap;
+    }
+    .snapshot-td2-cp { cursor: pointer; }
+    .fullview-ratings-outer, td.fullview-ratings-inner {
+      border: 1px solid #e6e2dc;
+    }
+    .t3r1 { color: #cc2929; font-weight: 700; }
+    .body-table-rating-downgrade { color: #cc2929; background: #fef2f2; }
+    .body-table-rating-upgrade { color: #00994d; background: #f0fdf4; }
+    .body-table-rating-neutral { color: #44403c; background: #faf9f6; }
+
+    table {
+      border-collapse: collapse;
+      margin: 6px auto;
+    }
+    td, th {
+      border: 1px solid #e6e2dc;
+      text-align: left;
+      padding: 6px 8px;
+    }
+    th {
+      background-color: #f6f4f0;
+      color: #1c1917;
+      font-weight: 700;
+    }
+    tr:nth-child(even) {
+      background-color: #fcfbf9;
+    }
+  </style>
+  <script>
+    function switchRpTab(btn) {
+      if (!btn) return;
+      var target = btn.getAttribute("data-target") || "all";
+      document.querySelectorAll(".rp-tab").forEach(function(b) {
+        b.classList.remove("active");
+      });
+      btn.classList.add("active");
+
+      document.querySelectorAll(".rp-sec-pane").forEach(function(pane) {
+        if (target === "all" || pane.id === target) {
+          pane.style.display = "block";
+        } else {
+          pane.style.display = "none";
+        }
+      });
+
+      try {
+        sessionStorage.setItem("sr_active_rp_tab", target);
+      } catch (e) {}
+
+      window.dispatchEvent(new Event("resize"));
+    }
+
+    window.addEventListener("load", function() {
+      try {
+        var saved = sessionStorage.getItem("sr_active_rp_tab");
+        if (saved && saved !== "all") {
+          var btn = document.querySelector('.rp-tab[data-target="' + saved + '"]');
+          if (btn) switchRpTab(btn);
+        }
+      } catch (e) {}
+    });
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/12.3.0/highcharts.min.js"></script>
+</head>
+<body>
+  <div class="rp-header">
+    <div class="rp-title-wrap">
+      <span class="rp-ticker">SPMO</span>
+      <span class="rp-desc">Invesco S&amp;P 500 Momentum ETF</span>
+      <span class="rp-time">更新: 2026-11-14 06:56</span>
+    </div>
+    <div class="rp-links">
+      <a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=SPMO&type=pe-ratio&statement=price-ratios&freq=Q" target="_blank">📈 PE Chart</a><a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=SPMO&type=price-book&statement=price-ratios&freq=Q" target="_blank">📊 PB Chart</a><a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=SPMO&type=price-sales&statement=price-ratios&freq=Q" target="_blank">📉 PS Chart</a><a class="rp-pill-link" href="https://www.wsj.com/market-data/quotes/SPMO/financials/quarter/cash-flow" target="_blank">💵 Finance</a><a class="rp-pill-link" href="https://www.dataroma.com/m/stock.php?sym=SPMO" target="_blank">🏛️ Ownership</a><a class="rp-pill-link" href="https://hedgefollow.com/stocks/SPMO" target="_blank">🏦 Institute</a><a class="rp-pill-link" href="https://unusualwhales.com/stock/SPMO/greek-exposure" target="_blank">⚡ GEX</a><a class="rp-pill-link" href="https://www.ptt.cc/bbs/Stock/search?q=SPMO" target="_blank">💬 PTT Search</a>
+    </div>
+  </div>
+
+  <div class="rp-chart-box" align="center">
+    <iframe id="stock" src="SPMO_EC.html" frameborder="0" width="100%" height="1600px" scrolling="no"></iframe>
+  </div>
+
+  <div class="rp-tabs-bar"><button class="rp-tab active" data-target="all" onclick="switchRpTab(this)">📋 全部展開</button><button class="rp-tab" data-target="sec-quant" onclick="switchRpTab(this)">🧮 量化與主動ETF</button><button class="rp-tab" data-target="sec-stockdog" onclick="switchRpTab(this)">🐶 主力籌碼</button><button class="rp-tab" data-target="sec-finviz" onclick="switchRpTab(this)">🌎 FinViz 美股基本面</button></div>
+  <div class="rp-sec-pane" id="sec-quant"><style>.pq-wrap{width:100%;margin:0;font-family:Arial,Helvetica,"Microsoft JhengHei",sans-serif;color:#222}.pq-sec{background:#fff;border:1px solid #e6e2dc;border-radius:6px;padding:6px 8px;margin-bottom:4px;box-shadow:0 1px 2px rgba(28,25,23,.03)}.pq-sec h2{font-size:14px;color:#1c1917;border-left:4px solid #FA8123;padding-left:6px;margin:0 0 6px}.pq-sec h3{font-size:12px;color:#44403c;margin:6px 0 4px}.pq-banner{background:#fff9f4;border-left:4px solid #FA8123;padding:5px 8px;border-radius:4px;font-size:12px;line-height:1.5;margin-bottom:6px;color:#292524}.pq-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:6px}table.pq-tbl{width:100%;border-collapse:collapse;font-size:12px;font-family:Arial,Helvetica,"Microsoft JhengHei",sans-serif}table.pq-tbl th,table.pq-tbl td{border:1px solid #e6e2dc !important;padding:4px 6px !important;text-align:right}table.pq-tbl th{background:#f6f4f0 !important;color:#1c1917 !important;font-weight:bold}table.pq-tbl tr:nth-child(even){background:#fcfbf9}</style><div class="pq-wrap">
+
+    <div class="pq-sec">
+      <h2>🧮 量化風險、波動率體制與因子 Alpha 拆解 (SPMO)</h2>
+      <div class="pq-banner">
+        <b>現價：</b> <b>132.31</b> ｜
+        <b>動能 (1D / 5D / 20D / 60D / 1Y / 12-1M)：</b> <span style="color:#00994d;font-weight:bold">-1.58%</span> / <span style="color:#cc2929;font-weight:bold">+6.35%</span> / <span style="color:#00994d;font-weight:bold">-6.09%</span> / <span style="color:#00994d;font-weight:bold">-10.64%</span> / <span style="color:#cc2929;font-weight:bold">+13.38%</span> / <span style="color:#cc2929;font-weight:bold">+23.56%</span> ｜
+        <b>200D Volume Profile：</b> POC <b>152.11</b> (VAH <b>157.62</b> / VAL <b>130.43</b>)<br>
+        <b>尾部風險與風險調整指標 (1Y)：</b> 年化波動率 <b>27.18%</b> (GARCH 1D預測 <b>39.17%</b>) ｜
+        Sortino <b>0.57</b> ｜ Calmar <b>0.62</b> ｜
+        最大回撤 (MDD) <span style="color:#00994d;font-weight:bold">-24.13%</span> ｜
+        95% VaR / CVaR: <span style="color:#00994d;font-weight:bold">-2.76% / -3.87%</span> ｜
+        <b>Lo-MacKinlay VR(5/10/20)：</b> 0.878(z*=-0.83) / 0.752(z*=-1.09) / 0.832(z*=-0.54)
+        <br><b>今日觸發技術訊號：</b> [BUY]     : 週KD黃金交叉 ｜ [SELL]    : 高於賣點 ｜ [OTHER]   : 三月KD由上往下
+      </div>
+      <table class="pq-tbl" style="margin-top:8px"><thead><tr><th style="text-align:left">Benchmark</th><th>20D (Stock / Bench)</th><th>20D Rel Excess</th><th>60D Rel Excess</th><th>1Y Rel Excess</th><th>1Y Beta (β)</th><th>R²</th><th>1Y Residual Alpha (α)</th></tr></thead><tbody><tr><td style="text-align:left"><b>^GSPC</b></td><td><span style="color:#00994d;font-weight:bold">-6.09%</span> / <span style="color:#00994d;font-weight:bold">-1.28%</span></td><td><span style="color:#00994d;font-weight:bold">-4.81%</span></td><td><span style="color:#00994d;font-weight:bold">-9.60%</span></td><td><span style="color:#cc2929;font-weight:bold">+0.50%</span></td><td><b>1.57</b></td><td>0.63</td><td><span style="color:#00994d;font-weight:bold">-3.15%</span></td></tr><tr><td style="text-align:left"><b>QQQ</b></td><td><span style="color:#00994d;font-weight:bold">-6.09%</span> / <span style="color:#00994d;font-weight:bold">-4.21%</span></td><td><span style="color:#00994d;font-weight:bold">-1.88%</span></td><td><span style="color:#00994d;font-weight:bold">-6.28%</span></td><td><span style="color:#cc2929;font-weight:bold">+1.41%</span></td><td><b>1.15</b></td><td>0.83</td><td><span style="color:#cc2929;font-weight:bold">+0.59%</span></td></tr><tr><td style="text-align:left"><b>SOXX</b></td><td><span style="color:#00994d;font-weight:bold">-6.09%</span> / <span style="color:#00994d;font-weight:bold">-9.22%</span></td><td><span style="color:#cc2929;font-weight:bold">+3.13%</span></td><td><span style="color:#cc2929;font-weight:bold">+3.61%</span></td><td><span style="color:#00994d;font-weight:bold">-38.59%</span></td><td><b>0.51</b></td><td>0.88</td><td><span style="color:#00994d;font-weight:bold">-16.32%</span></td></tr></tbody></table>
+    </div>
+    
+</div></div>
+<div class="rp-sec-pane" id="sec-stockdog"><div class="rp-card" align="center"><iframe id="stockdog" src="SPMO_SD.html" frameborder="0" width="100%" height="1000px" scrolling="no"></iframe></div></div>
+<div class="rp-sec-pane" id="sec-finviz"><div class="rp-card"><div align="center"><a href="https://www.marketwatch.com/investing/stock/SPMO/analystestimates" target="_blank"><img style="max-height:100%; max-width:100%; object-fit:contain" src=https://app.quotemedia.com/quotetools/getChart?webmasterId=91386&symbol=SPMO&chtype=FinancialLine&chcon=on&chdon=on&chfrmon=on&chscale=1d&chton=on&chwid=800&chhig=380&chln=ffa500&chfill=ffa500&chfnts=10&chbdr=000000&chbgch=ffffffff&chgrd=cccccc&svg=false&lang=en&locale=en></a></div>
+
+<hr class="rp-divider">
+<table align="center" class="snapshot-table2" align="center" style="width:100%; border-collapse:collapse; font-size:12px; margin:auto;">
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Single category of the ETF"><div class="snapshot-td-label">Category</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" title="US Equities - Factor &amp; Thematic" style=""><div class="snapshot-td-content"><b>US Equities - Factor &amp; Thematic</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="The asset type of the ETF"><div class="snapshot-td-label">Asset Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" title="Equities (Stocks)" style=""><div class="snapshot-td-content"><b>Equities (Stocks)</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/screener/etf?v=181&amp;ft=4&amp;f=etf_tags_us" class="hover:underline" target="_blank"><b>U.S.</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="1-Year Annualized Return"><div class="snapshot-td-label">Return% 1Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">12.70%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Total count of all holdings in the ETF"><div class="snapshot-td-label">Total Holdings</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>103</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Week, Excl. Dividends)"><div class="snapshot-td-label">Perf Week</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">6.35%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="The fund manager (ETF) or issuing bank (ETN)"><div class="snapshot-td-label">Sponsor</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>Invesco</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="A simple, broad categorization of each ETF based on its asset class and geographical exposure"><div class="snapshot-td-label">ETF Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/screener/etf?v=181&amp;ft=4&amp;f=etf_tags_equity" class="hover:underline" target="_blank"><b>equity</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="3-Year Annualized Return"><div class="snapshot-td-label">Return% 3Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">32.42%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Assets Under Management"><div class="snapshot-td-label">AUM</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>21.14B</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Month, Excl. Dividends)"><div class="snapshot-td-label">Perf Month</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-8.23%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Fund family to which the ETF belongs, as categorized by the ETF Sponsor"><div class="snapshot-td-label">Fund Family</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Type of bonds held in the ETF"><div class="snapshot-td-label">Bond Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/screener/etf?v=181&amp;ft=4&amp;f=etf_tags_momentum" class="hover:underline" target="_blank"><b>momentum</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="5-Year Annualized Return"><div class="snapshot-td-label">Return% 5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">16.95%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Net Asset Value per Share"><div class="snapshot-td-label">NAV/sh</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Quarter, Excl. Dividends)"><div class="snapshot-td-label">Perf Quarter</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-14.73%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Name of the underlying index tracked by the ETF, if applicable"><div class="snapshot-td-label">Index</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" title="S&amp;P 500 Momentum Index" style=""><div class="snapshot-td-content"><b>S&amp;P 500 Momentum Index</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Targeted exposure to securities of a specific maturity range of bond ETFs"><div class="snapshot-td-label">Average Maturity</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/screener/etf?v=181&amp;ft=4&amp;f=etf_tags_sp500" class="hover:underline" target="_blank"><b>SP500</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="10-Year Annualized Return"><div class="snapshot-td-label">Return% 10Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 52-Week High"><div class="snapshot-td-label">52W High</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>162.30 <small class="text-2xs"><span class="color-text is-negative">-18.48%</span></small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Half Year, Excl. Dividends)"><div class="snapshot-td-label">Perf Half Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-7.79%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="For ETFs that track an underlying index, this field provides detail on the index weighting type"><div class="snapshot-td-label">Index Weighting</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Type of commodities held in the ETF"><div class="snapshot-td-label">Commodity Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Annualized Return Since Inception"><div class="snapshot-td-label">Return% SI</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 52-Week Low"><div class="snapshot-td-label">52W Low</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>107.24 <small class="text-2xs"><span class="color-text is-positive">23.38%</span></small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Year To Date, Excl. Dividends)"><div class="snapshot-td-label">Perf YTD</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">10.89%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Actively managed or passively index-linked ETF"><div class="snapshot-td-label">Active/Passive</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Proprietary quant model used as the underlying strategy for the ETF"><div class="snapshot-td-label">Quant Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="1-Month Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% 1M</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">2.12%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Volatility (Week, Month)"><div class="snapshot-td-label">Volatility</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">2.42% 2.17%</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Year, Excl. Dividends)"><div class="snapshot-td-label">Perf Year</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">12.43%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Trailing 12 Months Dividend"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=SPMO&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank">Dividend TTM</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=SPMO&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank"><b>1.10 (0.83%)</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF's strategy involves providing exposure to a specific social or environmental theme"><div class="snapshot-td-label">ESG Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="3-Month Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% 3M</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">6.13%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Average True Range (14)"><div class="snapshot-td-label">ATR (14)</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>3.71</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (3 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 3Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">118.12%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Ex-Dividend Date"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=SPMO&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank">Dividend Ex-Date</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=SPMO&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank"><b>Sep 21, 2026</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Intended investment objective of holding dividend-oriented stocks as stated in the ETF prospectus"><div class="snapshot-td-label">Dividend Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Targeted exposure to a sector or theme of the ETF"><div class="snapshot-td-label">Sector/Theme</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Year-to-date Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% YTD</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">40.23%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Relative Strength Index"><div class="snapshot-td-label">RSI (14)</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>41.83</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (5 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">101.98%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Dividend growth over 3 and 5 years"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=SPMO&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank">Dividend Gr. 3/5Y</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=SPMO&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank"><b><small class="text-2xs"><span class="color-text is-negative">-2.61%</span> 5.47%</small></b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="&lt;span class='font-semibold'&gt;Legal Structure&lt;/span&gt;&lt;br&gt;AST (Active Semi Transparent)&lt;br&gt;ETC&lt;br&gt;ETF (Open end fund)&lt;br&gt;ETN"><div class="snapshot-td-label">Structure Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Targeted exposure to a specific type of geography‐based grouping"><div class="snapshot-td-label">Region</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="1-Year Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% 1Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Beta"><div class="snapshot-td-label">Beta</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>1.12</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (10 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 10Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">399.67%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Gross expense net of fee waivers, as a % of net assets as published by the ETF Issuer"><div class="snapshot-td-label">Expense</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">0.13%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Growth or Value based on the stated style tilt in the ETF prospectus"><div class="snapshot-td-label">Growth/Value</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 20-Day Simple Moving Average"><div class="snapshot-td-label">SMA20</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-2.59%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="3-Year Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% 3Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Relative volume"><div class="snapshot-td-label">Rel Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.78</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Previous close"><div class="snapshot-td-label">Prev Close</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>134.43</b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Inverse or leveraged ETF"><div class="snapshot-td-label">Inverse/Leveraged</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Market capitalization range of the underlying securities"><div class="snapshot-td-label">Market Cap</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 50-Day Simple Moving Average"><div class="snapshot-td-label">SMA50</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-8.13%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="5-Year Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% 5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Average volume (3 month)"><div class="snapshot-td-label">Avg Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>2.06M</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Current stock price"><div class="snapshot-td-label">Price</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>132.31</b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="IPO Date"><div class="snapshot-td-label">IPO</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>Oct 12, 2015</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Stock has options trading on a market exchange / Stock is available to sell short"><div class="snapshot-td-label">Option/Short</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">Yes / Yes</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 200-Day Simple Moving Average"><div class="snapshot-td-label">SMA200</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-4.52%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Trades"><div class="snapshot-td-label">Trades</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Volume"><div class="snapshot-td-label">Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>1,605,999</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (today)"><div class="snapshot-td-label">Change %</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-1.58%</span></b></div></td>
+</tr>
+</table>
+
+
+<hr class="rp-divider">
+<div class="body-table-news-wrapper news-table_wrapper is-collapsed"><table align="center" align="center" width="70%" cellpadding="1" cellspacing="0" border="0" id="news-table" class="fullview-news-outer news-table" data-ticker="SPMO">
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/story/the-10-best-stocks-for-a-year-end-momentum-trade-8d4cf8f7?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-12-26 04:50PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/the-10-best-stocks-for-a-year-end-momentum-trade-8d4cf8f7?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        The 10 best stocks for a year-end momentum trade&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/story/the-stock-markets-front-runners-stumbled-in-october-heres-where-the-smart-money-is-moving-now-f901472a?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-31-26 09:01AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/the-stock-markets-front-runners-stumbled-in-october-heres-where-the-smart-money-is-moving-now-f901472a?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        The stock market's front-runners stumbled in October. Here's where the smart money is moving now.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/record-etf-takes-shape-inflows-210017196.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-21-26 05:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/record-etf-takes-shape-inflows-210017196.html" target="_blank" rel="nofollow">&#13;
+                        A Record ETF Year Takes Shape as Inflows Near $1.5 Trillion&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/options/articles/daily-etf-flows-spmos-aum-210026978.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-18-26 05:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/options/articles/daily-etf-flows-spmos-aum-210026978.html" target="_blank" rel="nofollow">&#13;
+                        Daily ETF Flows: SPMO's AUM Surges&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/best-low-volatility-funds-frothy-market-ed7100bf?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-09-26 02:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/best-low-volatility-funds-frothy-market-ed7100bf?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        The Best Low-Volatility Funds for a Frothy Market&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/spmo-etf-hides-heavy-tech-122338936.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-30-26 08:23AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/spmo-etf-hides-heavy-tech-122338936.html" target="_blank" rel="nofollow">&#13;
+                        SPMO ETF Hides A Heavy Tech Tilt&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Trefis)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">&#13;
+         +5.17%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/story/time-to-buy-the-dip-in-momentum-stocks-after-a-punishing-july-drawdown-heres-what-history-tells-us-bc5c0c4e?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-21-26 09:25AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/time-to-buy-the-dip-in-momentum-stocks-after-a-punishing-july-drawdown-heres-what-history-tells-us-bc5c0c4e?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        Time to buy the dip in momentum stocks after a punishing July drawdown? Here's what history tells us.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/paying-skill-just-market-210925671.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-20-26 05:09PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/paying-skill-just-market-210925671.html" target="_blank" rel="nofollow">&#13;
+                        Are You Paying For Skill Or Just The Market?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Trefis)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/story/this-powerful-stock-market-momentum-trade-has-hit-a-wall-after-seeing-biggest-unwind-since-2001-52ad4151?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-15-26 06:10PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/this-powerful-stock-market-momentum-trade-has-hit-a-wall-after-seeing-biggest-unwind-since-2001-52ad4151?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        This powerful stock-market momentum trade has hit a wall after seeing biggest unwind since 2001&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/6510b351-2367-3536-89d0-f54b7186f774/which-hot-funds-have-staying.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-14-26 08:44AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/6510b351-2367-3536-89d0-f54b7186f774/which-hot-funds-have-staying.html" target="_blank" rel="nofollow">&#13;
+                        Which Hot Funds Have Staying Power?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Trefis)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/story/why-the-stock-markets-biggest-laggards-might-be-your-best-defense-against-a-summer-selloff-be079d8e?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-08-26 11:02AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/why-the-stock-markets-biggest-laggards-might-be-your-best-defense-against-a-summer-selloff-be079d8e?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        Why the stock market's biggest laggards might be your best defense against a summer selloff&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/fc2a7784-abce-37ff-8035-b9476e4b961f/micron%27s-upbeat-forecast.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-07-26 05:52PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/fc2a7784-abce-37ff-8035-b9476e4b961f/micron%27s-upbeat-forecast.html" target="_blank" rel="nofollow">&#13;
+                        Micron's Upbeat Forecast Lifts SPMO's Outlook&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Trefis)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/story/why-the-stock-markets-red-hot-momentum-trade-might-be-headed-for-a-violent-unwind-this-month-78a45397?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-05-26 09:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/why-the-stock-markets-red-hot-momentum-trade-might-be-headed-for-a-violent-unwind-this-month-78a45397?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        Why the stock-market's red-hot momentum trade might be headed for a violent unwind this month&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/stock-market-spacex-ipo-604410d9?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jun-13-26 10:51AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/stock-market-spacex-ipo-604410d9?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        The Stock Market Survived the SpaceX IPO. What to Watch for Next.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/spacex-ipo-tech-stocks-rally-bull-market-openai-anthropic-6957b849?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jun-12-26 05:03PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/spacex-ipo-tech-stocks-rally-bull-market-openai-anthropic-6957b849?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        SpaceX Launches. The Future Remains Murky.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/what-the-spacex-ipo-means-for-the-stock-market-604410d9?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            02:55PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/what-the-spacex-ipo-means-for-the-stock-market-604410d9?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        What the SpaceX IPO Means for the Stock Market&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/stocks-value-momentum-market-5105d0f0?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jun-05-26 03:46PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/stocks-value-momentum-market-5105d0f0?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        The Market's Hottest Stocks Are Losing Steam. Here's Where Money Is Going Next.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">&#13;
+         -5.59%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/the-stock-market-may-soon-regret-the-end-of-earnings-season-96e8d83f?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            May-29-26 03:31PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/the-stock-market-may-soon-regret-the-end-of-earnings-season-96e8d83f?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        The Stock Market May Soon Regret the End of Earnings Season&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/9010f3e0-18ae-3e6f-933f-1dbb60418878/the-most-compared-etfs-right.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            May-28-26 07:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/9010f3e0-18ae-3e6f-933f-1dbb60418878/the-most-compared-etfs-right.html" target="_blank" rel="nofollow">&#13;
+                        The Most-Compared ETFs Right Now  And What They Reveal&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/story/these-alternative-index-strategies-are-beating-the-s-p-500-after-the-stock-markets-new-highs-9bd7295a?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Apr-21-26 10:18AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/these-alternative-index-strategies-are-beating-the-s-p-500-after-the-stock-markets-new-highs-9bd7295a?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        These alternative index strategies are beating the S&amp;P 500 after the stock market's new highs&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Feb-19-26 01:05PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/316332/broadcom-unveils-revolutionary-hardware-chip-for-5g6g-infrastructure" target="_blank">&#13;
+                        Broadcom Unveils Revolutionary Hardware Chip For 5G/6G Infrastructure&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Benzinga)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/73bd6401-4069-3e77-b629-5a7173e19d11/this-1-etf-keeps.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            10:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/73bd6401-4069-3e77-b629-5a7173e19d11/this-1-etf-keeps.html" target="_blank" rel="nofollow">&#13;
+                        This 1 ETF Keeps Outperforming the S&amp;P 500- Expect it to Win Again This Year&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(24/7 Wall St.)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Jan-26-26 08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/286820/what-geopolitics-earnings-growth-to-drive-wall-street-etfs" target="_blank">&#13;
+                        What Geopolitics? Earnings Growth to Drive Wall Street ETFs&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Jan-23-26 01:48PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/285649/is-broadcom-stock-a-buy-now-analysts-see-ai-demand-powering-avgo-higher" target="_blank">&#13;
+                        Is Broadcom Stock A Buy Now? Analysts See AI Demand Powering AVGO Higher&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Benzinga)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Sep-15-25 06:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/165802/analysts-boost-sp-500-target-etfs-in-focus" target="_blank">&#13;
+                        Analysts Boost S&amp;P 500 Target: ETFs in Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Sep-04-25 07:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/157641/4-factors-that-could-boost-sp-500-even-further-in-2026" target="_blank">&#13;
+                        4 Factors That Could Boost S&amp;P 500 Even Further in 2026&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Jul-28-25 11:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/117639/sp-500s-record-streak-boosts-high-beta-momentum-etfs" target="_blank">&#13;
+                        S&amp;P 500's Record Streak Boosts High Beta, Momentum ETFs&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            06:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/116936/etfs-in-focus-as-sp-500-hits-record-highs-in-a-v-shaped-recovery" target="_blank">&#13;
+                        ETFs in Focus as S&amp;P 500 Hits Record Highs in a V-Shaped Recovery&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/momentum-funds-beating-stock-market-865f309b?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jun-25-25 02:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/momentum-funds-beating-stock-market-865f309b?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Momentum Funds Are Beating the Market. How They Do It.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            May-21-25 08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/62741/whats-next-for-sp-500-etfs-history-and-valuation-offer-clues" target="_blank">&#13;
+                        What's Next for S&amp;P 500 ETFs? History and Valuation Offer Clues&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            May-20-25 10:40AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/61923/time-to-capitalize-on-market-moves-with-momentum-etfs" target="_blank">&#13;
+                        Time to Capitalize on Market Moves With Momentum ETFs?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            May-19-25 08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/60650/guide-to-sp-500-etf-investing" target="_blank">&#13;
+                        Guide to S&amp;P 500 ETF Investing&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            May-14-25 05:52AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/56919/momentum-etf-spmo-hits-new-52-week-high" target="_blank">&#13;
+                        Momentum ETF (SPMO) Hits New 52-Week High&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            05:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/56881/sp-500-turns-green-in-2025-etfs-to-buy-on-upbeat-prospects" target="_blank">&#13;
+                        S&amp;P 500 Turns Green in 2025: ETFs to Buy on Upbeat Prospects&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4783428-fed-is-in-good-place-but-for-how-long?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            May-08-25 01:20AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4783428-fed-is-in-good-place-but-for-how-long?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        The Fed Is In A 'Good Place' - But For How Long?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4783424-feds-interest-rate-decision-may-7-2025?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            01:05AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4783424-feds-interest-rate-decision-may-7-2025?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Fed's Interest Rate Decision: May 7, 2025&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4783185-mar-a-largo-accord-will-create-an-asset-bubble?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            May-07-25 04:51PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4783185-mar-a-largo-accord-will-create-an-asset-bubble?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Mar-A-Largo Accord Will Create An Asset Bubble&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4783183-feds-wait-see-stance-could-persist-through-september?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:53PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4783183-feds-wait-see-stance-could-persist-through-september?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Fed's Wait And See Stance Could Persist Through To September&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4783177-fed-watch-still-waiting?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:45PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4783177-fed-watch-still-waiting?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Fed Watch: Still Waiting&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4783159-tariff-tension-damage-supply-chains-mean-empty-shelves-start-economic-contraction?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:25PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4783159-tariff-tension-damage-supply-chains-mean-empty-shelves-start-economic-contraction?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Tariff Tension: Will The Damage To Supply Chains Mean Empty Shelves And The Start Of An Economic Contraction?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4783130-making-sense-of-recent-contraction-in-real-gdp?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            02:50PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4783130-making-sense-of-recent-contraction-in-real-gdp?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Making Sense Of The Recent Contraction In Real GDP&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4783080-from-a-sentiment-perspective?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            02:32PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4783080-from-a-sentiment-perspective?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        From A Sentiment Perspective&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4782934-rebound-for-initial-us-q2-gdp-nowcast-could-be-misleading?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            11:40AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4782934-rebound-for-initial-us-q2-gdp-nowcast-could-be-misleading?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Rebound For Initial U.S. Q2 GDP Nowcast Could Be Misleading&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4782961-here-is-why-tariffs-wont-bring-back-manufacturing?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            11:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4782961-here-is-why-tariffs-wont-bring-back-manufacturing?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Here's Why Tariffs Won't Bring Back Manufacturing&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4782900-economic-forecast-update-may-2025-short-rocky-road?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            10:20AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4782900-economic-forecast-update-may-2025-short-rocky-road?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Economic Forecast Update, May 2025: A Short Rocky Road&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4782884-trade-policy-sequel-slumps?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            09:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4782884-trade-policy-sequel-slumps?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Trade Policy And Sequel Slumps&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4782778-jobs-last-three-months-saw-downward-revisions-of-57k-on-average?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            05:21AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4782778-jobs-last-three-months-saw-downward-revisions-of-57k-on-average?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Jobs: Last Three Months Saw Downward Revisions Of 57k On Average&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4782779-china-unveils-fresh-monetary-policy-easing-package-ahead-this-week-trade-talks?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            04:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4782779-china-unveils-fresh-monetary-policy-easing-package-ahead-this-week-trade-talks?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        China Unveils Fresh Monetary Policy Easing Package Ahead Of This Week's Trade Talks&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4782736-spmo-recent-performance-again-shows-the-funds-effective-strategy?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            02:46AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4782736-spmo-recent-performance-again-shows-the-funds-effective-strategy?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        SPMO: Recent Performance Again Shows The Fund's Effective Strategy&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781899-time-in-the-market-not-timing-the-market?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            May-05-25 03:50PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781899-time-in-the-market-not-timing-the-market?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Time In The Market, Not Timing The Market&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781909-how-tariffs-could-accelerate-americas-ai-revolution-implications-for-investors?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:34PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781909-how-tariffs-could-accelerate-americas-ai-revolution-implications-for-investors?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        How Tariffs Could Accelerate America's AI Revolution: Implications For Investors&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781892-gold-equity-bonds-somethings-gotta-give-and-i-think-its-bonds?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:09PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781892-gold-equity-bonds-somethings-gotta-give-and-i-think-its-bonds?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Gold, Equity, Bonds: Something's Gotta Give - And I Think It's Bonds&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781883-ism-services-pmi-expanded-for-tenth-straight-month-april?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            01:37PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781883-ism-services-pmi-expanded-for-tenth-straight-month-april?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        ISM Services PMI Expanded For Tenth Straight Month In April&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781840-cash-strapped-investors-borrowing-against-illiquid-funds?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            12:12PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781840-cash-strapped-investors-borrowing-against-illiquid-funds?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Cash-Strapped Investors Borrowing Against Illiquid Funds&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781836-a-tariff-time-bomb-may-be-ticking-for-the-market?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            11:59AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781836-a-tariff-time-bomb-may-be-ticking-for-the-market?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        A Tariff Time Bomb May Be Ticking For The Market&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781832-fed-set-keep-rates-steady-despite-pressure-from-trump?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            11:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781832-fed-set-keep-rates-steady-despite-pressure-from-trump?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Fed Set To Keep Rates Steady, Despite Pressure From Trump&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781802-who-blinks-first-in-us-china-trade-war?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            10:05AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781802-who-blinks-first-in-us-china-trade-war?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Who Blinks First In The U.S.-China Trade War?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781770-fed-vs-trump-what-really-at-stake-this-wednesday?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            09:13AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781770-fed-vs-trump-what-really-at-stake-this-wednesday?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        The Fed Vs. Trump: What's Really At Stake This Wednesday&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781765-sp500-erases-losses-from-trump-global-tariff-policy?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            08:55AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781765-sp500-erases-losses-from-trump-global-tariff-policy?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        S&amp;P 500 Erases Losses From Trump Global Tariff Policy&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781779-equity-market-outlook-q2-2025?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            08:41AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781779-equity-market-outlook-q2-2025?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Equity Market Outlook Q2 2025&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781732-bullish-bearish-records-plentiful-how-to-anticipate-what-happens-next?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781732-bullish-bearish-records-plentiful-how-to-anticipate-what-happens-next?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Bullish And Bearish Records Are Plentiful. How To Anticipate What Happens Next&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781743-the-end-of-american-exceptionalism?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:04AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781743-the-end-of-american-exceptionalism?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        The End Of American Exceptionalism?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781704-weekly-market-pulse-deja-vu-all-over-again?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            04:26AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781704-weekly-market-pulse-deja-vu-all-over-again?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Weekly Market Pulse: Deja Vu All Over Again&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781549-sp500-what-bears-getting-wrong-week-starting-5-may?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            May-04-25 04:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781549-sp500-what-bears-getting-wrong-week-starting-5-may?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        S&amp;P 500: What Bears Are Getting Wrong - Week Starting 5th May (Technical Analysis)&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781617-jobs-report-last-hurrah?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            11:26AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781617-jobs-report-last-hurrah?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        The Jobs Report Was The Last Hurrah&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781606-the-greed-and-fear-tango-markets-in-april-2025?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            10:10AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781606-the-greed-and-fear-tango-markets-in-april-2025?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        The Greed And Fear Tango: The Markets In April 2025&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781538-markets-brace-trump-powell-tensions-may-rise?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            10:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781538-markets-brace-trump-powell-tensions-may-rise?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Markets Brace As Trump-Powell Tensions May Rise After Fed Meeting&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781590-rebound-now-overdone?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            08:39AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781590-rebound-now-overdone?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        The Rebound Is Now Overdone&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781233-investing-groups-roundtable-tariff-policy-impact-part-3?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781233-investing-groups-roundtable-tariff-policy-impact-part-3?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Investing Groups Roundtable: Tariff Policy Impact - Part 3&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781545-economic-decline-gains-momentum?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            04:10AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781545-economic-decline-gains-momentum?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Economic Decline Gains Momentum&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781522-the-1-minute-market-report-may-4-2025?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            May-03-25 10:24PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781522-the-1-minute-market-report-may-4-2025?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        The 1-Minute Market Report May 4, 2025&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781511-april-labor-market-report-avoid-being-contrarian-investor?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            10:18AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781511-april-labor-market-report-avoid-being-contrarian-investor?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        April Labor Market Report: Avoid Being A Contrarian Investor&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781423-4-things-fed-might-answer-after-may-2025-rate-decision?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781423-4-things-fed-might-answer-after-may-2025-rate-decision?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        4 Things The Fed Might Answer After May 2025's Rate Decision&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781388-weekly-indicators-no-negative-impacts-from-tariffs-yet?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781388-weekly-indicators-no-negative-impacts-from-tariffs-yet?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Weekly Indicators: No Negative Impacts From Tariffs Yet&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781492-how-to-profit-from-what-might-be-craziest-year-in-stock-market-history?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781492-how-to-profit-from-what-might-be-craziest-year-in-stock-market-history?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        How To Profit From What Might Be The Craziest Year In Stock Market History&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781463-weekly-commentary-the-typical-and-atypical?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:40AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781463-weekly-commentary-the-typical-and-atypical?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Weekly Commentary: The Typical And Atypical&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781435-employment-construction-industrial-production?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            12:50AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781435-employment-construction-industrial-production?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Employment, Construction And Industrial Production&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781427-25-years-of-higher-interest-rates-ahead?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            12:35AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781427-25-years-of-higher-interest-rates-ahead?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        25 Years Of Higher Interest Rates Ahead?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781411-markets-weekly-outlook-central-banks-in-focus-risk-appetite-improves?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            12:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781411-markets-weekly-outlook-central-banks-in-focus-risk-appetite-improves?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Markets Weekly Outlook - Central Banks In Focus As Risk Appetite Improves&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781424-employment-report-177k-jobs-added-april-more-than-expected?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            12:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781424-employment-report-177k-jobs-added-april-more-than-expected?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Employment Report: 177K Jobs Added In April, More Than Expected&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781419-soft-data-effect-on-hard-data?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            May-02-25 11:30PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781419-soft-data-effect-on-hard-data?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        The Soft Data Effect On Hard Data&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781414-cio-notebook-us-non-farm-payrolls-provide-comfort-negotiations-continue?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            11:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781414-cio-notebook-us-non-farm-payrolls-provide-comfort-negotiations-continue?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        CIO Notebook: U.S. Non-Farm Payrolls Provide Comfort As Negotiations Continue&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781314-recession-not-today-jobs-gdp-better-than-anticipated?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:54PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781314-recession-not-today-jobs-gdp-better-than-anticipated?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Recession? Not Today - Jobs, GDP Better Than Anticipated&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781318-april-jobs-report-is-surprisingly-resilient-trade-tensions?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:30PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781318-april-jobs-report-is-surprisingly-resilient-trade-tensions?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        April's Jobs Report Is Surprisingly Resilient In The Face Of Trade Tensions&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781293-behind-april-jobs-report-fragile-momentum-and-market-euphoria?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            02:45PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781293-behind-april-jobs-report-fragile-momentum-and-market-euphoria?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Behind April's Jobs Report: Fragile Momentum And Market Euphoria&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781298-fed-to-push-back-against-calls-for-rate-cuts?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            02:40PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781298-fed-to-push-back-against-calls-for-rate-cuts?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Fed To Push Back Against Calls For Rate Cuts&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781286-brad-simpson-on-how-investors-can-find-order-within-current-market-disorder?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            02:12PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781286-brad-simpson-on-how-investors-can-find-order-within-current-market-disorder?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Brad Simpson On How Investors Can Find Order Within The Current Market Disorder&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781225-liquidity-appears-to-have-vanished-from-the-market?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            01:33PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781225-liquidity-appears-to-have-vanished-from-the-market?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Liquidity Appears To Have Vanished From The Market&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781164-will-economic-contraction-in-first-quarter-speed-up-timeline-for-fed-rate-cuts?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            11:10AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781164-will-economic-contraction-in-first-quarter-speed-up-timeline-for-fed-rate-cuts?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Will Economic Contraction In The First Quarter Speed Up The Timeline For Fed Rate Cuts?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781166-household-struggles-weigh-on-real-estate-and-spending?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            11:07AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781166-household-struggles-weigh-on-real-estate-and-spending?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Household Struggles Weigh On Real Estate And Spending&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781137-april-jobs-report-was-steady-revisions-are-a-warning?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            10:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781137-april-jobs-report-was-steady-revisions-are-a-warning?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        April Jobs Report Was Steady, Revisions Are A Warning&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781146-us-jobs-market-holds-firm-ahead-of-tariff-storm?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            10:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781146-us-jobs-market-holds-firm-ahead-of-tariff-storm?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        U.S. Jobs Market Holds Firm Ahead Of The Tariff Storm&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781110-the-current-rally-is-whistling-past-the-graveyard?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            10:43AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781110-the-current-rally-is-whistling-past-the-graveyard?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        The Current Rally Is Whistling Past The Graveyard&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781129-april-jobs-report-labor-market-still-solid-despite-greater-uncertainty-and-tariffs?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            10:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781129-april-jobs-report-labor-market-still-solid-despite-greater-uncertainty-and-tariffs?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        April Jobs Report: Labor Market Still Solid Despite Greater Uncertainty And Tariffs&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781114-solid-reading-on-april-employment?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            09:50AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781114-solid-reading-on-april-employment?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        A Solid Reading On April Employment&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781102-another-solid-jobs-report-amid-tariff-turmoil-stocks-eye-9th-day-of-gains?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            09:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781102-another-solid-jobs-report-amid-tariff-turmoil-stocks-eye-9th-day-of-gains?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        Another Solid Jobs Report Amid Tariff Turmoil, Stocks Eye 9th Day Of Gains&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781082-the-treasury-borrowing-advisory-committee-advocates-for-abolishing-the-debt-ceiling?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            09:37AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781082-the-treasury-borrowing-advisory-committee-advocates-for-abolishing-the-debt-ceiling?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        The Treasury Borrowing Advisory Committee Advocates For Abolishing The Debt Ceiling&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781091-april-jobs-report-healthy-payroll-growth-despite-cloudy-outlook?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            09:20AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781091-april-jobs-report-healthy-payroll-growth-despite-cloudy-outlook?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        April Jobs Report: Healthy Payroll Growth Despite Cloudy Outlook&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781078-awards-you-never-get-when-investing?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            08:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781078-awards-you-never-get-when-investing?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        The Awards You Never Get When Investing&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://seekingalpha.com/article/4781028-s-and-p500-the-bear-market-to-resume-were-likely-in-a-recession?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            06:22AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4781028-s-and-p500-the-bear-market-to-resume-were-likely-in-a-recession?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">&#13;
+                        S&amp;P500: The Bear Market To Resume, We're Likely In A Recession&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Seeking Alpha)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+</table>
+</div>
+
+</div></div>
+</body>
+</html>

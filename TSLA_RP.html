@@ -1,0 +1,2588 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>TSLA — Tesla, Inc.</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-size: 12px;
+      font-family: Arial, Helvetica, "Microsoft JhengHei", -apple-system, sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 8px 28px 16px;
+      background-color: #faf9f6;
+      color: #1c1917;
+    }
+
+    /* Header Bar */
+    .rp-header {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-top: 3px solid #FA8123;
+      border-radius: 6px;
+      padding: 6px 10px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+    .rp-title-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .rp-ticker {
+      font-size: 17px;
+      font-weight: 800;
+      color: #1c1917;
+      letter-spacing: 0.3px;
+    }
+    .rp-desc {
+      font-size: 15px;
+      font-weight: 700;
+      color: #FA8123;
+    }
+    .rp-time {
+      font-size: 11px;
+      color: #78716c;
+      background: #f5f3ef;
+      padding: 1px 7px;
+      border-radius: 999px;
+    }
+    .rp-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .rp-pill-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: #faf9f6;
+      border: 1px solid #d6d1c7;
+      color: #44403c;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.12s ease;
+    }
+    .rp-pill-link:hover {
+      background: #fff5eb;
+      border-color: #FA8123;
+      color: #d9650f;
+    }
+
+    /* Pyecharts Container Card */
+    .rp-chart-box {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 2px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+
+    /* Sub-Tabs Bar */
+    .rp-tabs-bar {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 4px 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      position: sticky;
+      top: 2px;
+      z-index: 50;
+      box-shadow: 0 1px 4px rgba(28, 25, 23, 0.05);
+    }
+    .rp-tab {
+      border: 1px solid transparent;
+      background: #f5f3ef;
+      color: #57534e;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+    .rp-tab:hover {
+      background: #fff5eb;
+      border-color: #fdba8c;
+      color: #d9650f;
+    }
+    .rp-tab.active {
+      background: #FA8123;
+      color: #ffffff;
+      box-shadow: 0 1px 3px rgba(250, 129, 35, 0.35);
+    }
+
+    /* Section Card */
+    .rp-sec-pane {
+      width: 100%;
+      margin: 0 0 4px;
+    }
+    .rp-card {
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 6px 8px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+      overflow-x: auto;
+    }
+    .rp-divider {
+      border: 0;
+      border-top: 1px solid #e6e2dc;
+      margin: 6px 0;
+    }
+
+    /* Modernized Tables (FBS / Pyramid / FinViz) */
+    .is-negative { color: #00994d; font-weight: 600; }
+    .is-positive { color: #cc2929; font-weight: 600; }
+    .snapshot-td2, .snapshot-td2-cp {
+      color: #1c1917;
+      text-decoration: none;
+      border: 1px solid #e6e2dc;
+      white-space: nowrap;
+    }
+    .snapshot-td2-cp { cursor: pointer; }
+    .fullview-ratings-outer, td.fullview-ratings-inner {
+      border: 1px solid #e6e2dc;
+    }
+    .t3r1 { color: #cc2929; font-weight: 700; }
+    .body-table-rating-downgrade { color: #cc2929; background: #fef2f2; }
+    .body-table-rating-upgrade { color: #00994d; background: #f0fdf4; }
+    .body-table-rating-neutral { color: #44403c; background: #faf9f6; }
+
+    table {
+      border-collapse: collapse;
+      margin: 6px auto;
+    }
+    td, th {
+      border: 1px solid #e6e2dc;
+      text-align: left;
+      padding: 6px 8px;
+    }
+    th {
+      background-color: #f6f4f0;
+      color: #1c1917;
+      font-weight: 700;
+    }
+    tr:nth-child(even) {
+      background-color: #fcfbf9;
+    }
+  </style>
+  <script>
+    function switchRpTab(btn) {
+      if (!btn) return;
+      var target = btn.getAttribute("data-target") || "all";
+      document.querySelectorAll(".rp-tab").forEach(function(b) {
+        b.classList.remove("active");
+      });
+      btn.classList.add("active");
+
+      document.querySelectorAll(".rp-sec-pane").forEach(function(pane) {
+        if (target === "all" || pane.id === target) {
+          pane.style.display = "block";
+        } else {
+          pane.style.display = "none";
+        }
+      });
+
+      try {
+        sessionStorage.setItem("sr_active_rp_tab", target);
+      } catch (e) {}
+
+      window.dispatchEvent(new Event("resize"));
+    }
+
+    window.addEventListener("load", function() {
+      try {
+        var saved = sessionStorage.getItem("sr_active_rp_tab");
+        if (saved && saved !== "all") {
+          var btn = document.querySelector('.rp-tab[data-target="' + saved + '"]');
+          if (btn) switchRpTab(btn);
+        }
+      } catch (e) {}
+    });
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/12.3.0/highcharts.min.js"></script>
+</head>
+<body>
+  <div class="rp-header">
+    <div class="rp-title-wrap">
+      <span class="rp-ticker">TSLA</span>
+      <span class="rp-desc">Tesla, Inc.</span>
+      <span class="rp-time">更新: 2026-11-14 06:57</span>
+    </div>
+    <div class="rp-links">
+      <a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=TSLA&type=pe-ratio&statement=price-ratios&freq=Q" target="_blank">📈 PE Chart</a><a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=TSLA&type=price-book&statement=price-ratios&freq=Q" target="_blank">📊 PB Chart</a><a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=TSLA&type=price-sales&statement=price-ratios&freq=Q" target="_blank">📉 PS Chart</a><a class="rp-pill-link" href="https://www.wsj.com/market-data/quotes/TSLA/financials/quarter/cash-flow" target="_blank">💵 Finance</a><a class="rp-pill-link" href="https://www.dataroma.com/m/stock.php?sym=TSLA" target="_blank">🏛️ Ownership</a><a class="rp-pill-link" href="https://hedgefollow.com/stocks/TSLA" target="_blank">🏦 Institute</a><a class="rp-pill-link" href="https://unusualwhales.com/stock/TSLA/greek-exposure" target="_blank">⚡ GEX</a><a class="rp-pill-link" href="https://www.ptt.cc/bbs/Stock/search?q=TSLA" target="_blank">💬 PTT Search</a>
+    </div>
+  </div>
+
+  <div class="rp-chart-box" align="center">
+    <iframe id="stock" src="TSLA_EC.html" frameborder="0" width="100%" height="1600px" scrolling="no"></iframe>
+  </div>
+
+  <div class="rp-tabs-bar"><button class="rp-tab active" data-target="all" onclick="switchRpTab(this)">📋 全部展開</button><button class="rp-tab" data-target="sec-quant" onclick="switchRpTab(this)">🧮 量化與主動ETF</button><button class="rp-tab" data-target="sec-stockdog" onclick="switchRpTab(this)">🐶 主力籌碼</button><button class="rp-tab" data-target="sec-finviz" onclick="switchRpTab(this)">🌎 FinViz 美股基本面</button></div>
+  <div class="rp-sec-pane" id="sec-quant"><style>.pq-wrap{width:100%;margin:0;font-family:Arial,Helvetica,"Microsoft JhengHei",sans-serif;color:#222}.pq-sec{background:#fff;border:1px solid #e6e2dc;border-radius:6px;padding:6px 8px;margin-bottom:4px;box-shadow:0 1px 2px rgba(28,25,23,.03)}.pq-sec h2{font-size:14px;color:#1c1917;border-left:4px solid #FA8123;padding-left:6px;margin:0 0 6px}.pq-sec h3{font-size:12px;color:#44403c;margin:6px 0 4px}.pq-banner{background:#fff9f4;border-left:4px solid #FA8123;padding:5px 8px;border-radius:4px;font-size:12px;line-height:1.5;margin-bottom:6px;color:#292524}.pq-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:6px}table.pq-tbl{width:100%;border-collapse:collapse;font-size:12px;font-family:Arial,Helvetica,"Microsoft JhengHei",sans-serif}table.pq-tbl th,table.pq-tbl td{border:1px solid #e6e2dc !important;padding:4px 6px !important;text-align:right}table.pq-tbl th{background:#f6f4f0 !important;color:#1c1917 !important;font-weight:bold}table.pq-tbl tr:nth-child(even){background:#fcfbf9}</style><div class="pq-wrap">
+
+    <div class="pq-sec">
+      <h2>🧮 量化風險、波動率體制與因子 Alpha 拆解 (TSLA)</h2>
+      <div class="pq-banner">
+        <b>現價：</b> <b>390.22</b> ｜
+        <b>動能 (1D / 5D / 20D / 60D / 1Y / 12-1M)：</b> <span style="color:#00994d;font-weight:bold">-1.82%</span> / <span style="color:#cc2929;font-weight:bold">+8.93%</span> / <span style="color:#cc2929;font-weight:bold">+10.01%</span> / <span style="color:#cc2929;font-weight:bold">+13.06%</span> / <span style="color:#00994d;font-weight:bold">-2.93%</span> / <span style="color:#00994d;font-weight:bold">-9.84%</span> ｜
+        <b>200D Volume Profile：</b> POC <b>399.31</b> (VAH <b>414.92</b> / VAL <b>354.59</b>)<br>
+        <b>尾部風險與風險調整指標 (1Y)：</b> 年化波動率 <b>45.84%</b> (GARCH 1D預測 <b>55.36%</b>) ｜
+        Sortino <b>-0.10</b> ｜ Calmar <b>0.02</b> ｜
+        最大回撤 (MDD) <span style="color:#00994d;font-weight:bold">-39.10%</span> ｜
+        95% VaR / CVaR: <span style="color:#00994d;font-weight:bold">-4.07% / -6.57%</span> ｜
+        <b>Lo-MacKinlay VR(5/10/20)：</b> 0.875(z*=-1.1) / 0.826(z*=-1.02) / 0.809(z*=-0.76)
+        <br><b>今日觸發技術訊號：</b> [BUY]     :  ｜ [SELL]    :  ｜ [OTHER]   : 三月KD由下往上 ｜ [KF] 買點-多空轉換(空轉多)
+      </div>
+      <table class="pq-tbl" style="margin-top:8px"><thead><tr><th style="text-align:left">Benchmark</th><th>20D (Stock / Bench)</th><th>20D Rel Excess</th><th>60D Rel Excess</th><th>1Y Rel Excess</th><th>1Y Beta (β)</th><th>R²</th><th>1Y Residual Alpha (α)</th></tr></thead><tbody><tr><td style="text-align:left"><b>^GSPC</b></td><td><span style="color:#cc2929;font-weight:bold">+10.01%</span> / <span style="color:#00994d;font-weight:bold">-1.28%</span></td><td><span style="color:#cc2929;font-weight:bold">+11.28%</span></td><td><span style="color:#cc2929;font-weight:bold">+14.10%</span></td><td><span style="color:#00994d;font-weight:bold">-19.75%</span></td><td><b>2.10</b></td><td>0.39</td><td><span style="color:#00994d;font-weight:bold">-26.77%</span></td></tr><tr><td style="text-align:left"><b>QQQ</b></td><td><span style="color:#cc2929;font-weight:bold">+10.01%</span> / <span style="color:#00994d;font-weight:bold">-4.21%</span></td><td><span style="color:#cc2929;font-weight:bold">+14.22%</span></td><td><span style="color:#cc2929;font-weight:bold">+17.43%</span></td><td><span style="color:#00994d;font-weight:bold">-18.85%</span></td><td><b>1.43</b></td><td>0.45</td><td><span style="color:#00994d;font-weight:bold">-21.18%</span></td></tr><tr><td style="text-align:left"><b>SOXX</b></td><td><span style="color:#cc2929;font-weight:bold">+10.01%</span> / <span style="color:#00994d;font-weight:bold">-9.22%</span></td><td><span style="color:#cc2929;font-weight:bold">+19.23%</span></td><td><span style="color:#cc2929;font-weight:bold">+27.32%</span></td><td><span style="color:#00994d;font-weight:bold">-58.84%</span></td><td><b>0.49</b></td><td>0.29</td><td><span style="color:#00994d;font-weight:bold">-35.74%</span></td></tr></tbody></table>
+    </div>
+    
+</div></div>
+<div class="rp-sec-pane" id="sec-stockdog"><div class="rp-card" align="center"><iframe id="stockdog" src="TSLA_SD.html" frameborder="0" width="100%" height="1000px" scrolling="no"></iframe></div></div>
+<div class="rp-sec-pane" id="sec-finviz"><div class="rp-card"><div align="center"><a href="https://www.marketwatch.com/investing/stock/TSLA/analystestimates" target="_blank"><img style="max-height:100%; max-width:100%; object-fit:contain" src=https://app.quotemedia.com/quotetools/getChart?webmasterId=91386&symbol=TSLA&chtype=FinancialLine&chcon=on&chdon=on&chfrmon=on&chscale=1d&chton=on&chwid=800&chhig=380&chln=ffa500&chfill=ffa500&chfnts=10&chbdr=000000&chbgch=ffffffff&chgrd=cccccc&svg=false&lang=en&locale=en></a></div>
+
+<hr class="rp-divider">
+<table align="center" class="snapshot-table2" align="center" style="width:100%; border-collapse:collapse; font-size:12px; margin:auto;">
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Major index membership"><div class="snapshot-td-label">Index</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">NDX, S&amp;P 500, RUI</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price-to-Earnings (ttm)"><div class="snapshot-td-label">P/E</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">429.24</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Diluted EPS (ttm)"><div class="snapshot-td-label">EPS (ttm)</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.91</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Insider ownership"><div class="snapshot-td-label">Insider Own</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>28.55%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Shares outstanding"><div class="snapshot-td-label">Shs Outstand</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>3.95B</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Week, Excl. Dividends)"><div class="snapshot-td-label">Perf Week</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">8.93%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Market capitalization"><div class="snapshot-td-label">Market Cap</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>1542.45B</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Forward Price-to-Earnings (next fiscal year)"><div class="snapshot-td-label">Forward P/E</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">193.45</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="EPS estimate for next year"><div class="snapshot-td-label">EPS next Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>2.02</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Insider transactions (6-Month change in Insider Ownership)"><div class="snapshot-td-label">Insider Trans</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-0.00%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Shares float"><div class="snapshot-td-label">Shs Float</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>2.82B</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Month, Excl. Dividends)"><div class="snapshot-td-label">Perf Month</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">7.66%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Enterprise Value"><div class="snapshot-td-label">Enterprise Value</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>1513.55B</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price-to-Earnings-to-Growth"><div class="snapshot-td-label">PEG</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">9.78</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="EPS estimate for next quarter"><div class="snapshot-td-label">EPS next Q</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.46</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Institutional ownership"><div class="snapshot-td-label">Inst Own</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>45.64%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Short interest share"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=TSLA&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank">Short Float</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=TSLA&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank"><b>2.34%</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Quarter, Excl. Dividends)"><div class="snapshot-td-label">Perf Quarter</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">15.01%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Income (ttm)"><div class="snapshot-td-label">Income</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>3.22B</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price-to-Sales (ttm)"><div class="snapshot-td-label">P/S</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">14.89</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="EPS growth this year"><div class="snapshot-td-label">EPS this Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>1.11%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Institutional transactions (3-Month change in Institutional Ownership)"><div class="snapshot-td-label">Inst Trans</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.94%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Short interest ratio"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=TSLA&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank">Short Ratio</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=TSLA&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank"><b>1.75</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Half Year, Excl. Dividends)"><div class="snapshot-td-label">Perf Half Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-7.58%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Revenue (ttm)"><div class="snapshot-td-label">Sales</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>103.57B</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price-to-Book (mrq)"><div class="snapshot-td-label">P/B</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">17.28</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="EPS growth next year"><div class="snapshot-td-label">EPS next Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>20.18%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Return on Assets (ttm)"><div class="snapshot-td-label">ROA</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>2.21%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Short interest"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=TSLA&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank">Short Interest</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=TSLA&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank"><b data-boxover-html="Settlement Date: 10/30/2026">65.96M</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Year To Date, Excl. Dividends)"><div class="snapshot-td-label">Perf YTD</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-13.23%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Book value per share (mrq)"><div class="snapshot-td-label">Book/sh</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>22.59</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price to cash per share (mrq)"><div class="snapshot-td-label">P/C</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>33.58</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Long term annual growth estimate (5 years)"><div class="snapshot-td-label">EPS next 5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>19.79%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Return on Equity (ttm)"><div class="snapshot-td-label">ROE</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>3.80%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 52-Week High"><div class="snapshot-td-label">52W High</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>498.83 <small class="text-2xs"><span class="color-text is-negative">-21.77%</span></small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Year, Excl. Dividends)"><div class="snapshot-td-label">Perf Year</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-2.93%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Cash per share (mrq)"><div class="snapshot-td-label">Cash/sh</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>11.62</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price to Free Cash Flow (ttm)"><div class="snapshot-td-label">P/FCF</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">466.98</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Annual EPS growth past 3 and 5 years"><div class="snapshot-td-label">EPS past 3/5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs"><span class="color-text is-negative">-33.28%</span> <span class="color-text is-positive">38.32%</span></small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Return on Invested Capital (ttm)"><div class="snapshot-td-label">ROIC</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>3.12%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 52-Week Low"><div class="snapshot-td-label">52W Low</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>297.38 <small class="text-2xs"><span class="color-text is-positive">31.22%</span></small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (3 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 3Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">74.43%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Analysts' Dividend Estimate (Fiscal Year)"><div class="snapshot-td-label">Dividend Est.</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Enterprise Value to EBITDA"><div class="snapshot-td-label">EV/EBITDA</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">146.49</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Annual sales growth past 3 and 5 years"><div class="snapshot-td-label">Sales past 3/5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">5.19% 24.63%</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Gross Margin (ttm)"><div class="snapshot-td-label">Gross Margin</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>19.29%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Volatility (Week, Month)"><div class="snapshot-td-label">Volatility</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">3.99% 4.00%</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (5 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">13.28%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Trailing 12 Months Dividend"><div class="snapshot-td-label">Dividend TTM</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Enterprise Value to Revenues"><div class="snapshot-td-label">EV/Sales</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">14.61</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="EPS growth TTM"><div class="snapshot-td-label">EPS Y/Y TTM</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-39.19%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Operating Margin (ttm)"><div class="snapshot-td-label">Oper. Margin</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>3.50%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Average True Range (14)"><div class="snapshot-td-label">ATR (14)</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>16.71</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (10 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 10Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">3004.21%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Ex-Dividend Date"><div class="snapshot-td-label">Dividend Ex-Date</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Quick Ratio (mrq)"><div class="snapshot-td-label">Quick Ratio</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>1.39</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Sales growth TTM"><div class="snapshot-td-label">Sales Y/Y TTM</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>8.30%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Net Profit Margin (ttm)"><div class="snapshot-td-label">Profit Margin</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>3.11%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Relative Strength Index"><div class="snapshot-td-label">RSI (14)</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>53.54</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Analysts' mean recommendation (1=Buy 5=Sell)"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=TSLA&amp;ta=1&amp;p=d&amp;ty=fc" class="hover:underline" target="_blank">Recom</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=TSLA&amp;ta=1&amp;p=d&amp;ty=fc" class="hover:underline" target="_blank"><b>2.35</b></a></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Dividend growth over 3 and 5 years"><div class="snapshot-td-label">Dividend Gr. 3/5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">- -</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Current Ratio (mrq)"><div class="snapshot-td-label">Current Ratio</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>1.74</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Quarterly earnings growth (YoY)"><div class="snapshot-td-label">EPS Q/Q</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-42.94%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 20-Day Simple Moving Average"><div class="snapshot-td-label">SMA20</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">1.26%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Beta"><div class="snapshot-td-label">Beta</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>1.74</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Analysts' mean target price"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=TSLA&amp;ta=1&amp;p=d&amp;ty=fc" class="hover:underline" target="_blank">Target Price</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=TSLA&amp;ta=1&amp;p=d&amp;ty=fc" class="hover:underline" target="_blank"><b><span class="color-text is-positive">423.70</span></b></a></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Dividend Payout Ratio (ttm)"><div class="snapshot-td-label">Payout</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.00%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Total Debt to Equity (mrq)"><div class="snapshot-td-label">Debt/Eq</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.18</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Quarterly revenue growth (YoY)"><div class="snapshot-td-label">Sales Q/Q</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-0.17%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 50-Day Simple Moving Average"><div class="snapshot-td-label">SMA50</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">4.13%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Relative volume"><div class="snapshot-td-label">Rel Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.85</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Previous close"><div class="snapshot-td-label">Prev Close</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>397.45</b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Full time employees"><div class="snapshot-td-label">Employees</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>134785</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Long Term Debt to Equity (mrq)"><div class="snapshot-td-label">LT Debt/Eq</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.16</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Earnings date&lt;br&gt;&lt;br&gt;BMO = Before Market Open&lt;br&gt;AMC = After Market Close"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=TSLA&amp;ta=1&amp;p=d&amp;ty=ea" class="hover:underline" target="_blank">Earnings</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=TSLA&amp;ta=1&amp;p=d&amp;ty=ea" class="hover:underline" target="_blank"><b><small class="text-2xs">Oct 21 AMC</small></b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 200-Day Simple Moving Average"><div class="snapshot-td-label">SMA200</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">1.96%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Average volume (3 month)"><div class="snapshot-td-label">Avg Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>37.79M</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Current stock price"><div class="snapshot-td-label">Price</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>390.22</b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="IPO Date"><div class="snapshot-td-label">IPO</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>Jun 29, 2010</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Stock has options trading on a market exchange / Stock is available to sell short"><div class="snapshot-td-label">Option/Short</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">Yes / Yes</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Last quarter EPS and Revenue surprise"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=TSLA&amp;ta=1&amp;p=d&amp;ty=ea" class="hover:underline" target="_blank">EPS/Sales Surpr.</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=TSLA&amp;ta=1&amp;p=d&amp;ty=ea" class="hover:underline" target="_blank"><b><small class="text-2xs"><span class="color-text is-positive">6.95%</span> <span class="color-text is-negative">-0.04%</span></small></b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Trades"><div class="snapshot-td-label">Trades</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Volume"><div class="snapshot-td-label">Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>32,255,932</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (today)"><div class="snapshot-td-label">Change %</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-1.82%</span></b></div></td>
+</tr>
+</table>
+
+
+<hr class="rp-divider">
+<table align="center" class="styled-table-new is-rounded is-small w-full" cellpadding="0" cellspacing="0">
+  <thead>
+    <tr>
+      <th align="left" class="whitespace-nowrap">Date</th>
+      <th align="left" class="whitespace-nowrap">Action</th>
+      <th align="left" class="whitespace-nowrap">Analyst</th>
+      <th align="left" class="whitespace-nowrap">Rating Change</th>
+      <th align="left" class="whitespace-nowrap">Price Target Change</th>
+      <th align="left" class="whitespace-nowrap">Implied Upside</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Oct 26, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/BCS.svg&quot;)"><img src="https://logo.finviz.com/BCS.svg" alt="BCS logo" crossorigin="anonymous"/><span>B</span></span>Barclays</div>
+      </td>
+      <td class="text-left color-text is-positive">Equal Weight → Overweight</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no">$450</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+15.3%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Oct 22, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>C</span></span>CLSA</div>
+      </td>
+      <td class="text-left color-text is-positive">Underperform → Hold</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no">$400</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+2.5%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Oct 22, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>B</span></span>BNP Paribas Exane</div>
+      </td>
+      <td class="text-left color-text is-positive">Underperform → Neutral</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no"/>
+      <td class="whitespace-nowrap"/>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Sep 28, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/JPM.svg&quot;)"><img src="https://logo.finviz.com/JPM.svg" alt="JPM logo" crossorigin="anonymous"/><span>J</span></span>JP Morgan</div>
+      </td>
+      <td class="text-left">Neutral</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$445 → $415</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+6.4%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Aug 03, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/SF.svg&quot;)"><img src="https://logo.finviz.com/SF.svg" alt="SF logo" crossorigin="anonymous"/><span>S</span></span>Stifel</div>
+      </td>
+      <td class="text-left">Buy</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$508 → $491</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+25.8%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Jul 28, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/RY.svg&quot;)"><img src="https://logo.finviz.com/RY.svg" alt="RY logo" crossorigin="anonymous"/><span>R</span></span>RBC Capital Mkts</div>
+      </td>
+      <td class="text-left">Outperform</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$500 → $480</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+23.0%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Jul 24, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>P</span></span>Piper Sandler</div>
+      </td>
+      <td class="text-left">Overweight</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$500 → $450</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+15.3%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Jul 23, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/UBS.svg&quot;)"><img src="https://logo.finviz.com/UBS.svg" alt="UBS logo" crossorigin="anonymous"/><span>U</span></span>UBS</div>
+      </td>
+      <td class="text-left">Neutral</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$442 → $385</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-negative)">
+            <span style="color:#cc2929; font-size:11px;">▼ </span>
+          </span>
+          <span class="tabular-nums text-negative">-1.3%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Jul 23, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/TFC.svg&quot;)"><img src="https://logo.finviz.com/TFC.svg" alt="TFC logo" crossorigin="anonymous"/><span>T</span></span>Truist</div>
+      </td>
+      <td class="text-left">Hold</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$430 → $370</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-negative)">
+            <span style="color:#cc2929; font-size:11px;">▼ </span>
+          </span>
+          <span class="tabular-nums text-negative">-5.2%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text is-last">
+      <td class="whitespace-nowrap">Jul 23, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/TD.svg&quot;)"><img src="https://logo.finviz.com/TD.svg" alt="TD logo" crossorigin="anonymous"/><span>T</span></span>TD Cowen</div>
+      </td>
+      <td class="text-left">Buy</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$490 → $460</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+17.9%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Jul 23, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/MS.svg&quot;)"><img src="https://logo.finviz.com/MS.svg" alt="MS logo" crossorigin="anonymous"/><span>M</span></span>Morgan Stanley</div>
+      </td>
+      <td class="text-left">Equal-Weight</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$417 → $400</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+2.5%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Jul 23, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/MFG.svg&quot;)"><img src="https://logo.finviz.com/MFG.svg" alt="MFG logo" crossorigin="anonymous"/><span>M</span></span>Mizuho</div>
+      </td>
+      <td class="text-left">Outperform</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$480 → $450</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+15.3%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Jul 23, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/JPM.svg&quot;)"><img src="https://logo.finviz.com/JPM.svg" alt="JPM logo" crossorigin="anonymous"/><span>J</span></span>JP Morgan</div>
+      </td>
+      <td class="text-left">Neutral</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$475 → $445</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+14.0%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Jul 23, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>C</span></span>Cantor Fitzgerald</div>
+      </td>
+      <td class="text-left">Overweight</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$510 → $485</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+24.3%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Jul 23, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>C</span></span>Canaccord Genuity</div>
+      </td>
+      <td class="text-left">Buy</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$450 → $410</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+5.1%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Jul 13, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/JEF.svg&quot;)"><img src="https://logo.finviz.com/JEF.svg" alt="JEF logo" crossorigin="anonymous"/><span>J</span></span>Jefferies</div>
+      </td>
+      <td class="text-left">Hold</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$375 → $400</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+2.5%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Jul 09, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Initiated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>C</span></span>Citizens</div>
+      </td>
+      <td class="text-left">Mkt Perform</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no"/>
+      <td class="whitespace-nowrap"/>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Jul 07, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/RY.svg&quot;)"><img src="https://logo.finviz.com/RY.svg" alt="RY logo" crossorigin="anonymous"/><span>R</span></span>RBC Capital Mkts</div>
+      </td>
+      <td class="text-left">Outperform</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$475 → $500</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+28.1%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Jun 05, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/JPM.svg&quot;)"><img src="https://logo.finviz.com/JPM.svg" alt="JPM logo" crossorigin="anonymous"/><span>J</span></span>JP Morgan</div>
+      </td>
+      <td class="text-left color-text is-positive">Underweight → Neutral</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no">$475</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+21.7%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Jun 05, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>E</span></span>Erste Group</div>
+      </td>
+      <td class="text-left color-text is-positive">Sell → Hold</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no"/>
+      <td class="whitespace-nowrap"/>
+    </tr>
+  </tbody>
+</table>
+
+
+<hr class="rp-divider">
+<table align="center" cellpadding="0" cellspacing="0" align="center" width="70%" class="body-table styled-table-new is-rounded p-0 mt-2">
+<thead>
+<tr>
+<th align="left">Insider Trading</th>
+<th align="left">Relationship</th>
+<th align="left">Date</th>
+<th align="center">Transaction</th>
+<th align="right">Cost</th>
+<th align="right">#Shares</th>
+<th align="right">Value ($)</th>
+<th align="right">#Shares Total</th>
+<th align="center">SEC Form 4</th>
+</tr>
+</thead>
+<tr class="fv-insider-row is-option" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1771340&amp;tc=7" class="tab-link" target="_blank">Taneja Vaibhav</a></td><td style="white-space:nowrap">Chief Financial Officer</td><td>Sep 05 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">6,539</td><td class="value" align="right">0</td><td class="value" align="right">28,578</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1318605/000110465926106432/xslF345X06/tm2625055d1_4seq1.xml" class="tab-link" target="_blank">Sep 09 07:00 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1771340&amp;tc=7" class="tab-link" target="_blank">Taneja Vaibhav</a></td><td style="white-space:nowrap">Chief Financial Officer</td><td>Sep 08 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">360.13</td><td class="value" align="right">2,606</td><td class="value" align="right">938,419</td><td class="value" align="right">25,972</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1318605/000110465926106432/xslF345X06/tm2625055d1_4seq1.xml" class="tab-link" target="_blank">Sep 09 07:00 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1771340&amp;tc=7" class="tab-link" target="_blank">VAIBHAV TANEJA</a></td><td style="white-space:nowrap">Officer</td><td>Sep 08 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">360.13</td><td class="value" align="right">2,606</td><td class="value" align="right">938,509</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1318605/000195004726009212/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Sep 08 04:30 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1494730&amp;tc=7" class="tab-link" target="_blank">Musk Elon</a></td><td style="white-space:nowrap">CEO</td><td>Jun 16 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">23.34</td><td class="value" align="right">303,960,630</td><td class="value" align="right">7,094,441,104</td><td class="value" align="right">727,704,534</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1318605/000110465926075213/xslF345X06/tm2618092-2_4seq1.xml" class="tab-link" target="_blank">Jun 17 05:00 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1771340&amp;tc=7" class="tab-link" target="_blank">Taneja Vaibhav</a></td><td style="white-space:nowrap">Chief Financial Officer</td><td>Jun 05 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">6,538</td><td class="value" align="right">0</td><td class="value" align="right">24,644</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1318605/000110465926071970/xslF345X06/tm2617365-1_4seq1.xml" class="tab-link" target="_blank">Jun 09 07:00 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1771340&amp;tc=7" class="tab-link" target="_blank">Taneja Vaibhav</a></td><td style="white-space:nowrap">Chief Financial Officer</td><td>Jun 08 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">402.20</td><td class="value" align="right">2,606</td><td class="value" align="right">1,047,924</td><td class="value" align="right">22,039</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1318605/000110465926071970/xslF345X06/tm2617365-1_4seq1.xml" class="tab-link" target="_blank">Jun 09 07:00 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1771340&amp;tc=7" class="tab-link" target="_blank">VAIBHAV TANEJA</a></td><td style="white-space:nowrap">Officer</td><td>Jun 08 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">402.20</td><td class="value" align="right">2,606</td><td class="value" align="right">1,048,124</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1318605/000195004726005795/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Jun 08 05:30 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1771340&amp;tc=7" class="tab-link" target="_blank">Taneja Vaibhav</a></td><td style="white-space:nowrap">Chief Financial Officer</td><td>May 13 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">18.29</td><td class="value" align="right">3,000</td><td class="value" align="right">54,880</td><td class="value" align="right">21,106</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1318605/000110465926062860/xslF345X06/tm2614845-1_4seq1.xml" class="tab-link" target="_blank">May 15 07:33 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1771340&amp;tc=7" class="tab-link" target="_blank">Taneja Vaibhav</a></td><td style="white-space:nowrap">Chief Financial Officer</td><td>May 13 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">450.00</td><td class="value" align="right">3,000</td><td class="value" align="right">1,350,000</td><td class="value" align="right">18,106</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1318605/000110465926062860/xslF345X06/tm2614845-1_4seq1.xml" class="tab-link" target="_blank">May 15 07:33 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1771340&amp;tc=7" class="tab-link" target="_blank">VAIBHAV TANEJA</a></td><td style="white-space:nowrap">Officer</td><td>May 13 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">433.45</td><td class="value" align="right">3,000</td><td class="value" align="right">1,300,350</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1318605/000195004726004463/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">May 13 04:29 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1331680&amp;tc=7" class="tab-link" target="_blank">Wilson-Thompson Kathleen</a></td><td style="white-space:nowrap">Director</td><td>Apr 30 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">14.99</td><td class="value" align="right">40,948</td><td class="value" align="right">613,811</td><td class="value" align="right">74,808</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1318605/000110465926055079/xslF345X06/tm2613330-1_4seq1.xml" class="tab-link" target="_blank">May 04 07:00 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1331680&amp;tc=7" class="tab-link" target="_blank">Wilson-Thompson Kathleen</a></td><td style="white-space:nowrap">Director</td><td>Apr 30 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">378.11</td><td class="value" align="right">26,409</td><td class="value" align="right">9,985,390</td><td class="value" align="right">48,399</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1318605/000110465926055079/xslF345X06/tm2613330-1_4seq1.xml" class="tab-link" target="_blank">May 04 07:00 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1331680&amp;tc=7" class="tab-link" target="_blank">KATHLEEN WILSON-THOMPSON</a></td><td style="white-space:nowrap">Director</td><td>Apr 30 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">372.80</td><td class="value" align="right">26,409</td><td class="value" align="right">9,845,275</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1318605/000195004726003863/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Apr 30 04:25 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1972928&amp;tc=7" class="tab-link" target="_blank">Zhu Xiaotong</a></td><td style="white-space:nowrap">SVP</td><td>Mar 31 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">20.57</td><td class="value" align="right">20,000</td><td class="value" align="right">411,400</td><td class="value" align="right">20,000</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1318605/000197292826000002/xslF345X06/edgardoc.xml" class="tab-link" target="_blank">Apr 02 08:08 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1331680&amp;tc=7" class="tab-link" target="_blank">Wilson-Thompson Kathleen</a></td><td style="white-space:nowrap">Director</td><td>Mar 30 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">14.99</td><td class="value" align="right">40,000</td><td class="value" align="right">599,600</td><td class="value" align="right">59,669</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1318605/000110465926038682/xslF345X06/tm2610684-1_4seq1.xml" class="tab-link" target="_blank">Apr 01 07:00 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1331680&amp;tc=7" class="tab-link" target="_blank">Wilson-Thompson Kathleen</a></td><td style="white-space:nowrap">Director</td><td>Mar 30 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">359.33</td><td class="value" align="right">25,809</td><td class="value" align="right">9,273,888</td><td class="value" align="right">33,860</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1318605/000110465926038682/xslF345X06/tm2610684-1_4seq1.xml" class="tab-link" target="_blank">Apr 01 07:00 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1331680&amp;tc=7" class="tab-link" target="_blank">KATHLEEN WILSON-THOMPSON</a></td><td style="white-space:nowrap">Director</td><td>Mar 30 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">361.83</td><td class="value" align="right">25,809</td><td class="value" align="right">9,338,470</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1318605/000195004726003078/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Mar 30 05:31 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1771340&amp;tc=7" class="tab-link" target="_blank">Taneja Vaibhav</a></td><td style="white-space:nowrap">Chief Financial Officer</td><td>Mar 05 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">6,538</td><td class="value" align="right">0</td><td class="value" align="right">20,371</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1318605/000110465926025379/xslF345X05/tm268346-1_4seq1.xml" class="tab-link" target="_blank">Mar 09 07:00 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1771340&amp;tc=7" class="tab-link" target="_blank">Taneja Vaibhav</a></td><td style="white-space:nowrap">Chief Financial Officer</td><td>Mar 06 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">397.03</td><td class="value" align="right">2,264</td><td class="value" align="right">899,077</td><td class="value" align="right">18,106</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1318605/000110465926025379/xslF345X05/tm268346-1_4seq1.xml" class="tab-link" target="_blank">Mar 09 07:00 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1771340&amp;tc=7" class="tab-link" target="_blank">VAIBHAV TANEJA</a></td><td style="white-space:nowrap">Officer</td><td>Mar 06 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">397.03</td><td class="value" align="right">2,265</td><td class="value" align="right">899,275</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1318605/000195004726002335/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Mar 06 05:42 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1331680&amp;tc=7" class="tab-link" target="_blank">Wilson-Thompson Kathleen</a></td><td style="white-space:nowrap">Director</td><td>Feb 25 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">14.99</td><td class="value" align="right">40,000</td><td class="value" align="right">599,600</td><td class="value" align="right">45,400</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1318605/000110465926021746/xslF345X05/tm267481-1_4seq1.xml" class="tab-link" target="_blank">Feb 27 07:00 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1331680&amp;tc=7" class="tab-link" target="_blank">Wilson-Thompson Kathleen</a></td><td style="white-space:nowrap">Director</td><td>Feb 25 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">415.56</td><td class="value" align="right">25,731</td><td class="value" align="right">10,692,814</td><td class="value" align="right">19,669</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1318605/000110465926021746/xslF345X05/tm267481-1_4seq1.xml" class="tab-link" target="_blank">Feb 27 07:00 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1331680&amp;tc=7" class="tab-link" target="_blank">KATHLEEN WILSON-THOMPSON</a></td><td style="white-space:nowrap">Director</td><td>Feb 25 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">409.38</td><td class="value" align="right">25,731</td><td class="value" align="right">10,533,757</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1318605/000195004726001763/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Feb 25 04:27 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1420590&amp;tc=7" class="tab-link" target="_blank">MURDOCH JAMES R</a></td><td style="white-space:nowrap">Director</td><td>Jan 02 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">445.40</td><td class="value" align="right">60,000</td><td class="value" align="right">26,723,781</td><td class="value" align="right">577,031</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1318605/000110465926001460/xslF345X05/tm261890-1_4seq1.xml" class="tab-link" target="_blank">Jan 06 07:00 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1420590&amp;tc=7" class="tab-link" target="_blank">James Murdoch</a></td><td style="white-space:nowrap">Affiliate</td><td>Jan 02 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">449.72</td><td class="value" align="right">60,000</td><td class="value" align="right">26,983,200</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1318605/000196858226000010/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Jan 02 04:45 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1494731&amp;tc=7" class="tab-link" target="_blank">Musk Kimbal</a></td><td style="white-space:nowrap">Director</td><td>Dec 09 '25</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">450.66</td><td class="value" align="right">56,820</td><td class="value" align="right">25,606,501</td><td class="value" align="right">1,391,615</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1318605/000110465925120387/xslF345X05/tm2533052-2_4seq1.xml" class="tab-link" target="_blank">Dec 11 07:00 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1771340&amp;tc=7" class="tab-link" target="_blank">Taneja Vaibhav</a></td><td style="white-space:nowrap">Chief Financial Officer</td><td>Dec 05 '25</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">6,538</td><td class="value" align="right">0</td><td class="value" align="right">16,394</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1318605/000110465925119764/xslF345X05/tm2533052-1_4seq1.xml" class="tab-link" target="_blank">Dec 09 07:00 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1771340&amp;tc=7" class="tab-link" target="_blank">Taneja Vaibhav</a></td><td style="white-space:nowrap">Chief Financial Officer</td><td>Dec 08 '25</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">443.93</td><td class="value" align="right">2,637</td><td class="value" align="right">1,170,635</td><td class="value" align="right">13,757</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1318605/000110465925119764/xslF345X05/tm2533052-1_4seq1.xml" class="tab-link" target="_blank">Dec 09 07:00 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1494731&amp;tc=7" class="tab-link" target="_blank">Kimbal Musk</a></td><td style="white-space:nowrap">Director</td><td>Dec 09 '25</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">439.58</td><td class="value" align="right">56,820</td><td class="value" align="right">24,976,936</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1318605/000196858225001185/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Dec 09 04:41 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1771340&amp;tc=7" class="tab-link" target="_blank">VAIBHAV TANEJA</a></td><td style="white-space:nowrap">Officer</td><td>Dec 08 '25</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">443.93</td><td class="value" align="right">2,637</td><td class="value" align="right">1,170,635</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1318605/000195004725009970/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Dec 08 06:07 PM</a></td></tr></table>
+
+
+
+<hr class="rp-divider">
+<div class="body-table-news-wrapper news-table_wrapper is-collapsed"><table align="center" align="center" width="70%" cellpadding="1" cellspacing="0" border="0" id="news-table" class="fullview-news-outer news-table" data-ticker="TSLA">
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.investors.com/news/spacex-tesla-merger-grok-optimus-robotics-engineering-starship-spcx-stock-tsla?mod=IBD_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Today 04:48PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.investors.com/news/spacex-tesla-merger-grok-optimus-robotics-engineering-starship-spcx-stock-tsla?mod=IBD_FV" target="_blank" rel="nofollow">&#13;
+                        SpaceX, Tesla Merger Puts Musk At Forefront Of 'Revolutionary' Tech, Analyst Says&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investor's Business Daily)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/elon-musks-spacex-tesla-merger-194506369.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            02:45PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/elon-musks-spacex-tesla-merger-194506369.html" target="_blank" rel="nofollow">&#13;
+                        Elon Musk's SpaceXTesla Merger 'Almost Inconceivable' to Avoid, Biographer Says&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Benzinga Prediction Markets)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/texas-ag-elect-vows-tremendous-192905664.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            02:29PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/texas-ag-elect-vows-tremendous-192905664.html" target="_blank" rel="nofollow">&#13;
+                        Texas AG-elect vows 'tremendous scrutiny' of SpaceX-Tesla merger&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(USA TODAY)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/livecoverage/stock-market-today-dow-s-p-500-nasdaq-nvidia-ceo-jensen-huang-resigns-ppi-inflation-data/card/big-tech-trades-mixed-as-nvidia-tesla-alphabet-weigh-on-magnificent-seven-etf-usCGojHXQWkJerttry68?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            12:51PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/livecoverage/stock-market-today-dow-s-p-500-nasdaq-nvidia-ceo-jensen-huang-resigns-ppi-inflation-data/card/big-tech-trades-mixed-as-nvidia-tesla-alphabet-weigh-on-magnificent-seven-etf-usCGojHXQWkJerttry68?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        Big Tech trades mixed, as Nvidia, Tesla, Alphabet weigh on Magnificent Seven ETF&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/tesla-pulls-42k-model-y-175108217.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            12:51PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/tesla-pulls-42k-model-y-175108217.html" target="_blank" rel="nofollow">&#13;
+                        Tesla Pulls $42K Model Y AWD From US Website Amid Musks Pivot Toward Robotaxis&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/spacex-flight-15-morgan-stanley-153740892.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            10:37AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/spacex-flight-15-morgan-stanley-153740892.html" target="_blank" rel="nofollow">&#13;
+                        SpaceX Flight 15: Morgan Stanley Calls Upcoming Starship Test One Of The Most Significant Catalysts In Companys 25-Year History&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/spacex-tesla-merger-talks-advance-152100432.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            10:21AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/spacex-tesla-merger-talks-advance-152100432.html" target="_blank" rel="nofollow">&#13;
+                        SpaceX and Tesla merger talks advance as December announcement considered&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Proactive)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://qz.com/tesla-cybertruck-resale-value-2026', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            09:51AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://qz.com/tesla-cybertruck-resale-value-2026" target="_blank" rel="nofollow">&#13;
+                        Tesla Cybertruck sellers face a scarcity story that weak demand undercuts&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Quartz)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/incoming-texas-ag-vows-rigorous-141144248.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            09:11AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/incoming-texas-ag-vows-rigorous-141144248.html" target="_blank" rel="nofollow">&#13;
+                        Incoming Texas AG vows rigorous scrutiny of potential SpaceX-Tesla merger - report&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investing.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/tesla-stock-price-safe-haven-b627f503?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:40AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/tesla-stock-price-safe-haven-b627f503?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Why Tesla Stock Is Behaving Like a Safe Haven&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/cathie-wood-sees-nvidia-cagr-050253373.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            12:02AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/cathie-wood-sees-nvidia-cagr-050253373.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood Sees Nvidias CAGR Slowing To 25% From 50% Over The Next Five Years: Youve Got Powerful Forces Like Elon Musk&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/michael-burry-sees-mechanical-bid-041314501.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-12-26 11:13PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/michael-burry-sees-mechanical-bid-041314501.html" target="_blank" rel="nofollow">&#13;
+                        Michael Burry Sees A Mechanical Bid Under NVDA Stock  Even As He Questions Nvidias Succession Plan And Asia Sales&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.investors.com/market-trend/stock-market-today/dow-jones-futures-nvidia-ceo-huang-exit-surging-yields-spacex-tesla-merger-deal?mod=IBD_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            09:54PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.investors.com/market-trend/stock-market-today/dow-jones-futures-nvidia-ceo-huang-exit-surging-yields-spacex-tesla-merger-deal?mod=IBD_FV" target="_blank" rel="nofollow">&#13;
+                        Dow Jones Futures Rise After Market Weathers Nvidia CEO Huang's Exit, Surging Yields&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investor's Business Daily)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/p-500-dow-nasdaq-futures-001900837.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:19PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/p-500-dow-nasdaq-futures-001900837.html" target="_blank" rel="nofollow">&#13;
+                        S&amp;P 500, Dow, Nasdaq Futures Recover After Markets End Lower On Jensen Huangs Exit, Oil Price Pressure    CRWV, CBRS, NVDA, TSLA In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/tsla-stock-climbs-amid-reports-220701075.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            05:07PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/tsla-stock-climbs-amid-reports-220701075.html" target="_blank" rel="nofollow">&#13;
+                        TSLA Stock Climbs Amid Reports Of SpaceX Tie-Up As Early As December&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.investors.com/news/elon-musk-tesla-spacex-merger?mod=IBD_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            04:38PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.investors.com/news/elon-musk-tesla-spacex-merger?mod=IBD_FV" target="_blank" rel="nofollow">&#13;
+                        Elon Musk Could Announce Tesla-SpaceX Merger By December: Report&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investor's Business Daily)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/spacex-tesla-merger-could-come-211308991.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            04:13PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/spacex-tesla-merger-could-come-211308991.html" target="_blank" rel="nofollow">&#13;
+                        SpaceX-Tesla Merger Could Come Soon: What Do Shareholders Get?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(BeInCrypto)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/musk-spacex-tesla-empire-moves-205333382.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:53PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/musk-spacex-tesla-empire-moves-205333382.html" target="_blank" rel="nofollow">&#13;
+                        Musks SpaceX-Tesla empire moves closer, but China and Washington loom large&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investing.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/livecoverage/stock-market-today-nasdaq-sp500-down-nvidia-dive-huang-affair-ouster-dow-flat/card/equal-weight-s-p-500-etf-falls-to-intraday-low-as-u-s-stock-market-broadly-declines-DMhsXgrNk73GAJzWKTqe?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:38PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/livecoverage/stock-market-today-nasdaq-sp500-down-nvidia-dive-huang-affair-ouster-dow-flat/card/equal-weight-s-p-500-etf-falls-to-intraday-low-as-u-s-stock-market-broadly-declines-DMhsXgrNk73GAJzWKTqe?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        Equal Weight S&amp;P 500 ETF falls to intraday low as U.S. stock market broadly declines&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/spacex-tesla-talks-record-merger-202235758.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:22PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/spacex-tesla-talks-record-merger-202235758.html" target="_blank" rel="nofollow">&#13;
+                        SpaceX and Tesla Talks on Record Merger Are Said to Progress&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Bloomberg)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/livecoverage/nvidia-ceo-jensen-huang-stock-board/card/jensen-huang-didn-t-control-his-company-the-way-numerous-newer-founders-do-7o5pYuDXkuffU31yuRMW?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/livecoverage/nvidia-ceo-jensen-huang-stock-board/card/jensen-huang-didn-t-control-his-company-the-way-numerous-newer-founders-do-7o5pYuDXkuffU31yuRMW?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        Jensen Huang didn't control his company the way numerous newer founders do&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/crypto/article/binance-founder-cz-says-crypto-exchange-didnt-sell-any-spacex-stock-amid-hack-174829693.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            12:48PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/crypto/article/binance-founder-cz-says-crypto-exchange-didnt-sell-any-spacex-stock-amid-hack-174829693.html" target="_blank" rel="nofollow">&#13;
+                        Binance founder CZ says crypto exchange didn't sell any SpaceX stock amid hack&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://qz.com/spacex-tesla-merger-musk-control-explained', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            11:31AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://qz.com/spacex-tesla-merger-musk-control-explained" target="_blank" rel="nofollow">&#13;
+                        SpaceX and Tesla eye a $3 trillion-plus merger, and Musk's control is the issue&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Quartz)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/article/rivian-ceo-says-robotaxis-wont-end-car-ownership--hes-betting-on-both-153000409.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            10:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/article/rivian-ceo-says-robotaxis-wont-end-car-ownership--hes-betting-on-both-153000409.html" target="_blank" rel="nofollow">&#13;
+                        Rivian CEO says robotaxis won't end car ownership  he's betting on both&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/article/qualcomm-ceo-ai-wont-replace-your-smartphone-anytime-soon-150140110.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            10:01AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/article/qualcomm-ceo-ai-wont-replace-your-smartphone-anytime-soon-150140110.html" target="_blank" rel="nofollow">&#13;
+                        Qualcomm CEO: AI won't replace your smartphone anytime soon&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/spacex-stock-slump-complicates-elon-144818205.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            09:48AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/spacex-stock-slump-complicates-elon-144818205.html" target="_blank" rel="nofollow">&#13;
+                        How the SpaceX Stock Slump Complicates Elon Musks Tesla Merger&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Benzinga Prediction Markets)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/tesla-stock-elon-musk-jensen-huang-0718c7b7?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:29AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/tesla-stock-elon-musk-jensen-huang-0718c7b7?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Could Elon Musk End Up as Jensen Huang's Boss? 'That Would Be an Honor.'&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/spacex-stock-tesla-merger-elon-musk-701ff721?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            06:42AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/spacex-stock-tesla-merger-elon-musk-701ff721?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Weak SpaceX Stock Is Complicating Elon Musk's Merger Math&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/finland-approves-tesla-driver-assistance-104435782.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            05:44AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/finland-approves-tesla-driver-assistance-104435782.html" target="_blank" rel="nofollow">&#13;
+                        Finland approves Tesla driver assistance system ahead of EU-wide decision&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Just Auto)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/articles/tesla-robotaxi-now-works-24-071749158.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            02:17AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/articles/tesla-robotaxi-now-works-24-071749158.html" target="_blank" rel="nofollow">&#13;
+                        Tesla Robotaxi Now Works 24/7 While Elon Musk's Robots Head to Optimus Academy&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(BeInCrypto)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.digitimes.com/news/a20261112PD226/loss-2026-equipment-spacex-elon-musk.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            01:57AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.digitimes.com/news/a20261112PD226/loss-2026-equipment-spacex-elon-musk.html" target="_blank" rel="nofollow">&#13;
+                        SoftBank rejects Musk's default claim, books JPY597.2B data-center loss&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(DigiTimes)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/nvidia-next-ceo-could-come-052633371.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            12:26AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/nvidia-next-ceo-could-come-052633371.html" target="_blank" rel="nofollow">&#13;
+                        Nvidias Next CEO Could Come From Inside  Or Arm: Heres Who Traders Are Watching In The Succession Race&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/nasdaq-100-futures-drop-reports-002206360.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-11-26 07:22PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/nasdaq-100-futures-drop-reports-002206360.html" target="_blank" rel="nofollow">&#13;
+                        Nasdaq 100 Futures Drop As Reports Relating To Jensen Huangs Ousting Outweigh CoreWeaves Strong Outlook   NVDA, TSLA, SNDK, CAPR, CRWV In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/tesla-extends-cybertruck-production-clear-195513982.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            02:55PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/tesla-extends-cybertruck-production-clear-195513982.html" target="_blank" rel="nofollow">&#13;
+                        Tesla extends Cybertruck production to clear backlog, Musk says&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(CBS News)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/tesla-stock-cybertruck-production-fsd-finland-007503ae?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            02:39PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/tesla-stock-cybertruck-production-fsd-finland-007503ae?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Tesla Extends Cybertruck's Run. Its Driving Software Matters More.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/tsla-stock-climbs-elon-musk-184214554.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            01:42PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/tsla-stock-climbs-elon-musk-184214554.html" target="_blank" rel="nofollow">&#13;
+                        TSLA Stock Climbs After Elon Musk Extends Cybertruck Run Through Summer 2027, Citing Sentimentality&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/anthropic-ipo-retail-demand-market-174615481.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            12:46PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/anthropic-ipo-retail-demand-market-174615481.html" target="_blank" rel="nofollow">&#13;
+                        Anthropic IPO retail demand and market positioning risks ahead of debut&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investing.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/articles/google-could-buy-uber-win-170007703.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            12:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/articles/google-could-buy-uber-win-170007703.html" target="_blank" rel="nofollow">&#13;
+                        Google Could Buy Uber to Win the Robotaxi Wars, Reuters Columnist Argues&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Benzinga Prediction Markets)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/elon-musk-warns-tesla-may-154522047.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            10:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/elon-musk-warns-tesla-may-154522047.html" target="_blank" rel="nofollow">&#13;
+                        Elon Musk Warns Tesla May Have to Refund Cybertruck Deposits as Production Winds Down&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(First for Money)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/crypto/articles/okxice-launch-tokenized-stock-trading-153400490.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            10:34AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/crypto/articles/okxice-launch-tokenized-stock-trading-153400490.html" target="_blank" rel="nofollow">&#13;
+                        OKXICE to Launch Tokenized Stock Trading with Coinbase, Circle, Strategy&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(CryptoProwl)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://qz.com/unplugged-performance-tesla-cybertruck-production-offer-111126', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            08:40AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://qz.com/unplugged-performance-tesla-cybertruck-production-offer-111126" target="_blank" rel="nofollow">&#13;
+                        Tesla tuner Unplugged Performance is offering to take over the Cybertruck line&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Quartz)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/tesla-stock-elon-musk-nvidia-ceo-e8ecac3a?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            06:47AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/tesla-stock-elon-musk-nvidia-ceo-e8ecac3a?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Tesla Stock Thrives on Key-Man Drama. Nvidia Might Not Be So Lucky.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/south-korean-import-sales-surge-104910277.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            05:49AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/south-korean-import-sales-surge-104910277.html" target="_blank" rel="nofollow">&#13;
+                        South Korean import sales surge 29% in October&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Just Auto)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/spacex-stock-carries-25-political-064509750.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            01:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/spacex-stock-carries-25-political-064509750.html" target="_blank" rel="nofollow">&#13;
+                        SpaceX Stock Carries Up To 25% Political Discount, Dan Ives Says  Sees Elon Musks Tesla Merger Still In Play&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/energy/articles/terafab-chips-tesla-10-billion-013600345.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-10-26 08:36PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/energy/articles/terafab-chips-tesla-10-billion-013600345.html" target="_blank" rel="nofollow">&#13;
+                        After Terafab Chips, Teslas $10 Billion Crystal Sun Solar Factory Breaks Ground&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(BeInCrypto)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/crypto/articles/bullish-president-backs-issuer-first-233300863.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            06:33PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/crypto/articles/bullish-president-backs-issuer-first-233300863.html" target="_blank" rel="nofollow">&#13;
+                        Bullishs New President Backs Issuer-First Model for Tokenized Stocks&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(CryptoProwl)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/tesla-stock-china-sales-october-11dfb415?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            08:12AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/tesla-stock-china-sales-october-11dfb415?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Tesla's China Sales Hit Lowest Since 2022. What It Means for Year-End Targets.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/articles/tesla-cybertruck-ev-pickup-markets-110429973.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            06:04AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/articles/tesla-cybertruck-ev-pickup-markets-110429973.html" target="_blank" rel="nofollow">&#13;
+                        Tesla Cybertruck is EV pickup market's latest casualty&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Reuters)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/nvidia-stock-price-huang-cathie-wood-ef9d5868?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            05:55AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/nvidia-stock-price-huang-cathie-wood-ef9d5868?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Nvidia CEO Huang Gets More Bad News but Cathie Wood Keeps the Faith&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/elon-musk-ally-jason-calacanis-082557632.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:25AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/elon-musk-ally-jason-calacanis-082557632.html" target="_blank" rel="nofollow">&#13;
+                        Elon Musk Ally Jason Calacanis Bets Another $1M On Uber  Says Waymo Team-Up Could Steal Teslas Driverless Crown&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/articles/musk-expected-join-trump-apec-082249358.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:25AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/articles/musk-expected-join-trump-apec-082249358.html" target="_blank" rel="nofollow">&#13;
+                        Musk expected to join Trump at APEC; Huang's participation in doubt, SCMP reports&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Reuters)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/spcx-stock-climbs-overnight-tesla-081607440.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:16AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/spcx-stock-climbs-overnight-tesla-081607440.html" target="_blank" rel="nofollow">&#13;
+                        SPCX Stock Climbs Overnight: Tesla Influencer Presses Texas Governor-Elect  Analyst Sees 10,000 AI Racks In Space By 2028&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/crypto/articles/securitize-acquire-river-one-expanding-233100619.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-09-26 06:31PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/crypto/articles/securitize-acquire-river-one-expanding-233100619.html" target="_blank" rel="nofollow">&#13;
+                        Securitize to Acquire River One, Expanding Into $6 Trillion Asset-Backed Finance Market&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(CryptoProwl)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">&#13;
+         +5.54%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/musk-says-many-cybertruck-buyers-203036713.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:30PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/musk-says-many-cybertruck-buyers-203036713.html" target="_blank" rel="nofollow">&#13;
+                        Musk says many Cybertruck buyers will get deposits back as production ends, arguing opportunity cost is vastly outweighed by new robotaxi&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Fortune)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/articles/tesla-cybertruck-production-end-mid-171600414.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            12:16PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/articles/tesla-cybertruck-production-end-mid-171600414.html" target="_blank" rel="nofollow">&#13;
+                        Tesla Cybertruck production will end in mid-2027&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Wards Auto)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/energy/articles/tesla-kicks-off-project-crystal-171106183.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            12:11PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/energy/articles/tesla-kicks-off-project-crystal-171106183.html" target="_blank" rel="nofollow">&#13;
+                        Tesla Kicks Off Work On Project Crystal Sun, Its Biggest US Solar Bet Yet&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://uk.finance.yahoo.com/news/south-korea-says-nvidia-issues-022650481.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            11:43AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://uk.finance.yahoo.com/news/south-korea-says-nvidia-issues-022650481.html" target="_blank" rel="nofollow">&#13;
+                        Nvidia slides as CEO Huang faces board scrutiny over affair with alleged spy&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Reuters)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.wsj.com/livecoverage/stock-market-today-dow-sp-500-nasdaq-11-09-2026/card/tesla-will-have-to-refund-cybertruck-deposits-musk-says-OiU6ikKbHEvCEPitZXO7?mod=wsj_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            11:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.wsj.com/livecoverage/stock-market-today-dow-sp-500-nasdaq-11-09-2026/card/tesla-will-have-to-refund-cybertruck-deposits-musk-says-OiU6ikKbHEvCEPitZXO7?mod=wsj_FV" target="_blank" rel="nofollow">&#13;
+                        Tesla Will Have to Refund Cybertruck Deposits, Musk Says&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(The Wall Street Journal)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/article/musk-says-tesla-on-the-hook-for-cybertruck-deposits-after-cancellation-162604829.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            11:26AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/article/musk-says-tesla-on-the-hook-for-cybertruck-deposits-after-cancellation-162604829.html" target="_blank" rel="nofollow">&#13;
+                        Musk says Tesla on the hook for Cybertruck deposits after cancellation&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/livecoverage/stock-market-news-today-110926/card/the-rest-of-the-magnificent-7-are-leaving-nvidia-in-the-dust-zhlm2OjELYB7e0DlNcoo?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            11:14AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/livecoverage/stock-market-news-today-110926/card/the-rest-of-the-magnificent-7-are-leaving-nvidia-in-the-dust-zhlm2OjELYB7e0DlNcoo?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        The Rest of the Magnificent 7 Are Leaving Nvidia in the Dust&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/story/how-spacex-was-able-to-avert-one-of-the-markets-biggest-fears-about-its-stock-93870736?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            10:35AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/how-spacex-was-able-to-avert-one-of-the-markets-biggest-fears-about-its-stock-93870736?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        How SpaceX was able to avert one of the market's biggest fears about its stock&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/tesla-return-cybertruck-deposits-enthusiasts-150752289.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            10:07AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/tesla-return-cybertruck-deposits-enthusiasts-150752289.html" target="_blank" rel="nofollow">&#13;
+                        Tesla to return some Cybertruck deposits, as enthusiasts swoop in ahead of halt&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investing.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/elon-musk-killing-cybertrucks-says-150000804.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            10:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/elon-musk-killing-cybertrucks-says-150000804.html" target="_blank" rel="nofollow">&#13;
+                        Elon Musk Is Killing Cybertrucks  But Says Telsa Needs to Add an Extra Shift to Get Backlog Orders Done Before Production Ends&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Entrepreneur)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/tesla-refund-cybertruck-deposits-production-144600033.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            09:46AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/tesla-refund-cybertruck-deposits-production-144600033.html" target="_blank" rel="nofollow">&#13;
+                        Tesla to refund Cybertruck deposits as production nears end&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Proactive)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/elon-musk-says-tesla-return-140712048.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            09:07AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/elon-musk-says-tesla-return-140712048.html" target="_blank" rel="nofollow">&#13;
+                        Elon Musk says Tesla will return some Cybertruck deposits&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(CBS News)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.investors.com/news/tesla-elon-musk-robotaxi-china?mod=IBD_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            08:49AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.investors.com/news/tesla-elon-musk-robotaxi-china?mod=IBD_FV" target="_blank" rel="nofollow">&#13;
+                        Tesla China Sales Sink To Four-Year Low; Robotaxi Launches New Market&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investor's Business Daily)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/musk-says-tesla-refund-cybertruck-134328989.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            08:43AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/musk-says-tesla-refund-cybertruck-134328989.html" target="_blank" rel="nofollow">&#13;
+                        Musk says Tesla will refund some Cybertruck deposits, defends decision to end production&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(TechCrunch)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/tesla-stock-robo-taxi-texas-1c151e0a?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:17AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/tesla-stock-robo-taxi-texas-1c151e0a?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Tesla's Robo-Taxi Service Is Expanding…in Texas&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/us-stock-futures-rise-dow-114052138.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            06:40AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/us-stock-futures-rise-dow-114052138.html" target="_blank" rel="nofollow">&#13;
+                        US Stock Futures Rise, Dow Futures Lead Gains As Wall Street Eyes Inflation Data, AI Earnings  NVDA, TSLA, CRWV In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/elon-musk-says-tesla-refund-113329476.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            06:33AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/elon-musk-says-tesla-refund-113329476.html" target="_blank" rel="nofollow">&#13;
+                        Elon Musk Says Tesla Will Refund Deposits To A Lot Of People As Cybertruck Production Winds Down  Robotaxi Makes San Antonio Debut&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/tesla-expands-robotaxi-san-antonio-113024061.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            06:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/tesla-expands-robotaxi-san-antonio-113024061.html" target="_blank" rel="nofollow">&#13;
+                        Tesla expands robotaxi service to San Antonio&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(TechCrunch)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            06:08AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/418812/tesla-plans-to-end-cybertruck-production-by-mid-2027-and-refund-outstanding-customer-deposits" target="_blank">&#13;
+                        Tesla Plans to End Cybertruck Production by Mid-2027 and Refund Outstanding Customer Deposits&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorsHub)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/tesla-wind-down-cybertruck-production-100750122.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            05:07AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/tesla-wind-down-cybertruck-production-100750122.html" target="_blank" rel="nofollow">&#13;
+                        Tesla to wind down Cybertruck production to focus on Cybercab&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Just Auto)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/tsla-stock-slips-overnight-cybertruck-081522192.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/tsla-stock-slips-overnight-cybertruck-081522192.html" target="_blank" rel="nofollow">&#13;
+                        TSLA Stock Slips Overnight As Cybertruck Makes Way For Cybercab  Terafab Reportedly Eyes 1M Wafers Monthly&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.digitimes.com/news/a20261109PD249/texas-expansion-technology-government-policy.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            02:55AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.digitimes.com/news/a20261109PD249/texas-expansion-technology-government-policy.html" target="_blank" rel="nofollow">&#13;
+                        Texas AI data-center expansion hits brakes under new governor&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(DigiTimes)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/retail-therapy-defensive-bets-extend-075122938.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            02:51AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/retail-therapy-defensive-bets-extend-075122938.html" target="_blank" rel="nofollow">&#13;
+                        Retail Therapy: Defensive Bets Extend Streak, Trounce SPY, QQQ As EVgo, Helen Of Troy, Magnite Lead Weekly Consumer Gains&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/elon-musk-blasts-california-extreme-070629268.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            02:06AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/elon-musk-blasts-california-extreme-070629268.html" target="_blank" rel="nofollow">&#13;
+                        Elon Musk Blasts Californias Extreme Taxes, Offers To Axe SpaceX Govt Deals  Analysts See A Political Dip-Buy&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.digitimes.com/news/a20261109VL210/spacex-revenue-2027-ceo-elon-musk.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-08-26 11:47PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.digitimes.com/news/a20261109VL210/spacex-revenue-2027-ceo-elon-musk.html" target="_blank" rel="nofollow">&#13;
+                        Musk says SpaceX annual recurring revenue likely to top US$500 billion by December 2027&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(DigiTimes)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/tesla-mag-7-stock-spacex-musk-545b6807?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            12:23PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/tesla-mag-7-stock-spacex-musk-545b6807?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Tesla Isn't a Mag-Y Stock. This Is.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/cathie-wood-sees-tesla-robotaxi-130930598.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            08:09AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/cathie-wood-sees-tesla-robotaxi-130930598.html" target="_blank" rel="nofollow">&#13;
+                        Cathie Wood Sees Teslas Robotaxi Business Taking Off  Says This Is The Moment Investors Have Waited For&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/ron-baron-made-30b-betting-095605749.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            04:56AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/ron-baron-made-30b-betting-095605749.html" target="_blank" rel="nofollow">&#13;
+                        Ron Baron Has Made $30B Betting On Elon Musk  Now He Sees Hundreds Of Billions More Coming From His TSLA, SPCX Investments&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/apple-completes-set-every-magnificent-170103142.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-07-26 12:01PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/apple-completes-set-every-magnificent-170103142.html" target="_blank" rel="nofollow">&#13;
+                        Apple Completes the Set: Every Magnificent Seven Stock Opts Out of OKX-ICE Venue&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(decrypt)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.wsj.com/politics/policy/elon-musk-texas-midterm-elections-b993e58d?mod=wsj_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-06-26 10:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.wsj.com/politics/policy/elon-musk-texas-midterm-elections-b993e58d?mod=wsj_FV" target="_blank" rel="nofollow">&#13;
+                        Elon Musk Staked His Empire on Texas. Now State Democrats Want to Rein Him In.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(The Wall Street Journal)</span>&#13;
+                      &#13;
+  &#13;
+      <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200" title="Nov 09, 2026">&#13;
+        <svg width="12" height="12" class="fill-current">&#13;
+    <use href="/assets/dist-icons/icons.1f7da9e4.svg#nextday"/>&#13;
+</svg> +5.54%&#13;
+    </span>&#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/ubers-robo-push-18461554?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:19PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/ubers-robo-push-18461554?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Uber's Robo Push&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/articles/musks-futuristic-cybertruck-rolls-toward-143948079.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            06:33PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/articles/musks-futuristic-cybertruck-rolls-toward-143948079.html" target="_blank" rel="nofollow">&#13;
+                        Musk's futuristic Cybertruck rolls toward exit&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(AFP)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/articles/elon-musk-once-said-cybertruck-215957190.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            04:59PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/articles/elon-musk-once-said-cybertruck-215957190.html" target="_blank" rel="nofollow">&#13;
+                        Elon Musk once said the Cybertruck would be Teslas best product ever. Now hes winding down production&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Fortune)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.wsj.com/livecoverage/october-jobs-report-stock-market-11-06-2026/card/google-exec-leaves-spacex-board-92uSFelAKFOzxRLNIntG?mod=wsj_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            04:57PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.wsj.com/livecoverage/october-jobs-report-stock-market-11-06-2026/card/google-exec-leaves-spacex-board-92uSFelAKFOzxRLNIntG?mod=wsj_FV" target="_blank" rel="nofollow">&#13;
+                        Google Exec Leaves SpaceX Board&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(The Wall Street Journal)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/elon-musk-spacex-stock-tesla-revenue-d340a020?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            04:20PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/elon-musk-spacex-stock-tesla-revenue-d340a020?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Elon Musk's Revenue Guidance From the Baron Conference Is How High?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/articles/musk-says-tesla-end-cybertruck-132900209.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:57PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/articles/musk-says-tesla-end-cybertruck-132900209.html" target="_blank" rel="nofollow">&#13;
+                        Musk says Tesla will end Cybertruck production next year&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(CBS News)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/see-ya-cybertruck-tesla-prepares-204828221.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:48PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/see-ya-cybertruck-tesla-prepares-204828221.html" target="_blank" rel="nofollow">&#13;
+                        See Ya, Cybertruck: Tesla Prepares to Say Goodbye to Its Controversial Pickup&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investopedia)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://qz.com/spacex-government-revenue-under-10-percent-musk-110626', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:20PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://qz.com/spacex-government-revenue-under-10-percent-musk-110626" target="_blank" rel="nofollow">&#13;
+                        Elon Musk said U.S. government revenue will fall below 10% of SpaceX sales this quarter&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Quartz)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/livecoverage/stock-market-today-dow-s-p-500-nasdaq-tech-stocks-worst-day-since-2020-employment-report/card/etfs-focused-on-ai-investing-theme-catch-strong-bid-q4GTkCygQeS3s4zoydy9?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            02:39PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/livecoverage/stock-market-today-dow-s-p-500-nasdaq-tech-stocks-worst-day-since-2020-employment-report/card/etfs-focused-on-ai-investing-theme-catch-strong-bid-q4GTkCygQeS3s4zoydy9?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        ETFs focused on AI investing theme catch strong bid&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/tesla-kills-cybertruck-stock-selloff-5ca91d3c?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            12:57PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/tesla-kills-cybertruck-stock-selloff-5ca91d3c?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Musk Kills Tesla Cybertruck. Why He Had to Shoot the Elephant.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/tesla-cybertruck-masterclass-failing-upwards-173841593.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            12:38PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/tesla-cybertruck-masterclass-failing-upwards-173841593.html" target="_blank" rel="nofollow">&#13;
+                        Tesla's Cybertruck is a masterclass in failing upwards&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Financial Times)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/tesla-plans-cybertruck-wind-down-165800896.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            11:58AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/tesla-plans-cybertruck-wind-down-165800896.html" target="_blank" rel="nofollow">&#13;
+                        Tesla plans Cybertruck wind-down but leaves models future unclear&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Proactive)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/articles/elon-musks-tesla-wind-down-164426417.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            11:44AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/articles/elon-musks-tesla-wind-down-164426417.html" target="_blank" rel="nofollow">&#13;
+                        Elon Musk's Tesla to 'wind down' Cybertruck production next year&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Euronews)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/article/musk-bids-farewell-to-cybertruck-as-tesla-bets-on-robots-and-self-driving-162259557.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            11:22AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/article/musk-bids-farewell-to-cybertruck-as-tesla-bets-on-robots-and-self-driving-162259557.html" target="_blank" rel="nofollow">&#13;
+                        Musk bids farewell to Cybertruck as Tesla bets on robots and self-driving&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/world-indices/articles/asia-stocks-drop-ai-rout-235808955.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            11:20AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/world-indices/articles/asia-stocks-drop-ai-rout-235808955.html" target="_blank" rel="nofollow">&#13;
+                        Wall Street stocks in relief rally after heavy AI-related selloff&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Reuters)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/story/is-it-the-end-of-the-cybertruck-elon-musk-announces-factory-will-shift-production-3e33cafd?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            11:17AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/is-it-the-end-of-the-cybertruck-elon-musk-announces-factory-will-shift-production-3e33cafd?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        Cybertruck's run comes to an end as Musk kills off pricey pet project&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/tesla-support-resistance-levels-watch-160212344.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            11:02AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/tesla-support-resistance-levels-watch-160212344.html" target="_blank" rel="nofollow">&#13;
+                        Tesla support and resistance levels to watch now&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investing.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+</table>
+</div>
+
+</div></div>
+</body>
+</html>

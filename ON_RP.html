@@ -1,0 +1,2672 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>ON — ON Semiconductor</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-size: 12px;
+      font-family: Arial, Helvetica, "Microsoft JhengHei", -apple-system, sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 8px 28px 16px;
+      background-color: #faf9f6;
+      color: #1c1917;
+    }
+
+    /* Header Bar */
+    .rp-header {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-top: 3px solid #FA8123;
+      border-radius: 6px;
+      padding: 6px 10px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+    .rp-title-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .rp-ticker {
+      font-size: 17px;
+      font-weight: 800;
+      color: #1c1917;
+      letter-spacing: 0.3px;
+    }
+    .rp-desc {
+      font-size: 15px;
+      font-weight: 700;
+      color: #FA8123;
+    }
+    .rp-time {
+      font-size: 11px;
+      color: #78716c;
+      background: #f5f3ef;
+      padding: 1px 7px;
+      border-radius: 999px;
+    }
+    .rp-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .rp-pill-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: #faf9f6;
+      border: 1px solid #d6d1c7;
+      color: #44403c;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.12s ease;
+    }
+    .rp-pill-link:hover {
+      background: #fff5eb;
+      border-color: #FA8123;
+      color: #d9650f;
+    }
+
+    /* Pyecharts Container Card */
+    .rp-chart-box {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 2px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+
+    /* Sub-Tabs Bar */
+    .rp-tabs-bar {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 4px 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      position: sticky;
+      top: 2px;
+      z-index: 50;
+      box-shadow: 0 1px 4px rgba(28, 25, 23, 0.05);
+    }
+    .rp-tab {
+      border: 1px solid transparent;
+      background: #f5f3ef;
+      color: #57534e;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+    .rp-tab:hover {
+      background: #fff5eb;
+      border-color: #fdba8c;
+      color: #d9650f;
+    }
+    .rp-tab.active {
+      background: #FA8123;
+      color: #ffffff;
+      box-shadow: 0 1px 3px rgba(250, 129, 35, 0.35);
+    }
+
+    /* Section Card */
+    .rp-sec-pane {
+      width: 100%;
+      margin: 0 0 4px;
+    }
+    .rp-card {
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 6px 8px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+      overflow-x: auto;
+    }
+    .rp-divider {
+      border: 0;
+      border-top: 1px solid #e6e2dc;
+      margin: 6px 0;
+    }
+
+    /* Modernized Tables (FBS / Pyramid / FinViz) */
+    .is-negative { color: #00994d; font-weight: 600; }
+    .is-positive { color: #cc2929; font-weight: 600; }
+    .snapshot-td2, .snapshot-td2-cp {
+      color: #1c1917;
+      text-decoration: none;
+      border: 1px solid #e6e2dc;
+      white-space: nowrap;
+    }
+    .snapshot-td2-cp { cursor: pointer; }
+    .fullview-ratings-outer, td.fullview-ratings-inner {
+      border: 1px solid #e6e2dc;
+    }
+    .t3r1 { color: #cc2929; font-weight: 700; }
+    .body-table-rating-downgrade { color: #cc2929; background: #fef2f2; }
+    .body-table-rating-upgrade { color: #00994d; background: #f0fdf4; }
+    .body-table-rating-neutral { color: #44403c; background: #faf9f6; }
+
+    table {
+      border-collapse: collapse;
+      margin: 6px auto;
+    }
+    td, th {
+      border: 1px solid #e6e2dc;
+      text-align: left;
+      padding: 6px 8px;
+    }
+    th {
+      background-color: #f6f4f0;
+      color: #1c1917;
+      font-weight: 700;
+    }
+    tr:nth-child(even) {
+      background-color: #fcfbf9;
+    }
+  </style>
+  <script>
+    function switchRpTab(btn) {
+      if (!btn) return;
+      var target = btn.getAttribute("data-target") || "all";
+      document.querySelectorAll(".rp-tab").forEach(function(b) {
+        b.classList.remove("active");
+      });
+      btn.classList.add("active");
+
+      document.querySelectorAll(".rp-sec-pane").forEach(function(pane) {
+        if (target === "all" || pane.id === target) {
+          pane.style.display = "block";
+        } else {
+          pane.style.display = "none";
+        }
+      });
+
+      try {
+        sessionStorage.setItem("sr_active_rp_tab", target);
+      } catch (e) {}
+
+      window.dispatchEvent(new Event("resize"));
+    }
+
+    window.addEventListener("load", function() {
+      try {
+        var saved = sessionStorage.getItem("sr_active_rp_tab");
+        if (saved && saved !== "all") {
+          var btn = document.querySelector('.rp-tab[data-target="' + saved + '"]');
+          if (btn) switchRpTab(btn);
+        }
+      } catch (e) {}
+    });
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/12.3.0/highcharts.min.js"></script>
+</head>
+<body>
+  <div class="rp-header">
+    <div class="rp-title-wrap">
+      <span class="rp-ticker">ON</span>
+      <span class="rp-desc">ON Semiconductor</span>
+      <span class="rp-time">更新: 2026-11-14 06:58</span>
+    </div>
+    <div class="rp-links">
+      <a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=ON&type=pe-ratio&statement=price-ratios&freq=Q" target="_blank">📈 PE Chart</a><a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=ON&type=price-book&statement=price-ratios&freq=Q" target="_blank">📊 PB Chart</a><a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=ON&type=price-sales&statement=price-ratios&freq=Q" target="_blank">📉 PS Chart</a><a class="rp-pill-link" href="https://www.wsj.com/market-data/quotes/ON/financials/quarter/cash-flow" target="_blank">💵 Finance</a><a class="rp-pill-link" href="https://www.dataroma.com/m/stock.php?sym=ON" target="_blank">🏛️ Ownership</a><a class="rp-pill-link" href="https://hedgefollow.com/stocks/ON" target="_blank">🏦 Institute</a><a class="rp-pill-link" href="https://unusualwhales.com/stock/ON/greek-exposure" target="_blank">⚡ GEX</a><a class="rp-pill-link" href="https://www.ptt.cc/bbs/Stock/search?q=ON" target="_blank">💬 PTT Search</a>
+    </div>
+  </div>
+
+  <div class="rp-chart-box" align="center">
+    <iframe id="stock" src="ON_EC.html" frameborder="0" width="100%" height="1600px" scrolling="no"></iframe>
+  </div>
+
+  <div class="rp-tabs-bar"><button class="rp-tab active" data-target="all" onclick="switchRpTab(this)">📋 全部展開</button><button class="rp-tab" data-target="sec-quant" onclick="switchRpTab(this)">🧮 量化與主動ETF</button><button class="rp-tab" data-target="sec-stockdog" onclick="switchRpTab(this)">🐶 主力籌碼</button><button class="rp-tab" data-target="sec-finviz" onclick="switchRpTab(this)">🌎 FinViz 美股基本面</button></div>
+  <div class="rp-sec-pane" id="sec-quant"><style>.pq-wrap{width:100%;margin:0;font-family:Arial,Helvetica,"Microsoft JhengHei",sans-serif;color:#222}.pq-sec{background:#fff;border:1px solid #e6e2dc;border-radius:6px;padding:6px 8px;margin-bottom:4px;box-shadow:0 1px 2px rgba(28,25,23,.03)}.pq-sec h2{font-size:14px;color:#1c1917;border-left:4px solid #FA8123;padding-left:6px;margin:0 0 6px}.pq-sec h3{font-size:12px;color:#44403c;margin:6px 0 4px}.pq-banner{background:#fff9f4;border-left:4px solid #FA8123;padding:5px 8px;border-radius:4px;font-size:12px;line-height:1.5;margin-bottom:6px;color:#292524}.pq-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:6px}table.pq-tbl{width:100%;border-collapse:collapse;font-size:12px;font-family:Arial,Helvetica,"Microsoft JhengHei",sans-serif}table.pq-tbl th,table.pq-tbl td{border:1px solid #e6e2dc !important;padding:4px 6px !important;text-align:right}table.pq-tbl th{background:#f6f4f0 !important;color:#1c1917 !important;font-weight:bold}table.pq-tbl tr:nth-child(even){background:#fcfbf9}</style><div class="pq-wrap">
+
+    <div class="pq-sec">
+      <h2>🧮 量化風險、波動率體制與因子 Alpha 拆解 (ON)</h2>
+      <div class="pq-banner">
+        <b>現價：</b> <b>71.06</b> ｜
+        <b>動能 (1D / 5D / 20D / 60D / 1Y / 12-1M)：</b> <span style="color:#00994d;font-weight:bold">-3.62%</span> / <span style="color:#cc2929;font-weight:bold">+12.24%</span> / <span style="color:#00994d;font-weight:bold">-1.33%</span> / <span style="color:#00994d;font-weight:bold">-4.89%</span> / <span style="color:#cc2929;font-weight:bold">+47.64%</span> / <span style="color:#cc2929;font-weight:bold">+53.13%</span> ｜
+        <b>200D Volume Profile：</b> POC <b>72.04</b> (VAH <b>93.89</b> / VAL <b>57.65</b>)<br>
+        <b>尾部風險與風險調整指標 (1Y)：</b> 年化波動率 <b>64.40%</b> (GARCH 1D預測 <b>70.19%</b>) ｜
+        Sortino <b>1.64</b> ｜ Calmar <b>1.47</b> ｜
+        最大回撤 (MDD) <span style="color:#00994d;font-weight:bold">-52.95%</span> ｜
+        95% VaR / CVaR: <span style="color:#00994d;font-weight:bold">-5.03% / -8.75%</span> ｜
+        <b>Lo-MacKinlay VR(5/10/20)：</b> 0.845(z*=-1.28) / 0.849(z*=-0.81) / 0.963(z*=-0.14)
+        <br><b>今日觸發技術訊號：</b> [BUY]     : 低於買點 ｜ [SELL]    : 日KD大於80 ｜ [OTHER]   : 三月KD由上往下
+      </div>
+      <table class="pq-tbl" style="margin-top:8px"><thead><tr><th style="text-align:left">Benchmark</th><th>20D (Stock / Bench)</th><th>20D Rel Excess</th><th>60D Rel Excess</th><th>1Y Rel Excess</th><th>1Y Beta (β)</th><th>R²</th><th>1Y Residual Alpha (α)</th></tr></thead><tbody><tr><td style="text-align:left"><b>^GSPC</b></td><td><span style="color:#00994d;font-weight:bold">-1.33%</span> / <span style="color:#00994d;font-weight:bold">-1.28%</span></td><td><span style="color:#00994d;font-weight:bold">-0.06%</span></td><td><span style="color:#00994d;font-weight:bold">-3.85%</span></td><td><span style="color:#cc2929;font-weight:bold">+33.85%</span></td><td><b>2.60</b></td><td>0.31</td><td><span style="color:#cc2929;font-weight:bold">+23.65%</span></td></tr><tr><td style="text-align:left"><b>QQQ</b></td><td><span style="color:#00994d;font-weight:bold">-1.33%</span> / <span style="color:#00994d;font-weight:bold">-4.21%</span></td><td><span style="color:#cc2929;font-weight:bold">+2.88%</span></td><td><span style="color:#00994d;font-weight:bold">-0.52%</span></td><td><span style="color:#cc2929;font-weight:bold">+34.76%</span></td><td><b>1.88</b></td><td>0.40</td><td><span style="color:#cc2929;font-weight:bold">+29.93%</span></td></tr><tr><td style="text-align:left"><b>SOXX</b></td><td><span style="color:#00994d;font-weight:bold">-1.33%</span> / <span style="color:#00994d;font-weight:bold">-9.22%</span></td><td><span style="color:#cc2929;font-weight:bold">+7.89%</span></td><td><span style="color:#cc2929;font-weight:bold">+9.37%</span></td><td><span style="color:#00994d;font-weight:bold">-5.24%</span></td><td><b>0.96</b></td><td>0.55</td><td><span style="color:#00994d;font-weight:bold">-3.21%</span></td></tr></tbody></table>
+    </div>
+    
+</div></div>
+<div class="rp-sec-pane" id="sec-stockdog"><div class="rp-card" align="center"><iframe id="stockdog" src="ON_SD.html" frameborder="0" width="100%" height="1000px" scrolling="no"></iframe></div></div>
+<div class="rp-sec-pane" id="sec-finviz"><div class="rp-card"><div align="center"><a href="https://www.marketwatch.com/investing/stock/ON/analystestimates" target="_blank"><img style="max-height:100%; max-width:100%; object-fit:contain" src=https://app.quotemedia.com/quotetools/getChart?webmasterId=91386&symbol=ON&chtype=FinancialLine&chcon=on&chdon=on&chfrmon=on&chscale=1d&chton=on&chwid=800&chhig=380&chln=ffa500&chfill=ffa500&chfnts=10&chbdr=000000&chbgch=ffffffff&chgrd=cccccc&svg=false&lang=en&locale=en></a></div>
+
+<hr class="rp-divider">
+<table align="center" class="snapshot-table2" align="center" style="width:100%; border-collapse:collapse; font-size:12px; margin:auto;">
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Major index membership"><div class="snapshot-td-label">Index</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">S&amp;P 500, RUI</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price-to-Earnings (ttm)"><div class="snapshot-td-label">P/E</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">41.36</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Diluted EPS (ttm)"><div class="snapshot-td-label">EPS (ttm)</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>1.72</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Insider ownership"><div class="snapshot-td-label">Insider Own</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.67%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Shares outstanding"><div class="snapshot-td-label">Shs Outstand</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>389.26M</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Week, Excl. Dividends)"><div class="snapshot-td-label">Perf Week</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">12.24%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Market capitalization"><div class="snapshot-td-label">Market Cap</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>27.66B</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Forward Price-to-Earnings (next fiscal year)"><div class="snapshot-td-label">Forward P/E</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">14.98</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="EPS estimate for next year"><div class="snapshot-td-label">EPS next Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>4.74</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Insider transactions (6-Month change in Insider Ownership)"><div class="snapshot-td-label">Insider Trans</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-0.59%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Shares float"><div class="snapshot-td-label">Shs Float</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>386.66M</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Month, Excl. Dividends)"><div class="snapshot-td-label">Perf Month</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-3.58%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Enterprise Value"><div class="snapshot-td-label">Enterprise Value</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>28.02B</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price-to-Earnings-to-Growth"><div class="snapshot-td-label">PEG</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">0.41</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="EPS estimate for next quarter"><div class="snapshot-td-label">EPS next Q</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>1.01</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Institutional ownership"><div class="snapshot-td-label">Inst Own</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>98.59%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Short interest share"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=ON&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank">Short Float</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=ON&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank"><b>7.40%</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Quarter, Excl. Dividends)"><div class="snapshot-td-label">Perf Quarter</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-14.78%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Income (ttm)"><div class="snapshot-td-label">Income</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>689.10M</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price-to-Sales (ttm)"><div class="snapshot-td-label">P/S</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>4.34</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="EPS growth this year"><div class="snapshot-td-label">EPS this Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">39.88%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Institutional transactions (3-Month change in Institutional Ownership)"><div class="snapshot-td-label">Inst Trans</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-7.29%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Short interest ratio"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=ON&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank">Short Ratio</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=ON&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank"><b>2.76</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Half Year, Excl. Dividends)"><div class="snapshot-td-label">Perf Half Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-37.18%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Revenue (ttm)"><div class="snapshot-td-label">Sales</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>6.37B</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price-to-Book (mrq)"><div class="snapshot-td-label">P/B</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>3.66</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="EPS growth next year"><div class="snapshot-td-label">EPS next Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">44.31%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Return on Assets (ttm)"><div class="snapshot-td-label">ROA</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>5.12%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Short interest"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=ON&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank">Short Interest</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=ON&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank"><b data-boxover-html="Settlement Date: 10/30/2026">28.62M</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Year To Date, Excl. Dividends)"><div class="snapshot-td-label">Perf YTD</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">31.23%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Book value per share (mrq)"><div class="snapshot-td-label">Book/sh</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>19.42</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price to cash per share (mrq)"><div class="snapshot-td-label">P/C</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>6.33</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Long term annual growth estimate (5 years)"><div class="snapshot-td-label">EPS next 5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">36.91%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Return on Equity (ttm)"><div class="snapshot-td-label">ROE</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>8.91%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 52-Week High"><div class="snapshot-td-label">52W High</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>134.92 <small class="text-2xs"><span class="color-text is-negative">-47.33%</span></small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Year, Excl. Dividends)"><div class="snapshot-td-label">Perf Year</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">47.64%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Cash per share (mrq)"><div class="snapshot-td-label">Cash/sh</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>11.22</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price to Free Cash Flow (ttm)"><div class="snapshot-td-label">P/FCF</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">17.11</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Annual EPS growth past 3 and 5 years"><div class="snapshot-td-label">EPS past 3/5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs"><span class="color-text is-negative">-58.95%</span> <span class="color-text is-negative">-12.08%</span></small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Return on Invested Capital (ttm)"><div class="snapshot-td-label">ROIC</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>6.02%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 52-Week Low"><div class="snapshot-td-label">52W Low</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>44.56 <small class="text-2xs"><span class="color-text is-positive">59.47%</span></small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (3 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 3Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">6.62%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Analysts' Dividend Estimate (Fiscal Year)"><div class="snapshot-td-label">Dividend Est.</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Enterprise Value to EBITDA"><div class="snapshot-td-label">EV/EBITDA</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>13.99</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Annual sales growth past 3 and 5 years"><div class="snapshot-td-label">Sales past 3/5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs"><span class="color-text is-negative">-10.37%</span> 2.67%</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Gross Margin (ttm)"><div class="snapshot-td-label">Gross Margin</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>38.13%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Volatility (Week, Month)"><div class="snapshot-td-label">Volatility</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">6.57% 5.54%</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (5 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">21.26%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Trailing 12 Months Dividend"><div class="snapshot-td-label">Dividend TTM</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Enterprise Value to Revenues"><div class="snapshot-td-label">EV/Sales</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>4.40</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="EPS growth TTM"><div class="snapshot-td-label">EPS Y/Y TTM</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">126.11%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Operating Margin (ttm)"><div class="snapshot-td-label">Oper. Margin</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>19.23%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Average True Range (14)"><div class="snapshot-td-label">ATR (14)</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>4.36</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (10 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 10Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">533.33%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Ex-Dividend Date"><div class="snapshot-td-label">Dividend Ex-Date</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Quick Ratio (mrq)"><div class="snapshot-td-label">Quick Ratio</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>2.61</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Sales growth TTM"><div class="snapshot-td-label">Sales Y/Y TTM</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>2.93%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Net Profit Margin (ttm)"><div class="snapshot-td-label">Profit Margin</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>10.82%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Relative Strength Index"><div class="snapshot-td-label">RSI (14)</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>47.49</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Analysts' mean recommendation (1=Buy 5=Sell)"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=ON&amp;ta=1&amp;p=d&amp;ty=fc" class="hover:underline" target="_blank">Recom</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=ON&amp;ta=1&amp;p=d&amp;ty=fc" class="hover:underline" target="_blank"><b><span class="color-text is-positive">1.97</span></b></a></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Dividend growth over 3 and 5 years"><div class="snapshot-td-label">Dividend Gr. 3/5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">- -</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Current Ratio (mrq)"><div class="snapshot-td-label">Current Ratio</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">3.55</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Quarterly earnings growth (YoY)"><div class="snapshot-td-label">EPS Q/Q</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">26.42%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 20-Day Simple Moving Average"><div class="snapshot-td-label">SMA20</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-1.57%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Beta"><div class="snapshot-td-label">Beta</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>2.15</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Analysts' mean target price"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=ON&amp;ta=1&amp;p=d&amp;ty=fc" class="hover:underline" target="_blank">Target Price</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=ON&amp;ta=1&amp;p=d&amp;ty=fc" class="hover:underline" target="_blank"><b><span class="color-text is-positive">96.48</span></b></a></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Dividend Payout Ratio (ttm)"><div class="snapshot-td-label">Payout</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.00%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Total Debt to Equity (mrq)"><div class="snapshot-td-label">Debt/Eq</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">0.62</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Quarterly revenue growth (YoY)"><div class="snapshot-td-label">Sales Q/Q</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>11.05%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 50-Day Simple Moving Average"><div class="snapshot-td-label">SMA50</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-4.05%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Relative volume"><div class="snapshot-td-label">Rel Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.71</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Previous close"><div class="snapshot-td-label">Prev Close</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>73.73</b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Full time employees"><div class="snapshot-td-label">Employees</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>22600</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Long Term Debt to Equity (mrq)"><div class="snapshot-td-label">LT Debt/Eq</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">0.51</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Earnings date&lt;br&gt;&lt;br&gt;BMO = Before Market Open&lt;br&gt;AMC = After Market Close"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=ON&amp;ta=1&amp;p=d&amp;ty=ea" class="hover:underline" target="_blank">Earnings</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=ON&amp;ta=1&amp;p=d&amp;ty=ea" class="hover:underline" target="_blank"><b><small class="text-2xs">Nov 02 AMC</small></b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 200-Day Simple Moving Average"><div class="snapshot-td-label">SMA200</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-14.16%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Average volume (3 month)"><div class="snapshot-td-label">Avg Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>10.39M</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Current stock price"><div class="snapshot-td-label">Price</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>71.06</b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="IPO Date"><div class="snapshot-td-label">IPO</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>Apr 28, 2000</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Stock has options trading on a market exchange / Stock is available to sell short"><div class="snapshot-td-label">Option/Short</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">Yes / Yes</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Last quarter EPS and Revenue surprise"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=ON&amp;ta=1&amp;p=d&amp;ty=ea" class="hover:underline" target="_blank">EPS/Sales Surpr.</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=ON&amp;ta=1&amp;p=d&amp;ty=ea" class="hover:underline" target="_blank"><b><small class="text-2xs"><span class="color-text is-positive">2.68%</span> <span class="color-text is-positive">1.00%</span></small></b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Trades"><div class="snapshot-td-label">Trades</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Volume"><div class="snapshot-td-label">Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>7,371,494</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (today)"><div class="snapshot-td-label">Change %</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-3.62%</span></b></div></td>
+</tr>
+</table>
+
+
+<hr class="rp-divider">
+<table align="center" class="styled-table-new is-rounded is-small w-full" cellpadding="0" cellspacing="0">
+  <thead>
+    <tr>
+      <th align="left" class="whitespace-nowrap">Date</th>
+      <th align="left" class="whitespace-nowrap">Action</th>
+      <th align="left" class="whitespace-nowrap">Analyst</th>
+      <th align="left" class="whitespace-nowrap">Rating Change</th>
+      <th align="left" class="whitespace-nowrap">Price Target Change</th>
+      <th align="left" class="whitespace-nowrap">Implied Upside</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Nov 03, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>C</span></span>Craig Hallum</div>
+      </td>
+      <td class="text-left color-text is-positive">Hold → Buy</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no">$85</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+19.6%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Sep 23, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Initiated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>S</span></span>Seaport Research Partners</div>
+      </td>
+      <td class="text-left">Buy</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$100</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+40.7%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Jun 26, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/TD.svg&quot;)"><img src="https://logo.finviz.com/TD.svg" alt="TD logo" crossorigin="anonymous"/><span>T</span></span>TD Cowen</div>
+      </td>
+      <td class="text-left color-text is-negative">Buy → Hold</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no">$110</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+54.8%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">May 13, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>C</span></span>Cantor Fitzgerald</div>
+      </td>
+      <td class="text-left">Neutral</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$95 → $100</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+40.7%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Apr 23, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/RILY.svg&quot;)"><img src="https://logo.finviz.com/RILY.svg" alt="RILY logo" crossorigin="anonymous"/><span>R</span></span>B. Riley Securities</div>
+      </td>
+      <td class="text-left color-text is-positive">Neutral → Buy</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no">$115</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+61.8%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Apr 13, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/BAC.svg&quot;)"><img src="https://logo.finviz.com/BAC.svg" alt="BAC logo" crossorigin="anonymous"/><span>B</span></span>BofA Securities</div>
+      </td>
+      <td class="text-left color-text is-positive">Neutral → Buy</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no">$85</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+19.6%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Feb 12, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Initiated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/BCS.svg&quot;)"><img src="https://logo.finviz.com/BCS.svg" alt="BCS logo" crossorigin="anonymous"/><span>B</span></span>Barclays</div>
+      </td>
+      <td class="text-left">Equal Weight</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$75</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+5.5%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Feb 10, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>T</span></span>The Benchmark Company</div>
+      </td>
+      <td class="text-left color-text is-negative">Buy → Hold</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no"/>
+      <td class="whitespace-nowrap"/>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Jan 22, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>B</span></span>BNP Paribas Exane</div>
+      </td>
+      <td class="text-left color-text is-positive">Underperform → Neutral</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no">$62</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-negative)">
+            <span style="color:#cc2929; font-size:11px;">▼ </span>
+          </span>
+          <span class="tabular-nums text-negative">-12.7%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text is-last">
+      <td class="whitespace-nowrap">Nov 04, 2025</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/TD.svg&quot;)"><img src="https://logo.finviz.com/TD.svg" alt="TD logo" crossorigin="anonymous"/><span>T</span></span>TD Cowen</div>
+      </td>
+      <td class="text-left">Buy</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$55 → $60</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-negative)">
+            <span style="color:#cc2929; font-size:11px;">▼ </span>
+          </span>
+          <span class="tabular-nums text-negative">-15.6%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Aug 05, 2025</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/TD.svg&quot;)"><img src="https://logo.finviz.com/TD.svg" alt="TD logo" crossorigin="anonymous"/><span>T</span></span>TD Cowen</div>
+      </td>
+      <td class="text-left">Buy</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$68 → $55</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-negative)">
+            <span style="color:#cc2929; font-size:11px;">▼ </span>
+          </span>
+          <span class="tabular-nums text-negative">-22.6%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Aug 05, 2025</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/BAC.svg&quot;)"><img src="https://logo.finviz.com/BAC.svg" alt="BAC logo" crossorigin="anonymous"/><span>B</span></span>BofA Securities</div>
+      </td>
+      <td class="text-left color-text is-negative">Buy → Neutral</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no">$56</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-negative)">
+            <span style="color:#cc2929; font-size:11px;">▼ </span>
+          </span>
+          <span class="tabular-nums text-negative">-21.2%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Jul 10, 2025</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Initiated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/GS.svg&quot;)"><img src="https://logo.finviz.com/GS.svg" alt="GS logo" crossorigin="anonymous"/><span>G</span></span>Goldman</div>
+      </td>
+      <td class="text-left">Neutral</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$60</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-negative)">
+            <span style="color:#cc2929; font-size:11px;">▼ </span>
+          </span>
+          <span class="tabular-nums text-negative">-15.6%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Jun 18, 2025</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Initiated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>C</span></span>Cantor Fitzgerald</div>
+      </td>
+      <td class="text-left">Neutral</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$55</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-negative)">
+            <span style="color:#cc2929; font-size:11px;">▼ </span>
+          </span>
+          <span class="tabular-nums text-negative">-22.6%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">May 12, 2025</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Resumed</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/MS.svg&quot;)"><img src="https://logo.finviz.com/MS.svg" alt="MS logo" crossorigin="anonymous"/><span>M</span></span>Morgan Stanley</div>
+      </td>
+      <td class="text-left">Equal-Weight</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$39</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-negative)">
+            <span style="color:#cc2929; font-size:11px;">▼ </span>
+          </span>
+          <span class="tabular-nums text-negative">-45.1%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">May 06, 2025</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/TD.svg&quot;)"><img src="https://logo.finviz.com/TD.svg" alt="TD logo" crossorigin="anonymous"/><span>T</span></span>TD Cowen</div>
+      </td>
+      <td class="text-left">Buy</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$38 → $44</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-negative)">
+            <span style="color:#cc2929; font-size:11px;">▼ </span>
+          </span>
+          <span class="tabular-nums text-negative">-38.1%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Apr 24, 2025</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/RILY.svg&quot;)"><img src="https://logo.finviz.com/RILY.svg" alt="RILY logo" crossorigin="anonymous"/><span>R</span></span>B. Riley Securities</div>
+      </td>
+      <td class="text-left color-text is-negative">Buy → Neutral</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no">$41</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-negative)">
+            <span style="color:#cc2929; font-size:11px;">▼ </span>
+          </span>
+          <span class="tabular-nums text-negative">-42.3%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Jan 24, 2025</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/RILY.svg&quot;)"><img src="https://logo.finviz.com/RILY.svg" alt="RILY logo" crossorigin="anonymous"/><span>R</span></span>B. Riley Securities</div>
+      </td>
+      <td class="text-left">Buy</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$100 → $90</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+26.7%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Jan 10, 2025</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/TFC.svg&quot;)"><img src="https://logo.finviz.com/TFC.svg" alt="TFC logo" crossorigin="anonymous"/><span>T</span></span>Truist</div>
+      </td>
+      <td class="text-left color-text is-negative">Buy → Hold</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no">$85 → $60</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-negative)">
+            <span style="color:#cc2929; font-size:11px;">▼ </span>
+          </span>
+          <span class="tabular-nums text-negative">-15.6%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Nov 22, 2024</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Initiated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/WFC.svg&quot;)"><img src="https://logo.finviz.com/WFC.svg" alt="WFC logo" crossorigin="anonymous"/><span>W</span></span>Wells Fargo</div>
+      </td>
+      <td class="text-left">Overweight</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$85</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+19.6%</span>
+        </span>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<hr class="rp-divider">
+<table align="center" cellpadding="0" cellspacing="0" align="center" width="70%" class="body-table styled-table-new is-rounded p-0 mt-2">
+<thead>
+<tr>
+<th align="left">Insider Trading</th>
+<th align="left">Relationship</th>
+<th align="left">Date</th>
+<th align="center">Transaction</th>
+<th align="right">Cost</th>
+<th align="right">#Shares</th>
+<th align="right">Value ($)</th>
+<th align="right">#Shares Total</th>
+<th align="center">SEC Form 4</th>
+</tr>
+</thead>
+<tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1722291&amp;tc=7" class="tab-link" target="_blank">GOPALSWAMY SUDHIR</a></td><td style="white-space:nowrap">Group President, AMG &amp; ISG</td><td>Oct 01 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">80.00</td><td class="value" align="right">15,578</td><td class="value" align="right">1,246,240</td><td class="value" align="right">158,177</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1097864/000122520826008113/xslF345X06/doc4.xml" class="tab-link" target="_blank">Oct 02 04:41 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1722291&amp;tc=7" class="tab-link" target="_blank">GOPALSWAMY SUDHIR</a></td><td style="white-space:nowrap">Officer</td><td>Oct 01 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">80.00</td><td class="value" align="right">15,578</td><td class="value" align="right">1,246,240</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1097864/000196530126000153/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Oct 01 04:35 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1296309&amp;tc=7" class="tab-link" target="_blank">ALAN CAMPBELL</a></td><td style="white-space:nowrap">Director</td><td>Jun 10 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">109.61</td><td class="value" align="right">16,660</td><td class="value" align="right">1,826,129</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1097864/000195004726005874/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Jun 10 04:19 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1763605&amp;tc=7" class="tab-link" target="_blank">KEETON SIMON</a></td><td style="white-space:nowrap">Officer</td><td>Jun 03 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">131.99</td><td class="value" align="right">19,902</td><td class="value" align="right">2,626,960</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1097864/000196530126000068/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Jun 03 04:04 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1296309&amp;tc=7" class="tab-link" target="_blank">ALAN CAMPBELL</a></td><td style="white-space:nowrap">Director</td><td>May 15 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">113.11</td><td class="value" align="right">22,188</td><td class="value" align="right">2,509,685</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1097864/000195004726004583/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">May 15 04:08 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1763605&amp;tc=7" class="tab-link" target="_blank">SIMON KEETON</a></td><td style="white-space:nowrap">Officer</td><td>May 11 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">105.30</td><td class="value" align="right">31,463</td><td class="value" align="right">3,313,172</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1097864/000195004726004303/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">May 11 04:06 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1607990&amp;tc=7" class="tab-link" target="_blank">Thad Trent</a></td><td style="white-space:nowrap">Exec VP &amp; CFO</td><td>Apr 24 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">100.00</td><td class="value" align="right">30,000</td><td class="value" align="right">3,000,000</td><td class="value" align="right">271,194</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1097864/000122520826004632/xslF345X06/doc4.xml" class="tab-link" target="_blank">Apr 27 04:34 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1607990&amp;tc=7" class="tab-link" target="_blank">Thad Trent</a></td><td style="white-space:nowrap">Exec VP &amp; CFO</td><td>Apr 23 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">93.00</td><td class="value" align="right">30,000</td><td class="value" align="right">2,790,000</td><td class="value" align="right">301,194</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1097864/000122520826004632/xslF345X06/doc4.xml" class="tab-link" target="_blank">Apr 27 04:34 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1607990&amp;tc=7" class="tab-link" target="_blank">THAD TRENT</a></td><td style="white-space:nowrap">Officer</td><td>Apr 24 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">97.78</td><td class="value" align="right">30,000</td><td class="value" align="right">2,933,400</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1097864/000195004726003749/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Apr 24 04:21 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1607990&amp;tc=7" class="tab-link" target="_blank">THAD TRENT</a></td><td style="white-space:nowrap">Officer</td><td>Apr 23 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">88.99</td><td class="value" align="right">30,000</td><td class="value" align="right">2,669,700</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1097864/000195004726003718/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Apr 23 04:31 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1607990&amp;tc=7" class="tab-link" target="_blank">Thad Trent</a></td><td style="white-space:nowrap">Exec VP &amp; CFO</td><td>Apr 16 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">80.00</td><td class="value" align="right">30,000</td><td class="value" align="right">2,400,000</td><td class="value" align="right">331,194</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1097864/000122520826004568/xslF345X06/doc4.xml" class="tab-link" target="_blank">Apr 17 04:50 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1607990&amp;tc=7" class="tab-link" target="_blank">THAD TRENT</a></td><td style="white-space:nowrap">Officer</td><td>Apr 16 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">72.43</td><td class="value" align="right">30,000</td><td class="value" align="right">2,172,900</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1097864/000195004726003569/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Apr 16 04:13 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1722291&amp;tc=7" class="tab-link" target="_blank">GOPALSWAMY SUDHIR</a></td><td style="white-space:nowrap">Group President, AMG &amp; ISG</td><td>Mar 13 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">58.67</td><td class="value" align="right">6,114</td><td class="value" align="right">358,708</td><td class="value" align="right">173,943</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1097864/000122520826003699/xslF345X05/doc4.xml" class="tab-link" target="_blank">Mar 16 04:41 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1722291&amp;tc=7" class="tab-link" target="_blank">GOPALSWAMY SUDHIR</a></td><td style="white-space:nowrap">Officer</td><td>Mar 13 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">58.67</td><td class="value" align="right">6,114</td><td class="value" align="right">358,708</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1097864/000196530126000034/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Mar 13 03:53 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1763605&amp;tc=7" class="tab-link" target="_blank">KEETON SIMON</a></td><td style="white-space:nowrap">Group President, PSG</td><td>Feb 17 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">71.75</td><td class="value" align="right">48,860</td><td class="value" align="right">3,505,699</td><td class="value" align="right">198,995</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1097864/000122520826002131/xslF345X05/doc4.xml" class="tab-link" target="_blank">Feb 18 05:55 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1763605&amp;tc=7" class="tab-link" target="_blank">SIMON KEETON</a></td><td style="white-space:nowrap">Officer</td><td>Feb 17 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">71.75</td><td class="value" align="right">48,860</td><td class="value" align="right">3,505,699</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1097864/000195004726001329/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Feb 17 04:25 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1558882&amp;tc=7" class="tab-link" target="_blank">El-Khoury Hassane</a></td><td style="white-space:nowrap">CEO &amp; President</td><td>Feb 12 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">73.02</td><td class="value" align="right">20,000</td><td class="value" align="right">1,460,414</td><td class="value" align="right">1,015,610</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1097864/000122520826001830/xslF345X05/doc4.xml" class="tab-link" target="_blank">Feb 12 06:02 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1607990&amp;tc=7" class="tab-link" target="_blank">Thad Trent</a></td><td style="white-space:nowrap">Exec VP &amp; CFO</td><td>Feb 12 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">71.22</td><td class="value" align="right">60,000</td><td class="value" align="right">4,272,975</td><td class="value" align="right">339,460</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1097864/000122520826001829/xslF345X05/doc4.xml" class="tab-link" target="_blank">Feb 12 06:00 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1607990&amp;tc=7" class="tab-link" target="_blank">THAD TRENT</a></td><td style="white-space:nowrap">Officer</td><td>Feb 12 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">71.18</td><td class="value" align="right">60,000</td><td class="value" align="right">4,270,800</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1097864/000195004726001219/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Feb 12 04:29 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1558882&amp;tc=7" class="tab-link" target="_blank">EL-KHOURY LIVING TRUST</a></td><td style="white-space:nowrap">Officer</td><td>Feb 12 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">73.02</td><td class="value" align="right">20,000</td><td class="value" align="right">1,460,414</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1097864/000195004726001200/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Feb 12 04:12 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1763605&amp;tc=7" class="tab-link" target="_blank">KEETON SIMON</a></td><td style="white-space:nowrap">Group President, PSG</td><td>Dec 04 '25</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">55.72</td><td class="value" align="right">21,000</td><td class="value" align="right">1,170,059</td><td class="value" align="right">232,843</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1097864/000122520825009790/xslF345X05/doc4.xml" class="tab-link" target="_blank">Dec 08 05:43 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1607990&amp;tc=7" class="tab-link" target="_blank">Thad Trent</a></td><td style="white-space:nowrap">Exec VP &amp; CFO</td><td>Dec 03 '25</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">55.05</td><td class="value" align="right">20,000</td><td class="value" align="right">1,100,972</td><td class="value" align="right">379,448</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1097864/000122520825009675/xslF345X05/doc4.xml" class="tab-link" target="_blank">Dec 04 05:04 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1763605&amp;tc=7" class="tab-link" target="_blank">SIMON KEETON</a></td><td style="white-space:nowrap">Officer</td><td>Dec 04 '25</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">55.72</td><td class="value" align="right">21,000</td><td class="value" align="right">1,170,057</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1097864/000195004725009747/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Dec 04 04:05 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1607990&amp;tc=7" class="tab-link" target="_blank">THAD TRENT</a></td><td style="white-space:nowrap">Officer</td><td>Dec 03 '25</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">55.05</td><td class="value" align="right">20,000</td><td class="value" align="right">1,100,972</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1097864/000195004725009689/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Dec 03 04:15 PM</a></td></tr></table>
+
+
+
+<hr class="rp-divider">
+<div class="body-table-news-wrapper news-table_wrapper is-collapsed"><table align="center" align="center" width="70%" cellpadding="1" cellspacing="0" border="0" id="news-table" class="fullview-news-outer news-table" data-ticker="ON">
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/data-news/on-semiconductor-corp-stock-underperforms-friday-when-compared-to-competitors-288bb5c3-99527ee415e9?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Today 04:30PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/data-news/on-semiconductor-corp-stock-underperforms-friday-when-compared-to-competitors-288bb5c3-99527ee415e9?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        ON Semiconductor Corp. stock underperforms Friday when compared to competitors&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Nov-10-26 06:44AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/419810/onsemi-introduces-fourth-generation-elitesic-m4-platform-with-up-to-30-higher-power-density" target="_blank">&#13;
+                        Onsemi Introduces Fourth-Generation EliteSiC M4 Platform With Up to 30% Higher Power Density&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorsHub)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            03:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/419740/onsemis-elitesic-m4-pushes-power-density-higher-as-energy-demands-grow" target="_blank">&#13;
+                        onsemi's EliteSiC M4 Pushes Power Density Higher as Energy Demands Grow&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/data-news/on-semiconductor-corp-stock-outperforms-competitors-on-strong-trading-day-d1456d9c-518b3d7e888b?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-09-26 04:30PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/data-news/on-semiconductor-corp-stock-outperforms-competitors-on-strong-trading-day-d1456d9c-518b3d7e888b?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        ON Semiconductor Corp. stock outperforms competitors on strong trading day&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">&#13;
+         +9.16%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            12:02PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/419334/quarterly-reports-and-an-independent-board-inquiry-frame-the-chip-sectors-week" target="_blank">&#13;
+                        Quarterly Reports and an Independent Board Inquiry Frame the Chip Sector's Week&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/articles/onsemi-czech-ministry-cancel-2-211736822.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-06-26 04:17PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/articles/onsemi-czech-ministry-cancel-2-211736822.html" target="_blank" rel="nofollow">&#13;
+                        Onsemi and Czech ministry cancel $2 billion chip facility expansion&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investing.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Nov-05-26 11:14AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/417248/a-sharp-pullback-in-chip-stocks-meets-fresh-records-in-four-of-five-recent-earnings-reports" target="_blank">&#13;
+                        A Sharp Pullback in Chip Stocks Meets Fresh Records in Four of Five Recent Earnings Reports&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">&#13;
+         -11.55%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/semiconductor-earnings-analysis-questions-answered-182400990.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-03-26 01:24PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/semiconductor-earnings-analysis-questions-answered-182400990.html" target="_blank" rel="nofollow">&#13;
+                        ON Semiconductor earnings analysis: questions answered and next catalysts&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investing.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/lattice-semiconductor-earnings-stock-price-ai-811348bd?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            11:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/lattice-semiconductor-earnings-stock-price-ai-811348bd?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Lattice Semiconductor Is Riding the AI Server Wave to Big Growth&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/semiconductor-beats-earnings-estimates-ai-153900497.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            10:39AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/semiconductor-beats-earnings-estimates-ai-153900497.html" target="_blank" rel="nofollow">&#13;
+                        ON Semiconductor beats earnings estimates as AI revenue surges&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Proactive)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            08:51AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/414298/on-semiconductor-shares-rise-3-as-q3-earnings-beat-forecasts-and-ai-data-centre-outlook-strengthens" target="_blank">&#13;
+                        ON Semiconductor Shares Rise 3% as Q3 Earnings Beat Forecasts and AI Data Centre Outlook Strengthens&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorsHub)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/stock-movers-0b42bd79?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            06:25AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/stock-movers-0b42bd79?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Apple, Palantir, AMD, Sandisk, Onsemi, and More Stocks That Explain Today's Market&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/semiconductor-corp-q3-earnings-snapshot-042823338.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-02-26 11:28PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/semiconductor-corp-q3-earnings-snapshot-042823338.html" target="_blank" rel="nofollow">&#13;
+                        ON Semiconductor Corp.: Q3 Earnings Snapshot&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Associated Press)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            07:41PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/413820/onsemi-matches-the-whisper-but-raises-the-bar-ai-data-center-growth-and-margin-gains-contrast-with-an-automotive-pullback" target="_blank">&#13;
+                        Onsemi Matches The Whisper But Raises The Bar: AI Data Center Growth And Margin Gains Contrast With An Automotive Pullback&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Earnings Whispers)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/onsemi-earnings-stock-price-021a188b?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            05:07PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/onsemi-earnings-stock-price-021a188b?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Onsemi Shares Fall Despite Earnings Beat. Why Its AI Data Center Growth Wasn't Enough.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/semiconductor-shares-fall-despite-earnings-214833192.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            04:48PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/semiconductor-shares-fall-despite-earnings-214833192.html" target="_blank" rel="nofollow">&#13;
+                        ON Semiconductor shares fall despite earnings beat&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investing.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            04:10PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/413565/onsemi-reports-third-quarter-2026-results" target="_blank">&#13;
+                        onsemi Reports Third Quarter 2026 Results&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            04:05PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/413515/onsemi-to-acquire-ferric-establishing-leadership-in-power-delivery-for-next-generation-ai-processors" target="_blank">&#13;
+                        onsemi to Acquire Ferric, Establishing Leadership in Power Delivery for Next-Generation AI Processors&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/livecoverage/stock-market-today-dow-s-p-500-nasdaq-rebound-midterm-elections-earnings-economic-data-apple/card/apple-headlines-monday-s-earnings-slate-jtMY5otAj4mkkZhh1VCJ?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            04:34AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/livecoverage/stock-market-today-dow-s-p-500-nasdaq-rebound-midterm-elections-earnings-economic-data-apple/card/apple-headlines-monday-s-earnings-slate-jtMY5otAj4mkkZhh1VCJ?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        Apple headlines Monday's earnings slate&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/livecoverage/stock-market-today-dow-s-p-500-nasdaq-rebound-midterm-elections-earnings-economic-data-apple?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:32AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/livecoverage/stock-market-today-dow-s-p-500-nasdaq-rebound-midterm-elections-earnings-economic-data-apple?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        Stock Market Today: Dow, S&amp;P and Nasdaq set to rebound after worst day in five months; Apple results on tap&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Oct-29-26 01:08PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/411852/the-week-ahead-more-inflation-data-to-kick-off-november" target="_blank">&#13;
+                        The Week Ahead: More Inflation Data to Kick Off November&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Schaeffer's Research)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/data-news/on-semiconductor-corp-stock-outperforms-competitors-on-strong-trading-day-0509482e-112f6952ca59?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-27-26 04:30PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/data-news/on-semiconductor-corp-stock-outperforms-competitors-on-strong-trading-day-0509482e-112f6952ca59?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        ON Semiconductor Corp. stock outperforms competitors on strong trading day&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">&#13;
+         +6.22%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Oct-26-26 01:14PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/407963/onsemis-40-margin-promise-faces-its-proof-test-as-the-stock-lags-its-upcycle" target="_blank">&#13;
+                        Onsemi's 40% Margin Promise Faces Its Proof Test As The Stock Lags Its Upcycle&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Earnings Whispers)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/amd-qcom-targets-raised-while-143029801.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-21-26 10:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/amd-qcom-targets-raised-while-143029801.html" target="_blank" rel="nofollow">&#13;
+                        AMD, QCOM Targets Raised While INTC, COHR Face Cuts  Susquehanna Sees Modest Upside For Chip Earnings&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/semi-stock-target-synaptics-acquisition-050100702.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-19-26 01:01AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/semi-stock-target-synaptics-acquisition-050100702.html" target="_blank" rel="nofollow">&#13;
+                        ON- A Semi Stock to Target After Synaptics Acquisition&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MoneyShow)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Oct-15-26 04:05PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/403289/onsemi-to-announce-third-quarter-financial-results" target="_blank">&#13;
+                        onsemi to Announce Third Quarter Financial Results&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/dell-downgraded-texas-roadhouse-upgraded-133949458.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            09:39AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/dell-downgraded-texas-roadhouse-upgraded-133949458.html" target="_blank" rel="nofollow">&#13;
+                        CarMax upgraded, Spotify downgraded: Wall Street's top analyst calls&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(The Fly)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/stock-draws-bullish-initiation-stonex-104424180.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            06:44AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/stock-draws-bullish-initiation-stonex-104424180.html" target="_blank" rel="nofollow">&#13;
+                        ON Stock Draws Bullish Initiation From StoneX  Analyst Sees Nearly 50% Upside On Broadening Chip Recovery&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Oct-14-26 06:01AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/402204/onsemi-and-sungrow-advance-utility-scale-energy-storage-performance-with-sic-hybrid-technology" target="_blank">&#13;
+                        onsemi and Sungrow Advance Utility-Scale Energy Storage Performance with SiC Hybrid Technology&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Oct-13-26 12:43PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/401960/dont-sweat-on-semiconductor-stocks-recent-pullback" target="_blank">&#13;
+                        Don't Sweat ON Semiconductor Stock's Recent Pullback&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Schaeffer's Research)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/sign-texas-instruments-stock-run-123349628.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-09-26 08:33AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/sign-texas-instruments-stock-run-123349628.html" target="_blank" rel="nofollow">&#13;
+                        Was There Any Sign Texas Instruments Stock Would Run?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Trefis)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/does-monolithic-power-systems-stocks-205455110.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-07-26 04:54PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/does-monolithic-power-systems-stocks-205455110.html" target="_blank" rel="nofollow">&#13;
+                        Does Monolithic Power Systems Stock's Valuation Make Sense?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Trefis)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/data-news/on-semiconductor-corp-stock-underperforms-wednesday-when-compared-to-competitors-373f2aac-03f4dfd01f47?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            04:30PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/data-news/on-semiconductor-corp-stock-underperforms-wednesday-when-compared-to-competitors-373f2aac-03f4dfd01f47?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        ON Semiconductor Corp. stock underperforms Wednesday when compared to competitors&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/management-set-higher-bar-texas-170919469.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-06-26 01:09PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/management-set-higher-bar-texas-170919469.html" target="_blank" rel="nofollow">&#13;
+                        Management Set A Higher Bar For Texas Instruments; Does The Chart Agree?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Trefis)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/onsemi-synaptics-stocks-rally-revised-174652095.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-02-26 01:46PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/onsemi-synaptics-stocks-rally-revised-174652095.html" target="_blank" rel="nofollow">&#13;
+                        Onsemi, Synaptics Stocks Rally on Revised Merger Agreement&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investopedia)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">&#13;
+         +6.01%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/semiconductors-revised-synaptics-deal-improves-173100056.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            01:31PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/semiconductors-revised-synaptics-deal-improves-173100056.html" target="_blank" rel="nofollow">&#13;
+                        ON Semiconductor's revised Synaptics deal improves earnings outlook, says BofA&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Proactive)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            01:17PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/398352/dow-lags-as-wall-street-turns-the-page-on-mixed-q3" target="_blank">&#13;
+                        Dow Lags as Wall Street Turns the Page on Mixed Q3&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Schaeffer's Research)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/small-business/articles/sj-fall-summit-holiday-returns-154024906.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            11:40AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/small-business/articles/sj-fall-summit-holiday-returns-154024906.html" target="_blank" rel="nofollow">&#13;
+                        SJ Fall Summit: Holiday Returns Are Coming. Retailers Can Get More Value Back.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Sourcing Journal)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/article/on-semiconductor-synaptics-stocks-jump-on-revised-merger-deal-152416209.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            11:27AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/article/on-semiconductor-synaptics-stocks-jump-on-revised-merger-deal-152416209.html" target="_blank" rel="nofollow">&#13;
+                        ON Semiconductor, Synaptics stocks jump on revised merger deal&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            10:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/398332/chip-stock-rallies-on-amended-merger-agreement" target="_blank">&#13;
+                        Chip Stock Rallies on Amended Merger Agreement&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Schaeffer's Research)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/airbnb-upgraded-zscaler-downgraded-wall-133507400.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            09:40AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/airbnb-upgraded-zscaler-downgraded-wall-133507400.html" target="_blank" rel="nofollow">&#13;
+                        Nike downgraded, Airbnb upgraded: Wall Street's top analyst calls&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(The Fly)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/livecoverage/stock-market-today-dow-s-p-500-nasdaq-september-jobs-report/card/synaptics-stock-climbs-after-accepting-less-from-on-semiconductor-Ol6m2f6QXk7BNDAXcZVX?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            08:05AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/livecoverage/stock-market-today-dow-s-p-500-nasdaq-september-jobs-report/card/synaptics-stock-climbs-after-accepting-less-from-on-semiconductor-Ol6m2f6QXk7BNDAXcZVX?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        Synaptics stock climbs after accepting less from ON Semiconductor&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/onsemi-revises-synaptics-acquisition-cash-111712324.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:17AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/onsemi-revises-synaptics-acquisition-cash-111712324.html" target="_blank" rel="nofollow">&#13;
+                        onsemi revises Synaptics acquisition to all-cash $5.7B deal&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Quartz)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/on-semi-stock-price-synaptics-acquisition-d4148c67?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            06:50AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/on-semi-stock-price-synaptics-acquisition-d4148c67?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        On Semi Is Getting Synaptics at a Knock Down Price and Both Stocks Are Soaring&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            06:23AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/398187/on-semiconductor-shares-rise-65-after-synaptics-acquisition-terms-revised" target="_blank">&#13;
+                        ON Semiconductor Shares Rise 6.5% After Synaptics Acquisition Terms Revised&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorsHub)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            06:22AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/398186/synaptics-shares-rise-138-after-merger-terms-revised-to-123-per-share-cash-offer" target="_blank">&#13;
+                        Synaptics Shares Rise 13.8% After Merger Terms Revised to $123-Per-Share Cash Offer&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorsHub)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/stock-movers-5e76284f?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            05:51AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/stock-movers-5e76284f?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Nike, ON Semi, Moderna, and More Stocks That Explain Today's Market&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.wsj.com/business/deals/on-semicondcutor-to-buy-synaptics-for-cash-not-stock-in-downsized-deal-d2781e36?mod=wsj_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-01-26 06:25PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.wsj.com/business/deals/on-semicondcutor-to-buy-synaptics-for-cash-not-stock-in-downsized-deal-d2781e36?mod=wsj_FV" target="_blank" rel="nofollow">&#13;
+                        ON Semicondcutor to Buy Synaptics for Cash, Not Stock, in Downsized Deal&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(The Wall Street Journal)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/syna-climb-hours-7b-stock-215515600.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            05:55PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/syna-climb-hours-7b-stock-215515600.html" target="_blank" rel="nofollow">&#13;
+                        ON, SYNA Climb After-Hours As The $7B Stock Deal Becomes A $5.7B Cash Bid&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/onsemi-revises-synaptics-deal-123-212227617.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            05:22PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/onsemi-revises-synaptics-deal-123-212227617.html" target="_blank" rel="nofollow">&#13;
+                        Onsemi revises Synaptics deal to $123/sh all-cash, shares of both soar&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investing.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            04:34PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/398099/onsemi-and-synaptics-announce-revised-merger-agreement" target="_blank">&#13;
+                        onsemi and Synaptics Announce Revised Merger Agreement&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/data-news/on-semiconductor-corp-stock-outperforms-competitors-on-strong-trading-day-de5c8f99-2d05ab38388c?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            04:30PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/data-news/on-semiconductor-corp-stock-outperforms-competitors-on-strong-trading-day-de5c8f99-2d05ab38388c?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        ON Semiconductor Corp. stock outperforms competitors on strong trading day&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/overpaying-vicor-stock-versus-rivals-182637628.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            02:26PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/overpaying-vicor-stock-versus-rivals-182637628.html" target="_blank" rel="nofollow">&#13;
+                        Are You Overpaying For Vicor Stock Versus Its Rivals?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Trefis)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/semiconductor-stock-looks-expensive-until-233754854.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-28-26 07:37PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/semiconductor-stock-looks-expensive-until-233754854.html" target="_blank" rel="nofollow">&#13;
+                        ON Semiconductor Stock Looks Expensive Until You Price Its Fuller Factories&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Trefis)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/data-news/on-semiconductor-corp-stock-outperforms-competitors-on-strong-trading-day-5c6a75e8-5be7d1c2b5e5?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-25-26 04:30PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/data-news/on-semiconductor-corp-stock-outperforms-competitors-on-strong-trading-day-5c6a75e8-5be7d1c2b5e5?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        ON Semiconductor Corp. stock outperforms competitors on strong trading day&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">&#13;
+         +5.54%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/articles/own-semiconductor-ai-power-own-204109239.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-23-26 04:41PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/articles/own-semiconductor-ai-power-own-204109239.html" target="_blank" rel="nofollow">&#13;
+                        Own ON Semiconductor For AI Power, Or Own Micron's Contracts?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Trefis)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/wall-street-picks-3-chip-191426459.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:14PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/wall-street-picks-3-chip-191426459.html" target="_blank" rel="nofollow">&#13;
+                        Wall Street Picks 3 Chip Stock Winners for the AI Boom&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/articles/onsemi-well-positioned-rising-data-181600524.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            02:16PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/articles/onsemi-well-positioned-rising-data-181600524.html" target="_blank" rel="nofollow">&#13;
+                        Onsemi well positioned for rising data center power demand, Jefferies says&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Proactive)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/article/nasdaq-rally-hasnt-stopped-these-tech-stocks-from-flashing-warning-signs-141710781.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            10:17AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/article/nasdaq-rally-hasnt-stopped-these-tech-stocks-from-flashing-warning-signs-141710781.html" target="_blank" rel="nofollow">&#13;
+                        Nasdaq rally hasn't stopped these tech stocks from flashing warning signs&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/story/these-stocks-are-the-four-horsemen-of-ai-and-theyre-not-the-ones-youd-think-bd4072ae?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            09:58AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/these-stocks-are-the-four-horsemen-of-ai-and-theyre-not-the-ones-youd-think-bd4072ae?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        These stocks are the 'four horsemen of AI' - and they're not the ones you'd think&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/buy-marvell-stock-on-semi-semtech-ai-data-center-935843a8?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            06:51AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/buy-marvell-stock-on-semi-semtech-ai-data-center-935843a8?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Marvell and 2 More Stocks to Play the AI Data-Center Boom&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/vicor-stock-worth-buying-second-193521561.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-22-26 03:35PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/vicor-stock-worth-buying-second-193521561.html" target="_blank" rel="nofollow">&#13;
+                        Is Vicor Stock Worth Buying Before Its Second Fab Exists?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Trefis)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/why-did-vicor-stock-jump-125327686.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            08:53AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/why-did-vicor-stock-jump-125327686.html" target="_blank" rel="nofollow">&#13;
+                        Why Did Vicor Stock Jump Before It Raised Its Outlook?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Trefis)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/vln-stock-jumps-8-premarket-115428131.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:54AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/vln-stock-jumps-8-premarket-115428131.html" target="_blank" rel="nofollow">&#13;
+                        VLN Stock Jumps 8% Premarket: Onsemi Deal Targets High-Volume Auto Cameras&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            06:54AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/394084/valens-semiconductor-and-onsemi-partner-to-develop-integrated-3mp-automotive-camera-sensor" target="_blank">&#13;
+                        Valens Semiconductor and onsemi Partner to Develop Integrated 3MP Automotive Camera Sensor&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorsHub)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/semiconductor-stock-already-half-off-203751135.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-17-26 04:37PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/semiconductor-stock-already-half-off-203751135.html" target="_blank" rel="nofollow">&#13;
+                        ON Semiconductor Stock Is Already Half Off Its High, So How Low Could A Market Shock Take It?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Trefis)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/semiconductor-stock-fell-9-analyst-145422594.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            10:54AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/semiconductor-stock-fell-9-analyst-145422594.html" target="_blank" rel="nofollow">&#13;
+                        ON Semiconductor Stock Fell 9% After Its Analyst Day. Heres Where the Stock Could Go in 2026&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(TIKR)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/data-news/on-semiconductor-corp-stock-underperforms-wednesday-when-compared-to-competitors-ee4e7791-ecde7cb3b7df?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-16-26 04:30PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/data-news/on-semiconductor-corp-stock-underperforms-wednesday-when-compared-to-competitors-ee4e7791-ecde7cb3b7df?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        ON Semiconductor Corp. stock underperforms Wednesday when compared to competitors&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">&#13;
+         -9.02%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            02:30PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/392784/subaru-to-evaluate-onsemis-embedded-power-platform-for-future-evs" target="_blank">&#13;
+                        Subaru to Evaluate onsemi's Embedded Power Platform for Future EVs&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            02:30PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/392785/onsemi-introduces-the-embedded-power-platform-a-breakthrough-architecture-for-the-ai-era" target="_blank">&#13;
+                        onsemi Introduces the Embedded Power Platform, a Breakthrough Architecture for the AI Era&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            02:30PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/392783/onsemi-charts-path-to-power-the-next-decade-of-innovation" target="_blank">&#13;
+                        onsemi Charts Path to Power the Next Decade of Innovation&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/data-news/on-semiconductor-corp-stock-outperforms-competitors-on-strong-trading-day-702ae232-58620fb5035c?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-11-26 04:30PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/data-news/on-semiconductor-corp-stock-outperforms-competitors-on-strong-trading-day-702ae232-58620fb5035c?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        ON Semiconductor Corp. stock outperforms competitors on strong trading day&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">&#13;
+         +8.51%&#13;
+    </span>&#13;
+  &#13;
+      <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200" title="Sep 14, 2026">&#13;
+        <svg width="12" height="12" class="fill-current">&#13;
+    <use href="/assets/dist-icons/icons.1f7da9e4.svg#nextday"/>&#13;
+</svg> -5.90%&#13;
+    </span>&#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/amkr-stock-gains-hours-amkor-234207542.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-08-26 07:42PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/amkr-stock-gains-hours-amkor-234207542.html" target="_blank" rel="nofollow">&#13;
+                        AMKR Stock Gains After-Hours  Amkor Doubles Down On US Chip Manufacturing With $12B Arizona Campus Expansion&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/market-really-expecting-mpwr-stock-213206230.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-04-26 05:32PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/market-really-expecting-mpwr-stock-213206230.html" target="_blank" rel="nofollow">&#13;
+                        What Is The Market Really Expecting From MPWR Stock?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Trefis)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/video/skyworks-chair-while-cycle-ends-214100651.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-03-26 05:41PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/video/skyworks-chair-while-cycle-ends-214100651.html" target="_blank" rel="nofollow">&#13;
+                        Skyworks Chair: It Will Be a While Before This Cycle Ends&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Bloomberg)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/bf73e0ab-ca89-3374-a9db-b756538229e0/get-paid-12%25-a-year-to-let.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-25-26 03:22PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/bf73e0ab-ca89-3374-a9db-b756538229e0/get-paid-12%25-a-year-to-let.html" target="_blank" rel="nofollow">&#13;
+                        Get Paid 12% A Year To Let Someone Else Chase ADI Stock Higher&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Trefis)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/articles/8-chip-stocks-now-offer-110248091.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:02AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/articles/8-chip-stocks-now-offer-110248091.html" target="_blank" rel="nofollow">&#13;
+                        These 8 chip stocks now offer enhanced buying opportunities, BofA says&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investing.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/c096587e-5012-3eb6-b252-80fe992dee6b/reading-between-the-lines-of.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-24-26 08:11PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/c096587e-5012-3eb6-b252-80fe992dee6b/reading-between-the-lines-of.html" target="_blank" rel="nofollow">&#13;
+                        Reading Between The Lines Of ADI's Latest Call&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Trefis)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            02:39PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/384950/chipmaker-stock-pullback-could-reap-bullish-implications" target="_blank">&#13;
+                        Chipmaker Stock Pullback Could Reap Bullish Implications&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Schaeffer's Research)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/analog-devices-earnings-stock-price-98869707?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-19-26 07:13AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/analog-devices-earnings-stock-price-98869707?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Analog Devices Stock Rises as Earnings Beat Expectations. Are AI-Stock Jitters Dissipating?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/f0a6adc2-1b1d-38da-b75d-651684870bf4/where-analysts-pushed-back-on.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-11-26 08:37PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/f0a6adc2-1b1d-38da-b75d-651684870bf4/where-analysts-pushed-back-on.html" target="_blank" rel="nofollow">&#13;
+                        Where Analysts Pushed Back On NXPI's Latest Call&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Trefis)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/08e0b4a6-248a-33e6-9483-2751ab0aa007/globalfoundries-stock-keeps.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            11:51AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/08e0b4a6-248a-33e6-9483-2751ab0aa007/globalfoundries-stock-keeps.html" target="_blank" rel="nofollow">&#13;
+                        GLOBALFOUNDRIES Stock Keeps Swinging Because Its Fastest Business Is Its Smallest&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Trefis)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/semiconductor-stock-jumps-analysts-see-131415617.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-05-26 09:14AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/semiconductor-stock-jumps-analysts-see-131415617.html" target="_blank" rel="nofollow">&#13;
+                        ON Semiconductor stock jumps -- Analysts see a bigger AI opportunity ahead&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/onsemi-stock-rises-5-free-175752631.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-04-26 01:57PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/onsemi-stock-rises-5-free-175752631.html" target="_blank" rel="nofollow">&#13;
+                        Onsemi Stock Rises 5% as Free Cash Flow Quadruples&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            10:19AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/376903/on-semiconductor-stock-jumps-on-ai-driven-earnings-beat" target="_blank">&#13;
+                        ON Semiconductor Stock Jumps on AI-Driven Earnings Beat&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Schaeffer's Research)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/nasdaq-futures-underpinned-strong-ai-094041040.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            09:06AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/nasdaq-futures-underpinned-strong-ai-094041040.html" target="_blank" rel="nofollow">&#13;
+                        Wall St set to open higher on strong AI-linked earnings, Mideast deal hopes&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Reuters)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://qz.com/on-semiconductor-earnings-ai-data-center-080426', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            08:20AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://qz.com/on-semiconductor-earnings-ai-data-center-080426" target="_blank" rel="nofollow">&#13;
+                        ON Semiconductor posted stronger profit as AI data center demand surged&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Quartz)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/d694763b-e30e-36bd-a7ab-3a91f6638102/on-semiconductor-q2-2026.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            08:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/d694763b-e30e-36bd-a7ab-3a91f6638102/on-semiconductor-q2-2026.html" target="_blank" rel="nofollow">&#13;
+                        ON Semiconductor Q2 2026 earnings beat on AI data center growth&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Quartz)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/ai-linked-chip-stocks-rebound-113311564.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:33AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/ai-linked-chip-stocks-rebound-113311564.html" target="_blank" rel="nofollow">&#13;
+                        AI-linked chip stocks rebound; Powell Industries tumbles premarket&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investing.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/stock-movers-16b564b7?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:12AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/stock-movers-16b564b7?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Palantir, Coherent, Lumentum, ON Semi, and More Stocks That Explain Today's Market&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            06:23AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/376479/on-semiconductor-shares-jump-after-earnings-and-outlook-beat-expectations" target="_blank">&#13;
+                        ON Semiconductor Shares Jump After Earnings and Outlook Beat Expectations&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorsHub)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/semiconductor-corp-q2-2026-earnings-050704100.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            01:07AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/semiconductor-corp-q2-2026-earnings-050704100.html" target="_blank" rel="nofollow">&#13;
+                        ON Semiconductor Corp (ON) (Q2 2026) Earnings Call Highlights: AI Data Center Demand Drives ...&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/onsemi-beats-q2-estimates-guides-204402516.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-03-26 04:44PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/onsemi-beats-q2-estimates-guides-204402516.html" target="_blank" rel="nofollow">&#13;
+                        Onsemi shares jump premarket after data-center demand lifts results&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investing.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.wsj.com/business/earnings/on-semiconductor-reports-higher-profit-revenue-on-growing-ai-data-center-business-f3ba5bbe?mod=wsj_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            04:44PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.wsj.com/business/earnings/on-semiconductor-reports-higher-profit-revenue-on-growing-ai-data-center-business-f3ba5bbe?mod=wsj_FV" target="_blank" rel="nofollow">&#13;
+                        ON Semiconductor Reports Higher Profit, Revenue on Growing AI Data Center Business&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(The Wall Street Journal)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/semiconductor-corp-q2-earnings-snapshot-202340483.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            04:23PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/semiconductor-corp-q2-earnings-snapshot-202340483.html" target="_blank" rel="nofollow">&#13;
+                        ON Semiconductor Corp.: Q2 Earnings Snapshot&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Associated Press)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/on-semiconductor-earnings-stock-price-a057171e?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            04:21PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/on-semiconductor-earnings-stock-price-a057171e?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        On Semiconductor Rises on Solid Earnings Beat as AI Data Center Revenue Grows&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            04:05PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/376240/onsemi-reports-second-quarter-2026-results" target="_blank">&#13;
+                        onsemi Reports Second Quarter 2026 Results&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GlobeNewswire)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/live/earnings-live-updates-130425228.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            09:04AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/live/earnings-live-updates-130425228.html" target="_blank" rel="nofollow">&#13;
+                        Earnings live updates: Snap stock surges as World Cup ads boost revenue, Whirlpool falls&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/80f02b08-a0b0-353c-957f-18cd964d1c77/globalfoundries-stock-costs.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            09:02AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/80f02b08-a0b0-353c-957f-18cd964d1c77/globalfoundries-stock-costs.html" target="_blank" rel="nofollow">&#13;
+                        GlobalFoundries Stock Costs More Than The Market On Earnings And Less On Cash Flow&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Trefis)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/livecoverage/stock-market-today-dow-s-p-500-nasdaq-oil-signs-deescalation-us-iran-war-pmi-palantir/card/palantir-and-other-companies-set-to-report-earnings-qbFNsw8ChcSXdp8TSnHo?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            04:21AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/livecoverage/stock-market-today-dow-s-p-500-nasdaq-oil-signs-deescalation-us-iran-war-pmi-palantir/card/palantir-and-other-companies-set-to-report-earnings-qbFNsw8ChcSXdp8TSnHo?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        Palantir and other companies set to report earnings&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+</table>
+</div>
+
+</div></div>
+</body>
+</html>

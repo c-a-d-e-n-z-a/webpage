@@ -1,0 +1,2291 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>SMH — VanEck Vectors Semiconductor ETF</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-size: 12px;
+      font-family: Arial, Helvetica, "Microsoft JhengHei", -apple-system, sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 8px 28px 16px;
+      background-color: #faf9f6;
+      color: #1c1917;
+    }
+
+    /* Header Bar */
+    .rp-header {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-top: 3px solid #FA8123;
+      border-radius: 6px;
+      padding: 6px 10px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+    .rp-title-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .rp-ticker {
+      font-size: 17px;
+      font-weight: 800;
+      color: #1c1917;
+      letter-spacing: 0.3px;
+    }
+    .rp-desc {
+      font-size: 15px;
+      font-weight: 700;
+      color: #FA8123;
+    }
+    .rp-time {
+      font-size: 11px;
+      color: #78716c;
+      background: #f5f3ef;
+      padding: 1px 7px;
+      border-radius: 999px;
+    }
+    .rp-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .rp-pill-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: #faf9f6;
+      border: 1px solid #d6d1c7;
+      color: #44403c;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.12s ease;
+    }
+    .rp-pill-link:hover {
+      background: #fff5eb;
+      border-color: #FA8123;
+      color: #d9650f;
+    }
+
+    /* Pyecharts Container Card */
+    .rp-chart-box {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 2px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+
+    /* Sub-Tabs Bar */
+    .rp-tabs-bar {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 4px 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      position: sticky;
+      top: 2px;
+      z-index: 50;
+      box-shadow: 0 1px 4px rgba(28, 25, 23, 0.05);
+    }
+    .rp-tab {
+      border: 1px solid transparent;
+      background: #f5f3ef;
+      color: #57534e;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+    .rp-tab:hover {
+      background: #fff5eb;
+      border-color: #fdba8c;
+      color: #d9650f;
+    }
+    .rp-tab.active {
+      background: #FA8123;
+      color: #ffffff;
+      box-shadow: 0 1px 3px rgba(250, 129, 35, 0.35);
+    }
+
+    /* Section Card */
+    .rp-sec-pane {
+      width: 100%;
+      margin: 0 0 4px;
+    }
+    .rp-card {
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 6px 8px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+      overflow-x: auto;
+    }
+    .rp-divider {
+      border: 0;
+      border-top: 1px solid #e6e2dc;
+      margin: 6px 0;
+    }
+
+    /* Modernized Tables (FBS / Pyramid / FinViz) */
+    .is-negative { color: #00994d; font-weight: 600; }
+    .is-positive { color: #cc2929; font-weight: 600; }
+    .snapshot-td2, .snapshot-td2-cp {
+      color: #1c1917;
+      text-decoration: none;
+      border: 1px solid #e6e2dc;
+      white-space: nowrap;
+    }
+    .snapshot-td2-cp { cursor: pointer; }
+    .fullview-ratings-outer, td.fullview-ratings-inner {
+      border: 1px solid #e6e2dc;
+    }
+    .t3r1 { color: #cc2929; font-weight: 700; }
+    .body-table-rating-downgrade { color: #cc2929; background: #fef2f2; }
+    .body-table-rating-upgrade { color: #00994d; background: #f0fdf4; }
+    .body-table-rating-neutral { color: #44403c; background: #faf9f6; }
+
+    table {
+      border-collapse: collapse;
+      margin: 6px auto;
+    }
+    td, th {
+      border: 1px solid #e6e2dc;
+      text-align: left;
+      padding: 6px 8px;
+    }
+    th {
+      background-color: #f6f4f0;
+      color: #1c1917;
+      font-weight: 700;
+    }
+    tr:nth-child(even) {
+      background-color: #fcfbf9;
+    }
+  </style>
+  <script>
+    function switchRpTab(btn) {
+      if (!btn) return;
+      var target = btn.getAttribute("data-target") || "all";
+      document.querySelectorAll(".rp-tab").forEach(function(b) {
+        b.classList.remove("active");
+      });
+      btn.classList.add("active");
+
+      document.querySelectorAll(".rp-sec-pane").forEach(function(pane) {
+        if (target === "all" || pane.id === target) {
+          pane.style.display = "block";
+        } else {
+          pane.style.display = "none";
+        }
+      });
+
+      try {
+        sessionStorage.setItem("sr_active_rp_tab", target);
+      } catch (e) {}
+
+      window.dispatchEvent(new Event("resize"));
+    }
+
+    window.addEventListener("load", function() {
+      try {
+        var saved = sessionStorage.getItem("sr_active_rp_tab");
+        if (saved && saved !== "all") {
+          var btn = document.querySelector('.rp-tab[data-target="' + saved + '"]');
+          if (btn) switchRpTab(btn);
+        }
+      } catch (e) {}
+    });
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/12.3.0/highcharts.min.js"></script>
+</head>
+<body>
+  <div class="rp-header">
+    <div class="rp-title-wrap">
+      <span class="rp-ticker">SMH</span>
+      <span class="rp-desc">VanEck Vectors Semiconductor ETF</span>
+      <span class="rp-time">更新: 2026-11-14 06:57</span>
+    </div>
+    <div class="rp-links">
+      <a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=SMH&type=pe-ratio&statement=price-ratios&freq=Q" target="_blank">📈 PE Chart</a><a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=SMH&type=price-book&statement=price-ratios&freq=Q" target="_blank">📊 PB Chart</a><a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=SMH&type=price-sales&statement=price-ratios&freq=Q" target="_blank">📉 PS Chart</a><a class="rp-pill-link" href="https://www.wsj.com/market-data/quotes/SMH/financials/quarter/cash-flow" target="_blank">💵 Finance</a><a class="rp-pill-link" href="https://www.dataroma.com/m/stock.php?sym=SMH" target="_blank">🏛️ Ownership</a><a class="rp-pill-link" href="https://hedgefollow.com/stocks/SMH" target="_blank">🏦 Institute</a><a class="rp-pill-link" href="https://unusualwhales.com/stock/SMH/greek-exposure" target="_blank">⚡ GEX</a><a class="rp-pill-link" href="https://www.ptt.cc/bbs/Stock/search?q=SMH" target="_blank">💬 PTT Search</a>
+    </div>
+  </div>
+
+  <div class="rp-chart-box" align="center">
+    <iframe id="stock" src="SMH_EC.html" frameborder="0" width="100%" height="1600px" scrolling="no"></iframe>
+  </div>
+
+  <div class="rp-tabs-bar"><button class="rp-tab active" data-target="all" onclick="switchRpTab(this)">📋 全部展開</button><button class="rp-tab" data-target="sec-quant" onclick="switchRpTab(this)">🧮 量化與主動ETF</button><button class="rp-tab" data-target="sec-stockdog" onclick="switchRpTab(this)">🐶 主力籌碼</button><button class="rp-tab" data-target="sec-finviz" onclick="switchRpTab(this)">🌎 FinViz 美股基本面</button></div>
+  <div class="rp-sec-pane" id="sec-quant"><style>.pq-wrap{width:100%;margin:0;font-family:Arial,Helvetica,"Microsoft JhengHei",sans-serif;color:#222}.pq-sec{background:#fff;border:1px solid #e6e2dc;border-radius:6px;padding:6px 8px;margin-bottom:4px;box-shadow:0 1px 2px rgba(28,25,23,.03)}.pq-sec h2{font-size:14px;color:#1c1917;border-left:4px solid #FA8123;padding-left:6px;margin:0 0 6px}.pq-sec h3{font-size:12px;color:#44403c;margin:6px 0 4px}.pq-banner{background:#fff9f4;border-left:4px solid #FA8123;padding:5px 8px;border-radius:4px;font-size:12px;line-height:1.5;margin-bottom:6px;color:#292524}.pq-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:6px}table.pq-tbl{width:100%;border-collapse:collapse;font-size:12px;font-family:Arial,Helvetica,"Microsoft JhengHei",sans-serif}table.pq-tbl th,table.pq-tbl td{border:1px solid #e6e2dc !important;padding:4px 6px !important;text-align:right}table.pq-tbl th{background:#f6f4f0 !important;color:#1c1917 !important;font-weight:bold}table.pq-tbl tr:nth-child(even){background:#fcfbf9}</style><div class="pq-wrap">
+
+    <div class="pq-sec">
+      <h2>🧮 量化風險、波動率體制與因子 Alpha 拆解 (SMH)</h2>
+      <div class="pq-banner">
+        <b>現價：</b> <b>486.75</b> ｜
+        <b>動能 (1D / 5D / 20D / 60D / 1Y / 12-1M)：</b> <span style="color:#00994d;font-weight:bold">-2.99%</span> / <span style="color:#cc2929;font-weight:bold">+4.91%</span> / <span style="color:#00994d;font-weight:bold">-9.83%</span> / <span style="color:#00994d;font-weight:bold">-13.49%</span> / <span style="color:#cc2929;font-weight:bold">+41.60%</span> / <span style="color:#cc2929;font-weight:bold">+62.57%</span> ｜
+        <b>200D Volume Profile：</b> POC <b>393.14</b> (VAH <b>574.08</b> / VAL <b>359.86</b>)<br>
+        <b>尾部風險與風險調整指標 (1Y)：</b> 年化波動率 <b>42.84%</b> (GARCH 1D預測 <b>60.71%</b>) ｜
+        Sortino <b>1.51</b> ｜ Calmar <b>1.53</b> ｜
+        最大回撤 (MDD) <span style="color:#00994d;font-weight:bold">-33.07%</span> ｜
+        95% VaR / CVaR: <span style="color:#00994d;font-weight:bold">-4.19% / -6.00%</span> ｜
+        <b>Lo-MacKinlay VR(5/10/20)：</b> 0.836(z*=-1.27) / 0.741(z*=-1.31) / 0.808(z*=-0.7)
+        <br><b>今日觸發技術訊號：</b> [BUY]     : 週KD黃金交叉 ｜ [SELL]    : 高於賣點 ｜ [OTHER]   : 三月KD由上往下
+      </div>
+      <table class="pq-tbl" style="margin-top:8px"><thead><tr><th style="text-align:left">Benchmark</th><th>20D (Stock / Bench)</th><th>20D Rel Excess</th><th>60D Rel Excess</th><th>1Y Rel Excess</th><th>1Y Beta (β)</th><th>R²</th><th>1Y Residual Alpha (α)</th></tr></thead><tbody><tr><td style="text-align:left"><b>^GSPC</b></td><td><span style="color:#00994d;font-weight:bold">-9.83%</span> / <span style="color:#00994d;font-weight:bold">-1.28%</span></td><td><span style="color:#00994d;font-weight:bold">-8.55%</span></td><td><span style="color:#00994d;font-weight:bold">-12.45%</span></td><td><span style="color:#cc2929;font-weight:bold">+26.96%</span></td><td><b>2.44</b></td><td>0.61</td><td><span style="color:#cc2929;font-weight:bold">+17.81%</span></td></tr><tr><td style="text-align:left"><b>QQQ</b></td><td><span style="color:#00994d;font-weight:bold">-9.83%</span> / <span style="color:#00994d;font-weight:bold">-4.21%</span></td><td><span style="color:#00994d;font-weight:bold">-5.61%</span></td><td><span style="color:#00994d;font-weight:bold">-9.12%</span></td><td><span style="color:#cc2929;font-weight:bold">+27.87%</span></td><td><b>1.82</b></td><td>0.83</td><td><span style="color:#cc2929;font-weight:bold">+23.40%</span></td></tr><tr><td style="text-align:left"><b>SOXX</b></td><td><span style="color:#00994d;font-weight:bold">-9.83%</span> / <span style="color:#00994d;font-weight:bold">-9.22%</span></td><td><span style="color:#00994d;font-weight:bold">-0.61%</span></td><td><span style="color:#cc2929;font-weight:bold">+0.76%</span></td><td><span style="color:#00994d;font-weight:bold">-12.13%</span></td><td><b>0.85</b></td><td>0.98</td><td><span style="color:#00994d;font-weight:bold">-5.30%</span></td></tr></tbody></table>
+    </div>
+    
+</div></div>
+<div class="rp-sec-pane" id="sec-stockdog"><div class="rp-card" align="center"><iframe id="stockdog" src="SMH_SD.html" frameborder="0" width="100%" height="1000px" scrolling="no"></iframe></div></div>
+<div class="rp-sec-pane" id="sec-finviz"><div class="rp-card"><div align="center"><a href="https://www.marketwatch.com/investing/stock/SMH/analystestimates" target="_blank"><img style="max-height:100%; max-width:100%; object-fit:contain" src=https://app.quotemedia.com/quotetools/getChart?webmasterId=91386&symbol=SMH&chtype=FinancialLine&chcon=on&chdon=on&chfrmon=on&chscale=1d&chton=on&chwid=800&chhig=380&chln=ffa500&chfill=ffa500&chfnts=10&chbdr=000000&chbgch=ffffffff&chgrd=cccccc&svg=false&lang=en&locale=en></a></div>
+
+<hr class="rp-divider">
+<table align="center" class="snapshot-table2" align="center" style="width:100%; border-collapse:collapse; font-size:12px; margin:auto;">
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Single category of the ETF"><div class="snapshot-td-label">Category</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" title="Global or ExUS Equities - Industry Sector" style=""><div class="snapshot-td-content"><b>Global or ExUS Equities - Industry Sector</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="The asset type of the ETF"><div class="snapshot-td-label">Asset Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" title="Equities (Stocks)" style=""><div class="snapshot-td-content"><b>Equities (Stocks)</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/screener/etf?v=181&amp;ft=4&amp;f=etf_tags_us" class="hover:underline" target="_blank"><b>U.S.</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="1-Year Annualized Return"><div class="snapshot-td-label">Return% 1Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">43.37%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Total count of all holdings in the ETF"><div class="snapshot-td-label">Total Holdings</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>26</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Week, Excl. Dividends)"><div class="snapshot-td-label">Perf Week</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">4.91%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="The fund manager (ETF) or issuing bank (ETN)"><div class="snapshot-td-label">Sponsor</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" title="Van Eck Associates Corporation" style=""><div class="snapshot-td-content"><b>Van Eck Associates Corporation</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="A simple, broad categorization of each ETF based on its asset class and geographical exposure"><div class="snapshot-td-label">ETF Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/screener/etf?v=181&amp;ft=4&amp;f=etf_tags_equity" class="hover:underline" target="_blank"><b>equity</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="3-Year Annualized Return"><div class="snapshot-td-label">Return% 3Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">49.93%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Assets Under Management"><div class="snapshot-td-label">AUM</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>64.41B</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Month, Excl. Dividends)"><div class="snapshot-td-label">Perf Month</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-12.90%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Fund family to which the ETF belongs, as categorized by the ETF Sponsor"><div class="snapshot-td-label">Fund Family</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Type of bonds held in the ETF"><div class="snapshot-td-label">Bond Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/screener/etf?v=181&amp;ft=4&amp;f=etf_tags_semiconductors" class="hover:underline" target="_blank"><b>semiconductors</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="5-Year Annualized Return"><div class="snapshot-td-label">Return% 5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">28.58%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Net Asset Value per Share"><div class="snapshot-td-label">NAV/sh</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Quarter, Excl. Dividends)"><div class="snapshot-td-label">Perf Quarter</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-18.07%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Name of the underlying index tracked by the ETF, if applicable"><div class="snapshot-td-label">Index</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" title="MVIS US Listed Semiconductor 25 Index" style=""><div class="snapshot-td-content"><b>MVIS US Listed Semiconductor 25 Index</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Targeted exposure to securities of a specific maturity range of bond ETFs"><div class="snapshot-td-label">Average Maturity</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="10-Year Annualized Return"><div class="snapshot-td-label">Return% 10Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 52-Week High"><div class="snapshot-td-label">52W High</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>671.83 <small class="text-2xs"><span class="color-text is-negative">-27.55%</span></small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Half Year, Excl. Dividends)"><div class="snapshot-td-label">Perf Half Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-12.51%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="For ETFs that track an underlying index, this field provides detail on the index weighting type"><div class="snapshot-td-label">Index Weighting</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Type of commodities held in the ETF"><div class="snapshot-td-label">Commodity Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Annualized Return Since Inception"><div class="snapshot-td-label">Return% SI</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 52-Week Low"><div class="snapshot-td-label">52W Low</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>315.05 <small class="text-2xs"><span class="color-text is-positive">54.50%</span></small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Year To Date, Excl. Dividends)"><div class="snapshot-td-label">Perf YTD</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">35.16%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Actively managed or passively index-linked ETF"><div class="snapshot-td-label">Active/Passive</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Proprietary quant model used as the underlying strategy for the ETF"><div class="snapshot-td-label">Quant Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="1-Month Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% 1M</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">5.45%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Volatility (Week, Month)"><div class="snapshot-td-label">Volatility</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">4.73% 3.70%</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Year, Excl. Dividends)"><div class="snapshot-td-label">Perf Year</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">41.16%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Trailing 12 Months Dividend"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=SMH&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank">Dividend TTM</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=SMH&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank"><b>1.10 (0.23%)</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF's strategy involves providing exposure to a specific social or environmental theme"><div class="snapshot-td-label">ESG Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="3-Month Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% 3M</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">4.80%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Average True Range (14)"><div class="snapshot-td-label">ATR (14)</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>24.22</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (3 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 3Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">211.38%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Ex-Dividend Date"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=SMH&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank">Dividend Ex-Date</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=SMH&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank"><b>Dec 22, 2025</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Intended investment objective of holding dividend-oriented stocks as stated in the ETF prospectus"><div class="snapshot-td-label">Dividend Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Targeted exposure to a sector or theme of the ETF"><div class="snapshot-td-label">Sector/Theme</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Year-to-date Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% YTD</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">21.67%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Relative Strength Index"><div class="snapshot-td-label">RSI (14)</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>40.08</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (5 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">223.31%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Dividend growth over 3 and 5 years"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=SMH&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank">Dividend Gr. 3/5Y</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=SMH&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank"><b><small class="text-2xs"><span class="color-text is-negative">-2.71%</span> 8.03%</small></b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="&lt;span class='font-semibold'&gt;Legal Structure&lt;/span&gt;&lt;br&gt;AST (Active Semi Transparent)&lt;br&gt;ETC&lt;br&gt;ETF (Open end fund)&lt;br&gt;ETN"><div class="snapshot-td-label">Structure Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Targeted exposure to a specific type of geography‐based grouping"><div class="snapshot-td-label">Region</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="1-Year Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% 1Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Beta"><div class="snapshot-td-label">Beta</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>1.81</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (10 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 10Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">1319.92%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Gross expense net of fee waivers, as a % of net assets as published by the ETF Issuer"><div class="snapshot-td-label">Expense</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">0.35%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Growth or Value based on the stated style tilt in the ETF prospectus"><div class="snapshot-td-label">Growth/Value</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 20-Day Simple Moving Average"><div class="snapshot-td-label">SMA20</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-6.06%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="3-Year Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% 3Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Relative volume"><div class="snapshot-td-label">Rel Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>1.46</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Previous close"><div class="snapshot-td-label">Prev Close</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>501.73</b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Inverse or leveraged ETF"><div class="snapshot-td-label">Inverse/Leveraged</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Market capitalization range of the underlying securities"><div class="snapshot-td-label">Market Cap</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 50-Day Simple Moving Average"><div class="snapshot-td-label">SMA50</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-13.05%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="5-Year Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% 5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Average volume (3 month)"><div class="snapshot-td-label">Avg Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>8.49M</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Current stock price"><div class="snapshot-td-label">Price</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>486.75</b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="IPO Date"><div class="snapshot-td-label">IPO</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>Dec 21, 2011</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Stock has options trading on a market exchange / Stock is available to sell short"><div class="snapshot-td-label">Option/Short</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">Yes / Yes</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 200-Day Simple Moving Average"><div class="snapshot-td-label">SMA200</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-7.09%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Trades"><div class="snapshot-td-label">Trades</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Volume"><div class="snapshot-td-label">Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>12,374,566</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (today)"><div class="snapshot-td-label">Change %</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-2.99%</span></b></div></td>
+</tr>
+</table>
+
+
+<hr class="rp-divider">
+<div class="body-table-news-wrapper news-table_wrapper is-collapsed"><table align="center" align="center" width="70%" cellpadding="1" cellspacing="0" border="0" id="news-table" class="fullview-news-outer news-table" data-ticker="SMH">
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/sandisk-stock-ai-data-centers-3ea38c06?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Today 02:33PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/sandisk-stock-ai-data-centers-3ea38c06?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Chart of the Day: Sandisk Stock Looks Ready to Bounce Back&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/michael-burry-doubles-down-nasdaq-235318261.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-12-26 06:53PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/michael-burry-doubles-down-nasdaq-235318261.html" target="_blank" rel="nofollow">&#13;
+                        Michael Burry Doubles Down On Nasdaq 100 Puts, Adds To Semiconductor Shorts As Nvidia Faces Scrutiny&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/chip-stocks-price-earnings-rebound-b41917d4?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/chip-stocks-price-earnings-rebound-b41917d4?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        The Chip Stock Rebound Is Just Getting Started&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/nvidia-debacle-means-etfs-050200440.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-11-26 12:02AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/nvidia-debacle-means-etfs-050200440.html" target="_blank" rel="nofollow">&#13;
+                        What the Nvidia Debacle Means for ETFs&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(The Daily Upside)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/news/nvidia-scandal-hasn-t-dented-002233602.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-10-26 07:22PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/nvidia-scandal-hasn-t-dented-002233602.html" target="_blank" rel="nofollow">&#13;
+                        Nvidias Scandal Hasnt Dented the Market. Heres Why.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/midterm-results-trigger-record-nasdaq-050200093.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-09-26 12:02AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/midterm-results-trigger-record-nasdaq-050200093.html" target="_blank" rel="nofollow">&#13;
+                        Midterm Results Trigger Record Nasdaq Sell-off, Rattling Chip and AI Funds&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(The Daily Upside)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">&#13;
+         +5.05%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/investors-sour-memory-trade-dram-054001949.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-07-26 12:40AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/investors-sour-memory-trade-dram-054001949.html" target="_blank" rel="nofollow">&#13;
+                        Investors Sour on the Memory Trade as DRAMs Assets Get Cut in Half&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/ai-selloff-deepens-chip-etfs-025227411.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-05-26 09:52PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/ai-selloff-deepens-chip-etfs-025227411.html" target="_blank" rel="nofollow">&#13;
+                        AI Selloff Deepens as Chip ETFs Suffer Worst Day Since 2020&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">&#13;
+         -11.21%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/stocks-rally-midterms-chip-stocks-052100921.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            12:21AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/stocks-rally-midterms-chip-stocks-052100921.html" target="_blank" rel="nofollow">&#13;
+                        Stocks Rally After Midterms, but Chip Stocks Sink&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/p-500-nasdaq-surge-ahead-233233121.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-04-26 06:32PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/p-500-nasdaq-surge-ahead-233233121.html" target="_blank" rel="nofollow">&#13;
+                        S&amp;P 500, Nasdaq Surge Ahead After Democratic Sweep, Dow Jumps To One-Year High On Lower Oil  AAPL, SNAP, INTC, CRWV, QCOM In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/article/stocks-shrugged-off-the-blue-wave-overnight--history-says-dont-trust-the-bounce-yet-153846605.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            11:08AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/article/stocks-shrugged-off-the-blue-wave-overnight--history-says-dont-trust-the-bounce-yet-153846605.html" target="_blank" rel="nofollow">&#13;
+                        Stocks shrugged off the blue wave overnight  history says don't trust the bounce yet&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/p-500-nasdaq-recover-ai-232955884.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-03-26 06:29PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/p-500-nasdaq-recover-ai-232955884.html" target="_blank" rel="nofollow">&#13;
+                        S&amp;P 500, Nasdaq Recover From AI Rout On US Midterm Election Day   META, AAPL, AMD, SKHY In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/p-500-nasdaq-drop-capex-002235205.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-02-26 07:22PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/p-500-nasdaq-drop-capex-002235205.html" target="_blank" rel="nofollow">&#13;
+                        S&amp;P 500, Nasdaq Drop As Capex Concerns Grip Tech Investors, Outweighing US-Iran Diplomacy Hope   ORCL, META, PLTR, AAPL In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/capital-growing-more-discerning-more-222907441.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            05:29PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/capital-growing-more-discerning-more-222907441.html" target="_blank" rel="nofollow">&#13;
+                        "Capital... Is Growing More Discerning and More Expensive"&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/investors-buy-dip-chip-etfs-003817916.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-26-26 08:38PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/investors-buy-dip-chip-etfs-003817916.html" target="_blank" rel="nofollow">&#13;
+                        Investors Buy the Dip in Chip ETFs as Inflows Top $44B&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/p-500-nasdaq-dow-begin-223516076.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            06:35PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/p-500-nasdaq-dow-begin-223516076.html" target="_blank" rel="nofollow">&#13;
+                        S&amp;P 500, Nasdaq, Dow Begin Week Higher As Anthropic IPO Filing Rekindles AI Enthusiasm  MSFT, AAPL, CART, VZ In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/tom-lee-says-ai-selloff-101704477.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-24-26 06:17AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/tom-lee-says-ai-selloff-101704477.html" target="_blank" rel="nofollow">&#13;
+                        Tom Lee Says AI Selloff Is Nearing Its End, Points To Setup Similar To Cisco's 1997 Rout  Sees Opportunity In NVDA, Software And Beyond&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/options/articles/daily-etf-flows-chip-etfs-213158129.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-22-26 05:31PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/options/articles/daily-etf-flows-chip-etfs-213158129.html" target="_blank" rel="nofollow">&#13;
+                        Daily ETF Flows: Chip ETFs See Inflows&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">&#13;
+         -5.99%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/etf-league-tables-inflows-total-210004855.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-21-26 05:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/etf-league-tables-inflows-total-210004855.html" target="_blank" rel="nofollow">&#13;
+                        ETF League Tables: Inflows Total $360M For VanEck&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://qz.com/micron-sandisk-chip-stocks-premarket-selloff-102026', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-20-26 08:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://qz.com/micron-sandisk-chip-stocks-premarket-selloff-102026" target="_blank" rel="nofollow">&#13;
+                        Micron and Sandisk fall more than 2% as the chip sell-off resumes in premarket&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Quartz)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/wells-fargo-says-p-500-110148413.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:01AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/wells-fargo-says-p-500-110148413.html" target="_blank" rel="nofollow">&#13;
+                        Wells Fargo says S&amp;P 500 buy signal emerges as investors turn excessively bearish&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investing.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/bond-yields-stocks-technical-analysis-daa6db45?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-19-26 02:43PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/bond-yields-stocks-technical-analysis-daa6db45?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Ignore the Conventional Wisdom. Higher Bond Yields Would Lift This Stock Market.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/oil-stock-futures-sunday-trading-66f3ac57?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-18-26 02:59PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/oil-stock-futures-sunday-trading-66f3ac57?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Oil Futures Likely to React to Ukraine's Attack on Russian Oil, Lifting of Diesel Sanctions&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/nasdaq-buckles-fear-boom-ai-201411736.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-16-26 04:14PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/nasdaq-buckles-fear-boom-ai-201411736.html" target="_blank" rel="nofollow">&#13;
+                        Nasdaq Buckles on Fear This Boom Is an AI Bubble: Stock Market Today&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Kiplinger)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/options/articles/etf-fund-flows-semiconductors-leveraged-210004370.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-15-26 05:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/options/articles/etf-fund-flows-semiconductors-leveraged-210004370.html" target="_blank" rel="nofollow">&#13;
+                        ETF Fund Flows: Semiconductors, Leveraged ETFs Dominate&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/rbc-capital-markets-echoes-deutsche-203447032.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-14-26 04:34PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/rbc-capital-markets-echoes-deutsche-203447032.html" target="_blank" rel="nofollow">&#13;
+                        RBC Capital Markets Echoes Deutsche Bank In Asking Clients To Steer Clear Of Tech In Medium Term&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/p-500-nasdaq-100-end-231018478.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-12-26 07:10PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/p-500-nasdaq-100-end-231018478.html" target="_blank" rel="nofollow">&#13;
+                        S&amp;P 500, Nasdaq 100 End Lower On Chipmaker Weakness, While Salesforce Gains Aid Dow  META, MSFT, BMBL, CRM, SNAP In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/etf-inflows-top-41b-investors-210016497.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            05:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/etf-inflows-top-41b-investors-210016497.html" target="_blank" rel="nofollow">&#13;
+                        ETF Inflows Top $41B as Investors Pile Into Brazil, Long Bonds&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/options/articles/michael-burry-shifts-bearish-bets-082231361.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            04:22AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/options/articles/michael-burry-shifts-bearish-bets-082231361.html" target="_blank" rel="nofollow">&#13;
+                        Michael Burry Shifts Bearish Bets To Nasdaq, Semiconductor ETF Puts  Sees Market Top Within 9 Months&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/etf-league-tables-143m-flows-210004292.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-09-26 05:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/etf-league-tables-143m-flows-210004292.html" target="_blank" rel="nofollow">&#13;
+                        ETF League Tables: $143M Flows Into VanEck ETFs&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/nasdaq-100-ends-lower-report-225519360.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-08-26 06:55PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/nasdaq-100-ends-lower-report-225519360.html" target="_blank" rel="nofollow">&#13;
+                        Nasdaq 100 Ends Lower As Report Of Weaker-Than-Expected OpenAI Revenue Drags Chipmakers  NVDA, DIS, ORCL, SBUX In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/p-500-nasdaq-100-slip-225051213.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-07-26 06:50PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/p-500-nasdaq-100-slip-225051213.html" target="_blank" rel="nofollow">&#13;
+                        S&amp;P 500 And Nasdaq 100 Slip From Record Highs Amid Pressure From Soaring Treasury Yields  SPCX, AMD, NVDA, MRVL In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/ai-bubble-pops-exposed-etfs-184307499.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            02:43PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/ai-bubble-pops-exposed-etfs-184307499.html" target="_blank" rel="nofollow">&#13;
+                        If the AI Bubble Pops: How Exposed Your ETFs Really Are&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/5-surging-etfs-more-50-184548718.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-06-26 02:45PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/5-surging-etfs-more-50-184548718.html" target="_blank" rel="nofollow">&#13;
+                        5 Surging ETFs Up More than 50% in 2026&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(TIKR)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/nvidia-stock-tech-semiconductors-intel-34c41447?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            01:46PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/nvidia-stock-tech-semiconductors-intel-34c41447?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        The World's Largest Stock Has Lagged. If Nvidia Runs, Tech and Markets Will Follow.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/nasdaq-100-hits-record-highs-220932490.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-05-26 06:09PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/nasdaq-100-hits-record-highs-220932490.html" target="_blank" rel="nofollow">&#13;
+                        Nasdaq 100 Hits Record Highs As Investors Shrug Off Pressure From Soaring Yields  NVDA, SPCX, CRML, TSLA, QCOM In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/semiconductor-stocks-micron-technology-stmicroelectronics-7fbe3320?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            01:38PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/semiconductor-stocks-micron-technology-stmicroelectronics-7fbe3320?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Semiconductor Stocks Rebound. The Case for Buying Micron and STMicroelectronics.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/p-500-nasdaq-dow-end-222859024.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-02-26 06:28PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/p-500-nasdaq-dow-end-222859024.html" target="_blank" rel="nofollow">&#13;
+                        S&amp;P 500, Nasdaq, Dow End Week Higher As Weak Jobs Report Cools Rate Hike Bets  NVDA, BA, SPCX, RIVN, APLD In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/nvda-best-breed-stock-sale-181505727.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            02:15PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/nvda-best-breed-stock-sale-181505727.html" target="_blank" rel="nofollow">&#13;
+                        NVDA Is Best In Breed Stock On Sale, Hightower Advisors' Stephanie Link Says&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/best-performing-etfs-2026-far-003323612.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-30-26 08:33PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/best-performing-etfs-2026-far-003323612.html" target="_blank" rel="nofollow">&#13;
+                        Best Performing ETFs of 2026 So Far&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/p-500-dow-end-lower-212329848.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            05:23PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/p-500-dow-end-lower-212329848.html" target="_blank" rel="nofollow">&#13;
+                        S&amp;P 500, Dow End Lower As Investors Shrug Off Cooler-Than-Expected Inflation Data  MGM, SPCX, AAPL, TSM In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/etf-league-tables-vanecks-etf-210004061.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            05:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/etf-league-tables-vanecks-etf-210004061.html" target="_blank" rel="nofollow">&#13;
+                        ETF League Tables: VanEck's ETF Assets Jump&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/p-500-dow-extend-losses-223008654.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-29-26 06:30PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/p-500-dow-extend-losses-223008654.html" target="_blank" rel="nofollow">&#13;
+                        S&amp;P 500, Dow Extend Losses From Elevated Yield Pressure  SPCX, TGT, AAPL, MU, NTAP In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            01:57PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/397028/2-etfs-that-could-finish-the-year-on-a-high-note" target="_blank">&#13;
+                        2 ETFs That Could Finish the Year on a High Note&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Schaeffer's Research)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/p-500-dow-nasdaq-drop-230758863.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-28-26 07:07PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/p-500-dow-nasdaq-drop-230758863.html" target="_blank" rel="nofollow">&#13;
+                        S&amp;P 500, Dow, Nasdaq Drop Under Pressure From Elevated Yields As Investors Shrug Off Trumps Iran Sanction Relief  NVDA, BA, AMD, NVTS, CBRS In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/why-midterm-elections-matter-stock-market-5bb45c97?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            05:22PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/why-midterm-elections-matter-stock-market-5bb45c97?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Why the Midterm Elections Matter for the Stock Market This Year&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/p-500-dow-nasdaq-futures-001254918.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-24-26 08:12PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/p-500-dow-nasdaq-futures-001254918.html" target="_blank" rel="nofollow">&#13;
+                        S&amp;P 500, Dow, Nasdaq Futures Ease As Treasury Yields Continue To Spike  ORCL, META, AKAM, GOOGL, MGM In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/story/as-the-trump-xi-meetings-unfold-investors-should-watch-for-this-hidden-ai-trade-7abf11b9?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:01AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/as-the-trump-xi-meetings-unfold-investors-should-watch-for-this-hidden-ai-trade-7abf11b9?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        As the Trump-Xi meetings unfold, investors should watch for this hidden AI trade&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/p-500-dow-nasdaq-drop-212328581.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-23-26 05:23PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/p-500-dow-nasdaq-drop-212328581.html" target="_blank" rel="nofollow">&#13;
+                        S&amp;P 500, Dow, Nasdaq Drop As Yields Spike Amid Calls For More Rate Hikes  AMZN, GOOGL, NFLX, SPCX, RKLB In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/nasdaq-jumps-close-record-chipmakers-212609686.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-22-26 05:26PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/nasdaq-jumps-close-record-chipmakers-212609686.html" target="_blank" rel="nofollow">&#13;
+                        Nasdaq Jumps To Close At Record As Chipmakers Climb, Oil Prices Cool  AAPL, META, SPCX, MSFT, VKTX In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/dow-drops-record-worst-week-233558682.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-18-26 07:35PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/dow-drops-record-worst-week-233558682.html" target="_blank" rel="nofollow">&#13;
+                        Dow Drops To Record Worst Week In Six Months Amid Elevated Yields, Oil  NVDA, TSLA, SPCX, ONON In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/0a209c28-df91-34d2-a3da-5d36ac5f050d/s%26p-500%2C-nasdaq%2C-dow-end.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-17-26 06:22PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/0a209c28-df91-34d2-a3da-5d36ac5f050d/s%26p-500%2C-nasdaq%2C-dow-end.html" target="_blank" rel="nofollow">&#13;
+                        S&amp;P 500, Nasdaq, Dow End Higher As Drop In Oil Prices Allays Inflationary Concerns  NVDA, MCD, CRWV, LMT, AMZN In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/bond-yields-near-5-etf-003854939.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-14-26 08:38PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/bond-yields-near-5-etf-003854939.html" target="_blank" rel="nofollow">&#13;
+                        Bond Yields Near 5% as ETF Investors Keep Buying&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/etf-league-tables-vaneck-sees-003752638.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            08:37PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/etf-league-tables-vaneck-sees-003752638.html" target="_blank" rel="nofollow">&#13;
+                        ETF League Tables: VanEck Sees Outflows&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/options/articles/farmland-fast-trading-etfs-doing-225550710.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-09-26 06:55PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/options/articles/farmland-fast-trading-etfs-doing-225550710.html" target="_blank" rel="nofollow">&#13;
+                        From Farmland to Fast Trading, ETFs Are Doing It All&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/601007e9-5b72-3b65-a964-ca5c45cdf515/etf-league-tables%3A-vaneck.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            05:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/601007e9-5b72-3b65-a964-ca5c45cdf515/etf-league-tables%3A-vaneck.html" target="_blank" rel="nofollow">&#13;
+                        ETF League Tables: VanEck Gains&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/cc75878c-6cf6-3a67-a385-175abda2739c/is-qualcomm-on-a-tear%3F-inside.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-08-26 03:36PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/cc75878c-6cf6-3a67-a385-175abda2739c/is-qualcomm-on-a-tear%3F-inside.html" target="_blank" rel="nofollow">&#13;
+                        Is Qualcomm on a Tear? Inside QCOM's 2026 Comeback  and the ETFs That Hold the Most&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/45446da7-f14c-39fc-8b1e-3773f67f1577/etf-zoo%3A-industry-scale%2C.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-04-26 01:08PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/45446da7-f14c-39fc-8b1e-3773f67f1577/etf-zoo%3A-industry-scale%2C.html" target="_blank" rel="nofollow">&#13;
+                        ETF Zoo: Industry Scale, Speculation, and Sports Betting&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/3810c34a-5d7c-34a9-9573-92e059c3747c/s%26p-500%2C-dow-end-best-day-in.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-03-26 06:24PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/3810c34a-5d7c-34a9-9573-92e059c3747c/s%26p-500%2C-dow-end-best-day-in.html" target="_blank" rel="nofollow">&#13;
+                        S&amp;P 500, Dow End Best Day In A Month On Calmer Yields As Rate Hike Bets Wane  SPCX, VSXY, NVDA, TSLA In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/837c9a06-fea4-3295-bb3c-402f265234d2/these-etfs-generate-the-most.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-01-26 06:24PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/837c9a06-fea4-3295-bb3c-402f265234d2/these-etfs-generate-the-most.html" target="_blank" rel="nofollow">&#13;
+                        These ETFs Generate the Most Revenue&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/b2877660-0871-3803-8c8d-c265d78b1d00/why-software-etfs-are.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:49PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/b2877660-0871-3803-8c8d-c265d78b1d00/why-software-etfs-are.html" target="_blank" rel="nofollow">&#13;
+                        Why Software ETFs Are Suddenly Beating Semiconductors  and How the Top Funds Compare&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/70dd8a3f-140e-352d-8c6b-0cdb1d36d6ba/etf-league-tables%3A-vaneck.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-27-26 05:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/70dd8a3f-140e-352d-8c6b-0cdb1d36d6ba/etf-league-tables%3A-vaneck.html" target="_blank" rel="nofollow">&#13;
+                        ETF League Tables: VanEck Inflows Top $600M&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/f75703bc-0a62-3efc-9a19-b71a14a80846/your-60%2F40-portfolio-may-be.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-26-26 11:34AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/f75703bc-0a62-3efc-9a19-b71a14a80846/your-60%2F40-portfolio-may-be.html" target="_blank" rel="nofollow">&#13;
+                        Your 60/40 Portfolio May Be 100% Exposed to a Dying Dollar, Bitwise Says&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(BeInCrypto)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/c8774e1b-2e3f-3ecf-848a-632ecf3aef02/s%26p-500%2C-dow%2C-nasdaq-futures.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-25-26 08:02PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/c8774e1b-2e3f-3ecf-848a-632ecf3aef02/s%26p-500%2C-dow%2C-nasdaq-futures.html" target="_blank" rel="nofollow">&#13;
+                        S&amp;P 500, Dow, Nasdaq Futures Rangebound As Investors Await Nvidia Earnings, Key Inflation Reading  MRNA, SPCX, PSKY, OpenAI In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/da241e2b-b1c5-3564-a3dd-5e7c329d2572/s%26p-500%2C-nasdaq-end-lower-on.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-24-26 05:52PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/da241e2b-b1c5-3564-a3dd-5e7c329d2572/s%26p-500%2C-nasdaq-end-lower-on.html" target="_blank" rel="nofollow">&#13;
+                        S&amp;P 500, Nasdaq End Lower On Chipmaker Weakness, While Traders Position For Nvidia Earnings This Week  AVGO, INTC, BE, NVDA, PSKY In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/f8694e63-4bd8-3cfe-88e5-1ba74cd2a6f8/investors-pour-%2456b-into-etfs.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            05:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/f8694e63-4bd8-3cfe-88e5-1ba74cd2a6f8/investors-pour-%2456b-into-etfs.html" target="_blank" rel="nofollow">&#13;
+                        Investors Pour $56B Into ETFs as Gold and Bitcoin Roar Back&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/nvidia-stock-price-increases-ai-startup-funding-709f4249?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            10:14AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/nvidia-stock-price-increases-ai-startup-funding-709f4249?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Nvidia Stock: Why It May Be Raising Prices 15% and Funding AI Startups&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/bce4fe5a-c9a3-3343-accb-f30e7b141648/us-stock-indices-end-lower-as.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-20-26 05:31PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/bce4fe5a-c9a3-3343-accb-f30e7b141648/us-stock-indices-end-lower-as.html" target="_blank" rel="nofollow">&#13;
+                        US Stock Indices End Lower As Trumps Economic Warfare Threats Push Yields, Oil Higher  WMT, CRWV, SBUX, DE, RKLB In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/959aca37-524b-3408-a528-a00422fced80/the-10-most-popular-ai-etfs.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-19-26 08:24PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/959aca37-524b-3408-a528-a00422fced80/the-10-most-popular-ai-etfs.html" target="_blank" rel="nofollow">&#13;
+                        The 10 Most Popular AI ETFs of 2026&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/b0821bd1-1cdb-3e01-9ca6-4703b92635f3/nvidia%2C-amd%2C-broadcom%2C-meta.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-18-26 11:42AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/b0821bd1-1cdb-3e01-9ca6-4703b92635f3/nvidia%2C-amd%2C-broadcom%2C-meta.html" target="_blank" rel="nofollow">&#13;
+                        Nvidia, AMD, Broadcom, Meta Slide as Bond Yields Surge: Why Tech Stocks Are Getting Hit&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Benzinga Prediction Markets)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/a7037492-737a-33e6-9bfa-60dbe7964b56/s%26p500%2C-dow%2C-nasdaq-end-lower.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-17-26 05:46PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/a7037492-737a-33e6-9bfa-60dbe7964b56/s%26p500%2C-dow%2C-nasdaq-end-lower.html" target="_blank" rel="nofollow">&#13;
+                        S&amp;P500, Dow, Nasdaq End Lower As Geopolitics And Oil Price Risk Take Center Stage  TSLA, PSKY, MSTR, BABA, NVDA In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/e92f7f57-ef52-3757-b0fc-6dffe807981f/s%26p500%2C-nasdaq-end-higher-as.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-12-26 05:20PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/e92f7f57-ef52-3757-b0fc-6dffe807981f/s%26p500%2C-nasdaq-end-higher-as.html" target="_blank" rel="nofollow">&#13;
+                        S&amp;P500, Nasdaq End Higher As Fresh CPI Data Calms Earlier-Than-Expected Rate Hike Fears  GOOGL, DJT, WEN, BE, SNDK In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/e8602c43-b17a-31d7-ab95-2a81cb9493eb/semiconductor-etfs-see.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-10-26 05:16PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/e8602c43-b17a-31d7-ab95-2a81cb9493eb/semiconductor-etfs-see.html" target="_blank" rel="nofollow">&#13;
+                        Semiconductor ETFs See Profit-Taking as Investors Pile Into QQQ&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/1b1029b5-e8b9-3ad6-8694-3ae17d20f495/the-etfs-most-exposed-to-the.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            04:15PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/1b1029b5-e8b9-3ad6-8694-3ae17d20f495/the-etfs-most-exposed-to-the.html" target="_blank" rel="nofollow">&#13;
+                        The ETFs Most Exposed to the 2026 Chip Supply Chain Crisis  Winners and Losers&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/ec212315-aad4-3fdd-b857-a88d87f20470/software-rebound-is-real-but.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:45PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/ec212315-aad4-3fdd-b857-a88d87f20470/software-rebound-is-real-but.html" target="_blank" rel="nofollow">&#13;
+                        Software rebound is real but selective, Jefferies says, as power crunch reshapes AI buildout&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Proactive)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/95cbe037-b73a-3c05-8fa3-06cd0e988ac9/the-20-most-actively-traded.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-07-26 03:46PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/95cbe037-b73a-3c05-8fa3-06cd0e988ac9/the-20-most-actively-traded.html" target="_blank" rel="nofollow">&#13;
+                        The 20 Most Actively Traded ETFs&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/eb653304-9378-3155-a53e-af80b46d4577/s%26p500%2C-nasdaq-end-higher%2C.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-03-26 05:33PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/eb653304-9378-3155-a53e-af80b46d4577/s%26p500%2C-nasdaq-end-higher%2C.html" target="_blank" rel="nofollow">&#13;
+                        S&amp;P500, Nasdaq End Higher, Dow Hits Record High On Strong Mag 7 Performance And Falling Oil Prices  BA, XOM, CVX, HOOD, AMD In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+      <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200" title="Aug 04, 2026">&#13;
+        <svg width="12" height="12" class="fill-current">&#13;
+    <use href="/assets/dist-icons/icons.1f7da9e4.svg#nextday"/>&#13;
+</svg> +5.55%&#13;
+    </span>&#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/11107d8e-5010-3033-bd8e-6833c6177a0a/semiconductor-etfs-smh%2C-soxx%2C.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            08:57AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/11107d8e-5010-3033-bd8e-6833c6177a0a/semiconductor-etfs-smh%2C-soxx%2C.html" target="_blank" rel="nofollow">&#13;
+                        Semiconductor ETFs SMH, SOXX, SOXL Top Weekly Fund Flows For First Time, Analyst Says&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/f3c28cc2-8fa3-313a-bfc9-9ea4609ea0de/us-indices-end-week-higher-as.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-31-26 06:02PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/f3c28cc2-8fa3-313a-bfc9-9ea4609ea0de/us-indices-end-week-higher-as.html" target="_blank" rel="nofollow">&#13;
+                        US Indices End Week Higher As Amazon Earnings Lift Sentiment, But Nasdaq Logs Worst Month In Over A Year  PSKY, BABA, RDDT, RIVN, AMZN In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/3c0f5c3c-022b-3f9f-9f83-acebcb3c42c1/s%26p-500%2C-nasdaq-end-best-day.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-30-26 05:58PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/3c0f5c3c-022b-3f9f-9f83-acebcb3c42c1/s%26p-500%2C-nasdaq-end-best-day.html" target="_blank" rel="nofollow">&#13;
+                        S&amp;P 500, Nasdaq End Best Day In A Month On Support From Microsoft Gains, AI Stocks   ORCL, GOOGL, MSFT, BE, TSLA Stock In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">&#13;
+         +6.88%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/b0bbdeb6-9801-307a-aa0d-19fb344712c6/nvda%2C-nbis%2C-skhy%2C-sndk-stock.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            06:48AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/b0bbdeb6-9801-307a-aa0d-19fb344712c6/nvda%2C-nbis%2C-skhy%2C-sndk-stock.html" target="_blank" rel="nofollow">&#13;
+                        NVDA, NBIS, SKHY, SNDK Stock Losses Reportedly Force Ex-OpenAI Researchers $20B Fund To Seek Capital&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/tech-stocks-market-7affb184?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-29-26 01:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/tech-stocks-market-7affb184?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        A Tired Tech Trade Looks Set to Sink the Stock Market&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/8599c2eb-6d40-3cd8-80b4-a6f1626b3259/etf-league-tables%3A-vaneck.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-28-26 05:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/8599c2eb-6d40-3cd8-80b4-a6f1626b3259/etf-league-tables%3A-vaneck.html" target="_blank" rel="nofollow">&#13;
+                        ETF League Tables: VanEck Sheds $1.9B&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(etf.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/financial-sector-etf-hits-record-174105097.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            01:41PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/financial-sector-etf-hits-record-174105097.html" target="_blank" rel="nofollow">&#13;
+                        Financial Sector ETF Hits Record High on Fintech Gains&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(ETF Trends)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/425d975c-54c3-383c-b038-2f790d7b5e9b/dow-jones-rises-659-points-on.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            01:03PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/425d975c-54c3-383c-b038-2f790d7b5e9b/dow-jones-rises-659-points-on.html" target="_blank" rel="nofollow">&#13;
+                        Dow Jones rises 659 points on Coca-Cola, Sherwin-Williams earnings&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Quartz)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/e8c72ad1-261c-3c74-acab-e6fd100a1234/sndk-stock-plunges-over-30%25.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            11:54AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/e8c72ad1-261c-3c74-acab-e6fd100a1234/sndk-stock-plunges-over-30%25.html" target="_blank" rel="nofollow">&#13;
+                        SNDK Stock Plunges Over 30% In 3 Days Amid Semiconductor Rout  Retail Traders Debate Whether $1,000 Will Hold&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/21224a85-d66a-345b-a9fe-2de25309b53e/chip-stocks-fall-as-south.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:27AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/21224a85-d66a-345b-a9fe-2de25309b53e/chip-stocks-fall-as-south.html" target="_blank" rel="nofollow">&#13;
+                        Chip stocks fall as South Korea's Kospi plunges 10% before earnings&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Quartz)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/17787098-e5c0-37dd-a05c-220d784e0b57/kospi-crashes-8%25-as-ai-chip.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-27-26 10:13PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/17787098-e5c0-37dd-a05c-220d784e0b57/kospi-crashes-8%25-as-ai-chip.html" target="_blank" rel="nofollow">&#13;
+                        KOSPI Crashes 8% as AI Chip Selloff Slams Asian Markets&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(BeInCrypto)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/90c0ed31-2ea3-3315-8505-5e66cd71cc57/dow-ends-higher-on-support.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            06:29PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/90c0ed31-2ea3-3315-8505-5e66cd71cc57/dow-ends-higher-on-support.html" target="_blank" rel="nofollow">&#13;
+                        Dow Ends Higher On Support From Weak Oil, But AI Concerns Weigh On Nasdaq, S&amp;P 500  ASML, MSFT, NVDA, AMZN, PSKY In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/b4ddbf97-ea72-3cb4-b115-00304a00b762/buying-the-smh-dip-requires-a.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            04:32PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/b4ddbf97-ea72-3cb4-b115-00304a00b762/buying-the-smh-dip-requires-a.html" target="_blank" rel="nofollow">&#13;
+                        Buying The SMH Dip Requires A Strong Stomach&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Trefis)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/article/semiconductor-stock-charts-just-formed-this-bearish-shape-that-signals-more-potential-losses-145440205.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            10:54AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/article/semiconductor-stock-charts-just-formed-this-bearish-shape-that-signals-more-potential-losses-145440205.html" target="_blank" rel="nofollow">&#13;
+                        Semiconductor stock charts just formed this bearish shape that signals more potential losses&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/479dd690-44bb-3d0f-94b7-f6bf29601cdf/s%26p-500%2C-dow%2C-nasdaq-end.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-24-26 06:54PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/479dd690-44bb-3d0f-94b7-f6bf29601cdf/s%26p-500%2C-dow%2C-nasdaq-end.html" target="_blank" rel="nofollow">&#13;
+                        S&amp;P 500, Dow, Nasdaq End Second Week Lower Over Elevated Oil Prices, Chipmaker Rout  PSKY, UBER, QCOM, VZ, INTC In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/nvidia-stock-price-chip-selloff-2880f767?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            09:07AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/nvidia-stock-price-chip-selloff-2880f767?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Nvidia Stock Has Been a Chip Stock Outperformer in July. Why Its Rally Is at Risk.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/0e600225-97be-3c2e-9267-aea6e1341132/s%26p-500%2C-nasdaq-end-lower%2C.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-22-26 06:53PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/0e600225-97be-3c2e-9267-aea6e1341132/s%26p-500%2C-nasdaq-end-lower%2C.html" target="_blank" rel="nofollow">&#13;
+                        S&amp;P 500, Nasdaq End Lower, Futures Extend Declines As Attention Shifts To Tech Earnings, Geopolitics   TSLA, GOOGL, PSKY, RDDT, AMZN In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/story/the-chip-sectors-recent-calm-is-masking-a-turbulent-outlook-in-the-options-market-2ffc098a?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            02:57PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/the-chip-sectors-recent-calm-is-masking-a-turbulent-outlook-in-the-options-market-2ffc098a?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        The chip sector's recent calm is masking a turbulent outlook in the options market&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/article/a-violent-ai-unwind-is-hiding-beneath-a-resilient-stock-market-chart-of-the-day-100000350.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            06:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/article/a-violent-ai-unwind-is-hiding-beneath-a-resilient-stock-market-chart-of-the-day-100000350.html" target="_blank" rel="nofollow">&#13;
+                        A violent AI unwind is hiding beneath a resilient stock market: Chart of the Day&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/727f0d9d-33dd-3b44-bb05-dbe7bb9b69f5/s%26p-500%2C-dow-snap-three-day.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-21-26 06:02PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/727f0d9d-33dd-3b44-bb05-dbe7bb9b69f5/s%26p-500%2C-dow-snap-three-day.html" target="_blank" rel="nofollow">&#13;
+                        S&amp;P 500, Dow Snap Three-Day Losses, Nasdaq Ends Best Day In Three Weeks As Earnings Take Centerstage  GOOGL, AAPL, AMD, TSLA, DIS In Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Stocktwits)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/world-indices/articles/asia-stocks-chip-stocks-recover-032902299.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            04:17PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/world-indices/articles/asia-stocks-chip-stocks-recover-032902299.html" target="_blank" rel="nofollow">&#13;
+                        Stocks rise despite climbing oil prices&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(AFP)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/nasdaq-dow-p-500-jumps-192143070.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:21PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/nasdaq-dow-p-500-jumps-192143070.html" target="_blank" rel="nofollow">&#13;
+                        Nasdaq, Dow and S&amp;P 500 Jumps as Chip Stocks Power Wall Street Higher&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/be148daf-b72f-3e75-8862-3c837efbfb78/chip-stocks-rebound%2C-earnings.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/be148daf-b72f-3e75-8862-3c837efbfb78/chip-stocks-rebound%2C-earnings.html" target="_blank" rel="nofollow">&#13;
+                        Chip stocks rebound, earnings beat as Iran ceasefire talks begin&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Quartz)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+</table>
+</div>
+
+</div></div>
+</body>
+</html>

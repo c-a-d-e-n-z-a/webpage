@@ -1,0 +1,1889 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>SEPA Screener (US)</title>
+  <script src="https://unpkg.com/lightweight-charts@4.2.1/dist/lightweight-charts.standalone.production.js"></script>
+  <style>
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+    .rp-pill-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 9px;
+      border-radius: 5px;
+      background: #faf9f6;
+      border: 1px solid #d6d1c7;
+      color: #44403c;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+    .rp-pill-link:hover {
+      background: #fff5eb;
+      border-color: #FA8123;
+      color: #d9650f;
+      text-decoration: none;
+    }
+    /* Stock Drawer Styles - Warm Light Card Theme matching Webpage (#faf9f6 / #FA8123) */
+    .sd-backdrop {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(28, 25, 23, 0.4); z-index: 9998;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+    }
+    .sd-backdrop.open { opacity: 1; pointer-events: auto; }
+
+    .sd-drawer {
+      position: fixed; top: 0; right: 0; width: 580px; max-width: 96vw; height: 100vh;
+      background: #faf9f6; color: #1c1917; z-index: 9999;
+      box-shadow: -6px 0 28px rgba(28, 25, 23, 0.16);
+      transform: translateX(100%); transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex; flex-direction: column; overflow: hidden; font-size: 12px;
+      border-left: 1px solid #e6e2dc;
+    }
+    .sd-drawer.open { transform: translateX(0); }
+
+    .sd-header {
+      padding: 10px 16px; border-bottom: 1px solid #e6e2dc; border-top: 3px solid #FA8123;
+      background: #ffffff;
+      display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-shrink: 0;
+      box-shadow: 0 1px 3px rgba(28, 25, 23, 0.03);
+    }
+    .sd-title-wrap { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+    .sd-code { font-size: 18px; font-weight: 800; color: #1c1917; }
+    .sd-name { font-size: 14px; font-weight: 700; color: #FA8123; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 240px; }
+    .sd-price-wrap { display: flex; align-items: baseline; gap: 6px; flex-shrink: 0; }
+    .sd-price { font-size: 17px; font-weight: 800; color: #1c1917; }
+    .sd-change { font-size: 13px; font-weight: 700; padding: 2px 6px; border-radius: 4px; }
+    .sd-change.up { color: #dc2626; background: #fef2f2; border: 1px solid #fecaca; }
+    .sd-change.down { color: #059669; background: #ecfdf5; border: 1px solid #a7f3d0; }
+    .sd-close-btn {
+      border: 1px solid #e6e2dc; background: #f5f3ef; color: #78716c; width: 28px; height: 28px;
+      border-radius: 50%; font-size: 14px; font-weight: bold; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; transition: all 0.12s; flex-shrink: 0;
+    }
+    .sd-close-btn:hover { background: #e6e2dc; color: #1c1917; }
+
+    .sd-body {
+      flex: 1; overflow-y: auto; padding: 12px 14px; display: flex; flex-direction: column; gap: 10px;
+    }
+    .sd-body::-webkit-scrollbar { width: 5px; }
+    .sd-body::-webkit-scrollbar-thumb { background: #d6d1c7; border-radius: 4px; }
+
+    .sd-range-bar { display: flex; gap: 4px; align-items: center; }
+    .sd-range-btn {
+      flex: 1; padding: 4px 0; border: 1px solid #d6d1c7; background: #ffffff;
+      border-radius: 4px; font-size: 11px; font-weight: 600; color: #57534e; cursor: pointer;
+      transition: all 0.12s ease;
+    }
+    .sd-range-btn.active, .sd-range-btn:hover {
+      background: #FA8123; border-color: #FA8123; color: #ffffff;
+      box-shadow: 0 1px 3px rgba(250, 129, 35, 0.3);
+    }
+    .sd-chart-box {
+      width: 100%; height: 260px; position: relative; border: 1px solid #e6e2dc;
+      border-radius: 6px; background: #ffffff; overflow: hidden; flex-shrink: 0;
+      box-shadow: 0 1px 3px rgba(28, 25, 23, 0.03);
+    }
+    .sd-legend {
+      font-size: 11px; color: #78716c; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 1px;
+    }
+    .sd-legend span { font-weight: 700; color: #1c1917; }
+
+    .sd-card {
+      background: #ffffff; border: 1px solid #e6e2dc; border-radius: 6px; padding: 10px 12px;
+      box-shadow: 0 1px 3px rgba(28, 25, 23, 0.03);
+    }
+    .sd-card-hdr {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;
+    }
+    .sd-card-title {
+      font-size: 13px; font-weight: 700; color: #1c1917;
+      border-left: 3px solid #FA8123; padding-left: 6px;
+    }
+    .sd-card-val { font-size: 13px; font-weight: 800; color: #dc2626; }
+    .sd-card-sub { font-size: 11px; color: #b91c1c; margin-bottom: 8px; line-height: 1.4; }
+    .sd-card-sub.muted { color: #57534e; }
+
+    .sd-row-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .sd-row-3col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+    .sd-subcol { display: flex; flex-direction: column; gap: 2px; }
+    .sd-subcol-title { font-size: 11px; color: #78716c; font-weight: 600; }
+    .sd-subcol-stat { font-size: 11px; font-weight: 700; margin-top: 2px; }
+    .sd-dates-row {
+      display: flex; justify-content: space-between; font-size: 10px; color: #a8a29e; margin-top: 2px;
+    }
+
+    .sd-metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .sd-metric-item {
+      background: #faf9f6; border: 1px solid #ede9e3; border-radius: 4px; padding: 6px; text-align: center;
+    }
+    .sd-metric-lbl { font-size: 11px; color: #78716c; margin-bottom: 2px; }
+    .sd-metric-val { font-size: 13px; font-weight: 800; color: #1c1917; }
+
+    .sd-links {
+      display: flex; flex-wrap: wrap; gap: 6px; padding-top: 6px; border-top: 1px solid #e6e2dc;
+    }
+    .sd-ext-link {
+      flex: 1; min-width: 80px; text-align: center; padding: 6px 0; border-radius: 4px;
+      background: #ffffff; border: 1px solid #d6d1c7; color: #44403c; text-decoration: none;
+      font-size: 11px; font-weight: 600; transition: all 0.12s ease;
+    }
+    .sd-ext-link:hover { background: #fff5eb; border-color: #FA8123; color: #d9650f; text-decoration: none; }
+
+    .sd-loading {
+      display: flex; align-items: center; justify-content: center; height: 100%;
+      color: #78716c; font-weight: 600; text-align: center; padding: 12px;
+    }
+    .sd-consensus-bar {
+      display: flex; height: 10px; border-radius: 999px; overflow: hidden; background: #e6e2dc; margin: 6px 0;
+    }
+
+  body {
+    margin: 0;
+    padding: 8px 28px 16px;
+    background: #faf9f6;
+    color: #2c241d;
+    font-size: 13px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Microsoft JhengHei", sans-serif;
+    line-height: 1.5;
+  }
+  a {
+    color: #d9650f;
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+  a:hover {
+    color: #FA8123;
+    text-decoration: underline;
+  }
+  .rp-header {
+    width: 100%;
+    margin: 0 0 4px;
+    background: #ffffff;
+    border: 1px solid #e6e2dc;
+    border-top: 3px solid #FA8123;
+    border-radius: 6px;
+    padding: 8px 12px;
+    box-shadow: 0 1px 2px rgba(44, 36, 29, 0.04);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .rp-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #2c241d;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .rp-badge {
+    font-size: 11px;
+    font-weight: 600;
+    color: #d9650f;
+    background: #fff5eb;
+    border: 1px solid #fdba8c;
+    padding: 2px 8px;
+    border-radius: 999px;
+  }
+  .rp-card {
+    width: 100%;
+    margin: 0 0 4px;
+    background: #ffffff;
+    border: 1px solid #e6e2dc;
+    border-radius: 6px;
+    padding: 6px 8px;
+    box-shadow: 0 1px 2px rgba(44, 36, 29, 0.04);
+    overflow-x: auto;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 12.5px;
+    border: 1px solid #e6e2dc;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  th {
+    background: #f6f4f0;
+    color: #5c5248;
+    font-weight: 700;
+    text-align: left;
+    padding: 7px 10px;
+    border: 1px solid #e6e2dc;
+    white-space: nowrap;
+  }
+  td {
+    border: 1px solid #e6e2dc;
+    text-align: left;
+    padding: 6px 10px;
+    color: #2c241d;
+    vertical-align: middle;
+  }
+  tbody tr:nth-child(even) {
+    background-color: #fcfbf9;
+  }
+  tbody tr:hover {
+    background-color: #fff5eb;
+  }
+  td img {
+    max-width: 280px;
+    height: auto;
+    border-radius: 4px;
+    border: 1px solid #e6e2dc;
+    cursor: zoom-in;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  td img:hover {
+    border-color: #FA8123;
+    box-shadow: 0 2px 8px rgba(250, 129, 35, 0.22);
+  }
+  #imgZoomBox {
+    display: none;
+    position: absolute;
+    z-index: 99999;
+    background: #ffffff;
+    border: 2px solid #FA8123;
+    border-radius: 8px;
+    padding: 6px;
+    box-shadow: 0 12px 36px rgba(44, 36, 29, 0.28);
+    pointer-events: none;
+  }
+  #imgZoomBox img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: none;
+    max-height: none;
+    border-radius: 4px;
+  }
+  #imgZoomCaption {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #d9650f;
+    padding: 0 4px 4px;
+    border-bottom: 1px solid #f0ece6;
+    margin-bottom: 4px;
+  }
+  </style>
+</head>
+<body><div class="rp-header"><div class="rp-title">🇺🇸 SEPA Screener (US) <span class="rp-badge">2026-11-14</span></div><div class="rp-badge">共 27 檔強勢標的</div></div><div class="rp-card"><table class="dataframe">
+  <thead>
+    <tr style="text-align: left;">
+      <th></th>
+      <th>name</th>
+      <th>description</th>
+      <th>chart</th>
+      <th>close</th>
+      <th>change</th>
+      <th>change_abs</th>
+      <th>rs score</th>
+      <th>vp poc</th>
+      <th>Recommend.All</th>
+      <th>price_earnings_ttm</th>
+      <th>earnings_per_share_basic_ttm</th>
+      <th>price_52_week_high</th>
+      <th>price_52_week_low</th>
+      <th>volume</th>
+      <th>market_cap_basic</th>
+      <th>RSI</th>
+      <th>Stoch.K</th>
+      <th>Stoch.D</th>
+      <th>CCI20</th>
+      <th>after_tax_margin</th>
+      <th>gross_margin</th>
+      <th>sector</th>
+      <th>exchange</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>9</th>
+      <td><a class="rp-pill-link stock-pop-trigger" href="https://finviz.com/quote.ashx?t=MLLGF" data-stock="MLLGF" data-name="Mullen Group Ltd." data-market="US">MLLGF</a></td>
+      <td>Mullen Group Ltd.</td>
+      <td><a href="https://finviz.com/quote.ashx?t=MLLGF" target="_blank"><img src="https://charts2.finviz.com/chart.ashx?t=MLLGF&ta=1&ty=c&p=d&s=l"></a></td>
+      <td>21.01</td>
+      <td>-0.47</td>
+      <td>-0.10</td>
+      <td>142.36</td>
+      <td>>= 19.59</td>
+      <td>0.56</td>
+      <td>23.47</td>
+      <td>0.91</td>
+      <td>22.26</td>
+      <td>9.47</td>
+      <td>203</td>
+      <td>2.025346e+09</td>
+      <td>56.72</td>
+      <td>42.98</td>
+      <td>39.21</td>
+      <td>37.01</td>
+      <td>5.25</td>
+      <td>23.59</td>
+      <td>Transportation</td>
+      <td>OTC</td>
+    </tr>
+    <tr>
+      <th>57</th>
+      <td><a class="rp-pill-link stock-pop-trigger" href="https://finviz.com/quote.ashx?t=IDT" data-stock="IDT" data-name="IDT Corporation Class B" data-market="US">IDT</a></td>
+      <td>IDT Corporation Class B</td>
+      <td><a href="https://finviz.com/quote.ashx?t=IDT" target="_blank"><img src="https://charts2.finviz.com/chart.ashx?t=IDT&ta=1&ty=c&p=d&s=l"></a></td>
+      <td>83.09</td>
+      <td>0.35</td>
+      <td>0.29</td>
+      <td>142.28</td>
+      <td>>> 48.73</td>
+      <td>0.40</td>
+      <td>23.99</td>
+      <td>3.46</td>
+      <td>84.56</td>
+      <td>46.48</td>
+      <td>124297</td>
+      <td>2.206127e+09</td>
+      <td>58.65</td>
+      <td>66.19</td>
+      <td>66.37</td>
+      <td>85.40</td>
+      <td>6.67</td>
+      <td>38.27</td>
+      <td>Communications</td>
+      <td>NYSE</td>
+    </tr>
+    <tr>
+      <th>60</th>
+      <td><a class="rp-pill-link stock-pop-trigger" href="https://finviz.com/quote.ashx?t=DOCU" data-stock="DOCU" data-name="DocuSign, Inc." data-market="US">DOCU</a></td>
+      <td>DocuSign, Inc.</td>
+      <td><a href="https://finviz.com/quote.ashx?t=DOCU" target="_blank"><img src="https://charts2.finviz.com/chart.ashx?t=DOCU&ta=1&ty=c&p=d&s=l"></a></td>
+      <td>80.76</td>
+      <td>0.76</td>
+      <td>0.61</td>
+      <td>139.49</td>
+      <td>>> 47.63</td>
+      <td>0.33</td>
+      <td>49.12</td>
+      <td>1.67</td>
+      <td>85.90</td>
+      <td>40.16</td>
+      <td>1720372</td>
+      <td>1.509424e+10</td>
+      <td>58.84</td>
+      <td>48.15</td>
+      <td>37.39</td>
+      <td>-4.73</td>
+      <td>9.82</td>
+      <td>79.16</td>
+      <td>Technology Services</td>
+      <td>NASDAQ</td>
+    </tr>
+    <tr>
+      <th>65</th>
+      <td><a class="rp-pill-link stock-pop-trigger" href="https://finviz.com/quote.ashx?t=VRNS" data-stock="VRNS" data-name="Varonis Systems, Inc." data-market="US">VRNS</a></td>
+      <td>Varonis Systems, Inc.</td>
+      <td><a href="https://finviz.com/quote.ashx?t=VRNS" target="_blank"><img src="https://charts2.finviz.com/chart.ashx?t=VRNS&ta=1&ty=c&p=d&s=l"></a></td>
+      <td>48.94</td>
+      <td>-0.26</td>
+      <td>-0.13</td>
+      <td>138.66</td>
+      <td>>= 48.78</td>
+      <td>0.31</td>
+      <td>NaN</td>
+      <td>-1.32</td>
+      <td>50.31</td>
+      <td>19.70</td>
+      <td>4022573</td>
+      <td>5.642712e+09</td>
+      <td>54.46</td>
+      <td>55.98</td>
+      <td>60.47</td>
+      <td>54.32</td>
+      <td>-21.30</td>
+      <td>76.40</td>
+      <td>Technology Services</td>
+      <td>NASDAQ</td>
+    </tr>
+    <tr>
+      <th>50</th>
+      <td><a class="rp-pill-link stock-pop-trigger" href="https://finviz.com/quote.ashx?t=MEOH" data-stock="MEOH" data-name="Methanex Corporation" data-market="US">MEOH</a></td>
+      <td>Methanex Corporation</td>
+      <td><a href="https://finviz.com/quote.ashx?t=MEOH" target="_blank"><img src="https://charts2.finviz.com/chart.ashx?t=MEOH&ta=1&ty=c&p=d&s=l"></a></td>
+      <td>70.51</td>
+      <td>0.57</td>
+      <td>0.40</td>
+      <td>133.55</td>
+      <td>>> 59.22</td>
+      <td>0.42</td>
+      <td>15.48</td>
+      <td>4.56</td>
+      <td>72.32</td>
+      <td>34.01</td>
+      <td>373613</td>
+      <td>5.454955e+09</td>
+      <td>63.61</td>
+      <td>77.66</td>
+      <td>70.94</td>
+      <td>115.87</td>
+      <td>7.66</td>
+      <td>22.64</td>
+      <td>Process Industries</td>
+      <td>NASDAQ</td>
+    </tr>
+    <tr>
+      <th>35</th>
+      <td><a class="rp-pill-link stock-pop-trigger" href="https://finviz.com/quote.ashx?t=WST" data-stock="WST" data-name="West Pharmaceutical Services, Inc." data-market="US">WST</a></td>
+      <td>West Pharmaceutical Services, Inc.</td>
+      <td><a href="https://finviz.com/quote.ashx?t=WST" target="_blank"><img src="https://charts2.finviz.com/chart.ashx?t=WST&ta=1&ty=c&p=d&s=l"></a></td>
+      <td>416.42</td>
+      <td>1.24</td>
+      <td>5.12</td>
+      <td>133.53</td>
+      <td>>> 246.98</td>
+      <td>0.47</td>
+      <td>46.70</td>
+      <td>8.97</td>
+      <td>438.27</td>
+      <td>223.83</td>
+      <td>479106</td>
+      <td>2.900825e+10</td>
+      <td>65.81</td>
+      <td>51.85</td>
+      <td>51.04</td>
+      <td>76.47</td>
+      <td>18.81</td>
+      <td>37.68</td>
+      <td>Health Technology</td>
+      <td>NYSE</td>
+    </tr>
+    <tr>
+      <th>47</th>
+      <td><a class="rp-pill-link stock-pop-trigger" href="https://finviz.com/quote.ashx?t=VRDN" data-stock="VRDN" data-name="Viridian Therapeutics, Inc." data-market="US">VRDN</a></td>
+      <td>Viridian Therapeutics, Inc.</td>
+      <td><a href="https://finviz.com/quote.ashx?t=VRDN" target="_blank"><img src="https://charts2.finviz.com/chart.ashx?t=VRDN&ta=1&ty=c&p=d&s=l"></a></td>
+      <td>30.87</td>
+      <td>1.28</td>
+      <td>0.39</td>
+      <td>130.70</td>
+      <td>>> 18.99</td>
+      <td>0.45</td>
+      <td>NaN</td>
+      <td>-4.18</td>
+      <td>34.29</td>
+      <td>13.18</td>
+      <td>1204161</td>
+      <td>3.505549e+09</td>
+      <td>77.28</td>
+      <td>91.57</td>
+      <td>94.35</td>
+      <td>101.32</td>
+      <td>-1654.21</td>
+      <td>90.77</td>
+      <td>Health Technology</td>
+      <td>NASDAQ</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td><a class="rp-pill-link stock-pop-trigger" href="https://finviz.com/quote.ashx?t=BHC" data-stock="BHC" data-name="Bausch Health Companies Inc." data-market="US">BHC</a></td>
+      <td>Bausch Health Companies Inc.</td>
+      <td><a href="https://finviz.com/quote.ashx?t=BHC" target="_blank"><img src="https://charts2.finviz.com/chart.ashx?t=BHC&ta=1&ty=c&p=d&s=l"></a></td>
+      <td>8.35</td>
+      <td>1.21</td>
+      <td>0.10</td>
+      <td>128.74</td>
+      <td>>> 5.73</td>
+      <td>0.54</td>
+      <td>NaN</td>
+      <td>-2.16</td>
+      <td>9.04</td>
+      <td>4.33</td>
+      <td>2339971</td>
+      <td>3.125127e+09</td>
+      <td>66.06</td>
+      <td>74.37</td>
+      <td>74.56</td>
+      <td>58.29</td>
+      <td>-7.39</td>
+      <td>64.27</td>
+      <td>Health Technology</td>
+      <td>NYSE</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td><a class="rp-pill-link stock-pop-trigger" href="https://finviz.com/quote.ashx?t=TXN" data-stock="TXN" data-name="Texas Instruments Incorporated" data-market="US">TXN</a></td>
+      <td>Texas Instruments Incorporated</td>
+      <td><a href="https://finviz.com/quote.ashx?t=TXN" target="_blank"><img src="https://charts2.finviz.com/chart.ashx?t=TXN&ta=1&ty=c&p=d&s=l"></a></td>
+      <td>303.60</td>
+      <td>-2.84</td>
+      <td>-8.88</td>
+      <td>124.08</td>
+      <td>>= 278.71</td>
+      <td>0.49</td>
+      <td>39.39</td>
+      <td>7.76</td>
+      <td>334.03</td>
+      <td>152.73</td>
+      <td>5227275</td>
+      <td>2.774207e+11</td>
+      <td>54.83</td>
+      <td>81.36</td>
+      <td>75.82</td>
+      <td>41.25</td>
+      <td>34.06</td>
+      <td>60.24</td>
+      <td>Electronic Technology</td>
+      <td>NASDAQ</td>
+    </tr>
+    <tr>
+      <th>88</th>
+      <td><a class="rp-pill-link stock-pop-trigger" href="https://finviz.com/quote.ashx?t=MEDP" data-stock="MEDP" data-name="Medpace Holdings, Inc." data-market="US">MEDP</a></td>
+      <td>Medpace Holdings, Inc.</td>
+      <td><a href="https://finviz.com/quote.ashx?t=MEDP" target="_blank"><img src="https://charts2.finviz.com/chart.ashx?t=MEDP&ta=1&ty=c&p=d&s=l"></a></td>
+      <td>653.94</td>
+      <td>-0.44</td>
+      <td>-2.90</td>
+      <td>124.03</td>
+      <td>>> 419.01</td>
+      <td>0.13</td>
+      <td>36.25</td>
+      <td>18.36</td>
+      <td>693.97</td>
+      <td>373.00</td>
+      <td>105448</td>
+      <td>1.829180e+10</td>
+      <td>52.04</td>
+      <td>42.69</td>
+      <td>50.21</td>
+      <td>-27.54</td>
+      <td>18.24</td>
+      <td>28.18</td>
+      <td>Commercial Services</td>
+      <td>NASDAQ</td>
+    </tr>
+    <tr>
+      <th>100</th>
+      <td><a class="rp-pill-link stock-pop-trigger" href="https://finviz.com/quote.ashx?t=A" data-stock="A" data-name="Agilent Technologies, Inc." data-market="US">A</a></td>
+      <td>Agilent Technologies, Inc.</td>
+      <td><a href="https://finviz.com/quote.ashx?t=A" target="_blank"><img src="https://charts2.finviz.com/chart.ashx?t=A&ta=1&ty=c&p=d&s=l"></a></td>
+      <td>173.96</td>
+      <td>0.55</td>
+      <td>0.95</td>
+      <td>124.00</td>
+      <td>>> 114.23</td>
+      <td>0.00</td>
+      <td>34.25</td>
+      <td>5.10</td>
+      <td>182.99</td>
+      <td>108.35</td>
+      <td>1415178</td>
+      <td>4.904434e+10</td>
+      <td>50.58</td>
+      <td>32.21</td>
+      <td>46.79</td>
+      <td>-73.47</td>
+      <td>19.53</td>
+      <td>53.72</td>
+      <td>Health Technology</td>
+      <td>NYSE</td>
+    </tr>
+    <tr>
+      <th>55</th>
+      <td><a class="rp-pill-link stock-pop-trigger" href="https://finviz.com/quote.ashx?t=AGYS" data-stock="AGYS" data-name="Agilysys, Inc." data-market="US">AGYS</a></td>
+      <td>Agilysys, Inc.</td>
+      <td><a href="https://finviz.com/quote.ashx?t=AGYS" target="_blank"><img src="https://charts2.finviz.com/chart.ashx?t=AGYS&ta=1&ty=c&p=d&s=l"></a></td>
+      <td>121.94</td>
+      <td>0.29</td>
+      <td>0.35</td>
+      <td>122.83</td>
+      <td>>> 69.03</td>
+      <td>0.40</td>
+      <td>78.26</td>
+      <td>1.58</td>
+      <td>129.32</td>
+      <td>61.50</td>
+      <td>146460</td>
+      <td>3.440635e+09</td>
+      <td>60.49</td>
+      <td>74.24</td>
+      <td>79.27</td>
+      <td>59.99</td>
+      <td>12.88</td>
+      <td>61.07</td>
+      <td>Technology Services</td>
+      <td>NASDAQ</td>
+    </tr>
+    <tr>
+      <th>54</th>
+      <td><a class="rp-pill-link stock-pop-trigger" href="https://finviz.com/quote.ashx?t=DSGX" data-stock="DSGX" data-name="Descartes Systems Group Inc." data-market="US">DSGX</a></td>
+      <td>Descartes Systems Group Inc.</td>
+      <td><a href="https://finviz.com/quote.ashx?t=DSGX" target="_blank"><img src="https://charts2.finviz.com/chart.ashx?t=DSGX&ta=1&ty=c&p=d&s=l"></a></td>
+      <td>94.39</td>
+      <td>-1.13</td>
+      <td>-1.08</td>
+      <td>122.80</td>
+      <td>>> 71.34</td>
+      <td>0.40</td>
+      <td>44.42</td>
+      <td>2.16</td>
+      <td>96.75</td>
+      <td>62.56</td>
+      <td>207045</td>
+      <td>8.074928e+09</td>
+      <td>62.49</td>
+      <td>83.78</td>
+      <td>84.53</td>
+      <td>78.52</td>
+      <td>24.25</td>
+      <td>67.69</td>
+      <td>Technology Services</td>
+      <td>NASDAQ</td>
+    </tr>
+    <tr>
+      <th>41</th>
+      <td><a class="rp-pill-link stock-pop-trigger" href="https://finviz.com/quote.ashx?t=ANET" data-stock="ANET" data-name="Arista Networks Inc" data-market="US">ANET</a></td>
+      <td>Arista Networks Inc</td>
+      <td><a href="https://finviz.com/quote.ashx?t=ANET" target="_blank"><img src="https://charts2.finviz.com/chart.ashx?t=ANET&ta=1&ty=c&p=d&s=l"></a></td>
+      <td>197.29</td>
+      <td>-4.52</td>
+      <td>-9.34</td>
+      <td>119.64</td>
+      <td>>> 142.28</td>
+      <td>0.45</td>
+      <td>52.97</td>
+      <td>3.77</td>
+      <td>217.41</td>
+      <td>114.52</td>
+      <td>8604745</td>
+      <td>2.492567e+11</td>
+      <td>55.25</td>
+      <td>88.17</td>
+      <td>88.18</td>
+      <td>159.91</td>
+      <td>39.97</td>
+      <td>62.88</td>
+      <td>Electronic Technology</td>
+      <td>NYSE</td>
+    </tr>
+    <tr>
+      <th>45</th>
+      <td><a class="rp-pill-link stock-pop-trigger" href="https://finviz.com/quote.ashx?t=BSY" data-stock="BSY" data-name="Bentley Systems, Incorporated Class B" data-market="US">BSY</a></td>
+      <td>Bentley Systems, Incorporated Class B</td>
+      <td><a href="https://finviz.com/quote.ashx?t=BSY" target="_blank"><img src="https://charts2.finviz.com/chart.ashx?t=BSY&ta=1&ty=c&p=d&s=l"></a></td>
+      <td>44.33</td>
+      <td>0.32</td>
+      <td>0.14</td>
+      <td>118.20</td>
+      <td>>> 32.38</td>
+      <td>0.45</td>
+      <td>43.64</td>
+      <td>1.03</td>
+      <td>48.17</td>
+      <td>28.08</td>
+      <td>1437257</td>
+      <td>1.339178e+10</td>
+      <td>72.06</td>
+      <td>60.67</td>
+      <td>64.31</td>
+      <td>72.50</td>
+      <td>19.57</td>
+      <td>80.36</td>
+      <td>Technology Services</td>
+      <td>NASDAQ</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td><a class="rp-pill-link stock-pop-trigger" href="https://finviz.com/quote.ashx?t=SAIL" data-stock="SAIL" data-name="SailPoint, Inc." data-market="US">SAIL</a></td>
+      <td>SailPoint, Inc.</td>
+      <td><a href="https://finviz.com/quote.ashx?t=SAIL" target="_blank"><img src="https://charts2.finviz.com/chart.ashx?t=SAIL&ta=1&ty=c&p=d&s=l"></a></td>
+      <td>20.79</td>
+      <td>1.02</td>
+      <td>0.21</td>
+      <td>115.27</td>
+      <td>>> 15.27</td>
+      <td>0.54</td>
+      <td>NaN</td>
+      <td>-0.35</td>
+      <td>22.62</td>
+      <td>10.30</td>
+      <td>4402622</td>
+      <td>1.186925e+10</td>
+      <td>53.75</td>
+      <td>57.58</td>
+      <td>52.92</td>
+      <td>32.97</td>
+      <td>-16.92</td>
+      <td>58.00</td>
+      <td>Technology Services</td>
+      <td>NASDAQ</td>
+    </tr>
+    <tr>
+      <th>52</th>
+      <td><a class="rp-pill-link stock-pop-trigger" href="https://finviz.com/quote.ashx?t=DHR" data-stock="DHR" data-name="Danaher Corporation" data-market="US">DHR</a></td>
+      <td>Danaher Corporation</td>
+      <td><a href="https://finviz.com/quote.ashx?t=DHR" target="_blank"><img src="https://charts2.finviz.com/chart.ashx?t=DHR&ta=1&ty=c&p=d&s=l"></a></td>
+      <td>233.02</td>
+      <td>0.37</td>
+      <td>0.86</td>
+      <td>113.77</td>
+      <td>>> 194.44</td>
+      <td>0.40</td>
+      <td>38.15</td>
+      <td>6.13</td>
+      <td>242.80</td>
+      <td>160.93</td>
+      <td>3359469</td>
+      <td>1.639368e+11</td>
+      <td>54.67</td>
+      <td>67.98</td>
+      <td>75.15</td>
+      <td>19.58</td>
+      <td>16.75</td>
+      <td>58.85</td>
+      <td>Health Technology</td>
+      <td>NYSE</td>
+    </tr>
+    <tr>
+      <th>80</th>
+      <td><a class="rp-pill-link stock-pop-trigger" href="https://finviz.com/quote.ashx?t=HNI" data-stock="HNI" data-name="HNI Corporation" data-market="US">HNI</a></td>
+      <td>HNI Corporation</td>
+      <td><a href="https://finviz.com/quote.ashx?t=HNI" target="_blank"><img src="https://charts2.finviz.com/chart.ashx?t=HNI&ta=1&ty=c&p=d&s=l"></a></td>
+      <td>48.31</td>
+      <td>0.23</td>
+      <td>0.11</td>
+      <td>113.10</td>
+      <td>>= 47.99</td>
+      <td>0.22</td>
+      <td>102.94</td>
+      <td>0.47</td>
+      <td>52.79</td>
+      <td>28.93</td>
+      <td>412263</td>
+      <td>3.491524e+09</td>
+      <td>51.72</td>
+      <td>40.24</td>
+      <td>51.50</td>
+      <td>11.16</td>
+      <td>1.00</td>
+      <td>39.57</td>
+      <td>Producer Manufacturing</td>
+      <td>NYSE</td>
+    </tr>
+    <tr>
+      <th>93</th>
+      <td><a class="rp-pill-link stock-pop-trigger" href="https://finviz.com/quote.ashx?t=XOM" data-stock="XOM" data-name="Exxonmobil Holdings Corporation" data-market="US">XOM</a></td>
+      <td>Exxonmobil Holdings Corporation</td>
+      <td><a href="https://finviz.com/quote.ashx?t=XOM" target="_blank"><img src="https://charts2.finviz.com/chart.ashx?t=XOM&ta=1&ty=c&p=d&s=l"></a></td>
+      <td>170.59</td>
+      <td>0.48</td>
+      <td>0.81</td>
+      <td>112.98</td>
+      <td>>> 148.05</td>
+      <td>0.09</td>
+      <td>17.53</td>
+      <td>9.73</td>
+      <td>188.50</td>
+      <td>114.19</td>
+      <td>11451524</td>
+      <td>6.958745e+11</td>
+      <td>48.23</td>
+      <td>31.41</td>
+      <td>23.65</td>
+      <td>-49.27</td>
+      <td>10.31</td>
+      <td>22.11</td>
+      <td>Energy Minerals</td>
+      <td>NYSE</td>
+    </tr>
+    <tr>
+      <th>31</th>
+      <td><a class="rp-pill-link stock-pop-trigger" href="https://finviz.com/quote.ashx?t=APPF" data-stock="APPF" data-name="AppFolio Inc Class A" data-market="US">APPF</a></td>
+      <td>AppFolio Inc Class A</td>
+      <td><a href="https://finviz.com/quote.ashx?t=APPF" target="_blank"><img src="https://charts2.finviz.com/chart.ashx?t=APPF&ta=1&ty=c&p=d&s=l"></a></td>
+      <td>224.34</td>
+      <td>0.69</td>
+      <td>1.54</td>
+      <td>111.97</td>
+      <td>>> 166.63</td>
+      <td>0.49</td>
+      <td>47.22</td>
+      <td>4.77</td>
+      <td>247.36</td>
+      <td>142.56</td>
+      <td>186257</td>
+      <td>7.954233e+09</td>
+      <td>55.34</td>
+      <td>59.47</td>
+      <td>61.41</td>
+      <td>46.04</td>
+      <td>15.62</td>
+      <td>61.94</td>
+      <td>Technology Services</td>
+      <td>NASDAQ</td>
+    </tr>
+    <tr>
+      <th>48</th>
+      <td><a class="rp-pill-link stock-pop-trigger" href="https://finviz.com/quote.ashx?t=NDSN" data-stock="NDSN" data-name="Nordson Corporation" data-market="US">NDSN</a></td>
+      <td>Nordson Corporation</td>
+      <td><a href="https://finviz.com/quote.ashx?t=NDSN" target="_blank"><img src="https://charts2.finviz.com/chart.ashx?t=NDSN&ta=1&ty=c&p=d&s=l"></a></td>
+      <td>324.74</td>
+      <td>-0.57</td>
+      <td>-1.86</td>
+      <td>111.19</td>
+      <td>>> 286.41</td>
+      <td>0.42</td>
+      <td>32.86</td>
+      <td>9.94</td>
+      <td>339.12</td>
+      <td>223.29</td>
+      <td>196800</td>
+      <td>1.808781e+10</td>
+      <td>50.45</td>
+      <td>66.78</td>
+      <td>65.94</td>
+      <td>27.13</td>
+      <td>18.63</td>
+      <td>55.29</td>
+      <td>Producer Manufacturing</td>
+      <td>NASDAQ</td>
+    </tr>
+    <tr>
+      <th>78</th>
+      <td><a class="rp-pill-link stock-pop-trigger" href="https://finviz.com/quote.ashx?t=TTE" data-stock="TTE" data-name="TotalEnergies SE" data-market="US">TTE</a></td>
+      <td>TotalEnergies SE</td>
+      <td><a href="https://finviz.com/quote.ashx?t=TTE" target="_blank"><img src="https://charts2.finviz.com/chart.ashx?t=TTE&ta=1&ty=c&p=d&s=l"></a></td>
+      <td>90.74</td>
+      <td>1.33</td>
+      <td>1.19</td>
+      <td>110.54</td>
+      <td>>= 90.46</td>
+      <td>0.24</td>
+      <td>9.21</td>
+      <td>10.03</td>
+      <td>95.78</td>
+      <td>62.16</td>
+      <td>870737</td>
+      <td>2.025487e+11</td>
+      <td>52.89</td>
+      <td>32.23</td>
+      <td>22.67</td>
+      <td>-17.97</td>
+      <td>10.46</td>
+      <td>16.74</td>
+      <td>Energy Minerals</td>
+      <td>NYSE</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td><a class="rp-pill-link stock-pop-trigger" href="https://finviz.com/quote.ashx?t=IEX" data-stock="IEX" data-name="IDEX Corporation" data-market="US">IEX</a></td>
+      <td>IDEX Corporation</td>
+      <td><a href="https://finviz.com/quote.ashx?t=IEX" target="_blank"><img src="https://charts2.finviz.com/chart.ashx?t=IEX&ta=1&ty=c&p=d&s=l"></a></td>
+      <td>237.63</td>
+      <td>-0.17</td>
+      <td>-0.40</td>
+      <td>109.72</td>
+      <td>>= 223.85</td>
+      <td>0.49</td>
+      <td>32.97</td>
+      <td>7.22</td>
+      <td>243.80</td>
+      <td>160.60</td>
+      <td>521856</td>
+      <td>1.745459e+10</td>
+      <td>54.51</td>
+      <td>84.30</td>
+      <td>83.91</td>
+      <td>81.27</td>
+      <td>14.65</td>
+      <td>42.15</td>
+      <td>Producer Manufacturing</td>
+      <td>NYSE</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td><a class="rp-pill-link stock-pop-trigger" href="https://finviz.com/quote.ashx?t=RNW" data-stock="RNW" data-name="ReNew Energy Global plc Class A" data-market="US">RNW</a></td>
+      <td>ReNew Energy Global plc Class A</td>
+      <td><a href="https://finviz.com/quote.ashx?t=RNW" target="_blank"><img src="https://charts2.finviz.com/chart.ashx?t=RNW&ta=1&ty=c&p=d&s=l"></a></td>
+      <td>6.96</td>
+      <td>0.00</td>
+      <td>0.00</td>
+      <td>107.47</td>
+      <td>>= 6.84</td>
+      <td>0.54</td>
+      <td>18.88</td>
+      <td>0.37</td>
+      <td>7.69</td>
+      <td>4.38</td>
+      <td>616658</td>
+      <td>2.536243e+09</td>
+      <td>71.45</td>
+      <td>92.59</td>
+      <td>90.36</td>
+      <td>112.18</td>
+      <td>8.59</td>
+      <td>57.46</td>
+      <td>Utilities</td>
+      <td>NASDAQ</td>
+    </tr>
+    <tr>
+      <th>86</th>
+      <td><a class="rp-pill-link stock-pop-trigger" href="https://finviz.com/quote.ashx?t=IMO" data-stock="IMO" data-name="Imperial Oil Limited" data-market="US">IMO</a></td>
+      <td>Imperial Oil Limited</td>
+      <td><a href="https://finviz.com/quote.ashx?t=IMO" target="_blank"><img src="https://charts2.finviz.com/chart.ashx?t=IMO&ta=1&ty=c&p=d&s=l"></a></td>
+      <td>128.70</td>
+      <td>1.03</td>
+      <td>1.31</td>
+      <td>102.83</td>
+      <td><  128.94</td>
+      <td>0.15</td>
+      <td>14.62</td>
+      <td>8.85</td>
+      <td>139.44</td>
+      <td>83.27</td>
+      <td>258032</td>
+      <td>6.074792e+10</td>
+      <td>50.00</td>
+      <td>40.18</td>
+      <td>30.91</td>
+      <td>-39.48</td>
+      <td>11.07</td>
+      <td>16.13</td>
+      <td>Energy Minerals</td>
+      <td>AMEX</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td><a class="rp-pill-link stock-pop-trigger" href="https://finviz.com/quote.ashx?t=ITOCF" data-stock="ITOCF" data-name="Itochu Corporation" data-market="US">ITOCF</a></td>
+      <td>Itochu Corporation</td>
+      <td><a href="https://finviz.com/quote.ashx?t=ITOCF" target="_blank"><img src="https://charts2.finviz.com/chart.ashx?t=ITOCF&ta=1&ty=c&p=d&s=l"></a></td>
+      <td>15.34</td>
+      <td>2.99</td>
+      <td>0.45</td>
+      <td>NaN</td>
+      <td><  12.55</td>
+      <td>0.56</td>
+      <td>17.22</td>
+      <td>0.89</td>
+      <td>15.41</td>
+      <td>10.60</td>
+      <td>3034</td>
+      <td>1.193074e+11</td>
+      <td>58.24</td>
+      <td>84.37</td>
+      <td>74.44</td>
+      <td>129.54</td>
+      <td>6.32</td>
+      <td>16.69</td>
+      <td>Distribution Services</td>
+      <td>OTC</td>
+    </tr>
+    <tr>
+      <th>94</th>
+      <td><a class="rp-pill-link stock-pop-trigger" href="https://finviz.com/quote.ashx?t=REPYF" data-stock="REPYF" data-name="Repsol SA" data-market="US">REPYF</a></td>
+      <td>Repsol SA</td>
+      <td><a href="https://finviz.com/quote.ashx?t=REPYF" target="_blank"><img src="https://charts2.finviz.com/chart.ashx?t=REPYF&ta=1&ty=c&p=d&s=l"></a></td>
+      <td>32.66</td>
+      <td>0.94</td>
+      <td>0.31</td>
+      <td>NaN</td>
+      <td><  24.09</td>
+      <td>0.09</td>
+      <td>5.47</td>
+      <td>5.97</td>
+      <td>35.10</td>
+      <td>17.74</td>
+      <td>450</td>
+      <td>3.522679e+10</td>
+      <td>53.64</td>
+      <td>39.63</td>
+      <td>48.58</td>
+      <td>-35.18</td>
+      <td>8.46</td>
+      <td>21.63</td>
+      <td>Energy Minerals</td>
+      <td>OTC</td>
+    </tr>
+  </tbody>
+</table></div>
+  <div id="imgZoomBox"><div id="imgZoomCaption"></div><img id="imgZoomTarget" src=""></div>
+  <script>
+    (function() {
+      var box = document.getElementById('imgZoomBox');
+      var target = document.getElementById('imgZoomTarget');
+      var cap = document.getElementById('imgZoomCaption');
+      if (!box || !target) return;
+      function moveBox(e) {
+        var bw = box.offsetWidth || 620;
+        var bh = box.offsetHeight || 380;
+        var docW = document.documentElement.clientWidth || window.innerWidth;
+        var docH = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+        var x = e.pageX + 18;
+        var y = e.pageY - Math.round(bh / 2);
+        if (x + bw + 12 > docW) {
+          x = e.pageX - bw - 18;
+        }
+        if (x < 6) x = 6;
+        if (y + bh + 12 > docH) y = docH - bh - 12;
+        if (y < 6) y = 6;
+        box.style.left = x + 'px';
+        box.style.top = y + 'px';
+      }
+      document.addEventListener('mouseover', function(e) {
+        var t = e.target;
+        if (t && t.tagName === 'IMG' && t.closest('td')) {
+          target.src = t.src;
+          var tr = t.closest('tr');
+          var label = tr ? (tr.cells[1] ? tr.cells[1].innerText.trim() : '') : '';
+          if (cap) {
+            cap.textContent = label ? ('🔍 ' + label + ' (1:1 原始尺寸)') : '🔍 1:1 原始尺寸';
+          }
+          box.style.display = 'block';
+          moveBox(e);
+        }
+      });
+      document.addEventListener('mousemove', function(e) {
+        if (box.style.display === 'block') {
+          moveBox(e);
+        }
+      });
+      document.addEventListener('mouseout', function(e) {
+        var t = e.target;
+        if (t && t.tagName === 'IMG' && t.closest('td')) {
+          box.style.display = 'none';
+          target.src = '';
+        }
+      });
+    })();
+
+    var stockCache = {};
+    var currentChart = null;
+    var currentCandleSeries = null;
+    var currentCandleData = [];
+    var currentStockId = null;
+    var currentIsUS = false;
+
+    function calculateMA(data, period) {
+      var res = [];
+      var sum = 0;
+      for (var i = 0; i < data.length; i++) {
+        sum += data[i].close;
+        if (i >= period) sum -= data[i - period].close;
+        if (i >= period - 1) {
+          res.push({ time: data[i].time, value: parseFloat((sum / period).toFixed(2)) });
+        }
+      }
+      return res;
+    }
+
+    function buildBarSvg(arr, w, h, isBi, fillColor) {
+      if (!arr || !arr.length) return '';
+      var n = arr.length;
+      var bw = Math.max(5, (w - (n - 1) * 3) / n);
+      var rects = '';
+      if (!isBi) {
+        var max = Math.max.apply(null, arr);
+        if (max <= 0) max = 1;
+        for (var i = 0; i < n; i++) {
+          var barH = Math.max(3, (arr[i] / max) * (h - 4));
+          var x = i * (bw + 3);
+          var y = h - barH;
+          var op = (i === n - 1) ? 1.0 : 0.65;
+          rects += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + barH.toFixed(1) + '" fill="' + (fillColor || '#ef4444') + '" rx="1.5" opacity="' + op + '"/>';
+        }
+      } else {
+        var absMax = 1;
+        for (var i = 0; i < n; i++) {
+          if (Math.abs(arr[i]) > absMax) absMax = Math.abs(arr[i]);
+        }
+        var midY = h / 2;
+        rects += '<line x1="0" y1="' + midY + '" x2="' + w + '" y2="' + midY + '" stroke="#e6e2dc" stroke-width="1"/>';
+        for (var i = 0; i < n; i++) {
+          var barH = Math.max(2, (Math.abs(arr[i]) / absMax) * (h / 2 - 2));
+          var x = i * (bw + 3);
+          var y = arr[i] >= 0 ? (midY - barH) : midY;
+          var col = arr[i] >= 0 ? '#dc2626' : '#059669';
+          rects += '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + barH.toFixed(1) + '" fill="' + col + '" rx="1"/>';
+        }
+      }
+      return '<svg width="100%" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '">' + rects + '</svg>';
+    }
+
+    function buildLineSvg(arr, w, h, col) {
+      if (!arr || arr.length < 2) return '';
+      var min = Math.min.apply(null, arr);
+      var max = Math.max.apply(null, arr);
+      var range = max - min || 1;
+      var n = arr.length;
+      var pad = 4;
+      var pts = [];
+      for (var i = 0; i < n; i++) {
+        var x = pad + (i / (n - 1)) * (w - pad * 2);
+        var y = h - pad - ((arr[i] - min) / range) * (h - pad * 2);
+        pts.push(x.toFixed(1) + ',' + y.toFixed(1));
+      }
+      var d = 'M ' + pts.join(' L ');
+      var last = pts[pts.length - 1].split(',');
+      return '<svg width="100%" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '">' +
+        '<path d="' + d + '" fill="none" stroke="' + col + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<circle cx="' + last[0] + '" cy="' + last[1] + '" r="3" fill="' + col + '"/>' +
+        '</svg>';
+    }
+
+    function fmtWan(v) {
+      if (v == null || isNaN(v)) return '-';
+      var s = v > 0 ? '+' : '';
+      if (Math.abs(v) >= 10000) return s + Math.round(v / 10000).toLocaleString() + '萬';
+      return s + Math.round(v).toLocaleString();
+    }
+
+    function fmtUsDollar(v) {
+      if (v == null || isNaN(v)) return '-';
+      var abs = Math.abs(v);
+      if (abs >= 1e12) return '$' + (v / 1e12).toFixed(2) + 'T';
+      if (abs >= 1e9) return '$' + (v / 1e9).toFixed(2) + 'B';
+      if (abs >= 1e6) return '$' + (v / 1e6).toFixed(1) + 'M';
+      return '$' + v.toLocaleString();
+    }
+
+    function openStockDrawer(stockId, stockName, marketHint) {
+      if (!stockId) return;
+      var cleanId = String(stockId).trim();
+      var isUS = (marketHint === 'US') || (!/^\d/.test(cleanId) && cleanId.indexOf('.TW') === -1);
+      if (!isUS && cleanId.indexOf('.') > 0) {
+        cleanId = cleanId.split('.')[0];
+      }
+      if (isUS) {
+        cleanId = cleanId.replace(/\./g, '-').toUpperCase();
+      }
+      currentStockId = cleanId;
+      currentIsUS = isUS;
+
+      var drawer = document.getElementById("stockDrawer");
+      var backdrop = document.getElementById("stockDrawerBackdrop");
+      if (drawer) drawer.classList.add("open");
+      if (backdrop) backdrop.classList.add("open");
+
+      var elCode = document.getElementById("sdStockCode");
+      var elName = document.getElementById("sdStockName");
+      var elPrice = document.getElementById("sdPrice");
+      var elChg = document.getElementById("sdChange");
+      if (elCode) elCode.textContent = cleanId;
+      if (elName) elName.textContent = stockName || "";
+      if (elPrice) elPrice.textContent = "-";
+      if (elChg) { elChg.textContent = "-"; elChg.className = "sd-change"; }
+
+      var twSec = document.getElementById("sdTwSections");
+      var usSec = document.getElementById("sdUsSections");
+      if (twSec) twSec.style.display = isUS ? "none" : "flex";
+      if (usSec) usSec.style.display = isUS ? "flex" : "none";
+
+      if (!isUS) {
+        var lnkTV = document.getElementById("lnkTV");
+        var lnkGI = document.getElementById("lnkGoodinfo");
+        var lnkYH = document.getElementById("lnkYahoo");
+        var lnkWG = document.getElementById("lnkWantgoo");
+        if (lnkTV) lnkTV.href = "https://tw.tradingview.com/chart/?symbol=TWSE:" + cleanId;
+        if (lnkGI) lnkGI.href = "https://goodinfo.tw/tw/StockDetail.asp?STOCK_ID=" + cleanId;
+        if (lnkYH) lnkYH.href = "https://tw.stock.yahoo.com/quote/" + cleanId + ".TW";
+        if (lnkWG) lnkWG.href = "https://www.wantgoo.com/stock/" + cleanId;
+      } else {
+        var lnkUsTV = document.getElementById("lnkUsTV");
+        var lnkUsFV = document.getElementById("lnkUsFinviz");
+        var lnkUsYH = document.getElementById("lnkUsYahoo");
+        var lnkUsMT = document.getElementById("lnkUsMacrotrends");
+        if (lnkUsTV) lnkUsTV.href = "https://www.tradingview.com/chart/?symbol=" + encodeURIComponent(cleanId);
+        if (lnkUsFV) lnkUsFV.href = "https://finviz.com/quote.ashx?t=" + encodeURIComponent(cleanId);
+        if (lnkUsYH) lnkUsYH.href = "https://finance.yahoo.com/quote/" + encodeURIComponent(cleanId);
+        if (lnkUsMT) lnkUsMT.href = "https://www.macrotrends.net/stocks/charts/" + encodeURIComponent(cleanId) + "/" + encodeURIComponent(cleanId.toLowerCase()) + "/pe-ratio";
+      }
+
+      var cacheKey = (isUS ? "us:" : "tw:") + cleanId;
+      var loadEl = document.getElementById("sdLoading");
+      if (stockCache[cacheKey]) {
+        renderStockData(stockCache[cacheKey], isUS);
+      } else {
+        if (currentChart) {
+          currentChart.remove();
+          currentChart = null;
+        }
+        if (loadEl) {
+          loadEl.style.display = "flex";
+          loadEl.innerHTML = "⏳ 載入 K 線與基本面指標中...";
+        }
+        var r2Url = "https://r2.finlab.finance/td-stock-panel/" + (isUS ? "us/" : "tw/") + encodeURIComponent(cleanId) + ".json";
+        fetch(r2Url)
+          .then(function(r) {
+            if (!r.ok) throw new Error("HTTP " + r.status);
+            return r.json();
+          })
+          .then(function(data) {
+            stockCache[cacheKey] = data;
+            if (currentStockId === cleanId) {
+              renderStockData(data, isUS);
+            }
+          })
+          .catch(function(err) {
+            console.error("Fetch error:", err);
+            if (loadEl) {
+              loadEl.style.display = "flex";
+              loadEl.innerHTML = "ℹ️ 此標的（如 ETF）暫無 R2 快取明細，請直接點擊下方外部連結查看圖表";
+            }
+          });
+      }
+    }
+
+    function closeStockDrawer() {
+      var drawer = document.getElementById("stockDrawer");
+      var backdrop = document.getElementById("stockDrawerBackdrop");
+      if (drawer) drawer.classList.remove("open");
+      if (backdrop) backdrop.classList.remove("open");
+    }
+
+    function renderStockData(data, isUS) {
+      var loadEl = document.getElementById("sdLoading");
+      if (loadEl) loadEl.style.display = "none";
+
+      var chartBars = data.chart || [];
+      if (chartBars.length >= 2) {
+        var lastBar = chartBars[chartBars.length - 1];
+        var prevBar = chartBars[chartBars.length - 2];
+        var lastPrice = lastBar[4];
+        var prevPrice = prevBar[4];
+        var diff = lastPrice - prevPrice;
+        var diffPct = (diff / prevPrice) * 100;
+        var up = diff >= 0;
+
+        var priceEl = document.getElementById("sdPrice");
+        var chgEl = document.getElementById("sdChange");
+        var dec = isUS ? 2 : 1;
+        if (priceEl) priceEl.textContent = (isUS ? "$" : "") + lastPrice.toFixed(dec);
+        if (chgEl) {
+          chgEl.textContent = (up ? "+" : "") + diff.toFixed(dec) + " (" + (up ? "+" : "") + diffPct.toFixed(2) + "%)";
+          chgEl.className = "sd-change " + (up ? "up" : "down");
+        }
+      }
+
+      if (isUS) {
+        renderUsStockInfo(data.info || {});
+      } else {
+        renderTwStockInfo(data.info || {});
+      }
+      renderChart(chartBars, isUS);
+    }
+
+    function renderTwStockInfo(info) {
+      var rev = info.revenue || [];
+      if (rev.length) {
+        var lastRev = rev[rev.length - 1];
+        var revYi = (lastRev.value / 100000).toFixed(1);
+        var revYoy = (lastRev.yoy != null ? lastRev.yoy.toFixed(1) : "0");
+        var consec = 0;
+        for (var i = rev.length - 1; i >= 0; i--) {
+          if (rev[i].yoy > 0) consec++;
+          else break;
+        }
+        var revHdr = document.getElementById("revHdrStat");
+        var revSub = document.getElementById("revSubText");
+        if (revHdr) revHdr.textContent = revYi + "億 " + (parseFloat(revYoy) >= 0 ? "+" : "") + revYoy + "%";
+        if (revSub) revSub.textContent = "營收 " + revYi + "億，YoY " + (parseFloat(revYoy) >= 0 ? "+" : "") + revYoy + "%，連續 " + consec + " 月成長";
+
+        var revVals = rev.map(function(r) { return r.value; });
+        var revYoys = rev.map(function(r) { return r.yoy || 0; });
+        var bSvg1 = document.getElementById("revBarSvg1");
+        var bSvg2 = document.getElementById("revBarSvg2");
+        if (bSvg1) bSvg1.innerHTML = buildBarSvg(revVals, 250, 48, false, "#ef4444");
+        if (bSvg2) bSvg2.innerHTML = buildBarSvg(revYoys, 250, 48, true);
+        var rD1 = document.getElementById("revD1"), rD2 = document.getElementById("revD2"), rD3 = document.getElementById("revD3"), rD4 = document.getElementById("revD4");
+        if (rD1) rD1.textContent = rev[0].date;
+        if (rD2) rD2.textContent = rev[rev.length - 1].date;
+        if (rD3) rD3.textContent = rev[0].date;
+        if (rD4) rD4.textContent = rev[rev.length - 1].date;
+      }
+
+      var fArr = (info.foreign_net || []).map(function(x) { return x.value; });
+      var uArr = (info.fund_net || []).map(function(x) { return x.value; });
+      var dArr = (info.dealer_net || []).map(function(x) { return x.value; });
+      var fSum = fArr.reduce(function(a, b) { return a + b; }, 0);
+      var uSum = uArr.reduce(function(a, b) { return a + b; }, 0);
+      var dSum = dArr.reduce(function(a, b) { return a + b; }, 0);
+      var totInst = fSum + uSum + dSum;
+
+      var instSub = document.getElementById("instSubText");
+      if (instSub) instSub.textContent = "三大法人買賣超，合計 " + fmtWan(totInst);
+      var fSvg = document.getElementById("instForeignSvg"), uSvg = document.getElementById("instFundSvg"), dSvg = document.getElementById("instDealerSvg");
+      if (fSvg) fSvg.innerHTML = buildBarSvg(fArr, 160, 45, true);
+      if (uSvg) uSvg.innerHTML = buildBarSvg(uArr, 160, 45, true);
+      if (dSvg) dSvg.innerHTML = buildBarSvg(dArr, 160, 45, true);
+
+      var fStat = document.getElementById("instForeignStat"), uStat = document.getElementById("instFundStat"), dStat = document.getElementById("instDealerStat");
+      if (fStat) { fStat.textContent = "Σ " + fmtWan(fSum); fStat.style.color = fSum >= 0 ? "#dc2626" : "#059669"; }
+      if (uStat) { uStat.textContent = "Σ " + fmtWan(uSum); uStat.style.color = uSum >= 0 ? "#dc2626" : "#059669"; }
+      if (dStat) { dStat.textContent = "Σ " + fmtWan(dSum); dStat.style.color = dSum >= 0 ? "#dc2626" : "#059669"; }
+
+      var mHist = info.margin_history || [];
+      var sHist = info.short_history || [];
+      var mVals = mHist.map(function(x) { return x.value; });
+      var sVals = sHist.map(function(x) { return x.value; });
+      var mDelta = mVals.length >= 2 ? (mVals[mVals.length - 1] - mVals[mVals.length - 2]) : 0;
+      var sDelta = sVals.length >= 2 ? (sVals[sVals.length - 1] - sVals[sVals.length - 2]) : 0;
+
+      var mTrend = (mDelta >= 0 ? "融資增加 " : "融資減少 ") + Math.abs(Math.round(mDelta)).toLocaleString() + " 張<br>";
+      var sTrend = (sDelta >= 0 ? "融券增加 " : "融券減少 ") + Math.abs(Math.round(sDelta)).toLocaleString() + " 張<br>";
+      var syncTrend = (mDelta >= 0 && sDelta >= 0) ? "融資融券同步上升" : (mDelta < 0 && sDelta < 0 ? "融資融券同步下降" : "資券背離");
+      var mSub = document.getElementById("marginSubText");
+      if (mSub) mSub.innerHTML = mTrend + sTrend + syncTrend;
+
+      var mUtil = document.getElementById("mUtilVal"), sUtil = document.getElementById("sUtilVal");
+      if (mUtil) mUtil.textContent = (info.margin_utilization ? info.margin_utilization.toFixed(1) + "%" : "-") + (info.margin_util_rank ? " #" + info.margin_util_rank : "");
+      if (sUtil) sUtil.textContent = (info.short_utilization ? info.short_utilization.toFixed(1) + "%" : "-") + (info.short_util_rank ? " #" + info.short_util_rank : "");
+
+      var lastM = mVals.length ? mVals[mVals.length - 1] : 0;
+      var lastS = sVals.length ? sVals[sVals.length - 1] : 0;
+      var mBal = document.getElementById("mBalVal"), sBal = document.getElementById("sBalVal");
+      if (mBal) mBal.textContent = fmtWan(lastM) + " (" + (mDelta >= 0 ? "+" : "") + Math.round(mDelta) + ")";
+      if (sBal) sBal.textContent = Math.round(lastS).toLocaleString() + " (" + (sDelta >= 0 ? "+" : "") + Math.round(sDelta) + ")";
+
+      var mLSvg = document.getElementById("marginLineSvg"), sLSvg = document.getElementById("shortLineSvg");
+      if (mLSvg) mLSvg.innerHTML = buildLineSvg(mVals, 250, 48, "#0284c7");
+      if (sLSvg) sLSvg.innerHTML = buildLineSvg(sVals, 250, 48, "#059669");
+      if (mHist.length) {
+        var mD1 = document.getElementById("mD1"), mD2 = document.getElementById("mD2");
+        if (mD1) mD1.textContent = mHist[0].date.slice(-5);
+        if (mD2) mD2.textContent = mHist[mHist.length - 1].date.slice(-5);
+      }
+      if (sHist.length) {
+        var sD1 = document.getElementById("sD1"), sD2 = document.getElementById("sD2");
+        if (sD1) sD1.textContent = sHist[0].date.slice(-5);
+        if (sD2) sD2.textContent = sHist[sHist.length - 1].date.slice(-5);
+      }
+
+      var oddHist = info.odd_lot_holders || [];
+      var bigHist = info.big400_holders || [];
+      var oddVals = oddHist.map(function(x) { return x.value; });
+      var bigVals = bigHist.map(function(x) { return x.value; });
+      var oddDelta = oddVals.length >= 2 ? (oddVals[oddVals.length - 1] - oddVals[oddVals.length - 2]) : 0;
+      var bigDelta = bigVals.length >= 2 ? (bigVals[bigVals.length - 1] - bigVals[bigVals.length - 2]) : 0;
+
+      var oddTrend = (oddDelta >= 0 ? "零股股東增加 " : "零股股東減少 ") + Math.abs(Math.round(oddDelta)).toLocaleString() + " 人<br>";
+      var bigTrend = (bigDelta >= 0 ? "大戶持股增加 " : "大戶持股減少 ") + Math.abs(Math.round(bigDelta)).toLocaleString() + " 張<br>";
+      var holderSync = (oddDelta >= 0 && bigDelta >= 0) ? "散戶大戶同增" : (oddDelta < 0 && bigDelta < 0 ? "散戶大戶同減" : "籌碼流向集中/發散");
+      var hSub = document.getElementById("holderSubText");
+      if (hSub) hSub.innerHTML = oddTrend + bigTrend + holderSync;
+
+      var hTot = document.getElementById("hTotalVal"), hBigCnt = document.getElementById("hBigCountVal");
+      if (hTot) hTot.textContent = info.total_holders ? fmtWan(info.total_holders) : "-";
+      if (hBigCnt) hBigCnt.textContent = info.large_holders_count != null ? info.large_holders_count : "-";
+
+      var lastOdd = oddVals.length ? oddVals[oddVals.length - 1] : 0;
+      var lastBig = bigVals.length ? bigVals[bigVals.length - 1] : 0;
+      var hOdd = document.getElementById("hOddVal"), hBig = document.getElementById("hBigVal");
+      if (hOdd) hOdd.textContent = fmtWan(lastOdd) + " (" + (oddDelta >= 0 ? "+" : "") + Math.round(oddDelta) + ")";
+      if (hBig) hBig.textContent = Math.round(lastBig) + " (" + (bigDelta >= 0 ? "+" : "") + Math.round(bigDelta) + ")";
+
+      var oddSvg = document.getElementById("oddLineSvg"), bigSvg = document.getElementById("bigLineSvg");
+      if (oddSvg) oddSvg.innerHTML = buildLineSvg(oddVals, 250, 48, "#0284c7");
+      if (bigSvg) bigSvg.innerHTML = buildLineSvg(bigVals, 250, 48, "#dc2626");
+      if (oddHist.length) {
+        var hD1 = document.getElementById("hD1"), hD2 = document.getElementById("hD2");
+        if (hD1) hD1.textContent = oddHist[0].date.slice(-5);
+        if (hD2) hD2.textContent = oddHist[oddHist.length - 1].date.slice(-5);
+      }
+      if (bigHist.length) {
+        var hD3 = document.getElementById("hD3"), hD4 = document.getElementById("hD4");
+        if (hD3) hD3.textContent = bigHist[0].date.slice(-5);
+        if (hD4) hD4.textContent = bigHist[bigHist.length - 1].date.slice(-5);
+      }
+
+      function setVal(id, val) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = (val != null) ? val : "-";
+      }
+      setVal("mPE", info.pe_ratio != null ? info.pe_ratio.toFixed(2) : "-");
+      setVal("mPB", info.pb_ratio != null ? info.pb_ratio.toFixed(2) : "-");
+      setVal("mDiv", info.dividend_yield != null ? info.dividend_yield.toFixed(2) + "%" : "-");
+      setVal("mEPS", info.eps != null ? info.eps.toFixed(2) : "-");
+      setVal("mROE", info.roe != null ? (info.roe * 100).toFixed(1) + "%" : "-");
+      setVal("mNetMargin", info.net_margin != null ? (info.net_margin * 100).toFixed(1) + "%" : "-");
+    }
+
+    function renderUsStockInfo(info) {
+      function setVal(id, val) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = (val != null) ? val : "-";
+      }
+      // 1. Quarterly Revenue
+      var qRev = info.quarterly_revenue || [];
+      if (qRev.length) {
+        var lastQ = qRev[qRev.length - 1];
+        var revStr = fmtUsDollar(lastQ.value);
+        var yoyVal = lastQ.yoy != null ? lastQ.yoy : 0;
+        var yoyStr = (yoyVal >= 0 ? "+" : "") + yoyVal.toFixed(1) + "%";
+        var consec = 0;
+        for (var i = qRev.length - 1; i >= 0; i--) {
+          if ((qRev[i].yoy || 0) > 0) consec++;
+          else break;
+        }
+        setVal("usRevHdrStat", revStr + " (" + yoyStr + ")");
+        setVal("usRevSubText", "最新季營收 (" + lastQ.date + ") " + revStr + "，YoY " + yoyStr + "，連續 " + consec + " 季正成長");
+        var rVals = qRev.map(function(x) { return x.value || 0; });
+        var rYoys = qRev.map(function(x) { return x.yoy || 0; });
+        var elSvg1 = document.getElementById("usRevBarSvg1");
+        var elSvg2 = document.getElementById("usRevBarSvg2");
+        if (elSvg1) elSvg1.innerHTML = buildBarSvg(rVals, 250, 48, false, "#ef4444");
+        if (elSvg2) elSvg2.innerHTML = buildBarSvg(rYoys, 250, 48, true);
+        setVal("usRevD1", qRev[0].date);
+        setVal("usRevD2", lastQ.date);
+        setVal("usRevD3", qRev[0].date);
+        setVal("usRevD4", lastQ.date);
+      } else {
+        setVal("usRevHdrStat", "-");
+        setVal("usRevSubText", "無季度營收資料");
+      }
+
+      // 2. Earnings Surprises
+      var es = info.earnings_surprises || [];
+      if (es.length) {
+        var lastEs = es[es.length - 1];
+        var surp = lastEs.surprise_pct != null ? lastEs.surprise_pct : 0;
+        var surpStr = (surp >= 0 ? "+" : "") + surp.toFixed(1) + "%";
+        var beatCnt = es.filter(function(x) { return (x.surprise_pct || 0) > 0; }).length;
+        setVal("usEpsHdrStat", "EPS $" + (lastEs.actual != null ? lastEs.actual.toFixed(2) : "-") + " (" + surpStr + ")");
+        setVal("usEpsSubText", "最新財報 (" + lastEs.date + ") 實際 $" + (lastEs.actual != null ? lastEs.actual.toFixed(2) : "-") + " vs 預估 $" + (lastEs.estimated != null ? lastEs.estimated.toFixed(2) : "-") + " | 近 " + es.length + " 季中 " + beatCnt + " 季優於預期");
+        var actVals = es.map(function(x) { return x.actual || 0; });
+        var surpVals = es.map(function(x) { return x.surprise_pct || 0; });
+        var eSvg1 = document.getElementById("usEpsBarSvg1");
+        var eSvg2 = document.getElementById("usEpsBarSvg2");
+        if (eSvg1) eSvg1.innerHTML = buildBarSvg(actVals, 250, 48, false, "#0284c7");
+        if (eSvg2) eSvg2.innerHTML = buildBarSvg(surpVals, 250, 48, true);
+        setVal("usEpsD1", es[0].date);
+        setVal("usEpsD2", lastEs.date);
+        setVal("usEpsD3", es[0].date);
+        setVal("usEpsD4", lastEs.date);
+      } else {
+        setVal("usEpsHdrStat", "-");
+        setVal("usEpsSubText", "無 EPS 驚喜度資料");
+      }
+
+      // 3. Analyst Consensus, Price Target, DCF & Rating
+      var ac = info.analyst_consensus || {};
+      var pt = info.price_target || {};
+      var dcf = info.dcf || {};
+      var sr = info.stock_rating || {};
+      var sb = ac.strong_buy || 0, b = ac.buy || 0, h = ac.hold || 0, s = ac.sell || 0, ss = ac.strong_sell || 0;
+      var totA = sb + b + h + s + ss;
+      setVal("usConsensusHdr", ac.consensus || "-");
+      var barEl = document.getElementById("usConsensusBar");
+      if (barEl && totA > 0) {
+        var buyPct = ((sb + b) / totA * 100).toFixed(1);
+        var holdPct = (h / totA * 100).toFixed(1);
+        var sellPct = ((s + ss) / totA * 100).toFixed(1);
+        barEl.innerHTML =
+          '<div style="width:' + buyPct + '%;background:#dc2626;" title="Buy ' + (sb + b) + '"></div>' +
+          '<div style="width:' + holdPct + '%;background:#f59e0b;" title="Hold ' + h + '"></div>' +
+          '<div style="width:' + sellPct + '%;background:#059669;" title="Sell ' + (s + ss) + '"></div>';
+      } else if (barEl) {
+        barEl.innerHTML = '';
+      }
+      setVal("usConsensusSub", "分析師評級：Strong Buy " + sb + " / Buy " + b + " / Hold " + h + " / Sell " + (s + ss));
+      setVal("usTargetPrice", pt.avg != null ? ("$" + pt.avg.toFixed(2) + (pt.upside_pct != null ? " (" + (pt.upside_pct >= 0 ? "+" : "") + pt.upside_pct.toFixed(1) + "%)" : "")) : "-");
+      setVal("usDcfVal", dcf.value != null ? ("$" + dcf.value.toFixed(2) + (dcf.upside_pct != null ? " (" + (dcf.upside_pct >= 0 ? "+" : "") + dcf.upside_pct.toFixed(1) + "%)" : "")) : "-");
+      setVal("usRatingGrade", sr.grade ? (sr.grade + " (市值 " + fmtUsDollar(info.market_cap) + ")") : (info.market_cap ? fmtUsDollar(info.market_cap) : "-"));
+
+      // 4. 9-Grid Fundamental Metrics
+      setVal("usPE", info.pe_ratio != null ? info.pe_ratio.toFixed(2) : "-");
+      setVal("usPB", info.pb_ratio != null ? info.pb_ratio.toFixed(2) : "-");
+      setVal("usPS", info.price_to_sales != null ? info.price_to_sales.toFixed(2) : "-");
+      setVal("usEvEbitda", info.ev_ebitda != null ? info.ev_ebitda.toFixed(2) : "-");
+      setVal("usEPS", info.eps != null ? "$" + info.eps.toFixed(2) : "-");
+      setVal("usFcfYield", info.fcf_yield != null ? (info.fcf_yield * 100).toFixed(2) + "%" : "-");
+      setVal("usROE", info.roe != null ? (info.roe * 100).toFixed(1) + "%" : "-");
+      setVal("usGrossMargin", info.gross_margin != null ? (info.gross_margin * 100).toFixed(1) + "%" : "-");
+      setVal("usNetMargin", info.net_margin != null ? (info.net_margin * 100).toFixed(1) + "%" : "-");
+    }
+
+    function renderChart(chartBars, isUS) {
+      var container = document.getElementById("sdChartContainer");
+      if (!container || typeof LightweightCharts === "undefined") return;
+
+      if (currentChart) {
+        currentChart.remove();
+        currentChart = null;
+      }
+
+      currentCandleData = [];
+      var volumeData = [];
+      for (var i = 0; i < chartBars.length; i++) {
+        var row = chartBars[i];
+        currentCandleData.push({
+          time: row[0],
+          open: row[1],
+          high: row[2],
+          low: row[3],
+          close: row[4]
+        });
+        var isUp = row[4] >= row[1];
+        volumeData.push({
+          time: row[0],
+          value: row[5],
+          color: isUp ? "rgba(220, 38, 38, 0.35)" : "rgba(5, 150, 105, 0.35)"
+        });
+      }
+
+      var chart = LightweightCharts.createChart(container, {
+        width: container.clientWidth || 552,
+        height: 260,
+        layout: {
+          background: { color: "#ffffff" },
+          textColor: "#78716c",
+          fontSize: 11
+        },
+        grid: {
+          vertLines: { color: "#f5f3ef" },
+          horzLines: { color: "#f5f3ef" }
+        },
+        rightPriceScale: {
+          borderColor: "#e6e2dc",
+          scaleMargins: { top: 0.08, bottom: 0.22 }
+        },
+        timeScale: {
+          borderColor: "#e6e2dc",
+          timeVisible: false
+        },
+        crosshair: {
+          mode: LightweightCharts.CrosshairMode.Normal
+        }
+      });
+      currentChart = chart;
+
+      var candleSeries = chart.addCandlestickSeries({
+        upColor: "#dc2626",
+        downColor: "#059669",
+        borderUpColor: "#dc2626",
+        borderDownColor: "#059669",
+        wickUpColor: "#dc2626",
+        wickDownColor: "#059669"
+      });
+      candleSeries.setData(currentCandleData);
+      currentCandleSeries = candleSeries;
+
+      var ma20 = chart.addLineSeries({ color: "#f59e0b", lineWidth: 1.5, title: "MA20" });
+      ma20.setData(calculateMA(currentCandleData, 20));
+
+      var ma60 = chart.addLineSeries({ color: "#0284c7", lineWidth: 1.5, title: "MA60" });
+      ma60.setData(calculateMA(currentCandleData, 60));
+
+      var ma120 = chart.addLineSeries({ color: "#ea580c", lineWidth: 1.5, title: "MA120" });
+      ma120.setData(calculateMA(currentCandleData, 120));
+
+      var volumeSeries = chart.addHistogramSeries({
+        priceFormat: { type: "volume" },
+        priceScaleId: "",
+        scaleMargins: { top: 0.8, bottom: 0 }
+      });
+      volumeSeries.setData(volumeData);
+
+      var total = currentCandleData.length;
+      chart.timeScale().setVisibleLogicalRange({
+        from: Math.max(0, total - 250),
+        to: total - 1
+      });
+
+      chart.subscribeCrosshairMove(function(param) {
+        if (!param || !param.time || !param.seriesPrices) return;
+        var m20 = param.seriesPrices.get(ma20);
+        var m60 = param.seriesPrices.get(ma60);
+        var m120 = param.seriesPrices.get(ma120);
+        var vol = param.seriesPrices.get(volumeSeries);
+        var elM20 = document.getElementById("legMA20");
+        var elM60 = document.getElementById("legMA60");
+        var elM120 = document.getElementById("legMA120");
+        var elVol = document.getElementById("legVol");
+        var dec = isUS ? 2 : 1;
+        if (elM20 && m20) elM20.textContent = m20.toFixed(dec);
+        if (elM60 && m60) elM60.textContent = m60.toFixed(dec);
+        if (elM120 && m120) elM120.textContent = m120.toFixed(dec);
+        if (elVol && vol) {
+          if (isUS) {
+            elVol.textContent = vol >= 1e6 ? (vol / 1e6).toFixed(2) + "M股" : Math.round(vol / 1e3).toLocaleString() + "K股";
+          } else {
+            elVol.textContent = Math.round(vol / 1000).toLocaleString() + "張";
+          }
+        }
+      });
+
+      window.addEventListener("resize", function() {
+        if (currentChart && container) {
+          currentChart.applyOptions({ width: container.clientWidth });
+        }
+      });
+    }
+
+    function setChartRange(bars, btn) {
+      if (!currentChart || !currentCandleData.length) return;
+      document.querySelectorAll(".sd-range-btn").forEach(function(b) { b.classList.remove("active"); });
+      if (btn) btn.classList.add("active");
+
+      var total = currentCandleData.length;
+      if (bars === "all") {
+        currentChart.timeScale().fitContent();
+      } else {
+        currentChart.timeScale().setVisibleLogicalRange({
+          from: Math.max(0, total - bars),
+          to: total - 1
+        });
+      }
+    }
+
+    function initStockDrawer() {
+      document.addEventListener("click", function(e) {
+        var el = e.target && e.target.closest ? e.target.closest(".stock-pop-trigger") : null;
+        if (!el) return;
+        e.preventDefault();
+        var stockId = el.getAttribute("data-stock");
+        var stockName = el.getAttribute("data-name");
+        var marketHint = el.getAttribute("data-market") || "";
+        openStockDrawer(stockId, stockName, marketHint);
+      });
+
+      window.addEventListener("keydown", function(e) {
+        if (e.key === "Escape") closeStockDrawer();
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+      initStockDrawer();
+    });
+  </script>
+
+  <div id="stockDrawerBackdrop" class="sd-backdrop" onclick="closeStockDrawer()"></div>
+  <aside id="stockDrawer" class="sd-drawer">
+    <div class="sd-header">
+      <div class="sd-title-wrap">
+        <span id="sdStockCode" class="sd-code">-</span>
+        <span id="sdStockName" class="sd-name">-</span>
+      </div>
+      <div class="sd-price-wrap">
+        <span id="sdPrice" class="sd-price">-</span>
+        <span id="sdChange" class="sd-change">-</span>
+      </div>
+      <button class="sd-close-btn" onclick="closeStockDrawer()">✕</button>
+    </div>
+    <div class="sd-body">
+      <div class="sd-range-bar">
+        <button class="sd-range-btn" onclick="setChartRange(22, this)">1M</button>
+        <button class="sd-range-btn" onclick="setChartRange(66, this)">3M</button>
+        <button class="sd-range-btn" onclick="setChartRange(125, this)">6M</button>
+        <button class="sd-range-btn active" onclick="setChartRange(250, this)">1Y</button>
+        <button class="sd-range-btn" onclick="setChartRange('all', this)">ALL</button>
+      </div>
+      <div id="sdChartContainer" class="sd-chart-box">
+        <div id="sdLoading" class="sd-loading">⏳ 載入 K 線與技術指標中...</div>
+      </div>
+      <div id="sdLegend" class="sd-legend">
+        MA20: <span id="legMA20" style="color:#f59e0b">-</span> |
+        MA60: <span id="legMA60" style="color:#0284c7">-</span> |
+        MA120: <span id="legMA120" style="color:#ea580c">-</span> |
+        量: <span id="legVol">-</span>
+      </div>
+
+      <!-- 台股專屬區段 -->
+      <div id="sdTwSections" style="display:flex;flex-direction:column;gap:10px;">
+        <div class="sd-card">
+          <div class="sd-card-hdr">
+            <span class="sd-card-title">月營收</span>
+            <span id="revHdrStat" class="sd-card-val">-</span>
+          </div>
+          <div id="revSubText" class="sd-card-sub">-</div>
+          <div class="sd-row-2col">
+            <div class="sd-subcol">
+              <div id="revBarSvg1"></div>
+              <div class="sd-dates-row"><span id="revD1">-</span><span id="revD2">-</span></div>
+            </div>
+            <div class="sd-subcol">
+              <div id="revBarSvg2"></div>
+              <div class="sd-dates-row"><span id="revD3">-</span><span id="revD4">-</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sd-card">
+          <div class="sd-card-hdr">
+            <span class="sd-card-title">法人動向</span>
+          </div>
+          <div id="instSubText" class="sd-card-sub">-</div>
+          <div class="sd-row-3col">
+            <div class="sd-subcol">
+              <span class="sd-subcol-title">外資</span>
+              <div id="instForeignSvg"></div>
+              <span id="instForeignStat" class="sd-subcol-stat">-</span>
+            </div>
+            <div class="sd-subcol">
+              <span class="sd-subcol-title">投信</span>
+              <div id="instFundSvg"></div>
+              <span id="instFundStat" class="sd-subcol-stat">-</span>
+            </div>
+            <div class="sd-subcol">
+              <span class="sd-subcol-title">自營商</span>
+              <div id="instDealerSvg"></div>
+              <span id="instDealerStat" class="sd-subcol-stat">-</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="sd-card">
+          <div class="sd-card-hdr">
+            <span class="sd-card-title">融資融券</span>
+          </div>
+          <div id="marginSubText" class="sd-card-sub muted" style="line-height:1.5">-</div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:#57534e;margin-bottom:6px;">
+            <span>融資使用率 <b id="mUtilVal">-</b></span>
+            <span>券資比 <b id="sUtilVal">-</b></span>
+          </div>
+          <div class="sd-row-2col">
+            <div class="sd-subcol">
+              <div style="font-size:11px;color:#78716c">融資餘額 <span id="mBalVal" style="color:#1c1917;font-weight:700">-</span></div>
+              <div id="marginLineSvg"></div>
+              <div class="sd-dates-row"><span id="mD1">-</span><span id="mD2">-</span></div>
+            </div>
+            <div class="sd-subcol">
+              <div style="font-size:11px;color:#78716c">融券餘額 <span id="sBalVal" style="color:#1c1917;font-weight:700">-</span></div>
+              <div id="shortLineSvg"></div>
+              <div class="sd-dates-row"><span id="sD1">-</span><span id="sD2">-</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sd-card">
+          <div class="sd-card-hdr">
+            <span class="sd-card-title">持股分布</span>
+          </div>
+          <div id="holderSubText" class="sd-card-sub muted" style="line-height:1.5">-</div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:#57534e;margin-bottom:6px;">
+            <span>總股東數 <b id="hTotalVal">-</b></span>
+            <span>大戶人數 <b id="hBigCountVal">-</b></span>
+          </div>
+          <div class="sd-row-2col">
+            <div class="sd-subcol">
+              <div style="font-size:11px;color:#78716c">零股股東 <span id="hOddVal" style="color:#1c1917;font-weight:700">-</span></div>
+              <div id="oddLineSvg"></div>
+              <div class="sd-dates-row"><span id="hD1">-</span><span id="hD2">-</span></div>
+            </div>
+            <div class="sd-subcol">
+              <div style="font-size:11px;color:#78716c">大戶持股 <span id="hBigVal" style="color:#1c1917;font-weight:700">-</span></div>
+              <div id="bigLineSvg"></div>
+              <div class="sd-dates-row"><span id="hD3">-</span><span id="hD4">-</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sd-card">
+          <div class="sd-card-hdr">
+            <span class="sd-card-title">基本面評價</span>
+          </div>
+          <div class="sd-metrics-grid">
+            <div class="sd-metric-item"><div class="sd-metric-lbl">本益比 P/E</div><div id="mPE" class="sd-metric-val">-</div></div>
+            <div class="sd-metric-item"><div class="sd-metric-lbl">股價淨值比 P/B</div><div id="mPB" class="sd-metric-val">-</div></div>
+            <div class="sd-metric-item"><div class="sd-metric-lbl">殖利率</div><div id="mDiv" class="sd-metric-val">-</div></div>
+            <div class="sd-metric-item"><div class="sd-metric-lbl">每股盈餘 EPS</div><div id="mEPS" class="sd-metric-val">-</div></div>
+            <div class="sd-metric-item"><div class="sd-metric-lbl">ROE</div><div id="mROE" class="sd-metric-val">-</div></div>
+            <div class="sd-metric-item"><div class="sd-metric-lbl">稅後淨利率</div><div id="mNetMargin" class="sd-metric-val">-</div></div>
+          </div>
+        </div>
+
+        <div class="sd-links">
+          <a id="lnkTV" class="sd-ext-link" href="#" target="_blank">TradingView</a>
+          <a id="lnkGoodinfo" class="sd-ext-link" href="#" target="_blank">Goodinfo</a>
+          <a id="lnkYahoo" class="sd-ext-link" href="#" target="_blank">Yahoo 奇摩</a>
+          <a id="lnkWantgoo" class="sd-ext-link" href="#" target="_blank">玩股網</a>
+        </div>
+      </div>
+
+      <!-- 美股專屬區段 -->
+      <div id="sdUsSections" style="display:none;flex-direction:column;gap:10px;">
+        <div class="sd-card">
+          <div class="sd-card-hdr">
+            <span class="sd-card-title">季度營收 (Quarterly Revenue)</span>
+            <span id="usRevHdrStat" class="sd-card-val">-</span>
+          </div>
+          <div id="usRevSubText" class="sd-card-sub">-</div>
+          <div class="sd-row-2col">
+            <div class="sd-subcol">
+              <span class="sd-subcol-title">單季營收</span>
+              <div id="usRevBarSvg1"></div>
+              <div class="sd-dates-row"><span id="usRevD1">-</span><span id="usRevD2">-</span></div>
+            </div>
+            <div class="sd-subcol">
+              <span class="sd-subcol-title">YoY 年增率 (%)</span>
+              <div id="usRevBarSvg2"></div>
+              <div class="sd-dates-row"><span id="usRevD3">-</span><span id="usRevD4">-</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sd-card">
+          <div class="sd-card-hdr">
+            <span class="sd-card-title">財報盈餘驚喜 (EPS Surprise)</span>
+            <span id="usEpsHdrStat" class="sd-card-val">-</span>
+          </div>
+          <div id="usEpsSubText" class="sd-card-sub muted">-</div>
+          <div class="sd-row-2col">
+            <div class="sd-subcol">
+              <span class="sd-subcol-title">實際 EPS ($)</span>
+              <div id="usEpsBarSvg1"></div>
+              <div class="sd-dates-row"><span id="usEpsD1">-</span><span id="usEpsD2">-</span></div>
+            </div>
+            <div class="sd-subcol">
+              <span class="sd-subcol-title">Surprise (%)</span>
+              <div id="usEpsBarSvg2"></div>
+              <div class="sd-dates-row"><span id="usEpsD3">-</span><span id="usEpsD4">-</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sd-card">
+          <div class="sd-card-hdr">
+            <span class="sd-card-title">華爾街共識與目標估值</span>
+            <span id="usConsensusHdr" class="sd-card-val">-</span>
+          </div>
+          <div id="usConsensusBar" class="sd-consensus-bar"></div>
+          <div id="usConsensusSub" class="sd-card-sub muted" style="margin-bottom:6px;">-</div>
+          <div class="sd-metrics-grid">
+            <div class="sd-metric-item"><div class="sd-metric-lbl">分析師目標價</div><div id="usTargetPrice" class="sd-metric-val">-</div></div>
+            <div class="sd-metric-item"><div class="sd-metric-lbl">DCF 合理價</div><div id="usDcfVal" class="sd-metric-val">-</div></div>
+            <div class="sd-metric-item"><div class="sd-metric-lbl">量化評等 / 市值</div><div id="usRatingGrade" class="sd-metric-val">-</div></div>
+          </div>
+        </div>
+
+        <div class="sd-card">
+          <div class="sd-card-hdr">
+            <span class="sd-card-title">基本面與獲利指標 (US Fundamentals)</span>
+          </div>
+          <div class="sd-metrics-grid">
+            <div class="sd-metric-item"><div class="sd-metric-lbl">P/E (TTM)</div><div id="usPE" class="sd-metric-val">-</div></div>
+            <div class="sd-metric-item"><div class="sd-metric-lbl">P/B</div><div id="usPB" class="sd-metric-val">-</div></div>
+            <div class="sd-metric-item"><div class="sd-metric-lbl">P/S</div><div id="usPS" class="sd-metric-val">-</div></div>
+            <div class="sd-metric-item"><div class="sd-metric-lbl">EV / EBITDA</div><div id="usEvEbitda" class="sd-metric-val">-</div></div>
+            <div class="sd-metric-item"><div class="sd-metric-lbl">EPS (TTM)</div><div id="usEPS" class="sd-metric-val">-</div></div>
+            <div class="sd-metric-item"><div class="sd-metric-lbl">FCF Yield</div><div id="usFcfYield" class="sd-metric-val">-</div></div>
+            <div class="sd-metric-item"><div class="sd-metric-lbl">ROE</div><div id="usROE" class="sd-metric-val">-</div></div>
+            <div class="sd-metric-item"><div class="sd-metric-lbl">毛利率 Gross</div><div id="usGrossMargin" class="sd-metric-val">-</div></div>
+            <div class="sd-metric-item"><div class="sd-metric-lbl">淨利率 Net</div><div id="usNetMargin" class="sd-metric-val">-</div></div>
+          </div>
+        </div>
+
+        <div class="sd-links">
+          <a id="lnkUsTV" class="sd-ext-link" href="#" target="_blank">TradingView</a>
+          <a id="lnkUsFinviz" class="sd-ext-link" href="#" target="_blank">Finviz</a>
+          <a id="lnkUsYahoo" class="sd-ext-link" href="#" target="_blank">Yahoo Finance</a>
+          <a id="lnkUsMacrotrends" class="sd-ext-link" href="#" target="_blank">Macrotrends</a>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+</body>
+</html>

@@ -1,0 +1,2676 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>BIDU — Baidu Inc</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-size: 12px;
+      font-family: Arial, Helvetica, "Microsoft JhengHei", -apple-system, sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 8px 28px 16px;
+      background-color: #faf9f6;
+      color: #1c1917;
+    }
+
+    /* Header Bar */
+    .rp-header {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-top: 3px solid #FA8123;
+      border-radius: 6px;
+      padding: 6px 10px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+    .rp-title-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .rp-ticker {
+      font-size: 17px;
+      font-weight: 800;
+      color: #1c1917;
+      letter-spacing: 0.3px;
+    }
+    .rp-desc {
+      font-size: 15px;
+      font-weight: 700;
+      color: #FA8123;
+    }
+    .rp-time {
+      font-size: 11px;
+      color: #78716c;
+      background: #f5f3ef;
+      padding: 1px 7px;
+      border-radius: 999px;
+    }
+    .rp-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .rp-pill-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: #faf9f6;
+      border: 1px solid #d6d1c7;
+      color: #44403c;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.12s ease;
+    }
+    .rp-pill-link:hover {
+      background: #fff5eb;
+      border-color: #FA8123;
+      color: #d9650f;
+    }
+
+    /* Pyecharts Container Card */
+    .rp-chart-box {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 2px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+
+    /* Sub-Tabs Bar */
+    .rp-tabs-bar {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 4px 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      position: sticky;
+      top: 2px;
+      z-index: 50;
+      box-shadow: 0 1px 4px rgba(28, 25, 23, 0.05);
+    }
+    .rp-tab {
+      border: 1px solid transparent;
+      background: #f5f3ef;
+      color: #57534e;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+    .rp-tab:hover {
+      background: #fff5eb;
+      border-color: #fdba8c;
+      color: #d9650f;
+    }
+    .rp-tab.active {
+      background: #FA8123;
+      color: #ffffff;
+      box-shadow: 0 1px 3px rgba(250, 129, 35, 0.35);
+    }
+
+    /* Section Card */
+    .rp-sec-pane {
+      width: 100%;
+      margin: 0 0 4px;
+    }
+    .rp-card {
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 6px 8px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+      overflow-x: auto;
+    }
+    .rp-divider {
+      border: 0;
+      border-top: 1px solid #e6e2dc;
+      margin: 6px 0;
+    }
+
+    /* Modernized Tables (FBS / Pyramid / FinViz) */
+    .is-negative { color: #00994d; font-weight: 600; }
+    .is-positive { color: #cc2929; font-weight: 600; }
+    .snapshot-td2, .snapshot-td2-cp {
+      color: #1c1917;
+      text-decoration: none;
+      border: 1px solid #e6e2dc;
+      white-space: nowrap;
+    }
+    .snapshot-td2-cp { cursor: pointer; }
+    .fullview-ratings-outer, td.fullview-ratings-inner {
+      border: 1px solid #e6e2dc;
+    }
+    .t3r1 { color: #cc2929; font-weight: 700; }
+    .body-table-rating-downgrade { color: #cc2929; background: #fef2f2; }
+    .body-table-rating-upgrade { color: #00994d; background: #f0fdf4; }
+    .body-table-rating-neutral { color: #44403c; background: #faf9f6; }
+
+    table {
+      border-collapse: collapse;
+      margin: 6px auto;
+    }
+    td, th {
+      border: 1px solid #e6e2dc;
+      text-align: left;
+      padding: 6px 8px;
+    }
+    th {
+      background-color: #f6f4f0;
+      color: #1c1917;
+      font-weight: 700;
+    }
+    tr:nth-child(even) {
+      background-color: #fcfbf9;
+    }
+  </style>
+  <script>
+    function switchRpTab(btn) {
+      if (!btn) return;
+      var target = btn.getAttribute("data-target") || "all";
+      document.querySelectorAll(".rp-tab").forEach(function(b) {
+        b.classList.remove("active");
+      });
+      btn.classList.add("active");
+
+      document.querySelectorAll(".rp-sec-pane").forEach(function(pane) {
+        if (target === "all" || pane.id === target) {
+          pane.style.display = "block";
+        } else {
+          pane.style.display = "none";
+        }
+      });
+
+      try {
+        sessionStorage.setItem("sr_active_rp_tab", target);
+      } catch (e) {}
+
+      window.dispatchEvent(new Event("resize"));
+    }
+
+    window.addEventListener("load", function() {
+      try {
+        var saved = sessionStorage.getItem("sr_active_rp_tab");
+        if (saved && saved !== "all") {
+          var btn = document.querySelector('.rp-tab[data-target="' + saved + '"]');
+          if (btn) switchRpTab(btn);
+        }
+      } catch (e) {}
+    });
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/12.3.0/highcharts.min.js"></script>
+</head>
+<body>
+  <div class="rp-header">
+    <div class="rp-title-wrap">
+      <span class="rp-ticker">BIDU</span>
+      <span class="rp-desc">Baidu Inc</span>
+      <span class="rp-time">更新: 2026-11-14 06:57</span>
+    </div>
+    <div class="rp-links">
+      <a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=BIDU&type=pe-ratio&statement=price-ratios&freq=Q" target="_blank">📈 PE Chart</a><a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=BIDU&type=price-book&statement=price-ratios&freq=Q" target="_blank">📊 PB Chart</a><a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=BIDU&type=price-sales&statement=price-ratios&freq=Q" target="_blank">📉 PS Chart</a><a class="rp-pill-link" href="https://www.wsj.com/market-data/quotes/BIDU/financials/quarter/cash-flow" target="_blank">💵 Finance</a><a class="rp-pill-link" href="https://www.dataroma.com/m/stock.php?sym=BIDU" target="_blank">🏛️ Ownership</a><a class="rp-pill-link" href="https://hedgefollow.com/stocks/BIDU" target="_blank">🏦 Institute</a><a class="rp-pill-link" href="https://unusualwhales.com/stock/BIDU/greek-exposure" target="_blank">⚡ GEX</a><a class="rp-pill-link" href="https://www.ptt.cc/bbs/Stock/search?q=BIDU" target="_blank">💬 PTT Search</a>
+    </div>
+  </div>
+
+  <div class="rp-chart-box" align="center">
+    <iframe id="stock" src="BIDU_EC.html" frameborder="0" width="100%" height="1600px" scrolling="no"></iframe>
+  </div>
+
+  <div class="rp-tabs-bar"><button class="rp-tab active" data-target="all" onclick="switchRpTab(this)">📋 全部展開</button><button class="rp-tab" data-target="sec-quant" onclick="switchRpTab(this)">🧮 量化與主動ETF</button><button class="rp-tab" data-target="sec-stockdog" onclick="switchRpTab(this)">🐶 主力籌碼</button><button class="rp-tab" data-target="sec-finviz" onclick="switchRpTab(this)">🌎 FinViz 美股基本面</button></div>
+  <div class="rp-sec-pane" id="sec-quant"><style>.pq-wrap{width:100%;margin:0;font-family:Arial,Helvetica,"Microsoft JhengHei",sans-serif;color:#222}.pq-sec{background:#fff;border:1px solid #e6e2dc;border-radius:6px;padding:6px 8px;margin-bottom:4px;box-shadow:0 1px 2px rgba(28,25,23,.03)}.pq-sec h2{font-size:14px;color:#1c1917;border-left:4px solid #FA8123;padding-left:6px;margin:0 0 6px}.pq-sec h3{font-size:12px;color:#44403c;margin:6px 0 4px}.pq-banner{background:#fff9f4;border-left:4px solid #FA8123;padding:5px 8px;border-radius:4px;font-size:12px;line-height:1.5;margin-bottom:6px;color:#292524}.pq-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:6px}table.pq-tbl{width:100%;border-collapse:collapse;font-size:12px;font-family:Arial,Helvetica,"Microsoft JhengHei",sans-serif}table.pq-tbl th,table.pq-tbl td{border:1px solid #e6e2dc !important;padding:4px 6px !important;text-align:right}table.pq-tbl th{background:#f6f4f0 !important;color:#1c1917 !important;font-weight:bold}table.pq-tbl tr:nth-child(even){background:#fcfbf9}</style><div class="pq-wrap">
+
+    <div class="pq-sec">
+      <h2>🧮 量化風險、波動率體制與因子 Alpha 拆解 (BIDU)</h2>
+      <div class="pq-banner">
+        <b>現價：</b> <b>78.14</b> ｜
+        <b>動能 (1D / 5D / 20D / 60D / 1Y / 12-1M)：</b> <span style="color:#cc2929;font-weight:bold">+0.66%</span> / <span style="color:#00994d;font-weight:bold">-4.56%</span> / <span style="color:#00994d;font-weight:bold">-2.50%</span> / <span style="color:#00994d;font-weight:bold">-15.04%</span> / <span style="color:#00994d;font-weight:bold">-35.23%</span> / <span style="color:#00994d;font-weight:bold">-31.57%</span> ｜
+        <b>200D Volume Profile：</b> POC <b>92.12</b> (VAH <b>123.67</b> / VAL <b>75.80</b>)<br>
+        <b>尾部風險與風險調整指標 (1Y)：</b> 年化波動率 <b>46.81%</b> (GARCH 1D預測 <b>30.50%</b>) ｜
+        Sortino <b>-1.13</b> ｜ Calmar <b>-0.61</b> ｜
+        最大回撤 (MDD) <span style="color:#00994d;font-weight:bold">-52.99%</span> ｜
+        95% VaR / CVaR: <span style="color:#00994d;font-weight:bold">-4.65% / -6.22%</span> ｜
+        <b>Lo-MacKinlay VR(5/10/20)：</b> 0.906(z*=-0.96) / 0.948(z*=-0.34) / 0.99(z*=-0.05)
+        <br><b>今日觸發技術訊號：</b> [BUY]     : 低於買點 ｜ [SELL]    :  ｜ [OTHER]   : 三月KD由上往下 ｜ [MA200-DIFF]: 買點-負乖離極值勾頭
+      </div>
+      <table class="pq-tbl" style="margin-top:8px"><thead><tr><th style="text-align:left">Benchmark</th><th>20D (Stock / Bench)</th><th>20D Rel Excess</th><th>60D Rel Excess</th><th>1Y Rel Excess</th><th>1Y Beta (β)</th><th>R²</th><th>1Y Residual Alpha (α)</th></tr></thead><tbody><tr><td style="text-align:left"><b>^GSPC</b></td><td><span style="color:#00994d;font-weight:bold">-2.50%</span> / <span style="color:#00994d;font-weight:bold">-1.28%</span></td><td><span style="color:#00994d;font-weight:bold">-1.22%</span></td><td><span style="color:#00994d;font-weight:bold">-14.00%</span></td><td><span style="color:#00994d;font-weight:bold">-49.77%</span></td><td><b>1.49</b></td><td>0.19</td><td><span style="color:#00994d;font-weight:bold">-52.88%</span></td></tr><tr><td style="text-align:left"><b>QQQ</b></td><td><span style="color:#00994d;font-weight:bold">-2.50%</span> / <span style="color:#00994d;font-weight:bold">-4.21%</span></td><td><span style="color:#cc2929;font-weight:bold">+1.72%</span></td><td><span style="color:#00994d;font-weight:bold">-10.67%</span></td><td><span style="color:#00994d;font-weight:bold">-48.87%</span></td><td><b>0.92</b></td><td>0.18</td><td><span style="color:#00994d;font-weight:bold">-48.44%</span></td></tr><tr><td style="text-align:left"><b>SOXX</b></td><td><span style="color:#00994d;font-weight:bold">-2.50%</span> / <span style="color:#00994d;font-weight:bold">-9.22%</span></td><td><span style="color:#cc2929;font-weight:bold">+6.72%</span></td><td><span style="color:#00994d;font-weight:bold">-0.78%</span></td><td><span style="color:#00994d;font-weight:bold">-88.86%</span></td><td><b>0.36</b></td><td>0.15</td><td><span style="color:#00994d;font-weight:bold">-59.85%</span></td></tr></tbody></table>
+    </div>
+    
+</div></div>
+<div class="rp-sec-pane" id="sec-stockdog"><div class="rp-card" align="center"><iframe id="stockdog" src="BIDU_SD.html" frameborder="0" width="100%" height="1000px" scrolling="no"></iframe></div></div>
+<div class="rp-sec-pane" id="sec-finviz"><div class="rp-card"><div align="center"><a href="https://www.marketwatch.com/investing/stock/BIDU/analystestimates" target="_blank"><img style="max-height:100%; max-width:100%; object-fit:contain" src=https://app.quotemedia.com/quotetools/getChart?webmasterId=91386&symbol=BIDU&chtype=FinancialLine&chcon=on&chdon=on&chfrmon=on&chscale=1d&chton=on&chwid=800&chhig=380&chln=ffa500&chfill=ffa500&chfnts=10&chbdr=000000&chbgch=ffffffff&chgrd=cccccc&svg=false&lang=en&locale=en></a></div>
+
+<hr class="rp-divider">
+<table align="center" class="snapshot-table2" align="center" style="width:100%; border-collapse:collapse; font-size:12px; margin:auto;">
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Major index membership"><div class="snapshot-td-label">Index</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">-</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price-to-Earnings (ttm)"><div class="snapshot-td-label">P/E</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Diluted EPS (ttm)"><div class="snapshot-td-label">EPS (ttm)</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-1.84</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Insider ownership"><div class="snapshot-td-label">Insider Own</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Shares outstanding"><div class="snapshot-td-label">Shs Outstand</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>276.19M</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Week, Excl. Dividends)"><div class="snapshot-td-label">Perf Week</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-4.56%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Market capitalization"><div class="snapshot-td-label">Market Cap</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>21.58B</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Forward Price-to-Earnings (next fiscal year)"><div class="snapshot-td-label">Forward P/E</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">11.97</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="EPS estimate for next year"><div class="snapshot-td-label">EPS next Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>6.53</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Insider transactions (6-Month change in Insider Ownership)"><div class="snapshot-td-label">Insider Trans</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Shares float"><div class="snapshot-td-label">Shs Float</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>276.08M</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Month, Excl. Dividends)"><div class="snapshot-td-label">Perf Month</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-5.35%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Enterprise Value"><div class="snapshot-td-label">Enterprise Value</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>17.13B</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price-to-Earnings-to-Growth"><div class="snapshot-td-label">PEG</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="EPS estimate for next quarter"><div class="snapshot-td-label">EPS next Q</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.90</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Institutional ownership"><div class="snapshot-td-label">Inst Own</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>21.05%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Short interest share"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=BIDU&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank">Short Float</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=BIDU&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank"><b>4.42%</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Quarter, Excl. Dividends)"><div class="snapshot-td-label">Perf Quarter</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-24.95%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Income (ttm)"><div class="snapshot-td-label">Income</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-610.33M</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price-to-Sales (ttm)"><div class="snapshot-td-label">P/S</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>1.19</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="EPS growth this year"><div class="snapshot-td-label">EPS this Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-33.71%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Institutional transactions (3-Month change in Institutional Ownership)"><div class="snapshot-td-label">Inst Trans</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>1.57%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Short interest ratio"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=BIDU&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank">Short Ratio</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=BIDU&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank"><b>4.55</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Half Year, Excl. Dividends)"><div class="snapshot-td-label">Perf Half Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-42.26%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Revenue (ttm)"><div class="snapshot-td-label">Sales</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>18.21B</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price-to-Book (mrq)"><div class="snapshot-td-label">P/B</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">0.66</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="EPS growth next year"><div class="snapshot-td-label">EPS next Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>22.97%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Return on Assets (ttm)"><div class="snapshot-td-label">ROA</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-0.92%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Short interest"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=BIDU&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank">Short Interest</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=BIDU&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank"><b data-boxover-html="Settlement Date: 10/30/2026">12.21M</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Year To Date, Excl. Dividends)"><div class="snapshot-td-label">Perf YTD</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-40.20%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Book value per share (mrq)"><div class="snapshot-td-label">Book/sh</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>117.93</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price to cash per share (mrq)"><div class="snapshot-td-label">P/C</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">0.88</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Long term annual growth estimate (5 years)"><div class="snapshot-td-label">EPS next 5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-0.19%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Return on Equity (ttm)"><div class="snapshot-td-label">ROE</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-1.56%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 52-Week High"><div class="snapshot-td-label">52W High</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>165.30 <small class="text-2xs"><span class="color-text is-negative">-52.73%</span></small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Year, Excl. Dividends)"><div class="snapshot-td-label">Perf Year</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-35.23%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Cash per share (mrq)"><div class="snapshot-td-label">Cash/sh</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>88.80</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price to Free Cash Flow (ttm)"><div class="snapshot-td-label">P/FCF</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Annual EPS growth past 3 and 5 years"><div class="snapshot-td-label">EPS past 3/5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs"><span class="color-text is-negative">-17.75%</span> <span class="color-text is-negative">-29.62%</span></small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Return on Invested Capital (ttm)"><div class="snapshot-td-label">ROIC</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-1.18%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 52-Week Low"><div class="snapshot-td-label">52W Low</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>75.80 <small class="text-2xs"><span class="color-text is-positive">3.09%</span></small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (3 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 3Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-27.12%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Analysts' Dividend Estimate (Fiscal Year)"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=BIDU&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank">Dividend Est.</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=BIDU&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank"><b>1.71 (2.19%)</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Enterprise Value to EBITDA"><div class="snapshot-td-label">EV/EBITDA</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">7.80</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Annual sales growth past 3 and 5 years"><div class="snapshot-td-label">Sales past 3/5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs"><span class="color-text is-negative">-0.75%</span> 2.97%</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Gross Margin (ttm)"><div class="snapshot-td-label">Gross Margin</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>40.84%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Volatility (Week, Month)"><div class="snapshot-td-label">Volatility</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">2.56% 2.55%</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (5 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-54.19%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Trailing 12 Months Dividend"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=BIDU&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank">Dividend TTM</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=BIDU&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank"><b>-</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Enterprise Value to Revenues"><div class="snapshot-td-label">EV/Sales</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">0.94</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="EPS growth TTM"><div class="snapshot-td-label">EPS Y/Y TTM</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-116.12%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Operating Margin (ttm)"><div class="snapshot-td-label">Oper. Margin</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>6.96%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Average True Range (14)"><div class="snapshot-td-label">ATR (14)</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>2.42</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (10 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 10Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-52.05%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Ex-Dividend Date"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=BIDU&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank">Dividend Ex-Date</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=BIDU&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank"><b>-</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Quick Ratio (mrq)"><div class="snapshot-td-label">Quick Ratio</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>2.16</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Sales growth TTM"><div class="snapshot-td-label">Sales Y/Y TTM</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-1.11%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Net Profit Margin (ttm)"><div class="snapshot-td-label">Profit Margin</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-3.35%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Relative Strength Index"><div class="snapshot-td-label">RSI (14)</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>41.34</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Analysts' mean recommendation (1=Buy 5=Sell)"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=BIDU&amp;ta=1&amp;p=d&amp;ty=fc" class="hover:underline" target="_blank">Recom</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=BIDU&amp;ta=1&amp;p=d&amp;ty=fc" class="hover:underline" target="_blank"><b><span class="color-text is-positive">1.56</span></b></a></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Dividend growth over 3 and 5 years"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=BIDU&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank">Dividend Gr. 3/5Y</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=BIDU&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank"><b><small class="text-2xs">- -</small></b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Current Ratio (mrq)"><div class="snapshot-td-label">Current Ratio</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>2.33</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Quarterly earnings growth (YoY)"><div class="snapshot-td-label">EPS Q/Q</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-64.78%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 20-Day Simple Moving Average"><div class="snapshot-td-label">SMA20</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-0.89%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Beta"><div class="snapshot-td-label">Beta</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.58</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Analysts' mean target price"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=BIDU&amp;ta=1&amp;p=d&amp;ty=fc" class="hover:underline" target="_blank">Target Price</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=BIDU&amp;ta=1&amp;p=d&amp;ty=fc" class="hover:underline" target="_blank"><b><span class="color-text is-positive">136.78</span></b></a></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Dividend Payout Ratio (ttm)"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=BIDU&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank">Payout</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=BIDU&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank"><b>0.00%</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Total Debt to Equity (mrq)"><div class="snapshot-td-label">Debt/Eq</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.42</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Quarterly revenue growth (YoY)"><div class="snapshot-td-label">Sales Q/Q</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>1.75%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 50-Day Simple Moving Average"><div class="snapshot-td-label">SMA50</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-7.31%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Relative volume"><div class="snapshot-td-label">Rel Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>1.22</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Previous close"><div class="snapshot-td-label">Prev Close</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>77.63</b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Full time employees"><div class="snapshot-td-label">Employees</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>33500</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Long Term Debt to Equity (mrq)"><div class="snapshot-td-label">LT Debt/Eq</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.29</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Earnings date&lt;br&gt;&lt;br&gt;BMO = Before Market Open&lt;br&gt;AMC = After Market Close"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=BIDU&amp;ta=1&amp;p=d&amp;ty=ea" class="hover:underline" target="_blank">Earnings</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=BIDU&amp;ta=1&amp;p=d&amp;ty=ea" class="hover:underline" target="_blank"><b><small class="text-2xs">Nov 16 BMO</small></b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 200-Day Simple Moving Average"><div class="snapshot-td-label">SMA200</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-29.34%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Average volume (3 month)"><div class="snapshot-td-label">Avg Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>2.69M</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Current stock price"><div class="snapshot-td-label">Price</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>78.14</b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="IPO Date"><div class="snapshot-td-label">IPO</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>Aug 05, 2005</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Stock has options trading on a market exchange / Stock is available to sell short"><div class="snapshot-td-label">Option/Short</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">Yes / Yes</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Last quarter EPS and Revenue surprise"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=BIDU&amp;ta=1&amp;p=d&amp;ty=ea" class="hover:underline" target="_blank">EPS/Sales Surpr.</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=BIDU&amp;ta=1&amp;p=d&amp;ty=ea" class="hover:underline" target="_blank"><b><small class="text-2xs"><span class="color-text is-negative">-22.71%</span> <span class="color-text is-negative">-1.33%</span></small></b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Trades"><div class="snapshot-td-label">Trades</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Volume"><div class="snapshot-td-label">Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>3,282,150</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (today)"><div class="snapshot-td-label">Change %</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">0.66%</span></b></div></td>
+</tr>
+</table>
+
+
+<hr class="rp-divider">
+<table align="center" class="styled-table-new is-rounded is-small w-full" cellpadding="0" cellspacing="0">
+  <thead>
+    <tr>
+      <th align="left" class="whitespace-nowrap">Date</th>
+      <th align="left" class="whitespace-nowrap">Action</th>
+      <th align="left" class="whitespace-nowrap">Analyst</th>
+      <th align="left" class="whitespace-nowrap">Rating Change</th>
+      <th align="left" class="whitespace-nowrap">Price Target Change</th>
+      <th align="left" class="whitespace-nowrap">Implied Upside</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Sep 08, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>A</span></span>Arete</div>
+      </td>
+      <td class="text-left color-text is-negative">Buy → Neutral</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no">$108</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+38.2%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Aug 19, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/MS.svg&quot;)"><img src="https://logo.finviz.com/MS.svg" alt="MS logo" crossorigin="anonymous"/><span>M</span></span>Morgan Stanley</div>
+      </td>
+      <td class="text-left color-text is-negative">Equal-Weight → Underweight</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no">$80</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+2.4%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Apr 01, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Initiated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>B</span></span>BNP Paribas Exane</div>
+      </td>
+      <td class="text-left">Outperform</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$161</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+106.0%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Nov 24, 2025</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/JPM.svg&quot;)"><img src="https://logo.finviz.com/JPM.svg" alt="JPM logo" crossorigin="anonymous"/><span>J</span></span>JP Morgan</div>
+      </td>
+      <td class="text-left color-text is-positive">Neutral → Overweight</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no">$188</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+140.6%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Oct 14, 2025</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>D</span></span>Daiwa Securities</div>
+      </td>
+      <td class="text-left color-text is-positive">Outperform → Buy</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no"/>
+      <td class="whitespace-nowrap"/>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Oct 10, 2025</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>M</span></span>Macquarie</div>
+      </td>
+      <td class="text-left color-text is-positive">Neutral → Outperform</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no">$176</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+125.2%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Sep 16, 2025</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>A</span></span>Arete</div>
+      </td>
+      <td class="text-left color-text is-positive">Sell → Buy</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no">$143</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+83.0%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Feb 19, 2025</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>N</span></span>Nomura</div>
+      </td>
+      <td class="text-left color-text is-negative">Buy → Neutral</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no"/>
+      <td class="whitespace-nowrap"/>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Feb 18, 2025</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>D</span></span>Daiwa Securities</div>
+      </td>
+      <td class="text-left color-text is-negative">Buy → Outperform</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no"/>
+      <td class="whitespace-nowrap"/>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text is-last">
+      <td class="whitespace-nowrap">Nov 27, 2024</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/JPM.svg&quot;)"><img src="https://logo.finviz.com/JPM.svg" alt="JPM logo" crossorigin="anonymous"/><span>J</span></span>JP Morgan</div>
+      </td>
+      <td class="text-left color-text is-negative">Overweight → Neutral</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no"/>
+      <td class="whitespace-nowrap"/>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Nov 25, 2024</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>S</span></span>Susquehanna</div>
+      </td>
+      <td class="text-left color-text is-negative">Positive → Neutral</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no">$105 → $85</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+8.8%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Nov 25, 2024</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>C</span></span>China Renaissance</div>
+      </td>
+      <td class="text-left color-text is-negative">Buy → Hold</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no">$86</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+10.1%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Nov 22, 2024</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/BCS.svg&quot;)"><img src="https://logo.finviz.com/BCS.svg" alt="BCS logo" crossorigin="anonymous"/><span>B</span></span>Barclays</div>
+      </td>
+      <td class="text-left color-text is-negative">Overweight → Equal Weight</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no"/>
+      <td class="whitespace-nowrap"/>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Sep 24, 2024</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/HSBC.svg&quot;)"><img src="https://logo.finviz.com/HSBC.svg" alt="HSBC logo" crossorigin="anonymous"/><span>H</span></span>HSBC Securities</div>
+      </td>
+      <td class="text-left color-text is-negative">Buy → Hold</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no">$100</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+28.0%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Aug 23, 2024</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>B</span></span>Bernstein</div>
+      </td>
+      <td class="text-left color-text is-negative">Outperform → Mkt Perform</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no">$130 → $97</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+24.1%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Jul 15, 2024</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/JEF.svg&quot;)"><img src="https://logo.finviz.com/JEF.svg" alt="JEF logo" crossorigin="anonymous"/><span>J</span></span>Jefferies</div>
+      </td>
+      <td class="text-left">Buy</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$179 → $174</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+122.7%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Jul 15, 2024</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/C.svg&quot;)"><img src="https://logo.finviz.com/C.svg" alt="C logo" crossorigin="anonymous"/><span>C</span></span>Citigroup</div>
+      </td>
+      <td class="text-left">Buy</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$170 → $155</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+98.4%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">May 17, 2024</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/MS.svg&quot;)"><img src="https://logo.finviz.com/MS.svg" alt="MS logo" crossorigin="anonymous"/><span>M</span></span>Morgan Stanley</div>
+      </td>
+      <td class="text-left color-text is-negative">Overweight → Equal-Weight</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no">$140 → $125</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+60.0%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Jan 11, 2024</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Resumed</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>M</span></span>Macquarie</div>
+      </td>
+      <td class="text-left">Outperform</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$150</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+92.0%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Nov 22, 2023</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>N</span></span>Nomura</div>
+      </td>
+      <td class="text-left color-text is-positive">Neutral → Buy</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no">$145</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+85.6%</span>
+        </span>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<hr class="rp-divider">
+<table align="center" cellpadding="0" cellspacing="0" align="center" width="70%" class="body-table styled-table-new is-rounded p-0 mt-2">
+<thead>
+<tr>
+<th align="left">Insider Trading</th>
+<th align="left">Relationship</th>
+<th align="left">Date</th>
+<th align="center">Transaction</th>
+<th align="right">Cost</th>
+<th align="right">#Shares</th>
+<th align="right">Value ($)</th>
+<th align="right">#Shares Total</th>
+<th align="center">SEC Form 4</th>
+</tr>
+</thead>
+<tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1970587&amp;tc=7" class="tab-link" target="_blank">MELISSA DONGMIN MA</a></td><td style="white-space:nowrap">Affiliate</td><td>Oct 05 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">86.99</td><td class="value" align="right">122,629</td><td class="value" align="right">10,667,497</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1329099/000195824426000646/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Oct 05 06:28 PM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1353270&amp;tc=7" class="tab-link" target="_blank">Li Yanhong Robin</a></td><td style="white-space:nowrap">See Remarks</td><td>Aug 09 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">342,096</td><td class="value" align="right">0</td><td class="value" align="right">9,994,520</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1329099/000119312526343278/xslF345X06/ownership.xml" class="tab-link" target="_blank">Aug 11 06:03 AM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1353270&amp;tc=7" class="tab-link" target="_blank">Li Yanhong Robin</a></td><td style="white-space:nowrap">See Remarks</td><td>Aug 08 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">510,808</td><td class="value" align="right">0</td><td class="value" align="right">9,652,424</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1329099/000119312526343278/xslF345X06/ownership.xml" class="tab-link" target="_blank">Aug 11 06:03 AM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1353270&amp;tc=7" class="tab-link" target="_blank">Li Yanhong Robin</a></td><td style="white-space:nowrap">See Remarks</td><td>Aug 07 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">527,200</td><td class="value" align="right">0</td><td class="value" align="right">9,141,616</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1329099/000119312526341314/xslF345X06/ownership.xml" class="tab-link" target="_blank">Aug 10 08:05 AM</a></td></tr><tr class="fv-insider-row is-option" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1977881&amp;tc=7" class="tab-link" target="_blank">He Haijian</a></td><td style="white-space:nowrap">Chief Financial Officer</td><td>Aug 07 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Option Exercise</span></td><td class="value" align="right">0.00</td><td class="value" align="right">151,536</td><td class="value" align="right">0</td><td class="value" align="right">151,536</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1329099/000119312526341308/xslF345X06/ownership.xml" class="tab-link" target="_blank">Aug 10 08:02 AM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1970587&amp;tc=7" class="tab-link" target="_blank">MELISSA DONGMIN MA</a></td><td style="white-space:nowrap">AFFILIATE</td><td>Jul 06 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">112.18</td><td class="value" align="right">122,629</td><td class="value" align="right">13,756,521</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1329099/000195824426000422/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Jul 01 05:46 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1500978&amp;tc=7" class="tab-link" target="_blank">Foo Jixun</a></td><td style="white-space:nowrap">Director</td><td>May 21 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">16.32</td><td class="value" align="right">122,584</td><td class="value" align="right">2,000,203</td><td class="value" align="right">0</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1329099/000119312526237754/xslF345X06/ownership.xml" class="tab-link" target="_blank">May 26 06:03 AM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1500978&amp;tc=7" class="tab-link" target="_blank">Foo Jixun</a></td><td style="white-space:nowrap">Director</td><td>May 20 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">137.68</td><td class="value" align="right">15,323</td><td class="value" align="right">2,109,671</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1329099/000197337926000185/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">May 20 06:26 AM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1970587&amp;tc=7" class="tab-link" target="_blank">MELISSA DONGMIN MA</a></td><td style="white-space:nowrap">AFFILIATE</td><td>Apr 01 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">111.90</td><td class="value" align="right">132,113</td><td class="value" align="right">14,783,445</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1329099/000195824426000186/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Apr 01 04:56 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1971196&amp;tc=7" class="tab-link" target="_blank">Wang Haifeng</a></td><td style="white-space:nowrap">Officer</td><td>Dec 29 '25</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">124.80</td><td class="value" align="right">50,000</td><td class="value" align="right">6,240,000</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1329099/000197337925000334/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Dec 29 06:28 AM</a></td></tr></table>
+
+
+
+<hr class="rp-divider">
+<div class="body-table-news-wrapper news-table_wrapper is-collapsed"><table align="center" align="center" width="70%" cellpadding="1" cellspacing="0" border="0" id="news-table" class="fullview-news-outer news-table" data-ticker="BIDU">
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.newsfilecorp.com/release/323616/Kaplan-Fox-Urges-Investors-of-Baidu-Inc.-BIDU-to-Seek-a-Leadership-Role-Before-November-13-2026', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-12-26 05:55PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.newsfilecorp.com/release/323616/Kaplan-Fox-Urges-Investors-of-Baidu-Inc.-BIDU-to-Seek-a-Leadership-Role-Before-November-13-2026" target="_blank" rel="nofollow">&#13;
+                        Kaplan Fox Urges Investors of Baidu, Inc. (BIDU) to Seek a Leadership Role Before November 13, 2026&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Newsfile)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            04:50PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/422294/baidu-inc-sued-for-securities-law-violations-contact-the-djs-law-group-to-discuss-your-rights-bidu" target="_blank">&#13;
+                        Baidu, Inc. Sued for Securities Law Violations - Contact the DJS Law Group to Discuss Your Rights - BIDU&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            09:08AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/421825/baidu-unveils-latest-ernie-models-amid-broader-full-stack-ai-lineup-and-debuts-token-exchange-to-power-intelligent-organizations" target="_blank">&#13;
+                        Baidu Unveils Latest ERNIE Models Amid Broader Full-Stack AI Lineup, and Debuts Token Exchange to Power Intelligent Organizations&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.newsfilecorp.com/release/323067/Kaplan-Fox-Encourages-Baidu-Inc.-BIDU-Investors-Seeking-Recovery-to-Contact-the-Firm-Before-November-13-2026', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-09-26 06:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.newsfilecorp.com/release/323067/Kaplan-Fox-Encourages-Baidu-Inc.-BIDU-Investors-Seeking-Recovery-to-Contact-the-Firm-Before-November-13-2026" target="_blank" rel="nofollow">&#13;
+                        Kaplan Fox Encourages Baidu, Inc. (BIDU) Investors Seeking Recovery to Contact the Firm Before November 13, 2026&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Newsfile)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            02:19AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/418783/baidu-inc-sued-for-securities-law-violations-contact-the-djs-law-group-to-discuss-your-rights-bidu" target="_blank">&#13;
+                        Baidu, Inc. Sued for Securities Law Violations - Contact the DJS Law Group to Discuss Your Rights - BIDU&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Nov-08-26 08:56AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/418742/baidus-ai-cloud-surge-must-outrun-ad-weakness-as-shares-sink-toward-lows" target="_blank">&#13;
+                        Baidu's AI Cloud Surge Must Outrun Ad Weakness As Shares Sink Toward Lows&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Earnings Whispers)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/economy/policy/articles/china-flags-weak-domestic-demand-102430660.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Nov-07-26 05:24AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/economy/policy/articles/china-flags-weak-domestic-demand-102430660.html" target="_blank" rel="nofollow">&#13;
+                        China flags weak domestic demand as policymakers prepare 2027 growth measures&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investing.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Nov-05-26 01:52AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/416504/baidu-inc-sued-for-securities-law-violations-contact-the-djs-law-group-to-discuss-your-rights-bidu" target="_blank">&#13;
+                        Baidu, Inc. Sued for Securities Law Violations - Contact the DJS Law Group to Discuss Your Rights - BIDU&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/economy/policy/articles/china-factory-activity-contracts-october-035600920.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-30-26 11:56PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/economy/policy/articles/china-factory-activity-contracts-october-035600920.html" target="_blank" rel="nofollow">&#13;
+                        China factory activity contracts in October as economic recovery falters&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investing.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Oct-27-26 05:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/408464/baidu-to-report-third-quarter-2026-financial-results-on-november-16-2026" target="_blank">&#13;
+                        Baidu to Report Third Quarter 2026 Financial Results on November 16, 2026&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Oct-20-26 08:28PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/404958/baidu-inc-sued-for-securities-law-violations-contact-the-djs-law-group-to-discuss-your-rights-bidu" target="_blank">&#13;
+                        Baidu, Inc. Sued for Securities Law Violations - Contact the DJS Law Group to Discuss Your Rights - BIDU&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://qz.com/most-visited-websites-world', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            12:02PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://qz.com/most-visited-websites-world" target="_blank" rel="nofollow">&#13;
+                        Google, YouTube, Baidu: the world's biggest websites&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Quartz)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/citi-sees-resilient-demand-chinese-091117425.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-17-26 05:11AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/citi-sees-resilient-demand-chinese-091117425.html" target="_blank" rel="nofollow">&#13;
+                        Citi sees resilient demand for Chinese AI IPOs despite valuation concerns&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investing.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Oct-13-26 11:07PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/402164/baidu-inc-sued-for-securities-law-violations-contact-the-djs-law-group-to-discuss-your-rights-bidu" target="_blank">&#13;
+                        Baidu, Inc. Sued for Securities Law Violations - Contact the DJS Law Group to Discuss Your Rights - BIDU&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/economy/policy/articles/china-creates-10-52-million-074028023.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-10-26 03:40AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/economy/policy/articles/china-creates-10-52-million-074028023.html" target="_blank" rel="nofollow">&#13;
+                        China creates 10.52 million jobs, plans new AI and services employment measures&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investing.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Oct-05-26 03:01AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/398465/baidu-inc-sued-for-securities-law-violations-contact-the-djs-law-group-to-discuss-your-rights-bidu" target="_blank">&#13;
+                        Baidu, Inc. Sued for Securities Law Violations - Contact the DJS Law Group to Discuss Your Rights - BIDU&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/alibaba-stock-price-treasury-yields-25ae7224?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Oct-02-26 07:42AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/alibaba-stock-price-treasury-yields-25ae7224?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Alibaba Stock Falls. Treasury Yields Aren't Just a U.S. Problem&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Oct-01-26 06:26PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/398153/bidu-stockholders-have-rights-if-you-lost-money-investing-in-baidu-inc-contact-robbins-llp-for-information-about-recovering-your-losses" target="_blank">&#13;
+                        BIDU Stockholders Have Rights - If You Lost Money Investing in Baidu, Inc. Contact Robbins LLP for Information About Recovering Your Losses&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Sep-25-26 02:33PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/395691/trump-xi-meeting-puts-these-5-chinese-ai-stocks-in-focus" target="_blank">&#13;
+                        Trump-Xi Meeting Puts These 5 Chinese AI Stocks in Focus&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.newsfilecorp.com/release/315972/Robbins-LLP-is-Investigating-Allegations-that-Baidu-Inc.-Misled-Investors-Regarding-the-Ability-of-its-AI-Business-to-Mitigate-Rapid-Declines-in-its-Legacy-Online-Marketing-Business', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-24-26 03:51PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.newsfilecorp.com/release/315972/Robbins-LLP-is-Investigating-Allegations-that-Baidu-Inc.-Misled-Investors-Regarding-the-Ability-of-its-AI-Business-to-Mitigate-Rapid-Declines-in-its-Legacy-Online-Marketing-Business" target="_blank" rel="nofollow">&#13;
+                        Robbins LLP is Investigating Allegations that Baidu, Inc. Misled Investors Regarding the Ability of its AI Business to Mitigate Rapid Declines in its Legacy Online Marketing Business&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Newsfile)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/moody-cuts-baidu-outlook-negative-142121016.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            10:21AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/moody-cuts-baidu-outlook-negative-142121016.html" target="_blank" rel="nofollow">&#13;
+                        Moodys cuts Baidu outlook to negative as AI capital costs weigh on margins&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investing.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Sep-23-26 04:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/394539/bear-of-the-day-baidu-bidu" target="_blank">&#13;
+                        Bear of the Day: Baidu (BIDU)&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Zacks)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.newsfilecorp.com/release/315490/Kaplan-Fox-Encourages-Baidu-Inc.-BIDU-Investors-with-Significant-Losses-to-Contact-the-Firm-Before-November-13-2026', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-22-26 06:15PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.newsfilecorp.com/release/315490/Kaplan-Fox-Encourages-Baidu-Inc.-BIDU-Investors-with-Significant-Losses-to-Contact-the-Firm-Before-November-13-2026" target="_blank" rel="nofollow">&#13;
+                        Kaplan Fox Encourages Baidu, Inc. (BIDU) Investors with Significant Losses to Contact the Firm Before November 13, 2026&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Newsfile)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.businesswire.com/news/home/20260917683127/en/', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-17-26 07:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20260917683127/en/" target="_blank" rel="nofollow">&#13;
+                        Baidu, Inc. Sued for Securities Law Violations - Contact the DJS Law Group to Discuss Your Rights BIDU&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Business Wire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/c9e2fa95-c6cf-3153-aa22-e6b9635477b2/xi-pushes-china%E2%80%99s-open-source.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Sep-13-26 06:27AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/c9e2fa95-c6cf-3153-aa22-e6b9635477b2/xi-pushes-china%E2%80%99s-open-source.html" target="_blank" rel="nofollow">&#13;
+                        Xi pushes Chinas open-source AI vision at BRICS summit&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investing.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Sep-06-26 08:58PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/389234/baidu-announces-inclusion-of-its-class-a-ordinary-shares-in-the-shenzhen-hong-kong-stock-connect-and-shanghai-hong-kong-stock-connect-programs" target="_blank">&#13;
+                        Baidu Announces Inclusion of Its Class A Ordinary Shares in the Shenzhen-Hong Kong Stock Connect and Shanghai-Hong Kong Stock Connect Programs&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Sep-04-26 07:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/389037/baidu-announces-upcoming-inclusion-of-its-class-a-ordinary-shares-in-the-shanghai-hong-kong-stock-connect-program" target="_blank">&#13;
+                        Baidu Announces Upcoming Inclusion of Its Class A Ordinary Shares in the Shanghai-Hong Kong Stock Connect Program&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Aug-31-26 08:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/387162/baidu-announces-dual-primary-listing-on-the-main-board-of-the-stock-exchange-of-hong-kong-limited" target="_blank">&#13;
+                        Baidu Announces Dual-Primary Listing on the Main Board of The Stock Exchange of Hong Kong Limited&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Aug-26-26 08:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/385986/baidu-provides-update-on-voluntary-conversion-to-dual-primary-listing-on-the-main-board-of-the-hong-kong-stock-exchange" target="_blank">&#13;
+                        Baidu Provides Update on Voluntary Conversion to Dual-Primary Listing on the Main Board of the Hong Kong Stock Exchange&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            04:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/385533/baidu-announces-results-of-extraordinary-general-meeting" target="_blank">&#13;
+                        Baidu Announces Results of Extraordinary General Meeting&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/alibaba-ymtc-fundraising-hits-china-tech-stocks-on-supply-woes-043714832.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-24-26 12:37AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/alibaba-ymtc-fundraising-hits-china-tech-stocks-on-supply-woes-043714832.html" target="_blank" rel="nofollow">&#13;
+                        Alibaba, YMTC Fundraising Hits China Tech Stocks on Supply Woes&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Bloomberg)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.businesswire.com/news/home/20260819810612/en/Apollo', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-20-26 02:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20260819810612/en/Apollo" target="_blank" rel="nofollow">&#13;
+                        Uber Launches Baidus Fully Driverless Apollo Go in Dubai, Establishing the First Multi-Partner Autonomous Network Globally&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Business Wire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            02:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/383929/baidus-apollo-go-goes-live-on-uber-in-dubai-offering-a-new-way-for-users-to-hail-fully-driverless-rides" target="_blank">&#13;
+                        Baidu's Apollo Go Goes Live on Uber in Dubai, Offering a New Way for Users to Hail Fully Driverless Rides&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/alibaba-tops-chinese-tech-stocks-013849635.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-19-26 09:38PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/alibaba-tops-chinese-tech-stocks-013849635.html" target="_blank" rel="nofollow">&#13;
+                        Alibaba Tops Chinese Tech Stocks This Quarter on AI Resurgence&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Bloomberg)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/bidu-stock-alert-morgan-stanley-200726752.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            04:07PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/bidu-stock-alert-morgan-stanley-200726752.html" target="_blank" rel="nofollow">&#13;
+                        BIDU Stock Alert: Morgan Stanley Downgrades Baidu Stock on Rising AI Costs&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/baidu-slides-14-morgan-stanley-181020908.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            02:10PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/baidu-slides-14-morgan-stanley-181020908.html" target="_blank" rel="nofollow">&#13;
+                        Baidu Slides 14% as Morgan Stanley Slashes Target to $80&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/moderna-upgraded-baidu-downgraded-wall-133822050.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            09:38AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/moderna-upgraded-baidu-downgraded-wall-133822050.html" target="_blank" rel="nofollow">&#13;
+                        Moderna upgraded, Baidu downgraded: Wall Street's top analyst calls&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(The Fly)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.digitimes.com/news/a20260819VL203/baidu-ai-business-growth-demand-revenue.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-18-26 11:20PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.digitimes.com/news/a20260819VL203/baidu-ai-business-growth-demand-revenue.html" target="_blank" rel="nofollow">&#13;
+                        Baidu's AI business drives growth as robotaxi expansion accelerates&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(DigiTimes)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">&#13;
+         -12.73%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.digitimes.com/news/a20260819VL201/baidu-advertising-2026-revenue-business.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            09:44PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.digitimes.com/news/a20260819VL201/baidu-advertising-2026-revenue-business.html" target="_blank" rel="nofollow">&#13;
+                        Baidu's AI cloud engine accelerates as advertising drag deepens&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(DigiTimes)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/baidu-inc-bidu-q2-2026-190215314.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            03:02PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/baidu-inc-bidu-q2-2026-190215314.html" target="_blank" rel="nofollow">&#13;
+                        Baidu Inc (BIDU) (Q2 2026) Earnings Call Highlights: AI Cloud Infra Surges 50% as GPU Cloud ...&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/why-baidu-stock-tumbling-today-183927419.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            02:39PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/why-baidu-stock-tumbling-today-183927419.html" target="_blank" rel="nofollow">&#13;
+                        Why Baidu Stock Is Tumbling Today&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/b2be614e-7df9-3ac3-95d7-d255f7d8babc/baidu-misses-q2-revenue-and.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            10:34AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/b2be614e-7df9-3ac3-95d7-d255f7d8babc/baidu-misses-q2-revenue-and.html" target="_blank" rel="nofollow">&#13;
+                        Baidu misses Q2 revenue and earnings estimates as core business slips&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Proactive)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/baidu-earnings-stock-price-01c70406?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            09:01AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/baidu-earnings-stock-price-01c70406?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Baidu Earnings Show the Perils of Going All-In on AI&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            08:23AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/383210/baidu-revenue-falls-short-as-advertising-weakness-offsets-ai-cloud-growth" target="_blank">&#13;
+                        Baidu Revenue Falls Short as Advertising Weakness Offsets AI Cloud Growth&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorsHub)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/alibaba-backed-ai-video-platform-113016985.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/alibaba-backed-ai-video-platform-113016985.html" target="_blank" rel="nofollow">&#13;
+                        Alibaba-Backed AI Video Platform ShengShu Mulls HK IPO&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Bloomberg)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/stock-movers-36984052?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:04AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/stock-movers-36984052?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Coherent, Sandisk, Home Depot, Nike, and More Stocks That Explain Today's Market&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.wsj.com/business/earnings/baidus-profit-revenue-continue-to-fall-as-it-pivots-to-ai-509fd2e1?mod=wsj_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            05:50AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.wsj.com/business/earnings/baidus-profit-revenue-continue-to-fall-as-it-pivots-to-ai-509fd2e1?mod=wsj_FV" target="_blank" rel="nofollow">&#13;
+                        Baidu's Profit, Revenue Continue to Fall as It Pivots to AI&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(The Wall Street Journal)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/baidu-slips-q2-results-miss-094048604.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            05:40AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/baidu-slips-q2-results-miss-094048604.html" target="_blank" rel="nofollow">&#13;
+                        Baidu slumps as Q2 results miss estimates despite growth in AI cloud business&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investing.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/livecoverage/stock-market-today-dow-s-p-500-nasdaq-bond-sell-off-yield-us-30-year-treasury-home-depot-results/card/home-depot-headlines-tuesday-s-earnings-slate-692nkvtg8xYGq4c5ahRs?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            05:06AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/livecoverage/stock-market-today-dow-s-p-500-nasdaq-bond-sell-off-yield-us-30-year-treasury-home-depot-results/card/home-depot-headlines-tuesday-s-earnings-slate-692nkvtg8xYGq4c5ahRs?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        Home Depot headlines Tuesday's earnings slate&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            05:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/383055/baidu-announces-second-quarter-2026-results" target="_blank">&#13;
+                        Baidu Announces Second Quarter 2026 Results&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/livecoverage/stock-market-today-dow-s-p-500-nasdaq-bond-sell-off-yield-us-30-year-treasury-home-depot-results?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            04:01AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/livecoverage/stock-market-today-dow-s-p-500-nasdaq-bond-sell-off-yield-us-30-year-treasury-home-depot-results?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        Stock Market Today: Dow, S&amp;P 500 and Nasdaq set to decline as bond sell-off deepens; yield on U.S. 30-year Treasury hits highest in 19 years; Home Depot results on tap&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/video/alibaba-sells-15b-game-unit-in-ai-pivot-alphaspace-breakdown-173510736.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-17-26 01:35PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/video/alibaba-sells-15b-game-unit-in-ai-pivot-alphaspace-breakdown-173510736.html" target="_blank" rel="nofollow">&#13;
+                        Alibaba sells $1.5B game unit in AI pivot: AlphaSpace breakdown&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance Video)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/alibaba-baidu-kuaishou-address-mounting-010400663.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-16-26 09:04PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/alibaba-baidu-kuaishou-address-mounting-010400663.html" target="_blank" rel="nofollow">&#13;
+                        Alibaba, Baidu, Kuaishou Address Mounting AI Costs as Competition Intensifies&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Bloomberg)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/china-tech-earnings-renew-focus-035406451.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-13-26 11:54PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/china-tech-earnings-renew-focus-035406451.html" target="_blank" rel="nofollow">&#13;
+                        China Tech Earnings Renew Focus on Hardware Stocks Over Internet&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Bloomberg)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            01:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/381956/the-week-ahead-july-fed-minutes-blue-chip-earnings-on-deck" target="_blank">&#13;
+                        The Week Ahead: July Fed Minutes, Blue-Chip Earnings on Deck&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Schaeffer's Research)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/tencent-workbuddy-sparks-ai-turnaround-001110059.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-10-26 08:11PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/tencent-workbuddy-sparks-ai-turnaround-001110059.html" target="_blank" rel="nofollow">&#13;
+                        Tencents WorkBuddy Sparks AI Turnaround Hopes After Stock Rout&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Bloomberg)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/deepseek-plans-significant-price-increase-025333567.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Aug-05-26 10:53PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/deepseek-plans-significant-price-increase-025333567.html" target="_blank" rel="nofollow">&#13;
+                        DeepSeek Plans Significant Price Increase for Its AI Services&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Bloomberg)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/articles/uber-wayve-win-licenses-supervised-112356478.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:23AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/articles/uber-wayve-win-licenses-supervised-112356478.html" target="_blank" rel="nofollow">&#13;
+                        Uber, Wayve Win Licenses for Supervised Robotaxis in London&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Bloomberg)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/uber-gives-line-outlook-says-105658166.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            06:56AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/uber-gives-line-outlook-says-105658166.html" target="_blank" rel="nofollow">&#13;
+                        Uber Gives In-Line Outlook, Says Brazil Rivals Hurt Trips Growth&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Bloomberg)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Jul-31-26 05:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/375440/baidu-to-report-second-quarter-2026-financial-results-on-august-18-2026" target="_blank">&#13;
+                        Baidu to Report Second Quarter 2026 Financial Results on August 18, 2026&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Jul-28-26 04:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/373125/baidus-apollo-go-and-freenow-by-lyft-begin-road-testing-in-london" target="_blank">&#13;
+                        Baidu's Apollo Go and Freenow by Lyft Begin Road Testing in London&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Jul-27-26 08:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/373109/baidu-to-hold-extraordinary-general-meeting-on-august-26-2026" target="_blank">&#13;
+                        Baidu to Hold Extraordinary General Meeting on August 26, 2026&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/china-memory-champion-cxmt-set-230000143.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-26-26 07:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/china-memory-champion-cxmt-set-230000143.html" target="_blank" rel="nofollow">&#13;
+                        China Memory Champion CXMT Set to Debut After $9.8 Billion IPO&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Bloomberg)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/memory-frenzy-primes-china-champion-000000045.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-25-26 08:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/memory-frenzy-primes-china-champion-000000045.html" target="_blank" rel="nofollow">&#13;
+                        Memory Frenzy Primes China Champion CXMT for Historic Debut&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Bloomberg)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/trump-iran-war-tariffs-desensitized-markets-companies-changing-eb08433e?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-23-26 06:55AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/trump-iran-war-tariffs-desensitized-markets-companies-changing-eb08433e?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Markets Seem Desensitized to Trump's Iran War and Tariffs but Companies Are Changing in Fundamental Ways&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/china-resumes-issuing-robotaxi-licenses-051336689.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            01:13AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/china-resumes-issuing-robotaxi-licenses-051336689.html" target="_blank" rel="nofollow">&#13;
+                        China Resumes Issuing Robotaxi Licenses After Long Freeze&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Bloomberg)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Jul-22-26 07:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/370947/baidu-provides-update-on-voluntary-conversion-to-dual-primary-listing-on-the-main-board-of-the-stock-exchange-of-hong-kong-limited" target="_blank">&#13;
+                        Baidu Provides Update on Voluntary Conversion to Dual-Primary Listing on The Main Board of The Stock Exchange of Hong Kong Limited&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/china-smartphone-makers-turn-agentic-084426803.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-18-26 04:44AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/china-smartphone-makers-turn-agentic-084426803.html" target="_blank" rel="nofollow">&#13;
+                        China smartphone makers turn to agentic AI as device sales slow&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investing.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/ai-now-main-driver-china-000444126.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-17-26 08:04PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/ai-now-main-driver-china-000444126.html" target="_blank" rel="nofollow">&#13;
+                        Is AI now the main driver of Chinas growth?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investing.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/baidu-stock-rises-3-2-202659483.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-16-26 04:26PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/baidu-stock-rises-3-2-202659483.html" target="_blank" rel="nofollow">&#13;
+                        Baidu Stock Rises 3.2% as Dual-Primary Listing Opens Path to China Investors&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/apple-ai-tech-stocks-china-alibaba-baidu-54e17625?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            11:23AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/apple-ai-tech-stocks-china-alibaba-baidu-54e17625?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        How Apple Is Boosting Baidu and Other Chinese Tech Stocks&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/apple-ai-china-alibaba-baidu-stocks-54e17625?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            08:14AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/apple-ai-china-alibaba-baidu-stocks-54e17625?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        These Chinese Tech Stocks Are on the Rise. Thank Apple and Its AI.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/cxmt-blockbuster-ipo-212-times-115225452.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            07:52AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/cxmt-blockbuster-ipo-212-times-115225452.html" target="_blank" rel="nofollow">&#13;
+                        CXMTs Blockbuster IPO 212 Times Covered for Retail Investors&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Bloomberg)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            06:32AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/368897/baidu-advances-hong-kong-dual-primary-listing-plans-shares-climb-bidu" target="_blank">&#13;
+                        Baidu advances Hong Kong dual primary listing plans, shares climb (BIDU)&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(InvestorsHub)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            04:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/368875/baidu-to-pursue-voluntary-conversion-to-dual-primary-listing-on-the-main-board-of-the-stock-exchange-of-hong-kong-limited" target="_blank">&#13;
+                        Baidu to Pursue Voluntary Conversion to Dual-Primary Listing on The Main Board of The Stock Exchange of Hong Kong Limited&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/video/apple-clears-key-hurdle-for-iphone-ai-launch-in-china-201839774.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-15-26 04:18PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/video/apple-clears-key-hurdle-for-iphone-ai-launch-in-china-201839774.html" target="_blank" rel="nofollow">&#13;
+                        Apple clears key hurdle for iPhone AI launch in China&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Yahoo Finance Video)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/economy/policy/articles/trump-aides-see-china-cheating-163826999.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            12:38PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/economy/policy/articles/trump-aides-see-china-cheating-163826999.html" target="_blank" rel="nofollow">&#13;
+                        Trumps Aides See China Cheating on Trade, But Shun Retaliation&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Bloomberg)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Jul-14-26 12:26PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/368037/how-asian-stocks-tend-to-perform-after-us-ipos" target="_blank">&#13;
+                        How Asian Stocks Tend to Perform After U.S. IPOs&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Schaeffer's Research)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/zhipu-founder-backs-open-source-083837315.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-12-26 04:38AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/zhipu-founder-backs-open-source-083837315.html" target="_blank" rel="nofollow">&#13;
+                        Zhipu founder backs open-source AI over restricted frontier models&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investing.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/where-invest-now-us-stock-110020445.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-09-26 07:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/where-invest-now-us-stock-110020445.html" target="_blank" rel="nofollow">&#13;
+                        Where to Invest Now as US Stock Markets Get Bubbly&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Bloomberg)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.wsj.com/livecoverage/stock-market-today-dow-sp-500-nasdaq-07-08-2026/card/alibaba-stock-jumps-as-investors-look-for-less-crowded-ai-trades-b4HmAOAr1Fcjn6UzLmAP?mod=wsj_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-08-26 10:30AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.wsj.com/livecoverage/stock-market-today-dow-sp-500-nasdaq-07-08-2026/card/alibaba-stock-jumps-as-investors-look-for-less-crowded-ai-trades-b4HmAOAr1Fcjn6UzLmAP?mod=wsj_FV" target="_blank" rel="nofollow">&#13;
+                        Alibaba Stock Jumps as Investors Look for Less Crowded AI Trades&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(The Wall Street Journal)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/alibaba-stock-price-ai-rally-china-fa4e07ee?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            08:06AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/alibaba-stock-price-ai-rally-china-fa4e07ee?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        The AI Stock Rally Isn't Over- It's Just Moved to China&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/alibaba-stock-china-ai-rally-fa4e07ee?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            05:58AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/alibaba-stock-china-ai-rally-fa4e07ee?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Alibaba Stock Leads China AI Rally, Just as U.S. Tech Stumbles&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.marketwatch.com/story/alibaba-just-had-its-best-day-in-10-months-is-it-time-for-china-techs-to-catch-up-8ccc3f7c?mod=mw_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            04:47AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/alibaba-just-had-its-best-day-in-10-months-is-it-time-for-china-techs-to-catch-up-8ccc3f7c?mod=mw_FV" target="_blank" rel="nofollow">&#13;
+                        Alibaba just had its best day in 10 months. Is it time for China techs to catch up?&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(MarketWatch)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.digitimes.com/news/a20260708PD228/robotaxi-market-cost-supply-chain-tesla.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            12:00AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.digitimes.com/news/a20260708PD228/robotaxi-market-cost-supply-chain-tesla.html" target="_blank" rel="nofollow">&#13;
+                        China cost cuts put US$1T robotaxi market within reach by 2040&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(DigiTimes)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/economy/policy/articles/china-proposes-broader-e-commerce-043356529.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-04-26 12:33AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/economy/policy/articles/china-proposes-broader-e-commerce-043356529.html" target="_blank" rel="nofollow">&#13;
+                        China proposes broader e-commerce law covering platforms and digital businesses&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investing.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/eb77b8db-e998-32d0-967c-919a57861912/tibet-born-activist-dies.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jul-03-26 11:43PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/eb77b8db-e998-32d0-967c-919a57861912/tibet-born-activist-dies.html" target="_blank" rel="nofollow">&#13;
+                        Tibet-born activist dies after self-immolation outside UN headquarters&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investing.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            Jul-02-26 06:49AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/365603/baidu-announces-record-date-for-extraordinary-general-meeting-of-shareholders" target="_blank">&#13;
+                        Baidu Announces Record Date for Extraordinary General Meeting of Shareholders&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/baidu-rallies-ai-chip-ipo-130434714.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jun-29-26 09:04AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/baidu-rallies-ai-chip-ipo-130434714.html" target="_blank" rel="nofollow">&#13;
+                        Baidu Rallies on AI Chip IPO Report&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">&#13;
+         +7.64%&#13;
+    </span>&#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/articles/apple-seeks-us-approval-buy-074523538.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jun-27-26 03:45AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/articles/apple-seeks-us-approval-buy-074523538.html" target="_blank" rel="nofollow">&#13;
+                        Apple Seeks US Approval to Buy Chips From Blacklisted CXMT: FT&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Bloomberg)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/economy/articles/china-may-industrial-profits-slow-055608929.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            01:56AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/economy/articles/china-may-industrial-profits-slow-055608929.html" target="_blank" rel="nofollow">&#13;
+                        Chinas May industrial profits slow as exports offset weak demand&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Investing.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/alibaba-slides-16-month-low-032858399.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jun-24-26 11:28PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/alibaba-slides-16-month-low-032858399.html" target="_blank" rel="nofollow">&#13;
+                        Alibaba Slides to 16-Month Low After Anthropics AI Accusations&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Bloomberg)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/chinese-stocks-hong-kong-rebound-071546923.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jun-22-26 03:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/chinese-stocks-hong-kong-rebound-071546923.html" target="_blank" rel="nofollow">&#13;
+                        Chinese Stocks in Hong Kong Rebound From Edge of Bear Market&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Bloomberg)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/baidu-inc-bidu-q1-2026-222030459.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jun-17-26 06:20PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/baidu-inc-bidu-q1-2026-222030459.html" target="_blank" rel="nofollow">&#13;
+                        Baidu Inc (BIDU) Q1 2026 Earnings Call Highlights: AI-Powered Growth Amid Revenue Challenges&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(GuruFocus.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.wsj.com/finance/stocks/a-place-where-some-ai-stocks-are-still-cheap-china-22559ee9?mod=wsj_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jun-14-26 11:00PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.wsj.com/finance/stocks/a-place-where-some-ai-stocks-are-still-cheap-china-22559ee9?mod=wsj_FV" target="_blank" rel="nofollow">&#13;
+                        A Place Where Some AI Stocks Are Still Cheap: China&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(The Wall Street Journal)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/euphoria-market-sentiment-stocks-can-keep-rising-preview-8e04fb58?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jun-12-26 10:40PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/euphoria-market-sentiment-stocks-can-keep-rising-preview-8e04fb58?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        The Index Says Euphoria. But Don't Panic.&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label">&#13;
+        <td width="130" align="right">&#13;
+            07:47AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finviz.com/news/361399/baidus-apollo-go-expands-european-footprint-as-amigo-in-partnership-with-postbus-receives-level-4-regulatory-approval-in-switzerland" target="_blank">&#13;
+                        Baidu's Apollo Go Expands European Footprint as AmiGo, in Partnership with PostBus, Receives Level 4 Regulatory Approval in Switzerland&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(PR Newswire)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://finance.yahoo.com/m/a8098e1b-e04f-3256-8b41-c31bf8155d0b/pentagon-blacklists-chinese.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jun-10-26 12:01AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/a8098e1b-e04f-3256-8b41-c31bf8155d0b/pentagon-blacklists-chinese.html" target="_blank" rel="nofollow">&#13;
+                        Pentagon Blacklists Chinese Tech Giants, Setting Up Potential Restrictions&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(The Daily Upside)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.digitimes.com/news/a20260610PD227/military-alibaba-byd-baidu-market.html', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            Jun-09-26 09:40PM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.digitimes.com/news/a20260610PD227/military-alibaba-byd-baidu-market.html" target="_blank" rel="nofollow">&#13;
+                        China rejects US military-linked listing of Alibaba, Baidu and BYD, calls move unjustified&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(DigiTimes)</span>&#13;
+                      &#13;
+  &#13;
+  &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+    <tr class="cursor-pointer has-label" onclick="window.open('https://www.barrons.com/articles/alibaba-stock-price-pentagon-china-list-6bde38db?mod=bar_FV', '_blank');">&#13;
+        <td width="130" align="right">&#13;
+            10:15AM&#13;
+        </td>&#13;
+        <td align="left">&#13;
+            <div class="news-link-container">&#13;
+                <div class="news-link-left">&#13;
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/alibaba-stock-price-pentagon-china-list-6bde38db?mod=bar_FV" target="_blank" rel="nofollow">&#13;
+                        Alibaba Stock Has Bigger Problems Than the Pentagon's China List&#13;
+                    </a>&#13;
+                </div>&#13;
+                <div class="news-link-right">&#13;
+                    <span>(Barrons.com)</span>&#13;
+                    &#13;
+                </div>&#13;
+            </div>&#13;
+        </td>&#13;
+    </tr>
+</table>
+</div>
+
+</div></div>
+</body>
+</html>
