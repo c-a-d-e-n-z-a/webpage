@@ -1,0 +1,2605 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>INTC — Intel Corporation</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-size: 12px;
+      font-family: Arial, Helvetica, "Microsoft JhengHei", -apple-system, sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 8px 28px 16px;
+      background-color: #faf9f6;
+      color: #1c1917;
+    }
+
+    /* Header Bar */
+    .rp-header {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-top: 3px solid #FA8123;
+      border-radius: 6px;
+      padding: 6px 10px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+    .rp-title-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .rp-ticker {
+      font-size: 17px;
+      font-weight: 800;
+      color: #1c1917;
+      letter-spacing: 0.3px;
+    }
+    .rp-desc {
+      font-size: 15px;
+      font-weight: 700;
+      color: #FA8123;
+    }
+    .rp-time {
+      font-size: 11px;
+      color: #78716c;
+      background: #f5f3ef;
+      padding: 1px 7px;
+      border-radius: 999px;
+    }
+    .rp-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .rp-pill-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: #faf9f6;
+      border: 1px solid #d6d1c7;
+      color: #44403c;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.12s ease;
+    }
+    .rp-pill-link:hover {
+      background: #fff5eb;
+      border-color: #FA8123;
+      color: #d9650f;
+    }
+
+    /* Pyecharts Container Card */
+    .rp-chart-box {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 2px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+
+    /* Sub-Tabs Bar */
+    .rp-tabs-bar {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 4px 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      position: sticky;
+      top: 2px;
+      z-index: 50;
+      box-shadow: 0 1px 4px rgba(28, 25, 23, 0.05);
+    }
+    .rp-tab {
+      border: 1px solid transparent;
+      background: #f5f3ef;
+      color: #57534e;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+    .rp-tab:hover {
+      background: #fff5eb;
+      border-color: #fdba8c;
+      color: #d9650f;
+    }
+    .rp-tab.active {
+      background: #FA8123;
+      color: #ffffff;
+      box-shadow: 0 1px 3px rgba(250, 129, 35, 0.35);
+    }
+
+    /* Section Card */
+    .rp-sec-pane {
+      width: 100%;
+      margin: 0 0 4px;
+    }
+    .rp-card {
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 6px 8px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+      overflow-x: auto;
+    }
+    .rp-divider {
+      border: 0;
+      border-top: 1px solid #e6e2dc;
+      margin: 6px 0;
+    }
+
+    /* Modernized Tables (FBS / Pyramid / FinViz) */
+    .is-negative { color: #00994d; font-weight: 600; }
+    .is-positive { color: #cc2929; font-weight: 600; }
+    .snapshot-td2, .snapshot-td2-cp {
+      color: #1c1917;
+      text-decoration: none;
+      border: 1px solid #e6e2dc;
+      white-space: nowrap;
+    }
+    .snapshot-td2-cp { cursor: pointer; }
+    .fullview-ratings-outer, td.fullview-ratings-inner {
+      border: 1px solid #e6e2dc;
+    }
+    .t3r1 { color: #cc2929; font-weight: 700; }
+    .body-table-rating-downgrade { color: #cc2929; background: #fef2f2; }
+    .body-table-rating-upgrade { color: #00994d; background: #f0fdf4; }
+    .body-table-rating-neutral { color: #44403c; background: #faf9f6; }
+
+    table {
+      border-collapse: collapse;
+      margin: 6px auto;
+    }
+    td, th {
+      border: 1px solid #e6e2dc;
+      text-align: left;
+      padding: 6px 8px;
+    }
+    th {
+      background-color: #f6f4f0;
+      color: #1c1917;
+      font-weight: 700;
+    }
+    tr:nth-child(even) {
+      background-color: #fcfbf9;
+    }
+  </style>
+  <script>
+    function switchRpTab(btn) {
+      if (!btn) return;
+      var target = btn.getAttribute("data-target") || "all";
+      document.querySelectorAll(".rp-tab").forEach(function(b) {
+        b.classList.remove("active");
+      });
+      btn.classList.add("active");
+
+      document.querySelectorAll(".rp-sec-pane").forEach(function(pane) {
+        if (target === "all" || pane.id === target) {
+          pane.style.display = "block";
+        } else {
+          pane.style.display = "none";
+        }
+      });
+
+      try {
+        sessionStorage.setItem("sr_active_rp_tab", target);
+      } catch (e) {}
+
+      window.dispatchEvent(new Event("resize"));
+    }
+
+    window.addEventListener("load", function() {
+      try {
+        var saved = sessionStorage.getItem("sr_active_rp_tab");
+        if (saved && saved !== "all") {
+          var btn = document.querySelector('.rp-tab[data-target="' + saved + '"]');
+          if (btn) switchRpTab(btn);
+        }
+      } catch (e) {}
+    });
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/12.3.0/highcharts.min.js"></script>
+</head>
+<body>
+  <div class="rp-header">
+    <div class="rp-title-wrap">
+      <span class="rp-ticker">INTC</span>
+      <span class="rp-desc">Intel Corporation</span>
+      <span class="rp-time">更新: 2026-11-21 06:43</span>
+    </div>
+    <div class="rp-links">
+      <a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=INTC&type=pe-ratio&statement=price-ratios&freq=Q" target="_blank">📈 PE Chart</a><a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=INTC&type=price-book&statement=price-ratios&freq=Q" target="_blank">📊 PB Chart</a><a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=INTC&type=price-sales&statement=price-ratios&freq=Q" target="_blank">📉 PS Chart</a><a class="rp-pill-link" href="https://www.wsj.com/market-data/quotes/INTC/financials/quarter/cash-flow" target="_blank">💵 Finance</a><a class="rp-pill-link" href="https://www.dataroma.com/m/stock.php?sym=INTC" target="_blank">🏛️ Ownership</a><a class="rp-pill-link" href="https://hedgefollow.com/stocks/INTC" target="_blank">🏦 Institute</a><a class="rp-pill-link" href="https://unusualwhales.com/stock/INTC/greek-exposure" target="_blank">⚡ GEX</a><a class="rp-pill-link" href="https://www.ptt.cc/bbs/Stock/search?q=INTC" target="_blank">💬 PTT Search</a>
+    </div>
+  </div>
+
+  <div class="rp-chart-box" align="center">
+    <iframe id="stock" src="INTC_EC.html" frameborder="0" width="100%" height="1600px" scrolling="no"></iframe>
+  </div>
+
+  <div class="rp-tabs-bar"><button class="rp-tab active" data-target="all" onclick="switchRpTab(this)">📋 全部展開</button><button class="rp-tab" data-target="sec-quant" onclick="switchRpTab(this)">🧮 量化與主動ETF</button><button class="rp-tab" data-target="sec-stockdog" onclick="switchRpTab(this)">🐶 主力籌碼</button><button class="rp-tab" data-target="sec-finviz" onclick="switchRpTab(this)">🌎 FinViz 美股基本面</button></div>
+  <div class="rp-sec-pane" id="sec-quant"><style>.pq-wrap{width:100%;margin:0;font-family:Arial,Helvetica,"Microsoft JhengHei",sans-serif;color:#222}.pq-sec{background:#fff;border:1px solid #e6e2dc;border-radius:6px;padding:6px 8px;margin-bottom:4px;box-shadow:0 1px 2px rgba(28,25,23,.03)}.pq-sec h2{font-size:14px;color:#1c1917;border-left:4px solid #FA8123;padding-left:6px;margin:0 0 6px}.pq-sec h3{font-size:12px;color:#44403c;margin:6px 0 4px}.pq-banner{background:#fff9f4;border-left:4px solid #FA8123;padding:5px 8px;border-radius:4px;font-size:12px;line-height:1.5;margin-bottom:6px;color:#292524}.pq-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:6px}table.pq-tbl{width:100%;border-collapse:collapse;font-size:12px;font-family:Arial,Helvetica,"Microsoft JhengHei",sans-serif}table.pq-tbl th,table.pq-tbl td{border:1px solid #e6e2dc !important;padding:4px 6px !important;text-align:right}table.pq-tbl th{background:#f6f4f0 !important;color:#1c1917 !important;font-weight:bold}table.pq-tbl tr:nth-child(even){background:#fcfbf9}</style><div class="pq-wrap">
+
+    <div class="pq-sec">
+      <h2>🧮 量化風險、波動率體制與因子 Alpha 拆解 (INTC)</h2>
+      <div class="pq-banner">
+        <b>現價：</b> <b>51.28</b> ｜
+        <b>動能 (1D / 5D / 20D / 60D / 1Y / 12-1M)：</b> <span style="color:#00994d;font-weight:bold">-7.97%</span> / <span style="color:#00994d;font-weight:bold">-14.05%</span> / <span style="color:#00994d;font-weight:bold">-41.03%</span> / <span style="color:#00994d;font-weight:bold">-44.32%</span> / <span style="color:#cc2929;font-weight:bold">+52.53%</span> / <span style="color:#cc2929;font-weight:bold">+154.28%</span> ｜
+        <b>200D Volume Profile：</b> POC <b>45.38</b> (VAH <b>107.09</b> / VAL <b>40.63</b>)<br>
+        <b>尾部風險與風險調整指標 (1Y)：</b> 1Y歷史年化波動率 <b>85.23%</b> vs GARCH 1D條件年化波動預測 <b>113.41%</b> ｜
+        Sortino <b>1.87</b> ｜ Calmar <b>1.74</b> ｜
+        最大回撤 (MDD) <span style="color:#00994d;font-weight:bold">-63.62%</span> ｜
+        95% VaR / CVaR: <span style="color:#00994d;font-weight:bold">-6.91% / -10.89%</span><br>
+        <b>↳ GARCH 波動體制與明日振幅推估：</b> <b style="color:#cc2929">【波動擴張 / 高波動叢聚 (1.33x 歷史均態, +28.18%p)】</b>近期日內或隔日跳空衝擊使短期條件波動顯著高於 1Y 歷史常態，處於高波動發散期，突破訊號失真與洗盤掃停損機率升高；<b>建議放寬停損 ATR 倍數並調降部位規模</b>。 ｜ <b>隱含振幅推估：</b>明日 (1D) ±1σ (68%機率) 預期波動 <b>±7.14%</b>（約 <b>47.62 ~ 54.94</b>）、±1.96σ (95%極端值) 為 <b>±14.00%</b>；未來一週 (5D) ±1σ 預期波動 <b>±15.97%</b> ｜ <b>20%波動目標部位上限：</b>約 <b>18%</b> 倉位 <span style="color:#666;font-size:11px">（註：GARCH 1D 預測值係以 EWMA λ=0.94 捕捉近期波動叢聚效應，將「下一交易日條件波動率」折算為年化百分比以便與 1Y 年化波動率直接對比；除以 √252 即為明日單日標準差 σ）</span><br>
+        <b>Lo-MacKinlay 序列相關檢定 VR(5/10/20)：</b> 5D: <b style="color:#292524">1.090</b> (z*=+0.83, 正自相關/趨勢·不顯著) ／ 10D: <b style="color:#292524">1.158</b> (z*=+0.93, 正自相關/趨勢·不顯著) ／ 20D: <b style="color:#292524">1.216</b> (z*=+0.90, 正自相關/趨勢·不顯著)<br>
+        <b>↳ 序列體制判讀與交易意涵：</b> <b>【隨機漫步體制 (Random Walk)】</b>各期 VR 數值雖皆 &gt; 1（微幅偏向正自相關/動量延續），但 |z*| 均未達 1.96 顯著門檻，統計上無法拒絕隨機漫步假說；代表單憑歷史價格序列本身缺乏顯著之可預測自相關 Edge，<b>純技術型態之時序預測力有限，交易決策應以基本面估值、法人/主動ETF籌碼或事件催化為主，技術面僅作為支撐壓力（如 POC/VAL）定價工具</b>。 <span style="color:#666;font-size:11px">（原理說明：VR(q) = Var(q日對數報酬) / [q × Var(1日對數報酬)]；VR=1 為隨機漫步、VR&gt;1 為趨勢動量延續、VR&lt;1 為均值回歸反轉；z* 為異質變異數穩健檢定統計量，|z*|&gt;1.96 表達 95% 統計顯著）</span>
+        <br><b>今日觸發技術訊號：</b> [BUY]     : 日KD小於20 | 日週K小於20 | 日RSI小於30 ｜ [SELL]    : 週KD死亡交叉 ｜ [OTHER]   : 三月KD由上往下
+      </div>
+      <table class="pq-tbl" style="margin-top:8px"><thead><tr><th style="text-align:left">Benchmark</th><th>20D (Stock / Bench)</th><th>20D Rel Excess</th><th>60D Rel Excess</th><th>1Y Rel Excess</th><th>1Y Beta (β)</th><th>R²</th><th>1Y Residual Alpha (α)</th></tr></thead><tbody><tr><td style="text-align:left"><b>^GSPC</b></td><td><span style="color:#00994d;font-weight:bold">-41.03%</span> / <span style="color:#00994d;font-weight:bold">-9.36%</span></td><td><span style="color:#00994d;font-weight:bold">-31.67%</span></td><td><span style="color:#00994d;font-weight:bold">-33.70%</span></td><td><span style="color:#cc2929;font-weight:bold">+42.02%</span></td><td><b>3.10</b></td><td>0.27</td><td><span style="color:#cc2929;font-weight:bold">+42.57%</span></td></tr><tr><td style="text-align:left"><b>QQQ</b></td><td><span style="color:#00994d;font-weight:bold">-41.03%</span> / <span style="color:#00994d;font-weight:bold">-13.62%</span></td><td><span style="color:#00994d;font-weight:bold">-27.41%</span></td><td><span style="color:#00994d;font-weight:bold">-28.69%</span></td><td><span style="color:#cc2929;font-weight:bold">+44.62%</span></td><td><b>2.53</b></td><td>0.44</td><td><span style="color:#cc2929;font-weight:bold">+49.03%</span></td></tr><tr><td style="text-align:left"><b>SOXX</b></td><td><span style="color:#00994d;font-weight:bold">-41.03%</span> / <span style="color:#00994d;font-weight:bold">-22.58%</span></td><td><span style="color:#00994d;font-weight:bold">-18.45%</span></td><td><span style="color:#00994d;font-weight:bold">-14.77%</span></td><td><span style="color:#cc2929;font-weight:bold">+14.60%</span></td><td><b>1.27</b></td><td>0.59</td><td><span style="color:#cc2929;font-weight:bold">+7.14%</span></td></tr></tbody></table>
+    </div>
+    
+</div></div>
+<div class="rp-sec-pane" id="sec-stockdog"><div class="rp-card" align="center"><iframe id="stockdog" src="INTC_SD.html" frameborder="0" width="100%" height="1000px" scrolling="no"></iframe></div></div>
+<div class="rp-sec-pane" id="sec-finviz"><div class="rp-card"><div align="center"><a href="https://www.marketwatch.com/investing/stock/INTC/analystestimates" target="_blank"><img style="max-height:100%; max-width:100%; object-fit:contain" src=https://app.quotemedia.com/quotetools/getChart?webmasterId=91386&symbol=INTC&chtype=FinancialLine&chcon=on&chdon=on&chfrmon=on&chscale=1d&chton=on&chwid=800&chhig=380&chln=ffa500&chfill=ffa500&chfnts=10&chbdr=000000&chbgch=ffffffff&chgrd=cccccc&svg=false&lang=en&locale=en></a></div>
+
+<hr class="rp-divider">
+<table align="center" class="snapshot-table2" align="center" style="width:100%; border-collapse:collapse; font-size:12px; margin:auto;">
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Major index membership"><div class="snapshot-td-label">Index</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">NDX, S&amp;P 500, RUI</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price-to-Earnings (ttm)"><div class="snapshot-td-label">P/E</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Diluted EPS (ttm)"><div class="snapshot-td-label">EPS (ttm)</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-2.39</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Insider ownership"><div class="snapshot-td-label">Insider Own</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>13.98%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Shares outstanding"><div class="snapshot-td-label">Shs Outstand</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>5.31B</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Week, Excl. Dividends)"><div class="snapshot-td-label">Perf Week</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-14.05%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Market capitalization"><div class="snapshot-td-label">Market Cap</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>272.55B</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Forward Price-to-Earnings (next fiscal year)"><div class="snapshot-td-label">Forward P/E</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>28.53</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="EPS estimate for next year"><div class="snapshot-td-label">EPS next Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>1.80</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Insider transactions (6-Month change in Insider Ownership)"><div class="snapshot-td-label">Insider Trans</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.03%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Shares float"><div class="snapshot-td-label">Shs Float</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>4.57B</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Month, Excl. Dividends)"><div class="snapshot-td-label">Perf Month</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-40.02%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Enterprise Value"><div class="snapshot-td-label">Enterprise Value</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>285.32B</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price-to-Earnings-to-Growth"><div class="snapshot-td-label">PEG</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">0.31</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="EPS estimate for next quarter"><div class="snapshot-td-label">EPS next Q</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.27</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Institutional ownership"><div class="snapshot-td-label">Inst Own</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>69.44%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Short interest share"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=INTC&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank">Short Float</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=INTC&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank"><b>3.34%</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Quarter, Excl. Dividends)"><div class="snapshot-td-label">Perf Quarter</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-41.23%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Income (ttm)"><div class="snapshot-td-label">Income</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-12.03B</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price-to-Sales (ttm)"><div class="snapshot-td-label">P/S</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>4.55</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="EPS growth this year"><div class="snapshot-td-label">EPS this Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">256.57%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Institutional transactions (3-Month change in Institutional Ownership)"><div class="snapshot-td-label">Inst Trans</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>2.29%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Short interest ratio"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=INTC&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank">Short Ratio</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=INTC&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank"><b>1.33</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Half Year, Excl. Dividends)"><div class="snapshot-td-label">Perf Half Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-57.21%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Revenue (ttm)"><div class="snapshot-td-label">Sales</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>59.89B</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price-to-Book (mrq)"><div class="snapshot-td-label">P/B</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>2.37</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="EPS growth next year"><div class="snapshot-td-label">EPS next Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>20.01%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Return on Assets (ttm)"><div class="snapshot-td-label">ROA</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-5.56%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Short interest"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=INTC&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank">Short Interest</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=INTC&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank"><b data-boxover-html="Settlement Date: 10/30/2026">152.86M</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Year To Date, Excl. Dividends)"><div class="snapshot-td-label">Perf YTD</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">38.97%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Book value per share (mrq)"><div class="snapshot-td-label">Book/sh</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>21.64</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price to cash per share (mrq)"><div class="snapshot-td-label">P/C</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>5.05</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Long term annual growth estimate (5 years)"><div class="snapshot-td-label">EPS next 5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">92.22%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Return on Equity (ttm)"><div class="snapshot-td-label">ROE</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-10.87%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 52-Week High"><div class="snapshot-td-label">52W High</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>142.35 <small class="text-2xs"><span class="color-text is-negative">-63.98%</span></small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Year, Excl. Dividends)"><div class="snapshot-td-label">Perf Year</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">52.53%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Cash per share (mrq)"><div class="snapshot-td-label">Cash/sh</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>10.16</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price to Free Cash Flow (ttm)"><div class="snapshot-td-label">P/FCF</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">168.55</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Annual EPS growth past 3 and 5 years"><div class="snapshot-td-label">EPS past 3/5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">- -</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Return on Invested Capital (ttm)"><div class="snapshot-td-label">ROIC</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-7.46%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 52-Week Low"><div class="snapshot-td-label">52W Low</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>32.89 <small class="text-2xs"><span class="color-text is-positive">55.91%</span></small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (3 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 3Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">14.62%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Analysts' Dividend Estimate (Fiscal Year)"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=INTC&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank">Dividend Est.</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=INTC&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank"><b>0.04 (0.08%)</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Enterprise Value to EBITDA"><div class="snapshot-td-label">EV/EBITDA</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>15.08</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Annual sales growth past 3 and 5 years"><div class="snapshot-td-label">Sales past 3/5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs"><span class="color-text is-negative">-5.71%</span> <span class="color-text is-negative">-7.46%</span></small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Gross Margin (ttm)"><div class="snapshot-td-label">Gross Margin</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>40.32%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Volatility (Week, Month)"><div class="snapshot-td-label">Volatility</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">6.07% 5.97%</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (5 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">3.55%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Trailing 12 Months Dividend"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=INTC&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank">Dividend TTM</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=INTC&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank"><b>-</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Enterprise Value to Revenues"><div class="snapshot-td-label">EV/Sales</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>4.76</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="EPS growth TTM"><div class="snapshot-td-label">EPS Y/Y TTM</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-17126.43%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Operating Margin (ttm)"><div class="snapshot-td-label">Oper. Margin</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>10.51%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Average True Range (14)"><div class="snapshot-td-label">ATR (14)</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>5.24</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (10 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 10Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">46.72%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Ex-Dividend Date"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=INTC&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank">Dividend Ex-Date</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=INTC&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank"><b>Aug 07, 2024</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Quick Ratio (mrq)"><div class="snapshot-td-label">Quick Ratio</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>1.86</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Sales growth TTM"><div class="snapshot-td-label">Sales Y/Y TTM</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>12.08%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Net Profit Margin (ttm)"><div class="snapshot-td-label">Profit Margin</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-20.09%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Relative Strength Index"><div class="snapshot-td-label">RSI (14)</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">28.03</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Analysts' mean recommendation (1=Buy 5=Sell)"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=INTC&amp;ta=1&amp;p=d&amp;ty=fc" class="hover:underline" target="_blank">Recom</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=INTC&amp;ta=1&amp;p=d&amp;ty=fc" class="hover:underline" target="_blank"><b>2.39</b></a></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Dividend growth over 3 and 5 years"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=INTC&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank">Dividend Gr. 3/5Y</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=INTC&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank"><b><small class="text-2xs">- -</small></b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Current Ratio (mrq)"><div class="snapshot-td-label">Current Ratio</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>2.21</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Quarterly earnings growth (YoY)"><div class="snapshot-td-label">EPS Q/Q</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-30.23%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 20-Day Simple Moving Average"><div class="snapshot-td-label">SMA20</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-20.99%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Beta"><div class="snapshot-td-label">Beta</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>2.44</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Analysts' mean target price"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=INTC&amp;ta=1&amp;p=d&amp;ty=fc" class="hover:underline" target="_blank">Target Price</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=INTC&amp;ta=1&amp;p=d&amp;ty=fc" class="hover:underline" target="_blank"><b><span class="color-text is-positive">90.09</span></b></a></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Dividend Payout Ratio (ttm)"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=INTC&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank">Payout</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=INTC&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank"><b>-</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Total Debt to Equity (mrq)"><div class="snapshot-td-label">Debt/Eq</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.44</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Quarterly revenue growth (YoY)"><div class="snapshot-td-label">Sales Q/Q</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>20.95%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 50-Day Simple Moving Average"><div class="snapshot-td-label">SMA50</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-43.16%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Relative volume"><div class="snapshot-td-label">Rel Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>1.80</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Previous close"><div class="snapshot-td-label">Prev Close</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>55.72</b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Full time employees"><div class="snapshot-td-label">Employees</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>85100</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Long Term Debt to Equity (mrq)"><div class="snapshot-td-label">LT Debt/Eq</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.40</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Earnings date&lt;br&gt;&lt;br&gt;BMO = Before Market Open&lt;br&gt;AMC = After Market Close"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=INTC&amp;ta=1&amp;p=d&amp;ty=ea" class="hover:underline" target="_blank">Earnings</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=INTC&amp;ta=1&amp;p=d&amp;ty=ea" class="hover:underline" target="_blank"><b><small class="text-2xs">Oct 29 AMC</small></b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 200-Day Simple Moving Average"><div class="snapshot-td-label">SMA200</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-41.43%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Average volume (3 month)"><div class="snapshot-td-label">Avg Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>114.96M</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Current stock price"><div class="snapshot-td-label">Price</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>51.28</b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="IPO Date"><div class="snapshot-td-label">IPO</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>May 03, 1973</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Stock has options trading on a market exchange / Stock is available to sell short"><div class="snapshot-td-label">Option/Short</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">Yes / Yes</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Last quarter EPS and Revenue surprise"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=INTC&amp;ta=1&amp;p=d&amp;ty=ea" class="hover:underline" target="_blank">EPS/Sales Surpr.</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=INTC&amp;ta=1&amp;p=d&amp;ty=ea" class="hover:underline" target="_blank"><b><small class="text-2xs"><span class="color-text is-positive">27.89%</span> <span class="color-text is-negative">-0.25%</span></small></b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Trades"><div class="snapshot-td-label">Trades</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Volume"><div class="snapshot-td-label">Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>207,385,017</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (today)"><div class="snapshot-td-label">Change %</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-7.97%</span></b></div></td>
+</tr>
+</table>
+
+
+<hr class="rp-divider">
+<table align="center" class="styled-table-new is-rounded is-small w-full" cellpadding="0" cellspacing="0">
+  <thead>
+    <tr>
+      <th align="left" class="whitespace-nowrap">Date</th>
+      <th align="left" class="whitespace-nowrap">Action</th>
+      <th align="left" class="whitespace-nowrap">Analyst</th>
+      <th align="left" class="whitespace-nowrap">Rating Change</th>
+      <th align="left" class="whitespace-nowrap">Price Target Change</th>
+      <th align="left" class="whitespace-nowrap">Implied Upside</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Oct 30, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>S</span></span>Seaport Research Partners</div>
+      </td>
+      <td class="text-left color-text is-negative">Buy → Neutral</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no"/>
+      <td class="whitespace-nowrap"/>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Oct 30, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>R</span></span>Roth Capital</div>
+      </td>
+      <td class="text-left color-text is-negative">Buy → Neutral</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no">$70</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+36.5%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Oct 30, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/BAC.svg&quot;)"><img src="https://logo.finviz.com/BAC.svg" alt="BAC logo" crossorigin="anonymous"/><span>B</span></span>BofA Securities</div>
+      </td>
+      <td class="text-left color-text is-negative">Buy → Neutral</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no">$100</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+95.0%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Oct 19, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/JPM.svg&quot;)"><img src="https://logo.finviz.com/JPM.svg" alt="JPM logo" crossorigin="anonymous"/><span>J</span></span>JP Morgan</div>
+      </td>
+      <td class="text-left color-text is-positive">Underweight → Neutral</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no">$85</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+65.8%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Sep 10, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Initiated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>P</span></span>Piper Sandler</div>
+      </td>
+      <td class="text-left">Neutral</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$110</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+114.5%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Sep 08, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>N</span></span>Northland Capital</div>
+      </td>
+      <td class="text-left color-text is-positive">Market Perform → Outperform</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no">$120</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+134.0%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Jul 24, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>W</span></span>Wedbush</div>
+      </td>
+      <td class="text-left">Neutral</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$60 → $98</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+91.1%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Jul 24, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/MFG.svg&quot;)"><img src="https://logo.finviz.com/MFG.svg" alt="MFG logo" crossorigin="anonymous"/><span>M</span></span>Mizuho</div>
+      </td>
+      <td class="text-left">Neutral</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$135 → $109</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+112.6%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Jul 24, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>C</span></span>Cantor Fitzgerald</div>
+      </td>
+      <td class="text-left">Neutral</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$150 → $125</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+143.8%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text is-last">
+      <td class="whitespace-nowrap">Jun 25, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Initiated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/GS.svg&quot;)"><img src="https://logo.finviz.com/GS.svg" alt="GS logo" crossorigin="anonymous"/><span>G</span></span>Goldman</div>
+      </td>
+      <td class="text-left">Neutral</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$150</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+192.5%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Jun 11, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/BAC.svg&quot;)"><img src="https://logo.finviz.com/BAC.svg" alt="BAC logo" crossorigin="anonymous"/><span>B</span></span>BofA Securities</div>
+      </td>
+      <td class="text-left color-text is-positive">Underperform → Buy</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no">$135</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+163.3%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">May 26, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>N</span></span>Northland Capital</div>
+      </td>
+      <td class="text-left color-text is-negative">Outperform → Market Perform</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no"/>
+      <td class="whitespace-nowrap"/>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">May 18, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>T</span></span>The Benchmark Company</div>
+      </td>
+      <td class="text-left">Buy</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$105 → $140</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+173.0%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">May 18, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/C.svg&quot;)"><img src="https://logo.finviz.com/C.svg" alt="C logo" crossorigin="anonymous"/><span>C</span></span>Citigroup</div>
+      </td>
+      <td class="text-left">Buy</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$95 → $130</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+153.5%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Apr 24, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>R</span></span>Roth Capital</div>
+      </td>
+      <td class="text-left color-text is-positive">Neutral → Buy</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no">$100</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+95.0%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Apr 24, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/EVR.svg&quot;)"><img src="https://logo.finviz.com/EVR.svg" alt="EVR logo" crossorigin="anonymous"/><span>E</span></span>Evercore ISI</div>
+      </td>
+      <td class="text-left color-text is-positive">In-line → Outperform</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no">$111</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+116.5%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Apr 24, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/C.svg&quot;)"><img src="https://logo.finviz.com/C.svg" alt="C logo" crossorigin="anonymous"/><span>C</span></span>Citigroup</div>
+      </td>
+      <td class="text-left color-text is-positive">Neutral → Buy</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no">$95</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+85.3%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Apr 24, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/UBS.svg&quot;)"><img src="https://logo.finviz.com/UBS.svg" alt="UBS logo" crossorigin="anonymous"/><span>U</span></span>UBS</div>
+      </td>
+      <td class="text-left">Neutral</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$65 → $83</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+61.9%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Apr 24, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>T</span></span>The Benchmark Company</div>
+      </td>
+      <td class="text-left">Buy</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$76 → $105</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+104.8%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Apr 24, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/TD.svg&quot;)"><img src="https://logo.finviz.com/TD.svg" alt="TD logo" crossorigin="anonymous"/><span>T</span></span>TD Cowen</div>
+      </td>
+      <td class="text-left">Hold</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$60 → $75</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+46.3%</span>
+        </span>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<hr class="rp-divider">
+<table align="center" cellpadding="0" cellspacing="0" align="center" width="70%" class="body-table styled-table-new is-rounded p-0 mt-2">
+<thead>
+<tr>
+<th align="left">Insider Trading</th>
+<th align="left">Relationship</th>
+<th align="left">Date</th>
+<th align="center">Transaction</th>
+<th align="right">Cost</th>
+<th align="right">#Shares</th>
+<th align="right">Value ($)</th>
+<th align="right">#Shares Total</th>
+<th align="center">SEC Form 4</th>
+</tr>
+</thead>
+<tr class="fv-insider-row is-buy-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1008463&amp;tc=7" class="tab-link" target="_blank">TAN LIP BU</a></td><td style="white-space:nowrap">CEO</td><td>Nov 02 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Buy</span></td><td class="value" align="right">64.73</td><td class="value" align="right">150,000</td><td class="value" align="right">9,709,680</td><td class="value" align="right">1,464,669</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/50863/000005086326000195/xslF345X06/form4.xml" class="tab-link" target="_blank">Nov 04 12:19 PM</a></td></tr><tr class="fv-insider-row is-buy-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1008463&amp;tc=7" class="tab-link" target="_blank">TAN LIP BU</a></td><td style="white-space:nowrap">CEO</td><td>Aug 11 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Buy</span></td><td class="value" align="right">95.00</td><td class="value" align="right">105,263</td><td class="value" align="right">9,999,985</td><td class="value" align="right">1,314,669</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/50863/000005086326000177/xslF345X06/form4.xml" class="tab-link" target="_blank">Aug 14 04:27 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=2082075&amp;tc=7" class="tab-link" target="_blank">Chandrasekaran Nagasubramaniya</a></td><td style="white-space:nowrap">EVP, CT &amp; Ops Off, GM Foundry</td><td>May 29 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">118.28</td><td class="value" align="right">21,024</td><td class="value" align="right">2,486,698</td><td class="value" align="right">205,852</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/50863/000005086326000138/xslF345X06/form4.xml" class="tab-link" target="_blank">Jun 02 04:15 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=2082075&amp;tc=7" class="tab-link" target="_blank">Chandrasekaran Nagasubramaniya</a></td><td style="white-space:nowrap">Officer</td><td>May 29 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">120.89</td><td class="value" align="right">21,024</td><td class="value" align="right">2,541,591</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/50863/000196530126000065/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">May 29 12:44 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1458902&amp;tc=7" class="tab-link" target="_blank">Frank D. Yeary</a></td><td style="white-space:nowrap">Former Director</td><td>May 15 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">108.25</td><td class="value" align="right">24,286</td><td class="value" align="right">2,628,842</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/50863/000196858226000455/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">May 15 04:24 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1458902&amp;tc=7" class="tab-link" target="_blank">FRANK D YEARY</a></td><td style="white-space:nowrap">Director</td><td>May 15 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">108.95</td><td class="value" align="right">59,617</td><td class="value" align="right">6,495,284</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/50863/000195004726004586/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">May 15 04:09 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1680881&amp;tc=7" class="tab-link" target="_blank">Miller Boise April</a></td><td style="white-space:nowrap">EVP and Chief Legal Officer</td><td>May 01 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">99.53</td><td class="value" align="right">40,256</td><td class="value" align="right">4,006,519</td><td class="value" align="right">105,077</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/50863/000005086326000086/xslF345X06/form4.xml" class="tab-link" target="_blank">May 04 04:15 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1680881&amp;tc=7" class="tab-link" target="_blank">APRIL V BOISE</a></td><td style="white-space:nowrap">Officer</td><td>May 01 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">99.53</td><td class="value" align="right">40,256</td><td class="value" align="right">4,006,500</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/50863/000195004726003882/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">May 01 04:03 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1680881&amp;tc=7" class="tab-link" target="_blank">Miller Boise April</a></td><td style="white-space:nowrap">EVP and Chief Legal Officer</td><td>Feb 02 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">49.05</td><td class="value" align="right">20,000</td><td class="value" align="right">981,000</td><td class="value" align="right">113,060</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/50863/000005086326000034/xslF345X05/form4.xml" class="tab-link" target="_blank">Feb 03 04:53 PM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1680881&amp;tc=7" class="tab-link" target="_blank">APRIL V BOISE</a></td><td style="white-space:nowrap">Officer</td><td>Feb 02 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">49.04</td><td class="value" align="right">20,000</td><td class="value" align="right">980,822</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/50863/000195004726000853/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Feb 02 05:44 PM</a></td></tr><tr class="fv-insider-row is-buy-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1330891&amp;tc=7" class="tab-link" target="_blank">Zinsner David</a></td><td style="white-space:nowrap">EVP, CFO</td><td>Jan 26 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Buy</span></td><td class="value" align="right">42.50</td><td class="value" align="right">5,882</td><td class="value" align="right">249,985</td><td class="value" align="right">247,392</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/50863/000005086326000032/xslF345X05/form4.xml" class="tab-link" target="_blank">Jan 27 04:28 PM</a></td></tr></table>
+
+
+
+<hr class="rp-divider">
+<div class="body-table-news-wrapper news-table_wrapper is-collapsed"><table align="center" align="center" width="70%" cellpadding="1" cellspacing="0" border="0" id="news-table" class="fullview-news-outer news-table" data-ticker="INTC">
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/article/nvidia-amd-and-broadcom-lead-chip-stocks-lower-133658985.html', '_blank');">
+        <td width="130" align="right">
+            Today 01:40PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/article/nvidia-amd-and-broadcom-lead-chip-stocks-lower-133658985.html" target="_blank" rel="nofollow">
+                        Broadcom sinks 10%, Nvidia and AMD extend declines as the AI trade melts down
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Yahoo Finance)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">
+         -7.97%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/ai-sell-off-sectors-held-044523371.html', '_blank');">
+        <td width="130" align="right">
+            Nov-19-26 11:45PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/ai-sell-off-sectors-held-044523371.html" target="_blank" rel="nofollow">
+                        AI sell-off: These sectors held firm as tech slumped in Oct, Nov
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/tech-bear-market-20-tech-224039016.html', '_blank');">
+        <td width="130" align="right">
+            05:40PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/tech-bear-market-20-tech-224039016.html" target="_blank" rel="nofollow">
+                        Is Tech in a Bear Market? 20 Tech Stocks Fall Up to 76% From Highs
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(BeInCrypto)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/article/nvidia-broadcom-micron-stocks-decline-as-anthropic-goes-public-170845481.html', '_blank');">
+        <td width="130" align="right">
+            04:21PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/article/nvidia-broadcom-micron-stocks-decline-as-anthropic-goes-public-170845481.html" target="_blank" rel="nofollow">
+                        Nvidia, Broadcom, and Micron stocks decline as Anthropic goes public
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Yahoo Finance)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            04:00PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/425469/intel-corporation-sued-for-securities-law-violations-contact-the-djs-law-group-to-discuss-your-rights-intc" target="_blank">
+                        Intel Corporation Sued for Securities Law Violations - Contact the DJS Law Group to Discuss Your Rights - INTC
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(PR Newswire)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/lumentum-sales-surged-137-why-202833709.html', '_blank');">
+        <td width="130" align="right">
+            03:28PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/lumentum-sales-surged-137-why-202833709.html" target="_blank" rel="nofollow">
+                        Lumentums sales surged 137%so why is its stock crashing?
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.marketwatch.com/story/why-micron-intel-and-other-ai-stocks-are-getting-a-lift-on-thursday-cf6f59f8?mod=mw_FV', '_blank');">
+        <td width="130" align="right">
+            02:43PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/why-micron-intel-and-other-ai-stocks-are-getting-a-lift-on-thursday-cf6f59f8?mod=mw_FV" target="_blank" rel="nofollow">
+                        Why Micron, Broadcom and other AI stocks have given up their gains
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketWatch)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.marketwatch.com/livecoverage/anthropic-ipo-stock-trading-today-price-valuation-ant/card/anthropic-s-debut-is-dubbed-a-big-near-term-win-for-the-tech-sector--D3sbuinZF9UMYV42bNWw?mod=mw_FV', '_blank');">
+        <td width="130" align="right">
+            12:50PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.marketwatch.com/livecoverage/anthropic-ipo-stock-trading-today-price-valuation-ant/card/anthropic-s-debut-is-dubbed-a-big-near-term-win-for-the-tech-sector--D3sbuinZF9UMYV42bNWw?mod=mw_FV" target="_blank" rel="nofollow">
+                        Anthropic's debut is dubbed a 'big near-term win for the tech sector'
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketWatch)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/article/nvidia-amd-micron-pare-gains-leading-up-to-anthropics-first-trade-155941221.html', '_blank');">
+        <td width="130" align="right">
+            11:09AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/article/nvidia-amd-micron-pare-gains-leading-up-to-anthropics-first-trade-155941221.html" target="_blank" rel="nofollow">
+                        Nvidia, Broadcom, Micron stocks rise leading up to Anthropic's first trade
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Yahoo Finance)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/article/copy-nvidia-stock-slips-as-investors-digest-ceo-exit-rest-of-chip-sector-falls-134408467.html', '_blank');">
+        <td width="130" align="right">
+            09:52AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/article/copy-nvidia-stock-slips-as-investors-digest-ceo-exit-rest-of-chip-sector-falls-134408467.html" target="_blank" rel="nofollow">
+                        Nvidia, AMD, Micron stocks lead chip sector higher amid Anthropic IPO optimism
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Yahoo Finance)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/premarket-movers-palo-alto-soars-130941709.html', '_blank');">
+        <td width="130" align="right">
+            08:09AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/premarket-movers-palo-alto-soars-130941709.html" target="_blank" rel="nofollow">
+                        Premarket movers: Palo Alto soars, chip stocks rally ahead of Anthropic debut
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/global-chip-stocks-rally-anthropic-112707609.html', '_blank');">
+        <td width="130" align="right">
+            06:27AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/global-chip-stocks-rally-anthropic-112707609.html" target="_blank" rel="nofollow">
+                        Global chip stocks rally as Anthropics record IPO boosts confidence in AI trade
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/nasdaq-futures-jump-anthropics-record-090243474.html', '_blank');">
+        <td width="130" align="right">
+            06:19AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/nasdaq-futures-jump-anthropics-record-090243474.html" target="_blank" rel="nofollow">
+                        Nasdaq futures climb on optimism ahead of Anthropic's market debut
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Reuters)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/stock-futures-climb-ahead-anthropics-110203603.html', '_blank');">
+        <td width="130" align="right">
+            06:02AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/stock-futures-climb-ahead-anthropics-110203603.html" target="_blank" rel="nofollow">
+                        Stock Futures Climb Ahead Of Anthropic's Nasdaq Debut  NVDA, BABA, TTWO, SLS Stocks In Focus
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/articles/intel-stock-chips-news-2911acb3?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            05:50AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/intel-stock-chips-news-2911acb3?mod=bar_FV" target="_blank" rel="nofollow">
+                        Intel Stock Jumps After Chip Breakthrough. Finally Some Good News.
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/news/intel-microsoft-agree-long-term-101908022.html', '_blank');">
+        <td width="130" align="right">
+            05:19AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/intel-microsoft-agree-long-term-101908022.html" target="_blank" rel="nofollow">
+                        Intel and Microsoft agree long-term deal on Azure cloud hardware
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Verdict)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/nvda-intc-stocks-ease-post-083356009.html', '_blank');">
+        <td width="130" align="right">
+            03:33AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/nvda-intc-stocks-ease-post-083356009.html" target="_blank" rel="nofollow">
+                        NVDA, INTC Stocks Ease Post 5-Day Rout: After Meeting Xi Jinping, Trump Says Nvidia Blackwell Chips Could Reach China Within 2-3 Years
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.newsfilecorp.com/release/324649/Kaplan-Fox-Encourages-Intel-Corporation-INTC-Investors-with-Significant-Losses-to-Contact-the-Firm-Before-January-12-2027', '_blank');">
+        <td width="130" align="right">
+            Nov-18-26 06:30PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.newsfilecorp.com/release/324649/Kaplan-Fox-Encourages-Intel-Corporation-INTC-Investors-with-Significant-Losses-to-Contact-the-Firm-Before-January-12-2027" target="_blank" rel="nofollow">
+                        Kaplan Fox Encourages Intel Corporation (INTC) Investors with Significant Losses to Contact the Firm Before January 12, 2027
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Newsfile)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.wsj.com/finance/stocks/nvidia-says-its-business-as-usual-after-huangs-ouster-wall-street-doesnt-buy-it-954290c4?mod=wsj_FV', '_blank');">
+        <td width="130" align="right">
+            05:01PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.wsj.com/finance/stocks/nvidia-says-its-business-as-usual-after-huangs-ouster-wall-street-doesnt-buy-it-954290c4?mod=wsj_FV" target="_blank" rel="nofollow">
+                        Nvidia Says It's 'Business as Usual' After Huang's Ouster. Wall Street Doesn't Buy It.
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(The Wall Street Journal)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/microsoft-intel-deepen-azure-partnership-182105848.html', '_blank');">
+        <td width="130" align="right">
+            01:21PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/microsoft-intel-deepen-azure-partnership-182105848.html" target="_blank" rel="nofollow">
+                        Microsoft, Intel Deepen Azure Partnership Amid Increasing AI, Cloud Demand
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            11:47AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/424776/microsoft-and-intel-deepen-collaboration-to-deliver-differentiated-azure-infrastructure" target="_blank">
+                        Microsoft and Intel Deepen Collaboration to Deliver Differentiated Azure Infrastructure
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(PR Newswire)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/media-advertising/articles/westfield-london-taps-dislo-social-160000012.html', '_blank');">
+        <td width="130" align="right">
+            11:00AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/media-advertising/articles/westfield-london-taps-dislo-social-160000012.html" target="_blank" rel="nofollow">
+                        Westfield London Taps Dislo As Social Media Agency
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MediaPost)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/intel-cuts-more-jobs-ceos-151000542.html', '_blank');">
+        <td width="130" align="right">
+            10:10AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/intel-cuts-more-jobs-ceos-151000542.html" target="_blank" rel="nofollow">
+                        Intel cuts more jobs as CEO's restructuring continues
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Proactive)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            07:15AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/424514/why-is-intel-stock-rising-today" target="_blank">
+                        Why Is Intel Stock Rising Today?
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(InvestorsHub)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/futures-climb-nvidia-earnings-boost-101949738.html', '_blank');">
+        <td width="130" align="right">
+            05:19AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/futures-climb-nvidia-earnings-boost-101949738.html" target="_blank" rel="nofollow">
+                        Futures Climb As Nvidia Earnings Boost AI Trade  BABA, INTC, ASTS, CAPR In Focus
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/intc-stock-gains-overnight-amid-084322793.html', '_blank');">
+        <td width="130" align="right">
+            03:43AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/intc-stock-gains-overnight-amid-084322793.html" target="_blank" rel="nofollow">
+                        INTC Stock Gains Overnight Amid Fresh Layoffs Buzz
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/down-36-month-48x-p-072339117.html', '_blank');">
+        <td width="130" align="right">
+            02:23AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/down-36-month-48x-p-072339117.html" target="_blank" rel="nofollow">
+                        Down 36% in a month at 48x P/E: Is Marvell a dip or a trap?
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/articles/nvidia-earnings-spark-hours-rally-010526744.html', '_blank');">
+        <td width="130" align="right">
+            Nov-17-26 08:05PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/articles/nvidia-earnings-spark-hours-rally-010526744.html" target="_blank" rel="nofollow">
+                        Nvidia earnings spark premarket rally in chipmakers, neocloud stocks
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/livecoverage/nvidia-earnings-stock-huang-departure/card/nvidia-s-earnings-boost-other-chip-and-ai-stocks-4LB8BXhYlBDT3eG0vSNK?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            04:52PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/livecoverage/nvidia-earnings-stock-huang-departure/card/nvidia-s-earnings-boost-other-chip-and-ai-stocks-4LB8BXhYlBDT3eG0vSNK?mod=bar_FV" target="_blank" rel="nofollow">
+                        Nvidia Earnings Boost Other Chip and AI Stocks
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.marketwatch.com/livecoverage/nvidia-earnings-stock-nvidia-jensen-huang-results-call/card/nvidia-s-solid-quarter-lifts-fellow-chip-stocks-neNaHfU4MdwpKx0G4o9K?mod=mw_FV', '_blank');">
+        <td width="130" align="right">
+            04:51PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.marketwatch.com/livecoverage/nvidia-earnings-stock-nvidia-jensen-huang-results-call/card/nvidia-s-solid-quarter-lifts-fellow-chip-stocks-neNaHfU4MdwpKx0G4o9K?mod=mw_FV" target="_blank" rel="nofollow">
+                        Nvidia's solid quarter lifts fellow chip stocks
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketWatch)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.marketwatch.com/livecoverage/nvidia-earnings-stock-nvidia-jensen-huang-results-call/card/nvidia-has-been-shaking-up-its-stock-portfolio-BuP2AW5TTWymxGtPgni9?mod=mw_FV', '_blank');">
+        <td width="130" align="right">
+            04:05PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.marketwatch.com/livecoverage/nvidia-earnings-stock-nvidia-jensen-huang-results-call/card/nvidia-has-been-shaking-up-its-stock-portfolio-BuP2AW5TTWymxGtPgni9?mod=mw_FV" target="_blank" rel="nofollow">
+                        Nvidia has been shaking up its stock portfolio
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketWatch)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/intel-shareholders-sue-ceo-cfo-210140280.html', '_blank');">
+        <td width="130" align="right">
+            04:01PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/intel-shareholders-sue-ceo-cfo-210140280.html" target="_blank" rel="nofollow">
+                        Intel shareholders sue CEO, CFO after stock rout
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(CFO Dive)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/articles/nvidia-ai-stock-selloff-3bd126bf?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            03:15PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/nvidia-ai-stock-selloff-3bd126bf?mod=bar_FV" target="_blank" rel="nofollow">
+                        Nvidia Bet Big on AI Stocks. Now They're Getting Hit.
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/livecoverage/nvidia-earnings-stock-huang-departure/card/nvidia-sold-a-quarter-of-its-intel-stake-9nrLP5b5nR8eOGD8IXWG?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            09:13AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/livecoverage/nvidia-earnings-stock-huang-departure/card/nvidia-sold-a-quarter-of-its-intel-stake-9nrLP5b5nR8eOGD8IXWG?mod=bar_FV" target="_blank" rel="nofollow">
+                        Nvidia Sold a Quarter of Its Intel Stake
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/articles/stock-market-things-to-know-today-ca42f14d?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            07:38AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/stock-market-things-to-know-today-ca42f14d?mod=bar_FV" target="_blank" rel="nofollow">
+                        Nvidia and the AI Trade Face Date With Destiny
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/articles/stock-movers-5503b6f4?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            06:36AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/stock-movers-5503b6f4?mod=bar_FV" target="_blank" rel="nofollow">
+                        Nvidia, SpaceX, Sandisk, Take-Two, Disney, and More Stocks That Explain Today's Market
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/articles/intel-stock-nvidia-jensen-huang-61d826ce?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            06:31AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/intel-stock-nvidia-jensen-huang-61d826ce?mod=bar_FV" target="_blank" rel="nofollow">
+                        Intel Stock Falls. Jensen Huang Delivered One Final Blow Before His Exit.
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            06:29AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/423790/why-is-intel-stock-falling-31-in-pre-market-trading" target="_blank">
+                        Why Is Intel Stock Falling 3.1% in Pre-Market Trading?
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(InvestorsHub)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/news/intel-falls-premarket-nvidia-cuts-102651060.html', '_blank');">
+        <td width="130" align="right">
+            05:26AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/intel-falls-premarket-nvidia-cuts-102651060.html" target="_blank" rel="nofollow">
+                        Intel falls premarket as Nvidia cuts stake, SpaceX becomes top holding
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/news/nokia-stock-tumbles-nvidia-cuts-093318816.html', '_blank');">
+        <td width="130" align="right">
+            04:33AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/nokia-stock-tumbles-nvidia-cuts-093318816.html" target="_blank" rel="nofollow">
+                        Nokia stock tumbles after Nvidia cuts stake by more than half
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/iren-stock-rises-overnight-intel-080610057.html', '_blank');">
+        <td width="130" align="right">
+            03:06AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/iren-stock-rises-overnight-intel-080610057.html" target="_blank" rel="nofollow">
+                        IREN Stock Rises Overnight As Intel Reveals Stake, Anthropic IPO Buzz Catches On
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/articles/amd-mu-skhy-avgo-chip-040420540.html', '_blank');">
+        <td width="130" align="right">
+            Nov-16-26 11:04PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/articles/amd-mu-skhy-avgo-chip-040420540.html" target="_blank" rel="nofollow">
+                        AMD, MU, SKHY, AVGO: Chip Stocks Ease Overnight After Selloff On New US Chip Restrictions Targeting China
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">
+         -7.02%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/spcx-stock-dethrones-intel-nvidia-034550014.html', '_blank');">
+        <td width="130" align="right">
+            10:45PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/spcx-stock-dethrones-intel-nvidia-034550014.html" target="_blank" rel="nofollow">
+                        SPCX Stock Dethrones Intel As Nvidias Biggest Holding  Druckenmiller Buys In And Tepper Ups His Stake Over 1,600%
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/intel-sits-61-below-peak-023109161.html', '_blank');">
+        <td width="130" align="right">
+            09:31PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/intel-sits-61-below-peak-023109161.html" target="_blank" rel="nofollow">
+                        Intel Sits 61% Below the Peak When Jim Cramer Called It His Favorite
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(BeInCrypto)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/amd-nvidia-rally-fades-michael-022002772.html', '_blank');">
+        <td width="130" align="right">
+            09:20PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/amd-nvidia-rally-fades-michael-022002772.html" target="_blank" rel="nofollow">
+                        AMDs Nvidia Rally Fades: Michael Burry Calls AMD Too Expensive As Eternal Alternative
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            04:47PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/423597/intel-corporation-sued-for-securities-law-violations-contact-the-djs-law-group-to-discuss-your-rights-intc" target="_blank">
+                        Intel Corporation Sued for Securities Law Violations - Contact the DJS Law Group to Discuss Your Rights - INTC
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(PR Newswire)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/news/p-500-nasdaq-futures-slide-104351968.html', '_blank');">
+        <td width="130" align="right">
+            04:20PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/p-500-nasdaq-futures-slide-104351968.html" target="_blank" rel="nofollow">
+                        Wall Street ends sharply lower on AI jitters ahead of Nvidia results, Anthropic IPO
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Reuters)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.marketwatch.com/story/micron-amd-and-other-ai-stocks-fall-as-the-chip-sectors-selloff-intensifies-48e38bdf?mod=mw_FV', '_blank');">
+        <td width="130" align="right">
+            01:54PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/micron-amd-and-other-ai-stocks-fall-as-the-chip-sectors-selloff-intensifies-48e38bdf?mod=mw_FV" target="_blank" rel="nofollow">
+                        Micron, AMD and other AI stocks fall as the chip sector's selloff intensifies
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketWatch)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/intel-shares-fall-6-shareholders-171000158.html', '_blank');">
+        <td width="130" align="right">
+            12:10PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/intel-shares-fall-6-shareholders-171000158.html" target="_blank" rel="nofollow">
+                        Intel shares fall 6% as shareholders sue over October stock plunge
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Proactive)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/u-chip-stocks-slide-traders-160656991.html', '_blank');">
+        <td width="130" align="right">
+            11:06AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/u-chip-stocks-slide-traders-160656991.html" target="_blank" rel="nofollow">
+                        U.S. chip stocks slide as traders unwind Nvidia rival bets before earnings
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/ai-chip-stocks-extend-sell-160021581.html', '_blank');">
+        <td width="130" align="right">
+            11:00AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/ai-chip-stocks-extend-sell-160021581.html" target="_blank" rel="nofollow">
+                        AI Chip Stocks Extend Their Sell-Off as Monday Opens Deep in the Red
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(BeInCrypto)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/articles/dell-hpe-stock-price-earnings-ai-386e06fb?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            10:56AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/dell-hpe-stock-price-earnings-ai-386e06fb?mod=bar_FV" target="_blank" rel="nofollow">
+                        Dell and HPE Stocks Are Getting Hammered. Why the Selloff May Be Overdone.
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/article/intel-stock-falls-after-investors-file-class-action-lawsuit-against-the-company-155514379.html', '_blank');">
+        <td width="130" align="right">
+            10:55AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/article/intel-stock-falls-after-investors-file-class-action-lawsuit-against-the-company-155514379.html" target="_blank" rel="nofollow">
+                        Intel stock falls after investors file class action lawsuit against the company
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Yahoo Finance)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.wsj.com/tech/intel-sued-by-investors-after-29-stock-plunge-c6591bbf?mod=wsj_FV', '_blank');">
+        <td width="130" align="right">
+            10:52AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.wsj.com/tech/intel-sued-by-investors-after-29-stock-plunge-c6591bbf?mod=wsj_FV" target="_blank" rel="nofollow">
+                        Intel Sued by Investors After 29% Stock Plunge
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(The Wall Street Journal)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/article/copy-tech-rises-coreweave-results-reignite-ai-trade-alphacheck-150019770.html', '_blank');">
+        <td width="130" align="right">
+            10:00AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/article/copy-tech-rises-coreweave-results-reignite-ai-trade-alphacheck-150019770.html" target="_blank" rel="nofollow">
+                        Chip stocks fall on US semiconductor restrictions: AlphaCheck
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Yahoo Finance)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/articles/chip-stocks-anthropic-ipo-nvidia-earnings-fc61b7fa?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            10:00AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/chip-stocks-anthropic-ipo-nvidia-earnings-fc61b7fa?mod=bar_FV" target="_blank" rel="nofollow">
+                        Chip Stocks Are Falling. Anthropic's Trillion-Dollar IPO Is a Big Test.
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/why-intel-facing-shareholder-lawsuit-143331644.html', '_blank');">
+        <td width="130" align="right">
+            09:33AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/why-intel-facing-shareholder-lawsuit-143331644.html" target="_blank" rel="nofollow">
+                        Why Is Intel Facing a Shareholder Lawsuit Over Its PC Slowdown?
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(BeInCrypto)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/shareholders-sue-intel-shares-plunge-134142086.html', '_blank');">
+        <td width="130" align="right">
+            08:41AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/shareholders-sue-intel-shares-plunge-134142086.html" target="_blank" rel="nofollow">
+                        Shareholders sue Intel after its shares plunge nearly 29%
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Euronews)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/premarket-movers-nvidia-intel-fall-125216380.html', '_blank');">
+        <td width="130" align="right">
+            07:52AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/premarket-movers-nvidia-intel-fall-125216380.html" target="_blank" rel="nofollow">
+                        Premarket movers: Nvidia, Intel fall; J&amp;J gains
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/articles/stock-movers-dcfe4add?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            07:11AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/stock-movers-dcfe4add?mod=bar_FV" target="_blank" rel="nofollow">
+                        Nvidia, Intel, Sandisk, SpaceX, Strategy, and More Stocks That Explain Today's Market
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/intel-faces-lawsuit-29-stock-113912819.html', '_blank');">
+        <td width="130" align="right">
+            06:39AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/intel-faces-lawsuit-29-stock-113912819.html" target="_blank" rel="nofollow">
+                        Intel Faces Lawsuit After 29% Stock Crash. Investors Allege Fraud.
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(International Business Times)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.marketwatch.com/livecoverage/stock-market-today-dow-s-p-500-nasdaq-investors-nvidia-results-anthropic-ipo/card/nvidia-drags-chipmakers-down-and-other-early-market-movers-kPHnIA6JIJF5o0XBvWqz?mod=mw_FV', '_blank');">
+        <td width="130" align="right">
+            05:53AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.marketwatch.com/livecoverage/stock-market-today-dow-s-p-500-nasdaq-investors-nvidia-results-anthropic-ipo/card/nvidia-drags-chipmakers-down-and-other-early-market-movers-kPHnIA6JIJF5o0XBvWqz?mod=mw_FV" target="_blank" rel="nofollow">
+                        Nvidia drags chipmakers down, and other early market movers
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketWatch)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/article/why-intel-ceo-lip-bu-tan-has-22-meetings-a-day--and-what-you-can-learn-from-it-210301452.html', '_blank');">
+        <td width="130" align="right">
+            Nov-14-26 04:03PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/article/why-intel-ceo-lip-bu-tan-has-22-meetings-a-day--and-what-you-can-learn-from-it-210301452.html" target="_blank" rel="nofollow">
+                        Why Intel CEO Lip-Bu Tan has 22 meetings a day  and what you can learn from it
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Yahoo Finance)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/article/nvidia-stock-slips-as-investors-digest-ceo-exit-rest-of-chip-sector-falls-144818245.html', '_blank');">
+        <td width="130" align="right">
+            Nov-13-26 04:04PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/article/nvidia-stock-slips-as-investors-digest-ceo-exit-rest-of-chip-sector-falls-144818245.html" target="_blank" rel="nofollow">
+                        Nvidia stock slips as investors digest CEO exit, broader chip sell-off accelerates
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Yahoo Finance)</span>
+                      
+  
+      <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200" title="Nov 16, 2026">
+        <svg width="12" height="12" class="fill-current">&#13;
+    <use href="/assets/dist-icons/icons.1f7da9e4.svg#nextday"/>&#13;
+</svg> -7.02%
+    </span>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.marketwatch.com/story/amd-and-other-chip-stocks-slide-as-wall-street-rethinks-the-ai-trade-without-jensen-huang-2fb74547?mod=mw_FV', '_blank');">
+        <td width="130" align="right">
+            03:57PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/amd-and-other-chip-stocks-slide-as-wall-street-rethinks-the-ai-trade-without-jensen-huang-2fb74547?mod=mw_FV" target="_blank" rel="nofollow">
+                        AMD and other chip stocks slide as Wall Street rethinks the AI trade without Jensen Huang
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketWatch)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.marketwatch.com/livecoverage/stock-market-today-dow-s-p-500-nasdaq-nvidia-ceo-jensen-huang-resigns-ppi-inflation-data/card/popular-semiconductor-etf-slumps-as-its-biggest-holdings-sell-off-BpbeQeQgENwVLCYFNqJZ?mod=mw_FV', '_blank');">
+        <td width="130" align="right">
+            11:42AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.marketwatch.com/livecoverage/stock-market-today-dow-s-p-500-nasdaq-nvidia-ceo-jensen-huang-resigns-ppi-inflation-data/card/popular-semiconductor-etf-slumps-as-its-biggest-holdings-sell-off-BpbeQeQgENwVLCYFNqJZ?mod=mw_FV" target="_blank" rel="nofollow">
+                        Popular semiconductor ETF slumps as its biggest holdings sell off
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketWatch)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/intel-vs-amd-chip-stock-160345701.html', '_blank');">
+        <td width="130" align="right">
+            11:03AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/intel-vs-amd-chip-stock-160345701.html" target="_blank" rel="nofollow">
+                        Intel vs AMD: which chip stock wins the AI rotation trade
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/israel-vcs-see-opportunity-challengers-125219815.html', '_blank');">
+        <td width="130" align="right">
+            07:52AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/israel-vcs-see-opportunity-challengers-125219815.html" target="_blank" rel="nofollow">
+                        Israels VCs see opportunity for challengers in Nvidias turmoil
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(TechCrunch)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/fallout-nvidia-scandal-may-dampen-050149172.html', '_blank');">
+        <td width="130" align="right">
+            12:01AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/fallout-nvidia-scandal-may-dampen-050149172.html" target="_blank" rel="nofollow">
+                        Fallout from the Nvidia scandal may dampen the exuberance around the AI boom
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Associated Press)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/blue-wave-red-ink-election-223914781.html', '_blank');">
+        <td width="130" align="right">
+            Nov-12-26 05:39PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/blue-wave-red-ink-election-223914781.html" target="_blank" rel="nofollow">
+                        Blue Wave, Red Ink: Election Impacts on the AI Trade
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/asian-stocks-fragile-nvidia-plummets-015524144.html', '_blank');">
+        <td width="130" align="right">
+            05:37PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/asian-stocks-fragile-nvidia-plummets-015524144.html" target="_blank" rel="nofollow">
+                        Wall Street ends lower as Nvidia CEO resigns; US yields up
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Reuters)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/article/the-bank-of-nvidia-just-lost-its-banker--heres-where-the-ai-trade-is-exposed-215638010.html', '_blank');">
+        <td width="130" align="right">
+            04:56PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/article/the-bank-of-nvidia-just-lost-its-banker--heres-where-the-ai-trade-is-exposed-215638010.html" target="_blank" rel="nofollow">
+                        The Bank of Nvidia just lost its banker  heres where the AI trade is exposed
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Yahoo Finance)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.marketwatch.com/story/the-10-best-stocks-for-a-year-end-momentum-trade-8d4cf8f7?mod=mw_FV', '_blank');">
+        <td width="130" align="right">
+            04:50PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/the-10-best-stocks-for-a-year-end-momentum-trade-8d4cf8f7?mod=mw_FV" target="_blank" rel="nofollow">
+                        The 10 best stocks for a year-end momentum trade
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketWatch)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.marketwatch.com/livecoverage/nvidia-ceo-jensen-huang-stock-board/card/the-chip-industry-has-a-mixed-history-following-abrupt-ceo-transitions-VkTQ6GtH9D864FFauiaT?mod=mw_FV', '_blank');">
+        <td width="130" align="right">
+            03:30PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.marketwatch.com/livecoverage/nvidia-ceo-jensen-huang-stock-board/card/the-chip-industry-has-a-mixed-history-following-abrupt-ceo-transitions-VkTQ6GtH9D864FFauiaT?mod=mw_FV" target="_blank" rel="nofollow">
+                        The chip industry has a 'mixed' history following abrupt CEO transitions
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketWatch)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/articles/intel-stock-insider-ceo-buy-1e10df5f?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            03:16PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/intel-stock-insider-ceo-buy-1e10df5f?mod=bar_FV" target="_blank" rel="nofollow">
+                        After Intel's Worst Day on Record, CEO Lip-Bu Tan Buys $9.7 Million in Stock
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            02:30PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/422037/intel-radixark-collaborate-to-advance-open-ai-inference-on-intel-platforms" target="_blank">
+                        Intel, RadixArk Collaborate to Advance Open AI Inference on Intel Platforms
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Business Wire)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/live/stock-market-today-thursday-november-12-sp-500-nasdaq-dow-nvidia-slides-jensen-huang-resigns-invest-165632931.html', '_blank');">
+        <td width="130" align="right">
+            02:22PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/live/stock-market-today-thursday-november-12-sp-500-nasdaq-dow-nvidia-slides-jensen-huang-resigns-invest-165632931.html" target="_blank" rel="nofollow">
+                        Stock market today: S&amp;P 500, Nasdaq fall as Nvidia CEO exit, rising bond yields roil markets
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Yahoo Finance)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/investor-appetite-ai-running-why-191350950.html', '_blank');">
+        <td width="130" align="right">
+            02:13PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/investor-appetite-ai-running-why-191350950.html" target="_blank" rel="nofollow">
+                        Is investor appetite for AI running out? Why Ranmore is turning to Asia
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/article/intel-ceo-lip-bu-tan-on-turnaround-efforts-amid-stock-slump-i-feel-called-to-do-this-191138450.html', '_blank');">
+        <td width="130" align="right">
+            02:11PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/article/intel-ceo-lip-bu-tan-on-turnaround-efforts-amid-stock-slump-i-feel-called-to-do-this-191138450.html" target="_blank" rel="nofollow">
+                        Intel CEO Lip-Bu Tan on turnaround efforts amid stock slump: 'I feel called to do this'
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Yahoo Finance)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/article/jensen-huangs-exit-puts-nvidias-530-billion-web-of-ai-deals-under-the-microscope-153142269.html', '_blank');">
+        <td width="130" align="right">
+            02:05PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/article/jensen-huangs-exit-puts-nvidias-530-billion-web-of-ai-deals-under-the-microscope-153142269.html" target="_blank" rel="nofollow">
+                        Jensen Huang's exit puts Nvidia's $530 billion web of AI deals under the microscope
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Yahoo Finance)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/economy/policy/articles/trumps-corporate-investments-unexpected-fans-180627887.html', '_blank');">
+        <td width="130" align="right">
+            01:06PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/economy/policy/articles/trumps-corporate-investments-unexpected-fans-180627887.html" target="_blank" rel="nofollow">
+                        Trump's Corporate Investments Find Unexpected Fans Among Democrats. Some Are Considering Their Own Version.
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(International Business Times)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/happens-ai-boom-now-nvidia-172133676.html', '_blank');">
+        <td width="130" align="right">
+            12:21PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/happens-ai-boom-now-nvidia-172133676.html" target="_blank" rel="nofollow">
+                        What Happens to the AI Boom Now That Nvidia CEO Jensen Huang Is Gone?
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(BeInCrypto)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/article/nvidia-stock-sinks-but-rivals-amd-broadcom-rise-133910081.html', '_blank');">
+        <td width="130" align="right">
+            09:21AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/article/nvidia-stock-sinks-but-rivals-amd-broadcom-rise-133910081.html" target="_blank" rel="nofollow">
+                        Nvidia stock tumbles as CEO Jensen Huang steps down, dragging down other AI names
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Yahoo Finance)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/nasdaq-futures-fall-nvidia-turmoil-093910045.html', '_blank');">
+        <td width="130" align="right">
+            08:50AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/nasdaq-futures-fall-nvidia-turmoil-093910045.html" target="_blank" rel="nofollow">
+                        Wall St set to open lower after Nvidia rout, oil gains
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Reuters)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.marketwatch.com/story/how-the-u-s-governments-equity-holdings-have-surged-during-trumps-second-term-in-one-chart-b598c369?mod=mw_FV', '_blank');">
+        <td width="130" align="right">
+            08:00AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/how-the-u-s-governments-equity-holdings-have-surged-during-trumps-second-term-in-one-chart-b598c369?mod=mw_FV" target="_blank" rel="nofollow">
+                        How the U.S. government's equity holdings have surged during Trump's second term - in one chart
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketWatch)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/articles/intel-stock-price-marvell-chips-nvidia-a79a4389?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            06:53AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/intel-stock-price-marvell-chips-nvidia-a79a4389?mod=bar_FV" target="_blank" rel="nofollow">
+                        Intel and Marvell Slip. Why Huang's Potential Exit Is Causing Chip-Stock Nerves.
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/nvda-turmoil-weighs-nasdaq-futures-102755297.html', '_blank');">
+        <td width="130" align="right">
+            05:27AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/nvda-turmoil-weighs-nasdaq-futures-102755297.html" target="_blank" rel="nofollow">
+                        NVDA Turmoil Weighs On Nasdaq Futures  INTC, BABA, NBIS, ONDS In Focus
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/intc-baba-shares-slide-over-080446999.html', '_blank');">
+        <td width="130" align="right">
+            03:04AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/intc-baba-shares-slide-over-080446999.html" target="_blank" rel="nofollow">
+                        INTC, BABA Shares Slide Over Links To Firm Tied To Suspected Chinese Spy
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/china-chip-stocks-rally-u-063831379.html', '_blank');">
+        <td width="130" align="right">
+            01:38AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/china-chip-stocks-rally-u-063831379.html" target="_blank" rel="nofollow">
+                        U.S., Europe chip stocks dip as Nvidia board reportedly weighs ousting Huang
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/happens-nvidia-stock-jensen-huang-061548927.html', '_blank');">
+        <td width="130" align="right">
+            01:15AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/happens-nvidia-stock-jensen-huang-061548927.html" target="_blank" rel="nofollow">
+                        What Happens to Nvidia Stock if Jensen Huang Is Fired? History Has a Warning
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(BeInCrypto)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/nvda-fallout-pressures-tech-trade-050603635.html', '_blank');">
+        <td width="130" align="right">
+            12:06AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/nvda-fallout-pressures-tech-trade-050603635.html" target="_blank" rel="nofollow">
+                        NVDA Fallout Pressures Tech Trade As Investors Turn To Cerebras, Applied Materials For Chip Demand Cues
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/jensen-huang-future-nvidia-hangs-024331993.html', '_blank');">
+        <td width="130" align="right">
+            Nov-11-26 09:43PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/jensen-huang-future-nvidia-hangs-024331993.html" target="_blank" rel="nofollow">
+                        Jensen Huangs Future At Nvidia Hangs In Balance As Board Weighs Fallout: Analysts Warn Of Challenges Ahead
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">
+         +7.52%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.marketwatch.com/data-news/intel-corp-stock-outperforms-competitors-on-strong-trading-day-075bad73-ba05de15322f?mod=mw_FV', '_blank');">
+        <td width="130" align="right">
+            04:30PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.marketwatch.com/data-news/intel-corp-stock-outperforms-competitors-on-strong-trading-day-075bad73-ba05de15322f?mod=mw_FV" target="_blank" rel="nofollow">
+                        Intel Corp. stock outperforms competitors on strong trading day
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketWatch)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/intel-stock-faces-87-million-203428910.html', '_blank');">
+        <td width="130" align="right">
+            03:34PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/intel-stock-faces-87-million-203428910.html" target="_blank" rel="nofollow">
+                        Intel Stock Faces 87 Million-Share Risk After SoftBank Deal
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(BeInCrypto)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.wsj.com/livecoverage/stock-market-today-dow-sp-500-nasdaq-11-11-2026/card/coreweave-rallies-lifting-cloud-and-chip-stocks-NxyTyoU07TRvcjNeJmWU?mod=wsj_FV', '_blank');">
+        <td width="130" align="right">
+            09:56AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.wsj.com/livecoverage/stock-market-today-dow-sp-500-nasdaq-11-11-2026/card/coreweave-rallies-lifting-cloud-and-chip-stocks-NxyTyoU07TRvcjNeJmWU?mod=wsj_FV" target="_blank" rel="nofollow">
+                        CoreWeave Rallies, Lifting Cloud and Chip Stocks
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(The Wall Street Journal)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/articles/server-cpu-strength-persists-amd-132222608.html', '_blank');">
+        <td width="130" align="right">
+            08:22AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/articles/server-cpu-strength-persists-amd-132222608.html" target="_blank" rel="nofollow">
+                        Server CPU strength persists as AMD and Arm gain share: UBS
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/articles/nvidia-chip-stocks-rebound-premarket-120006021.html', '_blank');">
+        <td width="130" align="right">
+            07:00AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/articles/nvidia-chip-stocks-rebound-premarket-120006021.html" target="_blank" rel="nofollow">
+                        Nvidia, chip stocks rebound premarket after CoreWeave lifts revenue outlook
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            05:30AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/420831/mobileye-announces-participation-in-upcoming-fourth-quarter-2026-investor-conferences" target="_blank">
+                        Mobileye Announces Participation in Upcoming Fourth Quarter 2026 Investor Conferences
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Business Wire)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/articles/amd-stock-coherent-ai-selloff-e457aa02?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            Nov-10-26 12:38PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/amd-stock-coherent-ai-selloff-e457aa02?mod=bar_FV" target="_blank" rel="nofollow">
+                        AMD and Coherent: What the Biggest Gainers Since the Midterms Selloff Say About the AI Trade
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            08:00AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/420197/intel-and-altera-simplify-sensor-integration-for-edge-and-physical-ai" target="_blank">
+                        Intel and Altera Simplify Sensor Integration for Edge and Physical AI
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Business Wire)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+</div>
+
+</div></div>
+</body>
+</html>
