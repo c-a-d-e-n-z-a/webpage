@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>3037.TW — 欣興</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-size: 12px;
+      font-family: Arial, Helvetica, "Microsoft JhengHei", -apple-system, sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 8px 28px 16px;
+      background-color: #faf9f6;
+      color: #1c1917;
+    }
+
+    /* Header Bar */
+    .rp-header {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-top: 3px solid #FA8123;
+      border-radius: 6px;
+      padding: 6px 10px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+    .rp-title-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .rp-ticker {
+      font-size: 17px;
+      font-weight: 800;
+      color: #1c1917;
+      letter-spacing: 0.3px;
+    }
+    .rp-desc {
+      font-size: 15px;
+      font-weight: 700;
+      color: #FA8123;
+    }
+    .rp-time {
+      font-size: 11px;
+      color: #78716c;
+      background: #f5f3ef;
+      padding: 1px 7px;
+      border-radius: 999px;
+    }
+    .rp-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .rp-pill-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: #faf9f6;
+      border: 1px solid #d6d1c7;
+      color: #44403c;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.12s ease;
+    }
+    .rp-pill-link:hover {
+      background: #fff5eb;
+      border-color: #FA8123;
+      color: #d9650f;
+    }
+
+    /* Signal Summary Card & Table (Technical + Chip/SBL) */
+    .rp-sig-card {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 6px 10px 8px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+    .rp-sig-card.rp-sig-empty {
+      padding: 5px 10px;
+      background: #faf9f6;
+    }
+    .rp-sig-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .rp-sig-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1c1917;
+    }
+    .rp-sig-sub {
+      font-size: 11px;
+      font-weight: 500;
+      color: #78716c;
+    }
+    .rp-sig-badges {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+    }
+    .rp-sig-asset, .rp-sig-status {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .rp-sig-asset-tw { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .rp-sig-asset-us { background: #f5f3ff; color: #6d28d9; border: 1px solid #ddd6fe; }
+    .rp-sig-asset-etf { background: #ecfeff; color: #0e7490; border: 1px solid #a5f3fc; }
+    .rp-sig-asset-lev { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+    .rp-sig-st-buy { background: #fef2f2; color: #cc2929; border: 1px solid #fecaca; }
+    .rp-sig-st-sell { background: #f0fdf4; color: #00994d; border: 1px solid #bbf7d0; }
+    .rp-sig-st-both { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+    .rp-sig-st-ref { background: #f5f5f4; color: #57534e; border: 1px solid #d6d3d1; }
+    .rp-sig-st-none { background: #f5f5f4; color: #78716c; border: 1px solid #e7e5e4; font-weight: 500; }
+    .rp-sig-count {
+      font-size: 11px;
+      color: #57534e;
+      margin-left: 2px;
+    }
+    .rp-sig-tbl {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 6px 0 0;
+      font-size: 12px;
+    }
+    .rp-sig-tbl th {
+      background: #f6f4f0;
+      color: #44403c;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border: 1px solid #e6e2dc;
+      text-align: left;
+      white-space: nowrap;
+    }
+    .rp-sig-tbl td {
+      padding: 4px 8px;
+      border: 1px solid #ede9e3;
+      vertical-align: middle;
+    }
+    .rp-sig-tbl tr.rp-sig-row-imp td {
+      background: #fffcf7;
+      font-weight: 600;
+    }
+    .rp-sig-c-dir, .rp-sig-c-src, .rp-sig-c-lvl, .rp-sig-c-tag { white-space: nowrap; }
+    .rp-sig-c-msg { color: #1c1917; word-break: break-word; }
+    .rp-sig-dir {
+      display: inline-block;
+      min-width: 52px;
+      text-align: center;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .rp-sig-dir-buy { background: #fee2e2; color: #b91c1c; }
+    .rp-sig-dir-sell { background: #dcfce7; color: #15803d; }
+    .rp-sig-dir-other { background: #f1f5f9; color: #475569; }
+    .rp-sig-src {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .rp-sig-src-tech { background: #f5f3ef; color: #44403c; }
+    .rp-sig-src-chip { background: #eff6ff; color: #1e40af; }
+    .rp-sig-lvl { font-size: 11px; font-weight: 600; }
+    .rp-sig-lvl-imp { color: #d97706; font-weight: 700; }
+    .rp-sig-lvl-ref { color: #78716c; }
+    .rp-sig-lvl-ctx { color: #64748b; }
+    .rp-sig-tag {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: #f5f3ef;
+      border: 1px solid #e6e2dc;
+      color: #292524;
+      font-family: Consolas, Menlo, monospace;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: help;
+    }
+    .rp-sig-tag-empty { color: #a8a29e; }
+
+    /* Pyecharts Container Card */
+    .rp-chart-box {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 2px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+
+    /* Sub-Tabs Bar */
+    .rp-tabs-bar {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 4px 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      position: sticky;
+      top: 2px;
+      z-index: 50;
+      box-shadow: 0 1px 4px rgba(28, 25, 23, 0.05);
+    }
+    .rp-tab {
+      border: 1px solid transparent;
+      background: #f5f3ef;
+      color: #57534e;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+    .rp-tab:hover {
+      background: #fff5eb;
+      border-color: #fdba8c;
+      color: #d9650f;
+    }
+    .rp-tab.active {
+      background: #FA8123;
+      color: #ffffff;
+      box-shadow: 0 1px 3px rgba(250, 129, 35, 0.35);
+    }
+
+    /* Section Card */
+    .rp-sec-pane {
+      width: 100%;
+      margin: 0 0 4px;
+    }
+    .rp-card {
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 6px 8px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+      overflow-x: auto;
+    }
+    .rp-divider {
+      border: 0;
+      border-top: 1px solid #e6e2dc;
+      margin: 6px 0;
+    }
+
+    /* Modernized Tables (FBS / Pyramid / FinViz) */
+    .is-negative { color: #00994d; font-weight: 600; }
+    .is-positive { color: #cc2929; font-weight: 600; }
+    .snapshot-td2, .snapshot-td2-cp {
+      color: #1c1917;
+      text-decoration: none;
+      border: 1px solid #e6e2dc;
+      white-space: nowrap;
+    }
+    .snapshot-td2-cp { cursor: pointer; }
+    .fullview-ratings-outer, td.fullview-ratings-inner {
+      border: 1px solid #e6e2dc;
+    }
+    .t3r1 { color: #cc2929; font-weight: 700; }
+    .body-table-rating-downgrade { color: #cc2929; background: #fef2f2; }
+    .body-table-rating-upgrade { color: #00994d; background: #f0fdf4; }
+    .body-table-rating-neutral { color: #44403c; background: #faf9f6; }
+
+    table {
+      border-collapse: collapse;
+      margin: 6px auto;
+    }
+    td, th {
+      border: 1px solid #e6e2dc;
+      text-align: left;
+      padding: 6px 8px;
+    }
+    th {
+      background-color: #f6f4f0;
+      color: #1c1917;
+      font-weight: 700;
+    }
+    tr:nth-child(even) {
+      background-color: #fcfbf9;
+    }
+  </style>
+  <script>
+    function switchRpTab(btn) {
+      if (!btn) return;
+      var target = btn.getAttribute("data-target") || "all";
+      document.querySelectorAll(".rp-tab").forEach(function(b) {
+        b.classList.remove("active");
+      });
+      btn.classList.add("active");
+
+      document.querySelectorAll(".rp-sec-pane").forEach(function(pane) {
+        if (target === "all" || pane.id === target) {
+          pane.style.display = "block";
+        } else {
+          pane.style.display = "none";
+        }
+      });
+
+      try {
+        sessionStorage.setItem("sr_active_rp_tab", target);
+      } catch (e) {}
+
+      window.dispatchEvent(new Event("resize"));
+    }
+
+    window.addEventListener("load", function() {
+      try {
+        var saved = sessionStorage.getItem("sr_active_rp_tab");
+        if (saved && saved !== "all") {
+          var btn = document.querySelector('.rp-tab[data-target="' + saved + '"]');
+          if (btn) switchRpTab(btn);
+        }
+      } catch (e) {}
+    });
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/12.3.0/highcharts.min.js"></script>
+</head>
+<body>
+  <div class="rp-header">
+    <div class="rp-title-wrap">
+      <span class="rp-ticker">3037.TW</span>
+      <span class="rp-desc">欣興</span>
+      <span class="rp-time">更新: 2026-11-28 06:42</span>
+    </div>
+    <div class="rp-links">
+      <a class="rp-pill-link" href="https://www.wantgoo.com/stock/3037/enterprise-value/price-to-earning-ratio" target="_blank">📈 PE Chart</a><a class="rp-pill-link" href="https://www.wantgoo.com/stock/3037/enterprise-value/price-book-ratio" target="_blank">📊 PB Chart</a><a class="rp-pill-link" href="https://www.wsj.com/market-data/quotes/TW/3037/financials/quarter/cash-flow" target="_blank">💵 Finance</a><a class="rp-pill-link" href="https://www.cmoney.tw/follow/channel/stock-3037?chart=d&type=Personal" target="_blank">🗣️ CMoney 股市爆料</a><a class="rp-pill-link" href="https://goodinfo.tw/tw/StockBzPerformance.asp?STOCK_ID=3037" target="_blank">📊 GoodInfo 經營績效</a><a class="rp-pill-link" href="https://www.ptt.cc/bbs/Stock/search?q=欣興" target="_blank">💬 PTT Search</a>
+    </div>
+  </div>
+
+  <div class="rp-sig-card"><div class="rp-sig-head"><div class="rp-sig-title">🎯 今日訊號總覽 <span class="rp-sig-sub">（技術面 ＋ 籌碼／借券）</span></div><div class="rp-sig-badges"><span class="rp-sig-asset rp-sig-asset-tw">🇹🇼 台股個股</span><span class="rp-sig-status rp-sig-st-ref">👀 僅圖表參考</span><span class="rp-sig-count">參考 <b>1</b></span></div></div><table class="rp-sig-tbl"><thead><tr><th style="width:74px">方向</th><th style="width:124px">來源</th><th style="width:104px">層級</th><th style="width:124px">標籤</th><th>訊號內容</th></tr></thead><tbody><tr><td class="rp-sig-c-dir"><span class="rp-sig-dir rp-sig-dir-sell">SELL</span></td><td class="rp-sig-c-src"><span class="rp-sig-src rp-sig-src-tech">📈 技術面</span></td><td class="rp-sig-c-lvl"><span class="rp-sig-lvl rp-sig-lvl-ref">圖表參考</span></td><td class="rp-sig-c-tag"><span class="rp-sig-tag" title="Price Floor/Ceiling：個人目標買賣價界線（剛穿越當日推播，持續在界線外留參考）">[PRICE]</span></td><td class="rp-sig-c-msg">高於賣點(600.00)</td></tr></tbody></table></div>
+
+  <div class="rp-chart-box" align="center">
+    <iframe id="stock" src="3037.TW_EC.html" frameborder="0" width="100%" height="1600px" scrolling="no"></iframe>
+  </div>
+
+  <div class="rp-tabs-bar"><button class="rp-tab active" data-target="all" onclick="switchRpTab(this)">📋 全部展開</button><button class="rp-tab" data-target="sec-quant" onclick="switchRpTab(this)">🧮 量化與主動ETF</button><button class="rp-tab" data-target="sec-fbs" onclick="switchRpTab(this)">🏦 富邦主力與法人分點</button><button class="rp-tab" data-target="sec-pyramid" onclick="switchRpTab(this)">🏛️ 大戶股權分散表</button><button class="rp-tab" data-target="sec-goodinfo" onclick="switchRpTab(this)">📊 CMoney / GoodInfo</button><button class="rp-tab" data-target="sec-stockdog" onclick="switchRpTab(this)">🐶 主力籌碼</button></div>
+  <div class="rp-sec-pane" id="sec-quant"><style>.pq-wrap{width:100%;margin:0;font-family:Arial,Helvetica,"Microsoft JhengHei",sans-serif;color:#222}.pq-sec{background:#fff;border:1px solid #e6e2dc;border-radius:6px;padding:6px 8px;margin-bottom:4px;box-shadow:0 1px 2px rgba(28,25,23,.03)}.pq-sec h2{font-size:14px;color:#1c1917;border-left:4px solid #FA8123;padding-left:6px;margin:0 0 6px}.pq-sec h3{font-size:12px;color:#44403c;margin:6px 0 4px}.pq-banner{background:#fff9f4;border-left:4px solid #FA8123;padding:5px 8px;border-radius:4px;font-size:12px;line-height:1.5;margin-bottom:6px;color:#292524}.pq-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:6px}table.pq-tbl{width:100%;border-collapse:collapse;font-size:12px;font-family:Arial,Helvetica,"Microsoft JhengHei",sans-serif}table.pq-tbl th,table.pq-tbl td{border:1px solid #e6e2dc !important;padding:4px 6px !important;text-align:right}table.pq-tbl th{background:#f6f4f0 !important;color:#1c1917 !important;font-weight:bold}table.pq-tbl tr:nth-child(even){background:#fcfbf9}</style><div class="pq-wrap">
+
+    <div class="pq-sec">
+      <h2>🧮 量化風險、波動率體制與因子 Alpha 拆解 (3037.TW)</h2>
+      <div class="pq-banner">
+        <b>現價：</b> <b>646.00</b> ｜
+        <b>動能 (1D / 5D / 20D / 60D / 1Y / 12-1M)：</b> <span style="color:#cc2929;font-weight:bold">+0.47%</span> / <span style="color:#cc2929;font-weight:bold">+20.30%</span> / <span style="color:#00994d;font-weight:bold">-34.68%</span> / <span style="color:#00994d;font-weight:bold">-41.80%</span> / <span style="color:#cc2929;font-weight:bold">+261.78%</span> / <span style="color:#cc2929;font-weight:bold">+482.44%</span> ｜
+        <b>200D Volume Profile：</b> POC <b>372.74</b> (VAH <b>947.28</b> / VAL <b>329.10</b>)<br>
+        <b>尾部風險與風險調整指標 (1Y)：</b> 1Y歷史年化波動率 <b>84.16%</b> vs GARCH 1D條件年化波動預測 <b>108.12%</b> ｜
+        Sortino <b>8.19</b> ｜ Calmar <b>7.52</b> ｜
+        最大回撤 (MDD) <span style="color:#00994d;font-weight:bold">-59.47%</span> ｜
+        95% VaR / CVaR: <span style="color:#00994d;font-weight:bold">-9.70% / -9.94%</span><br>
+        <b>↳ GARCH 波動體制與明日振幅推估：</b> <b style="color:#cc2929">【波動擴張 / 高波動叢聚 (1.28x 歷史均態, +23.96%p)】</b>近期日內或隔日跳空衝擊使短期條件波動顯著高於 1Y 歷史常態，處於高波動發散期，突破訊號失真與洗盤掃停損機率升高；<b>建議放寬停損 ATR 倍數並調降部位規模</b>。 ｜ <b>隱含振幅推估：</b>明日 (1D) ±1σ (68%機率) 預期波動 <b>±6.81%</b>（約 <b>602.00 ~ 690.00</b>）、±1.96σ (95%極端值) 為 <b>±13.35%</b>；未來一週 (5D) ±1σ 預期波動 <b>±15.23%</b> ｜ <b>20%波動目標部位上限：</b>約 <b>18%</b> 倉位 <span style="color:#666;font-size:11px">（註：GARCH 1D 預測值係以 EWMA λ=0.94 捕捉近期波動叢聚效應，將「下一交易日條件波動率」折算為年化百分比以便與 1Y 年化波動率直接對比；除以 √252 即為明日單日標準差 σ）</span><br>
+        <b>Lo-MacKinlay 序列相關檢定 VR(5/10/20)：</b> 5D: <b style="color:#292524">1.186</b> (z*=+1.54, 正自相關/趨勢·不顯著) ／ 10D: <b style="color:#292524">1.116</b> (z*=+0.63, 正自相關/趨勢·不顯著) ／ 20D: <b style="color:#292524">1.296</b> (z*=+1.12, 正自相關/趨勢·不顯著)<br>
+        <b>↳ 序列體制判讀與交易意涵：</b> <b>【隨機漫步體制 (Random Walk)】</b>各期 VR 數值雖皆 &gt; 1（微幅偏向正自相關/動量延續），但 |z*| 均未達 1.96 顯著門檻，統計上無法拒絕隨機漫步假說；代表單憑歷史價格序列本身缺乏顯著之可預測自相關 Edge，<b>純技術型態之時序預測力有限，交易決策應以基本面估值、法人/主動ETF籌碼或事件催化為主，技術面僅作為支撐壓力（如 POC/VAL）定價工具</b>。 <span style="color:#666;font-size:11px">（原理說明：VR(q) = Var(q日對數報酬) / [q × Var(1日對數報酬)]；VR=1 為隨機漫步、VR&gt;1 為趨勢動量延續、VR&lt;1 為均值回歸反轉；z* 為異質變異數穩健檢定統計量，|z*|&gt;1.96 表達 95% 統計顯著）</span>
+      </div>
+      <table class="pq-tbl" style="margin-top:8px"><thead><tr><th style="text-align:left">Benchmark</th><th>20D (Stock / Bench)</th><th>20D Rel Excess</th><th>60D Rel Excess</th><th>1Y Rel Excess</th><th>1Y Beta (β)</th><th>R²</th><th>1Y Residual Alpha (α)</th></tr></thead><tbody><tr><td style="text-align:left"><b>^TWII</b></td><td><span style="color:#00994d;font-weight:bold">-34.68%</span> / <span style="color:#00994d;font-weight:bold">-13.06%</span></td><td><span style="color:#00994d;font-weight:bold">-21.62%</span></td><td><span style="color:#00994d;font-weight:bold">-26.64%</span></td><td><span style="color:#cc2929;font-weight:bold">+244.90%</span></td><td><b>1.78</b></td><td>0.47</td><td><span style="color:#cc2929;font-weight:bold">+214.42%</span></td></tr><tr><td style="text-align:left"><b>0050.TW</b></td><td><span style="color:#00994d;font-weight:bold">-38.17%</span> / <span style="color:#00994d;font-weight:bold">-13.43%</span></td><td><span style="color:#00994d;font-weight:bold">-24.75%</span></td><td><span style="color:#00994d;font-weight:bold">-33.06%</span></td><td><span style="color:#cc2929;font-weight:bold">+238.45%</span></td><td><b>1.60</b></td><td>0.41</td><td><span style="color:#cc2929;font-weight:bold">+211.01%</span></td></tr><tr><td style="text-align:left"><b>SOXX</b></td><td><span style="color:#00994d;font-weight:bold">-37.88%</span> / <span style="color:#00994d;font-weight:bold">-21.73%</span></td><td><span style="color:#00994d;font-weight:bold">-16.16%</span></td><td><span style="color:#00994d;font-weight:bold">-22.35%</span></td><td><span style="color:#cc2929;font-weight:bold">+247.51%</span></td><td><b>0.36</b></td><td>0.05</td><td><span style="color:#cc2929;font-weight:bold">+269.45%</span></td></tr></tbody></table>
+    </div>
+    
+
+    <div class="pq-sec">
+      <h2>🔥 台股橫斷面估值分位數、主動式 ETF 持股異動與外資/本土券商報告</h2>
+      <div class="pq-banner"><b>外資持股比例：</b> <b>38.44%</b> (全市場 PR <b>94.1%</b> ｜ 持股 632,059 張) ｜ <b>投信持股比例：</b> <b>12.70%</b> (全市場 PR <b>98.6%</b> ｜ 持股 208,510 張) ｜ <b>上市大盤融資維持率：</b> <b>158.41%</b> ｜ <b>券商目標價共識 (8篇)：</b> 均價 <b>1,493.75</b> / 中位數 <b>1,500.00</b> (區間 1,025.00 ~ 1,800.00, 潛在空間 <span style="color:#cc2929;font-weight:bold">+131.23%</span>) ｜ <br><b>主動式 ETF 近30日資金流向 (2026-10-29 ~ 2026-11-27 (近30日)):</b> 全市場 27 檔中有 <b>17</b> 檔持有本股 (買超 <b>12</b> 檔 / 賣超 <b>5</b> 檔) ｜ 淨買賣超: <span style="color:#cc2929;font-weight:bold">+6760.0張</span> / <span style="color:#cc2929;font-weight:bold">+48.01億元</span></div>
+      <div class="pq-grid-2">
+        <div>
+          <h3>主動式 ETF 最新持股與近30日買賣超彙總 (etfinfo.tw API)</h3>
+          <table class="pq-tbl"><thead><tr><th style="text-align:left">主動式 ETF</th><th>目前權重%</th><th>持有張數</th><th>30D淨增減</th><th>30D淨金額</th><th>最新動作 (日期)</th></tr></thead>
+          <tbody><tr><td style="text-align:left"><b>00406A 主動中信台灣收益</b></td><td><b>4.70%</b></td><td>12,665.0</td><td><span style="color:#cc2929;font-weight:bold">+5700.0張</span></td><td><span style="color:#cc2929;font-weight:bold">+40.74億</span></td><td>減碼 (2026-11-27)</td></tr><tr><td style="text-align:left"><b>00405A 主動富邦台灣龍耀</b></td><td><b>3.46%</b></td><td>1,030.0</td><td><span style="color:#00994d;font-weight:bold">-500.0張</span></td><td><span style="color:#00994d;font-weight:bold">-4.51億</span></td><td>減碼 (2026-11-03)</td></tr><tr><td style="text-align:left"><b>00985A 主動野村台灣50</b></td><td><b>3%</b></td><td>1,180.0</td><td><span style="color:#cc2929;font-weight:bold">+625.0張</span></td><td><span style="color:#cc2929;font-weight:bold">+4.39億</span></td><td>加碼 (2026-11-26)</td></tr><tr><td style="text-align:left"><b>00991A 主動復華未來50</b></td><td><b>5.87%</b></td><td>5,800.0</td><td><span style="color:#cc2929;font-weight:bold">+450.0張</span></td><td><span style="color:#cc2929;font-weight:bold">+3.07億</span></td><td>加碼 (2026-11-25)</td></tr><tr><td style="text-align:left"><b>00992A 主動群益科技創新</b></td><td><b>4.91%</b></td><td>3,032.0</td><td><span style="color:#cc2929;font-weight:bold">+350.0張</span></td><td><span style="color:#cc2929;font-weight:bold">+2.54億</span></td><td>加碼 (2026-11-06)</td></tr><tr><td style="text-align:left"><b>00982A 主動群益台灣強棒</b></td><td><b>—</b></td><td>—</td><td><span style="color:#00994d;font-weight:bold">-400.0張</span></td><td><span style="color:#00994d;font-weight:bold">-2.50億</span></td><td>清倉剔除 (2026-11-23)</td></tr><tr><td style="text-align:left"><b>00407A 主動凱基台灣</b></td><td><b>4.81%</b></td><td>1,418.0</td><td><span style="color:#cc2929;font-weight:bold">+221.0張</span></td><td><span style="color:#cc2929;font-weight:bold">+1.59億</span></td><td>加碼 (2026-11-27)</td></tr><tr><td style="text-align:left"><b>00400A 主動國泰動能高息</b></td><td><b>2.89%</b></td><td>1,284.0</td><td><span style="color:#cc2929;font-weight:bold">+215.0張</span></td><td><span style="color:#cc2929;font-weight:bold">+1.26億</span></td><td>加碼 (2026-11-25)</td></tr><tr><td style="text-align:left"><b>00415A 主動群益核心50</b></td><td><b>4.20%</b></td><td>692.0</td><td><span style="color:#cc2929;font-weight:bold">+99.0張</span></td><td><span style="color:#cc2929;font-weight:bold">+0.80億</span></td><td>加碼 (2026-11-20)</td></tr><tr><td style="text-align:left"><b>00993A 主動安聯台灣</b></td><td><b>4%</b></td><td>436.0</td><td><span style="color:#cc2929;font-weight:bold">+7.0張</span></td><td><span style="color:#cc2929;font-weight:bold">+0.65億</span></td><td>減碼 (2026-11-18)</td></tr><tr><td style="text-align:left"><b>00401A 主動摩根台灣鑫收</b></td><td><b>0.43%</b></td><td>27.6</td><td><span style="color:#00994d;font-weight:bold">-46.0張</span></td><td><span style="color:#00994d;font-weight:bold">-0.40億</span></td><td>加碼 (2026-11-25)</td></tr><tr><td style="text-align:left"><b>00994A 主動第一金台股優</b></td><td><b>5.47%</b></td><td>239.0</td><td><span style="color:#cc2929;font-weight:bold">+31.0張</span></td><td><span style="color:#cc2929;font-weight:bold">+0.24億</span></td><td>加碼 (2026-11-12)</td></tr><tr><td style="text-align:left"><b>00984A 主動安聯台灣高息</b></td><td><b>1.39%</b></td><td>189.0</td><td><span style="color:#cc2929;font-weight:bold">+32.0張</span></td><td><span style="color:#cc2929;font-weight:bold">+0.23億</span></td><td>加碼 (2026-11-25)</td></tr><tr><td style="text-align:left"><b>00410A 主動永豐科技趨勢</b></td><td><b>—</b></td><td>—</td><td><span style="color:#00994d;font-weight:bold">-33.0張</span></td><td><span style="color:#00994d;font-weight:bold">-0.21億</span></td><td>清倉剔除 (2026-11-17)</td></tr><tr><td style="text-align:left"><b>00408A 主動第一金優股息</b></td><td><b>2.73%</b></td><td>53.0</td><td><span style="color:#cc2929;font-weight:bold">+12.0張</span></td><td><span style="color:#cc2929;font-weight:bold">+0.10億</span></td><td>加碼 (2026-11-12)</td></tr><tr><td style="text-align:left"><b>00404A 主動聯博動能50</b></td><td><b>0.29%</b></td><td>15.0</td><td><span style="color:#cc2929;font-weight:bold">+5.0張</span></td><td><span style="color:#cc2929;font-weight:bold">+0.04億</span></td><td>加碼 (2026-11-04)</td></tr><tr><td style="text-align:left"><b>00996A 主動兆豐台灣豐收</b></td><td><b>1.97%</b></td><td>137.0</td><td><span style="color:#00994d;font-weight:bold">-8.0張</span></td><td><span style="color:#00994d;font-weight:bold">-0.02億</span></td><td>減碼 (2026-11-25)</td></tr></tbody></table>
+          <h3>主動式 ETF 近期大額加減碼事件明細 (Top 10 by Amount)</h3><table class="pq-tbl"><thead><tr><th>日期</th><th style="text-align:left">主動式 ETF</th><th>動作</th><th>異動張數</th><th>異動金額</th><th>最新權重%</th></tr></thead><tbody><tr><td>2026-11-20</td><td style="text-align:left"><b>00406A 主動中信台灣收益</b></td><td><b>加碼</b></td><td><span style="color:#cc2929;font-weight:bold">+2000.0張</span></td><td><span style="color:#cc2929;font-weight:bold">+10.74億</span></td><td>4.89%</td></tr><tr><td>2026-11-05</td><td style="text-align:left"><b>00406A 主動中信台灣收益</b></td><td><b>加碼</b></td><td><span style="color:#cc2929;font-weight:bold">+1200.0張</span></td><td><span style="color:#cc2929;font-weight:bold">+9.60億</span></td><td>5.51%</td></tr><tr><td>2026-11-19</td><td style="text-align:left"><b>00406A 主動中信台灣收益</b></td><td><b>加碼</b></td><td><span style="color:#cc2929;font-weight:bold">+800.0張</span></td><td><span style="color:#cc2929;font-weight:bold">+4.77億</span></td><td>4.30%</td></tr><tr><td>2026-11-03</td><td style="text-align:left"><b>00405A 主動富邦台灣龍耀</b></td><td><b>減碼</b></td><td><span style="color:#00994d;font-weight:bold">-500.0張</span></td><td><span style="color:#00994d;font-weight:bold">-4.51億</span></td><td>4.72%</td></tr><tr><td>2026-10-30</td><td style="text-align:left"><b>00406A 主動中信台灣收益</b></td><td><b>加碼</b></td><td><span style="color:#cc2929;font-weight:bold">+420.0張</span></td><td><span style="color:#cc2929;font-weight:bold">+4.15億</span></td><td>5.84%</td></tr><tr><td>2026-11-09</td><td style="text-align:left"><b>00406A 主動中信台灣收益</b></td><td><b>加碼</b></td><td><span style="color:#cc2929;font-weight:bold">+500.0張</span></td><td><span style="color:#cc2929;font-weight:bold">+3.79億</span></td><td>5.20%</td></tr><tr><td>2026-10-29</td><td style="text-align:left"><b>00406A 主動中信台灣收益</b></td><td><b>加碼</b></td><td><span style="color:#cc2929;font-weight:bold">+300.0張</span></td><td><span style="color:#cc2929;font-weight:bold">+3.12億</span></td><td>5.97%</td></tr><tr><td>2026-11-03</td><td style="text-align:left"><b>00406A 主動中信台灣收益</b></td><td><b>加碼</b></td><td><span style="color:#cc2929;font-weight:bold">+300.0張</span></td><td><span style="color:#cc2929;font-weight:bold">+2.71億</span></td><td>5.66%</td></tr><tr><td>2026-11-11</td><td style="text-align:left"><b>00993A 主動安聯台灣</b></td><td><b>加碼</b></td><td><span style="color:#cc2929;font-weight:bold">+306.0張</span></td><td><span style="color:#cc2929;font-weight:bold">+2.64億</span></td><td>6.99%</td></tr><tr><td>2026-11-06</td><td style="text-align:left"><b>00992A 主動群益科技創新</b></td><td><b>加碼</b></td><td><span style="color:#cc2929;font-weight:bold">+350.0張</span></td><td><span style="color:#cc2929;font-weight:bold">+2.54億</span></td><td>5.97%</td></tr></tbody></table>
+        </div>
+        <div>
+          <h3>最新外資與本土券商研究報告與目標價彙整 (MoneyDJ B2B)</h3>
+          <table class="pq-tbl"><thead><tr><th>日期</th><th>券商機構</th><th>最新評等</th><th>目標價</th><th style="text-align:left">前次評等 / 備註</th></tr></thead>
+          <tbody><tr><td>2026/11/20</td><td><b>JP摩根</b></td><td><b>加碼</b></td><td style="color:#d9650f;font-weight:bold">1400</td><td style="text-align:left">前次評等：加碼</td></tr><tr><td>2026/11/16</td><td><b>兆豐國際投顧</b></td><td><b>買進</b></td><td style="color:#d9650f;font-weight:bold">1025</td><td style="text-align:left">前次評等：買進</td></tr><tr><td>2026/10/28</td><td><b>UBS</b></td><td><b>買進</b></td><td style="color:#d9650f;font-weight:bold">1800</td><td style="text-align:left">前次評等：買進</td></tr><tr><td>2026/10/28</td><td><b>美銀(BOFA)</b></td><td><b>買進</b></td><td style="color:#d9650f;font-weight:bold">1650</td><td style="text-align:left">前次評等：買進</td></tr><tr><td>2026/10/28</td><td><b>富邦投顧</b></td><td><b>買進</b></td><td style="color:#d9650f;font-weight:bold">1600</td><td style="text-align:left">前次評等：買進</td></tr><tr><td>2026/10/28</td><td><b>JP摩根</b></td><td><b>加碼</b></td><td style="color:#d9650f;font-weight:bold">1400</td><td style="text-align:left">前次評等：加碼</td></tr><tr><td>2026/10/27</td><td><b>摩根史坦利</b></td><td><b>加碼</b></td><td style="color:#d9650f;font-weight:bold">1775</td><td style="text-align:left">前次評等：加碼</td></tr><tr><td>2026/10/27</td><td><b>國泰期貨</b></td><td><b>買進</b></td><td style="color:#d9650f;font-weight:bold">1300</td><td style="text-align:left">前次評等：買進</td></tr></tbody></table>
+          <h3>全市場橫斷面估值與獲利百分位排名 (MoneyDJ B2B)</h3><table class="pq-tbl"><thead><tr><th style="text-align:left">指標</th><th>本檔數值</th><th>全市場百分位</th><th>全市場中位數</th><th>樣本數</th><th style="text-align:left">判讀 (基準日)</th></tr></thead><tbody><tr><td style="text-align:left"><b>股價淨值比PB</b></td><td><b>5.97</b></td><td><b>PR 95.5%</b></td><td>1.48</td><td>1991</td><td style="text-align:left">低者便宜 (2026/11/27)</td></tr><tr><td style="text-align:left"><b>本益比PE</b></td><td><b>33.44</b></td><td><b>PR 82.8%</b></td><td>15.08</td><td>1547</td><td style="text-align:left">低者便宜 (2026/11/27)</td></tr><tr><td style="text-align:left"><b>每股盈餘EPS</b></td><td><b>6.36</b></td><td><b>PR 95.0%</b></td><td>0.54</td><td>1993</td><td style="text-align:left">高者佳 (2026/09/01)</td></tr><tr><td style="text-align:left"><b>毛利率%</b></td><td><b>28.85</b></td><td><b>PR 56.4%</b></td><td>25.73</td><td>1969</td><td style="text-align:left">高者佳 (2026/09/01)</td></tr><tr><td style="text-align:left"><b>ROA%</b></td><td><b>3.13</b></td><td><b>PR 82.7%</b></td><td>1.15</td><td>2008</td><td style="text-align:left">高者佳 (2026/09/01)</td></tr><tr><td style="text-align:left"><b>ROE%</b></td><td><b>6.73</b></td><td><b>PR 89.4%</b></td><td>2.06</td><td>2007</td><td style="text-align:left">高者佳 (2026/09/01)</td></tr><tr><td style="text-align:left"><b>現金殖利率%</b></td><td><b>0.31</b></td><td><b>PR 1.2%</b></td><td>3.98</td><td>1478</td><td style="text-align:left">高者佳 (2026/11/27)</td></tr></tbody></table>
+          <h3>台股月營收動能 (最新單月 YoY: <span style="color:#cc2929;font-weight:bold">+67.62%</span> ｜ 前3月平均 YoY: <span style="color:#cc2929;font-weight:bold">+54.87%</span> ｜ 動能加速度: <span style="color:#cc2929;font-weight:bold">+12.75pp</span>)</h3><table class="pq-tbl"><thead><tr><th>年月</th><th>單月營收(仟元)</th><th>MoM%</th><th>YoY%</th><th>累計營收(仟元)</th><th>累計YoY%</th></tr></thead><tbody><tr><td>115/10</td><td>18,986,087</td><td>1.80%</td><td><b>67.62%</b></td><td>151,972,195</td><td>40.88%</td></tr><tr><td>115/09</td><td>18,650,679</td><td>5.10%</td><td><b>64.67%</b></td><td>132,986,108</td><td>37.74%</td></tr><tr><td>115/08</td><td>17,745,519</td><td>9.18%</td><td><b>56.26%</b></td><td>114,335,429</td><td>34.16%</td></tr><tr><td>115/07</td><td>16,253,637</td><td>9.11%</td><td><b>43.69%</b></td><td>96,589,910</td><td>30.76%</td></tr><tr><td>115/06</td><td>14,897,030</td><td>5.95%</td><td><b>36.31%</b></td><td>80,336,273</td><td>28.42%</td></tr><tr><td>115/05</td><td>14,059,973</td><td>0.91%</td><td><b>32.37%</b></td><td>65,439,243</td><td>26.75%</td></tr><tr><td>115/04</td><td>13,932,815</td><td>6.53%</td><td><b>27.64%</b></td><td>51,379,270</td><td>25.30%</td></tr><tr><td>115/03</td><td>13,079,019</td><td>12.75%</td><td><b>23.27%</b></td><td>37,446,455</td><td>24.45%</td></tr></tbody></table>
+        </div>
+      </div>
+    </div>
+    
+</div></div>
+<div class="rp-sec-pane" id="sec-fbs"><div class="rp-card">  <div align="center">
+    <div class="midcontent_infomation02">
+				<table width="670" border="0" cellspacing="0" cellpadding="0">
+					<tr>
+						<td align="left" valign="top">
+							<div>
+								<table width="400" border="0" cellspacing="0" cellpadding="0">
+									<tr>
+										<td align="left" valign="top">
+											<table width="400" border="0" cellspacing="0" cellpadding="0">
+												<tr>
+													<td align="left" valign="top"><span>欣興(3037)</span>個股基本資料      最近交易日:11/27   市值單位:百萬</td>
+													
+												</tr>
+											</table>
+										</td>
+									</tr>
+									<tr>
+										<td align="center" valign="top">
+											<div>
+												<table width="350" border="1" cellpadding="0" cellspacing="0">
+													<tr>
+														<td align="center">開盤價</td>
+														<td align="center">最高價</td>
+														<td align="center">最低價</td>
+														<td align="center">收盤價</td>
+														<td align="center">漲跌</td>
+													</tr>
+													<tr>
+														<td height="40" align="center"><span>647.00</span></td>
+														<td height="40" align="center"><span>661.00</span></td>
+														<td height="40" align="center"><span>631.00</span></td>
+														<td height="40" align="center"><span>646.00</span></td>
+														<td height="40" align="center"><span>+3.00
+</span></td>
+													</tr>
+													<tr>
+														<td align="center">本益比</td>
+														<td align="center">成交量</td>
+														<td align="center">同業平均<br/>本益比</td>
+														<td align="center">盤後量</td>
+														<td align="center">總市值</td>
+													</tr>
+													<tr>
+														<td height="40" align="center"><span>33.44</span></td>
+														<td height="40" align="center"><span>31,773</span></td>
+														<td height="40" align="center"><span>33.05</span></td>
+														<td height="40" align="center"><span>968</span></td>
+														<td height="40" align="center"><span>1,060,274</span></td>
+													</tr>
+												</table>
+											</div>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</td>
+						<td width="10" align="left" valign="top"/>
+						<td align="left" valign="top">
+							<div>
+								<table width="250" border="0" cellspacing="0" cellpadding="0">
+									<tr>
+										<td align="left" valign="top">
+											<table width="250" border="0" cellspacing="0" cellpadding="0">
+												<tr>
+													<td align="left" valign="top"><span><span>欣興</span>分時走勢圖</span></td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+									<tr>
+										<td align="left" valign="top">
+											<div>
+												<table width="250" border="0" cellspacing="0" cellpadding="0">
+													<tr>
+														<td align="center" valign="middle"><img src="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zc0/zc08/ZC08GIF_3037_520_300.djgif"/></td>
+													</tr>
+												</table>
+											</div>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+			
+			
+
+  </div>  <div align="center">
+    <table width="610" border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<td align="center" valign="bottom">
+						<div>
+							<table width="600" border="0" cellpadding="0" cellspacing="0">
+								<tr>
+									<td width="203" height="20" align="left">投資報酬率</td>
+									<td width="203" height="20" align="left">財務比例(115.3Q)</td>
+									<td width="194" align="left">投資風險</td>
+								</tr>
+							</table>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td align="center" valign="top">
+						<table width="600" border="0" cellpadding="0" cellspacing="0">
+							<tr>
+								<td height="20" align="left"><span>•今年以來</span></td>
+								<td align="right">192.87%</td>
+								<td width="10" height="20" align="center"> </td>
+								<td height="20" align="left"><span>•每股淨值(元)</span></td>
+								<td align="right">108.24</td>
+								<td width="10" height="20" align="center"> </td>
+								<td align="left"><span>•貝他值</span></td>
+								<td align="right">1.79</td>
+							</tr>
+							<tr>
+								<td height="20" align="left"><span>•最近一週</span></td>
+								<td height="20" align="right">19.74%</td>
+								<td width="10" height="20" align="center"> </td>
+								<td height="20" align="left"><span>•每人營收(仟元)</span></td>
+								<td height="20" align="right">1,613</td>
+								<td width="10" height="20" align="center"> </td>
+								<td align="left"><span>•標準差</span></td>
+								<td align="right">5.33%</td>
+							</tr>
+							<tr>
+								<td height="20" align="left"><span>•最近一個月</span></td>
+								<td height="20" align="right"><p>-39.34%</p></td>
+								<td width="10" height="20" align="center"> </td>
+								<td height="20" align="left"><span>•每股營收(元)</span></td>
+								<td height="20" align="right">32.0</td>
+								<td width="10" height="20" align="center"> </td>
+								<td height="20" align="left"> </td>
+								<td height="20" align="right"> </td>
+							</tr>
+							<tr>
+								<td height="20" align="left"><span>•最近二個月</span></td>
+								<td height="20" align="right"><p>-45.74%</p></td>
+								<td width="10" height="20" align="center"> </td>
+								<td height="20" align="left"><span>•負債比例</span></td>
+								<td height="20" align="right">54%</td>
+								<td width="10" height="20" align="center"> </td>
+								<td height="20" align="left"> </td>
+								<td height="20" align="right"> </td>
+							</tr>
+							<tr>
+								<td height="20" align="left"><span>•最近三個月</span></td>
+								<td height="20" align="right"><p>-45.51%</p></td>
+								<td width="10" height="20" align="center"> </td>
+								<td height="20" align="left"><span>•股價淨值比</span></td>
+								<td height="20" align="right">5.97</td>
+								<td width="10" height="20" align="center"> </td>
+								<td height="20" align="left"> </td>
+								<td height="20" align="right"> </td>
+							</tr>
+							<tr>
+								<td height="20" align="left"> </td>
+								<td height="20" align="right"> </td>
+								<td width="10" height="20" align="center"> </td>
+								<td height="20" align="left"><span>•營收市值比</span></td>
+								<td height="20" align="right">1.30%</td>
+								<td width="10" height="20" align="center"> </td>
+								<td height="20" align="left"> </td>
+								<td height="20" align="right"> </td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>			
+			
+			
+
+  </div>  <div align="center">
+    <table id="oMainTable" class="t01" width="612" border="0" cellspacing="1" cellpadding="1">
+    <tr><td colspan="10">欣興(3037)
+    <a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco_3037.djhtm" target="_blank">券商分點-進出明細</a>
+    <div>單位：張　最後更新日：2026/11/27</div></td></tr>
+    <tr>
+    <td colspan="5">買超</td>
+    <td colspan="5">賣超</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap">買超券商</td>
+    <td>買進</td>
+    <td>賣出</td>
+    <td>買超</td>
+    <td>佔成交比重</td>
+    <td nowrap="nowrap">賣超券商</td>
+    <td>買進</td>
+    <td>賣出</td>
+    <td>賣超</td>
+    <td>佔成交比重</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap"><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco0/zco0.djhtm?a=3037&amp;b=8440&amp;BHID=8440" target="_blank">摩根大通</a></td>
+    <td>909</td>
+    <td>278</td>
+    <td>631</td>
+    <td>2.02%</td>
+    <td nowrap="nowrap"><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco0/zco0.djhtm?a=3037&amp;b=1480&amp;BHID=1480" target="_blank">美商高盛</a></td>
+    <td>1,566</td>
+    <td>2,861</td>
+    <td>1,295</td>
+    <td>4.14%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap"><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco0/zco0.djhtm?a=3037&amp;b=9200&amp;BHID=9200" target="_blank">凱基</a></td>
+    <td>474</td>
+    <td>1</td>
+    <td>473</td>
+    <td>1.51%</td>
+    <td nowrap="nowrap"><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco0/zco0.djhtm?a=3037&amp;b=1470&amp;BHID=1470" target="_blank">台灣摩根士丹利</a></td>
+    <td>1,706</td>
+    <td>2,960</td>
+    <td>1,254</td>
+    <td>4%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap"><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco0/zco0.djhtm?a=3037&amp;b=9800&amp;BHID=9800" target="_blank">元大證券</a></td>
+    <td>3,445</td>
+    <td>3,021</td>
+    <td>424</td>
+    <td>1.35%</td>
+    <td nowrap="nowrap"><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco0/zco0.djhtm?a=3037&amp;b=1440&amp;BHID=1440" target="_blank">美林</a></td>
+    <td>551</td>
+    <td>1,184</td>
+    <td>633</td>
+    <td>2.02%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap"><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco0/zco0.djhtm?a=3037&amp;b=1360&amp;BHID=1360" target="_blank">港商麥格理</a></td>
+    <td>456</td>
+    <td>54</td>
+    <td>402</td>
+    <td>1.28%</td>
+    <td nowrap="nowrap"><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco0/zco0.djhtm?a=3037&amp;b=9875&amp;BHID=9800" target="_blank">元大-土城永寧</a></td>
+    <td>13</td>
+    <td>512</td>
+    <td>499</td>
+    <td>1.59%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap"><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco0/zco0.djhtm?a=3037&amp;b=1590&amp;BHID=1590" target="_blank">花旗環球</a></td>
+    <td>271</td>
+    <td>15</td>
+    <td>256</td>
+    <td>0.82%</td>
+    <td nowrap="nowrap"><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco0/zco0.djhtm?a=3037&amp;b=9268&amp;BHID=9200" target="_blank">凱基-台北</a></td>
+    <td>1,714</td>
+    <td>2,159</td>
+    <td>445</td>
+    <td>1.42%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap"><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco0/zco0.djhtm?a=3037&amp;b=2180&amp;BHID=2180" target="_blank">亞東</a></td>
+    <td>224</td>
+    <td>22</td>
+    <td>202</td>
+    <td>0.65%</td>
+    <td nowrap="nowrap"><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco0/zco0.djhtm?a=3037&amp;b=1560&amp;BHID=1560" target="_blank">港商野村</a></td>
+    <td>210</td>
+    <td>644</td>
+    <td>434</td>
+    <td>1.39%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap"><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco0/zco0.djhtm?a=3037&amp;b=7000&amp;BHID=7000" target="_blank">兆豐證券</a></td>
+    <td>260</td>
+    <td>69</td>
+    <td>191</td>
+    <td>0.61%</td>
+    <td nowrap="nowrap"><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco0/zco0.djhtm?a=3037&amp;b=9216&amp;BHID=9200" target="_blank">凱基-信義</a></td>
+    <td>5</td>
+    <td>192</td>
+    <td>187</td>
+    <td>0.6%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap"><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco0/zco0.djhtm?a=3037&amp;b=0039004200300030&amp;BHID=9B00" target="_blank">台新</a></td>
+    <td>319</td>
+    <td>142</td>
+    <td>177</td>
+    <td>0.57%</td>
+    <td nowrap="nowrap"><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco0/zco0.djhtm?a=3037&amp;b=0039004100380039&amp;BHID=9A00" target="_blank">永豐金-敦北</a></td>
+    <td>454</td>
+    <td>629</td>
+    <td>175</td>
+    <td>0.56%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap"><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco0/zco0.djhtm?a=3037&amp;b=0039004100300030&amp;BHID=9A00" target="_blank">永豐金證券</a></td>
+    <td>510</td>
+    <td>380</td>
+    <td>130</td>
+    <td>0.42%</td>
+    <td nowrap="nowrap"><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco0/zco0.djhtm?a=3037&amp;b=9227&amp;BHID=9200" target="_blank">凱基-城中</a></td>
+    <td>8</td>
+    <td>109</td>
+    <td>101</td>
+    <td>0.32%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap"><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco0/zco0.djhtm?a=3037&amp;b=0039004100380031&amp;BHID=9A00" target="_blank">永豐金-匯立</a></td>
+    <td>128</td>
+    <td>3</td>
+    <td>125</td>
+    <td>0.4%</td>
+    <td nowrap="nowrap"><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco0/zco0.djhtm?a=3037&amp;b=003900410039004c&amp;BHID=9A00" target="_blank">永豐金-台中</a></td>
+    <td>23</td>
+    <td>90</td>
+    <td>67</td>
+    <td>0.21%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap"><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco0/zco0.djhtm?a=3037&amp;b=1650&amp;BHID=1650" target="_blank">新加坡商瑞銀</a></td>
+    <td>1,443</td>
+    <td>1,337</td>
+    <td>106</td>
+    <td>0.34%</td>
+    <td nowrap="nowrap"><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco0/zco0.djhtm?a=3037&amp;b=9623&amp;BHID=9600" target="_blank">富邦-台北</a></td>
+    <td>90</td>
+    <td>152</td>
+    <td>62</td>
+    <td>0.2%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap"><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco0/zco0.djhtm?a=3037&amp;b=0039004200310067&amp;BHID=9B00" target="_blank">台新-高雄</a></td>
+    <td>145</td>
+    <td>50</td>
+    <td>95</td>
+    <td>0.3%</td>
+    <td nowrap="nowrap"><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco0/zco0.djhtm?a=3037&amp;b=0039004100390043&amp;BHID=9A00" target="_blank">永豐金-員林</a></td>
+    <td>18</td>
+    <td>75</td>
+    <td>57</td>
+    <td>0.18%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap"><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco0/zco0.djhtm?a=3037&amp;b=6162&amp;BHID=6160" target="_blank">中國信託-忠孝</a></td>
+    <td>119</td>
+    <td>43</td>
+    <td>76</td>
+    <td>0.24%</td>
+    <td nowrap="nowrap"><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco0/zco0.djhtm?a=3037&amp;b=0039004200320030&amp;BHID=9B00" target="_blank">台新-台北</a></td>
+    <td>21</td>
+    <td>71</td>
+    <td>50</td>
+    <td>0.16%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap"><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco0/zco0.djhtm?a=3037&amp;b=8880&amp;BHID=8880" target="_blank">國泰證券</a></td>
+    <td>100</td>
+    <td>26</td>
+    <td>74</td>
+    <td>0.24%</td>
+    <td nowrap="nowrap"><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco0/zco0.djhtm?a=3037&amp;b=9215&amp;BHID=9200" target="_blank">凱基-高美館</a></td>
+    <td>15</td>
+    <td>58</td>
+    <td>43</td>
+    <td>0.14%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap"><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco0/zco0.djhtm?a=3037&amp;b=8888&amp;BHID=8880" target="_blank">國泰-敦南</a></td>
+    <td>1,040</td>
+    <td>967</td>
+    <td>73</td>
+    <td>0.23%</td>
+    <td nowrap="nowrap"><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zco/zco0/zco0.djhtm?a=3037&amp;b=0035003300380044&amp;BHID=5380" target="_blank">第一金-忠孝</a></td>
+    <td>6</td>
+    <td>45</td>
+    <td>39</td>
+    <td>0.12%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap">合計買超張數</td>
+    <td colspan="4">3,436</td>
+    <td nowrap="nowrap">合計賣超張數</td>
+    <td colspan="4">5,341</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap">平均買超成本</td>
+    <td colspan="4">647.28</td>
+    <td nowrap="nowrap">平均賣超成本</td>
+    <td colspan="4">646.79</td>
+    </tr>
+    <tr>
+    <td colspan="10">
+    【註1】合計買超或賣超，為上述家數合計。<br/>
+    【註2】平均買超或賣超成本，為上述家數合計買賣超金額/上述家數合計買賣超張數。
+    </td>
+    </tr>
+    </table>
+  </div>
+  <br>
+  <div align="center">
+    <table class="t01" border="0" cellspacing="1" cellpadding="1">
+    <tr><td colspan="11">欣興(3037)<a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zcl/zcl.djhtm?a=3037&b=3" target="_blank">法人持股明細</a></td></tr>
+    <tr align="center">
+    <td nowrap="nowrap"> </td>
+    <td colspan="4" nowrap="nowrap">買賣超</td>
+    <td colspan="4" nowrap="nowrap">估計持股</td>
+    <td colspan="2" nowrap="nowrap">持股比重</td>
+    </tr>
+    <tr align="center">
+    <td nowrap="nowrap">日期</td>
+    <td nowrap="nowrap">外資</td>
+    <td nowrap="nowrap">投信</td>
+    <td nowrap="nowrap">自營商</td>
+    <td nowrap="nowrap">單日合計</td>
+    <td nowrap="nowrap">外資</td>
+    <td nowrap="nowrap">投信</td>
+    <td nowrap="nowrap">自營商</td>
+    <td nowrap="nowrap">單日合計</td>
+    <td nowrap="nowrap">外資</td>
+    <td nowrap="nowrap">三大法人</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap">115/11/27</td>
+    <td nowrap="nowrap">-2,595</td>
+    <td nowrap="nowrap">859</td>
+    <td nowrap="nowrap">-42</td>
+    <td nowrap="nowrap">-1,778</td>
+    <td nowrap="nowrap">632,059</td>
+    <td nowrap="nowrap">208,510</td>
+    <td nowrap="nowrap">20,256</td>
+    <td nowrap="nowrap">860,825</td>
+    <td nowrap="nowrap">38.44%</td>
+    <td nowrap="nowrap">52.38%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap">115/11/26</td>
+    <td nowrap="nowrap">-1,556</td>
+    <td nowrap="nowrap">1,070</td>
+    <td nowrap="nowrap">440</td>
+    <td nowrap="nowrap">-46</td>
+    <td nowrap="nowrap">634,742</td>
+    <td nowrap="nowrap">207,651</td>
+    <td nowrap="nowrap">20,298</td>
+    <td nowrap="nowrap">862,691</td>
+    <td nowrap="nowrap">38.61%</td>
+    <td nowrap="nowrap">52.50%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap">115/11/25</td>
+    <td nowrap="nowrap">644</td>
+    <td nowrap="nowrap">546</td>
+    <td nowrap="nowrap">-759</td>
+    <td nowrap="nowrap">431</td>
+    <td nowrap="nowrap">636,322</td>
+    <td nowrap="nowrap">206,581</td>
+    <td nowrap="nowrap">19,858</td>
+    <td nowrap="nowrap">862,761</td>
+    <td nowrap="nowrap">38.70%</td>
+    <td nowrap="nowrap">52.50%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap">115/11/24</td>
+    <td nowrap="nowrap">-77</td>
+    <td nowrap="nowrap">-113</td>
+    <td nowrap="nowrap">3</td>
+    <td nowrap="nowrap">-187</td>
+    <td nowrap="nowrap">635,660</td>
+    <td nowrap="nowrap">206,034</td>
+    <td nowrap="nowrap">20,617</td>
+    <td nowrap="nowrap">862,311</td>
+    <td nowrap="nowrap">38.72%</td>
+    <td nowrap="nowrap">52.53%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap">115/11/23</td>
+    <td nowrap="nowrap">-940</td>
+    <td nowrap="nowrap">-2,343</td>
+    <td nowrap="nowrap">602</td>
+    <td nowrap="nowrap">-2,681</td>
+    <td nowrap="nowrap">635,691</td>
+    <td nowrap="nowrap">206,148</td>
+    <td nowrap="nowrap">20,614</td>
+    <td nowrap="nowrap">862,453</td>
+    <td nowrap="nowrap">38.73%</td>
+    <td nowrap="nowrap">52.55%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap">115/11/20</td>
+    <td nowrap="nowrap">144</td>
+    <td nowrap="nowrap">1,736</td>
+    <td nowrap="nowrap">131</td>
+    <td nowrap="nowrap">2,011</td>
+    <td nowrap="nowrap">637,230</td>
+    <td nowrap="nowrap">208,490</td>
+    <td nowrap="nowrap">20,011</td>
+    <td nowrap="nowrap">865,731</td>
+    <td nowrap="nowrap">38.82%</td>
+    <td nowrap="nowrap">52.74%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap">115/11/19</td>
+    <td nowrap="nowrap">-1,695</td>
+    <td nowrap="nowrap">-52</td>
+    <td nowrap="nowrap">-172</td>
+    <td nowrap="nowrap">-1,919</td>
+    <td nowrap="nowrap">637,065</td>
+    <td nowrap="nowrap">206,755</td>
+    <td nowrap="nowrap">19,880</td>
+    <td nowrap="nowrap">863,700</td>
+    <td nowrap="nowrap">38.81%</td>
+    <td nowrap="nowrap">52.62%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap">115/11/18</td>
+    <td nowrap="nowrap">-3,349</td>
+    <td nowrap="nowrap">-300</td>
+    <td nowrap="nowrap">392</td>
+    <td nowrap="nowrap">-3,257</td>
+    <td nowrap="nowrap">638,823</td>
+    <td nowrap="nowrap">206,807</td>
+    <td nowrap="nowrap">20,052</td>
+    <td nowrap="nowrap">865,682</td>
+    <td nowrap="nowrap">38.92%</td>
+    <td nowrap="nowrap">52.74%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap">115/11/17</td>
+    <td nowrap="nowrap">4,406</td>
+    <td nowrap="nowrap">-4,801</td>
+    <td nowrap="nowrap">528</td>
+    <td nowrap="nowrap">133</td>
+    <td nowrap="nowrap">642,033</td>
+    <td nowrap="nowrap">207,107</td>
+    <td nowrap="nowrap">19,661</td>
+    <td nowrap="nowrap">868,801</td>
+    <td nowrap="nowrap">39.11%</td>
+    <td nowrap="nowrap">52.93%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap">115/11/16</td>
+    <td nowrap="nowrap">-3,544</td>
+    <td nowrap="nowrap">-1,059</td>
+    <td nowrap="nowrap">47</td>
+    <td nowrap="nowrap">-4,556</td>
+    <td nowrap="nowrap">637,703</td>
+    <td nowrap="nowrap">211,908</td>
+    <td nowrap="nowrap">19,133</td>
+    <td nowrap="nowrap">868,744</td>
+    <td nowrap="nowrap">38.85%</td>
+    <td nowrap="nowrap">52.93%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap">115/11/13</td>
+    <td nowrap="nowrap">-2,566</td>
+    <td nowrap="nowrap">-360</td>
+    <td nowrap="nowrap">189</td>
+    <td nowrap="nowrap">-2,737</td>
+    <td nowrap="nowrap">641,383</td>
+    <td nowrap="nowrap">212,966</td>
+    <td nowrap="nowrap">19,085</td>
+    <td nowrap="nowrap">873,434</td>
+    <td nowrap="nowrap">39.07%</td>
+    <td nowrap="nowrap">53.21%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap">115/11/12</td>
+    <td nowrap="nowrap">-1,390</td>
+    <td nowrap="nowrap">130</td>
+    <td nowrap="nowrap">-297</td>
+    <td nowrap="nowrap">-1,557</td>
+    <td nowrap="nowrap">643,290</td>
+    <td nowrap="nowrap">213,326</td>
+    <td nowrap="nowrap">18,897</td>
+    <td nowrap="nowrap">875,513</td>
+    <td nowrap="nowrap">39.19%</td>
+    <td nowrap="nowrap">53.34%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap">115/11/11</td>
+    <td nowrap="nowrap">-2,624</td>
+    <td nowrap="nowrap">592</td>
+    <td nowrap="nowrap">119</td>
+    <td nowrap="nowrap">-1,913</td>
+    <td nowrap="nowrap">644,387</td>
+    <td nowrap="nowrap">213,196</td>
+    <td nowrap="nowrap">19,194</td>
+    <td nowrap="nowrap">876,777</td>
+    <td nowrap="nowrap">39.26%</td>
+    <td nowrap="nowrap">53.42%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap">115/11/10</td>
+    <td nowrap="nowrap">2,795</td>
+    <td nowrap="nowrap">248</td>
+    <td nowrap="nowrap">-335</td>
+    <td nowrap="nowrap">2,708</td>
+    <td nowrap="nowrap">647,230</td>
+    <td nowrap="nowrap">212,605</td>
+    <td nowrap="nowrap">19,075</td>
+    <td nowrap="nowrap">878,910</td>
+    <td nowrap="nowrap">39.43%</td>
+    <td nowrap="nowrap">53.55%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap">115/11/09</td>
+    <td nowrap="nowrap">-10,836</td>
+    <td nowrap="nowrap">1,310</td>
+    <td nowrap="nowrap">-162</td>
+    <td nowrap="nowrap">-9,688</td>
+    <td nowrap="nowrap">644,363</td>
+    <td nowrap="nowrap">212,357</td>
+    <td nowrap="nowrap">19,410</td>
+    <td nowrap="nowrap">876,130</td>
+    <td nowrap="nowrap">39.25%</td>
+    <td nowrap="nowrap">53.37%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap">115/11/06</td>
+    <td nowrap="nowrap">-5,859</td>
+    <td nowrap="nowrap">614</td>
+    <td nowrap="nowrap">352</td>
+    <td nowrap="nowrap">-4,893</td>
+    <td nowrap="nowrap">655,240</td>
+    <td nowrap="nowrap">211,046</td>
+    <td nowrap="nowrap">19,572</td>
+    <td nowrap="nowrap">885,858</td>
+    <td nowrap="nowrap">39.92%</td>
+    <td nowrap="nowrap">53.97%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap">115/11/05</td>
+    <td nowrap="nowrap">-3,826</td>
+    <td nowrap="nowrap">916</td>
+    <td nowrap="nowrap">236</td>
+    <td nowrap="nowrap">-2,674</td>
+    <td nowrap="nowrap">661,449</td>
+    <td nowrap="nowrap">210,432</td>
+    <td nowrap="nowrap">19,220</td>
+    <td nowrap="nowrap">891,101</td>
+    <td nowrap="nowrap">40.30%</td>
+    <td nowrap="nowrap">54.29%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap">115/11/04</td>
+    <td nowrap="nowrap">-5,199</td>
+    <td nowrap="nowrap">786</td>
+    <td nowrap="nowrap">-259</td>
+    <td nowrap="nowrap">-4,672</td>
+    <td nowrap="nowrap">664,837</td>
+    <td nowrap="nowrap">209,516</td>
+    <td nowrap="nowrap">18,984</td>
+    <td nowrap="nowrap">893,337</td>
+    <td nowrap="nowrap">40.50%</td>
+    <td nowrap="nowrap">54.42%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap">115/11/03</td>
+    <td nowrap="nowrap">-3,722</td>
+    <td nowrap="nowrap">-737</td>
+    <td nowrap="nowrap">13</td>
+    <td nowrap="nowrap">-4,446</td>
+    <td nowrap="nowrap">669,915</td>
+    <td nowrap="nowrap">208,730</td>
+    <td nowrap="nowrap">19,243</td>
+    <td nowrap="nowrap">897,888</td>
+    <td nowrap="nowrap">40.81%</td>
+    <td nowrap="nowrap">54.70%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap">115/11/02</td>
+    <td nowrap="nowrap">-1,239</td>
+    <td nowrap="nowrap">781</td>
+    <td nowrap="nowrap">142</td>
+    <td nowrap="nowrap">-316</td>
+    <td nowrap="nowrap">674,095</td>
+    <td nowrap="nowrap">209,467</td>
+    <td nowrap="nowrap">19,230</td>
+    <td nowrap="nowrap">902,792</td>
+    <td nowrap="nowrap">41.07%</td>
+    <td nowrap="nowrap">55.00%</td>
+    </tr>
+    <tr>
+    <td nowrap="nowrap">合計買賣超</td>
+    <td nowrap="nowrap">-43,028</td>
+    <td nowrap="nowrap">-177</td>
+    <td nowrap="nowrap">1,168</td>
+    <td nowrap="nowrap">-42,037</td>
+    <td nowrap="nowrap" colspan="6"> </td>
+    </tr>
+    </table>
+  <br>
+</div>
+  <br>
+  <div align="center">
+    <table class="t01" border="0" width="50%" cellspacing="1" cellpadding="1">
+    <tr><td colspan="2">欣興(3037)<a href="https://fubon-ebrokerdj.fbs.com.tw/z/zc/zcv/zcv_3037_E_1.djhtm" target="_blank">動態報導</a></td></tr>
+    <tr><td nowrap="nowrap">日期</td><td>標題</td>
+    </tr><tr><td>115/11/27</td>
+    <td><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zcv/zcvz/zcvz_B0467A15-E9C4-4D2B-87A0-ADAEDCDD8607.djhtm" target="_blank">11/27證交所盤後定價交易成交金額前20名排行</a></td></tr>
+    <tr><td>115/11/27</td>
+    <td><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zcv/zcvz/zcvz_69E35705-4C96-42C4-BB9F-52D01B9D3950.djhtm" target="_blank">11/27證交所「盤中」零股交易成交股數前20名排行</a></td></tr>
+    <tr><td>115/11/27</td>
+    <td><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zcv/zcvz/zcvz_C270CC03-77FF-44EC-81FE-B53A8A83D377.djhtm" target="_blank">欣興12/2參加元大證舉辦之法說會</a></td></tr>
+    <tr><td>115/11/27</td>
+    <td><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zcv/zcvz/zcvz_FE4DA9A1-2E5C-4405-A57C-8EE42437ABF2.djhtm" target="_blank">欣興12/7~10參加Nomura舉辦之海外法說會</a></td></tr>
+    <tr><td>115/11/27</td>
+    <td><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zcv/zcvz/zcvz_F8440036-36BE-4029-A771-EA6EDB4F69AE.djhtm" target="_blank">欣興 本公司受邀參加Nomura舉辦之Nomura Taiwan Corporate Day</a></td></tr>
+    <tr><td>115/11/27</td>
+    <td><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zcv/zcvz/zcvz_7C91B3A8-7B2E-49BF-91F4-576553FD2A93.djhtm" target="_blank">欣興 本公司受邀參加元大證券舉辦之2026元大證券第四季投資論壇</a></td></tr>
+    <tr><td>115/11/27</td>
+    <td><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zcv/zcvz/zcvz_84838C71-9A40-4D1B-B94C-FABBCD73D673.djhtm" target="_blank">上市認購(售)權證11/30彙總表</a></td></tr>
+    <tr><td>115/11/27</td>
+    <td><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zcv/zcvz/zcvz_E31EA69A-F282-4DC9-8CE0-F4665698537F.djhtm" target="_blank">台新證券認購(售)權證終止上市彙總表</a></td></tr>
+    <tr><td>115/11/27</td>
+    <td><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zcv/zcvz/zcvz_E0CA279C-C2B2-4A34-8E55-30DE94828511.djhtm" target="_blank">元大證券認購(售)權證終止上市彙總表</a></td></tr>
+    <tr><td>115/11/27</td>
+    <td><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zcv/zcvz/zcvz_A37C50A7-4476-49EE-A8F5-1696593EFE43.djhtm" target="_blank">欣興第三季轉換普通股已上市2,625,120股</a></td></tr>
+    <tr><td>115/11/27</td>
+    <td><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zcv/zcvz/zcvz_C835D3FE-8700-447E-B8C5-20F32B4070E1.djhtm" target="_blank">亞洲科技四族群 短線亮點(經濟日報，無內文)</a></td></tr>
+    <tr><td>115/11/26</td>
+    <td><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zcv/zcvz/zcvz_711365CC-2A2F-47A5-A270-DBD489FB1FFF.djhtm" target="_blank">11/26證交所盤後定價交易成交金額前20名排行</a></td></tr>
+    <tr><td>115/11/26</td>
+    <td><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zcv/zcvz/zcvz_C02600DF-7020-4EA5-8B94-4C84AA82CED2.djhtm" target="_blank">11/26證交所「盤中」零股交易成交股數前20名排行</a></td></tr>
+    <tr><td>115/11/26</td>
+    <td><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zcv/zcvz/zcvz_B6F93DDD-598F-43F7-B53C-78865D00FB4B.djhtm" target="_blank">欣興 本公司取得廠務工程之相關資料</a></td></tr>
+    <tr><td>115/11/26</td>
+    <td><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zcv/zcvz/zcvz_539C7020-7DC9-4F4A-9745-7894BA8AE017.djhtm" target="_blank">上市認購(售)權證11/27彙總表</a></td></tr>
+    <tr><td>115/11/25</td>
+    <td><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zcv/zcvz/zcvz_96F2FDB7-8711-400C-90CE-1720E720E5D5.djhtm" target="_blank">11/25證交所盤後定價交易成交金額前20名排行</a></td></tr>
+    <tr><td>115/11/25</td>
+    <td><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zcv/zcvz/zcvz_262EED75-9BA5-4021-A9FC-B83195D05BC6.djhtm" target="_blank">欣興 公告本公司註銷限制員工權利新股註銷減資變更登記完成</a></td></tr>
+    <tr><td>115/11/25</td>
+    <td><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zcv/zcvz/zcvz_5AF6000E-F06C-4C45-9AC7-448F1D6FBD6E.djhtm" target="_blank">11/25證交所「盤中」零股交易成交股數前20名排行</a></td></tr>
+    <tr><td>115/11/25</td>
+    <td><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zcv/zcvz/zcvz_A031F9D0-2F1E-4D4A-AB98-08498E83E416.djhtm" target="_blank">統一證券認購(售)權證終止上市彙總表</a></td></tr>
+    <tr><td>115/11/25</td>
+    <td><a href="http://fubon-ebrokerdj.fbs.com.tw/z/zc/zcv/zcvz/zcvz_CFF01295-684D-4EB3-AAEB-F1150ED8E393.djhtm" target="_blank">上市認購(售)權證11/26彙總表</a></td></tr>
+    </table>
+    
+
+  <br>
+</div></div></div>
+<div class="rp-sec-pane" id="sec-pyramid"><div class="rp-card"><br>
+<div id="majorchartweek_container" align="center">
+<script type="text/javascript">var majorchartweek;
+
+	majorchartweek = new Highcharts.Chart({
+		chart: { renderTo:'majorchartweek_container', height: 400, width: 1000 }, 
+		legend: { align: 'left', floating: true, layout: 'horizontal', verticalAlign: 'top', x: 70, y: 0 }, 
+		plotOptions: { area: { fillColor: { linearGradient: [0, 0, 0, 250], stops: [[0, '#7CB5EC'], [1, '#FFFFFF']] }, lineWidth: 2, marker: { radius: 2 }, states: { hover: { lineWidth: 1 } } } }, 
+		title: { style: { font: 'normal 6px Verdana, sans-serif' }, text: '' }, 
+		xAxis: { categories: ['20231201', '20231208', '20231215', '20231222', '20231229', '20240105', '20240112', '20240119', '20240126', '20240202', '20240205', '20240216', '20240223', '20240301', '20240308', '20240315', '20240322', '20240329', '20240403', '20240412', '20240419', '20240426', '20240503', '20240510', '20240517', '20240524', '20240531', '20240607', '20240614', '20240621', '20240628', '20240705', '20240712', '20240719', '20240726', '20240802', '20240809', '20240816', '20240823', '20240830', '20240906', '20240913', '20240920', '20240927', '20241004', '20241011', '20241018', '20241025', '20241101', '20241108', '20241115', '20241122', '20241129', '20241206', '20241213', '20241220', '20241227', '20250103', '20250110', '20250117', '20250122', '20250207', '20250214', '20250221', '20250227', '20250307', '20250314', '20250321', '20250328', '20250402', '20250411', '20250418', '20250425', '20250502', '20250509', '20250516', '20250523', '20250529', '20250606', '20250613', '20250620', '20250627', '20250704', '20250711', '20250718', '20250725', '20250801', '20250808', '20250815', '20250822', '20250829', '20250905', '20250912', '20250919', '20250926', '20251003', '20251009', '20251017', '20251023', '20251031', '20251107', '20251114', '20251121', '20251128', '20251205', '20251212', '20251219', '20251226', '20260102', '20260109', '20260116', '20260123', '20260130', '20260206', '20260211', '20260226', '20260306', '20260313', '20260320', '20260327', '20260402', '20260410', '20260417', '20260424', '20260430', '20260508', '20260515', '20260522', '20260529', '20260605', '20260612', '20260618', '20260626', '20260703', '20260709', '20260717', '20260724', '20260731', '20260807', '20260814', '20260821', '20260828', '20260904', '20260911', '20260918', '20260924', '20261002', '20261008', '20261016', '20261022', '20261030', '20261106', '20261113', '20261120'], labels: { rotation: -90, style: { font: 'normal Verdana, sans-serif' } }, showLastLabel: true }, 
+		yAxis: [{ max: 453213.85, min: 108439.6, title: { style: { font: 'normal 6px Verdana, sans-serif' }, text: '總股東人數' } }, { labels: { format: '{value}%' }, max: 79.18, min: 52.2405, opposite: true, title: { style: { font: 'normal 6px Verdana, sans-serif' }, text: '大股東持有率' } }], 
+		series: [{ data: [158755, 158523, 154613, 151901, 152511, 155340, 158148, 159958, 152541, 149914, 148803, 147633, 142664, 146095, 147567, 145792, 132787, 133022, 131535, 131304, 136078, 134917, 136778, 131569, 132478, 129248, 127576, 129676, 133307, 131543, 139205, 140628, 136693, 131824, 136751, 142266, 159782, 161318, 160638, 159183, 170661, 171503, 171775, 172028, 173569, 176873, 176716, 170870, 170375, 161883, 166275, 168157, 172848, 174590, 177473, 181934, 184675, 183834, 180832, 183214, 187971, 196201, 198585, 204860, 207988, 215173, 216846, 217085, 217682, 217561, 217570, 220155, 219300, 218064, 217005, 217909, 218097, 216483, 217903, 215827, 218464, 214106, 212301, 205488, 204678, 210961, 208002, 206683, 206908, 208799, 200182, 210217, 203983, 195142, 186203, 185726, 183671, 178131, 180825, 178052, 175576, 168539, 168632, 158388, 155620, 149752, 149341, 150863, 152644, 153477, 180237, 170224, 172143, 184918, 189316, 192614, 210443, 214540, 210547, 216285, 217737, 211722, 213391, 214543, 239278, 288153, 302001, 302644, 294813, 326939, 346971, 333452, 322778, 341867, 381947, 388249, 386423, 394099, 358580, 344423, 289502, 282406, 313070, 310278, 308575, 273127, 262148, 254212, 277525, 285034, 297015, 324314, 342164, 362465], name: '總股東人數', type: 'column', yAxis: 0, color: '#AFD8F8', borderColor: 'black', borderWidth: 0.1, colorByPoint: false, groupPadding: 0, shadow: true }, { data: [71.11, 71.06, 71.77, 72.38, 72.25, 71.57, 70.96, 70.47, 72.15, 72.68, 72.89, 73.09, 74.40, 73.97, 73.81, 74.34, 76.30, 76.24, 76.29, 76.34, 75.55, 75.87, 75.67, 76.54, 76.48, 76.93, 77.12, 76.92, 76.32, 76.65, 75.49, 75.34, 75.88, 76.72, 76.03, 74.96, 71.88, 72.06, 72.19, 72.40, 70.15, 70.01, 69.90, 69.52, 69.28, 68.37, 68.49, 70.49, 70.53, 71.76, 70.97, 70.54, 69.70, 69.31, 68.75, 67.58, 67.08, 67.37, 67.93, 67.36, 66.51, 64.24, 63.96, 62.86, 62.15, 60.18, 59.58, 59.52, 59.37, 59.08, 58.59, 58.44, 58.42, 58.70, 58.81, 58.82, 58.68, 59.17, 58.70, 59.27, 58.43, 59.81, 60.13, 61.50, 62.39, 60.97, 61.74, 61.94, 62.18, 61.81, 64.44, 62.18, 63.55, 65.31, 67.50, 67.46, 67.82, 69.10, 68.67, 69.15, 70.35, 71.42, 71.32, 73.23, 74.05, 76.17, 76.42, 76.32, 76.22, 76.20, 76.75, 78.14, 78.09, 77.03, 76.80, 77.49, 77.01, 76.67, 77.29, 77.07, 76.83, 77.47, 77.62, 77.64, 76.91, 75.98, 75.87, 76.02, 76.81, 75.71, 75.32, 75.74, 76.11, 75.64, 74.37, 74.73, 74.83, 74.17, 75.42, 75.71, 77.51, 77.64, 77.71, 77.97, 77.85, 78.75, 78.84, 79.18, 78.49, 78.21, 77.89, 76.77, 76.20, 75.48], name: '大股東持有率(>400張)', type: 'line', yAxis: 1, color: '#FF5904', allowPointSelect: true, marker: { fillColor: 'whitesmoke', lineColor: 'darkslategray', lineWidth: 1, radius: 2, symbol: 'circle' }, tooltip: { pointFormat: '{series.name}: {point.y} <br/>', valueSuffix: '%' } }, { data: [63.33, 63.43, 64.18, 64.29, 64.02, 63.62, 63.08, 62.62, 63.70, 63.87, 64.05, 64.43, 65.76, 65.14, 65.35, 65.99, 67.41, 67.62, 67.89, 67.78, 66.89, 67.42, 66.89, 67.78, 67.76, 68.26, 68.51, 68.49, 67.71, 68.22, 67.01, 66.91, 67.94, 68.47, 67.12, 66.06, 63.86, 64.54, 64.98, 65.35, 63.15, 63.09, 62.88, 63.06, 62.49, 61.45, 61.68, 63.54, 63.39, 64.84, 64.25, 63.56, 62.96, 62.32, 61.76, 60.89, 60.73, 61.01, 61.10, 60.54, 59.92, 58.19, 58.14, 57.19, 56.65, 54.84, 54.77, 54.51, 54.56, 54.25, 53.58, 53.90, 54.08, 54.24, 54.33, 54.21, 53.91, 54.30, 53.99, 54.53, 53.89, 55.00, 55.55, 56.77, 56.98, 55.29, 56.32, 56.66, 56.68, 56.28, 58.86, 56.77, 58.31, 60.41, 62.25, 62.15, 62.35, 63.64, 63.05, 63.65, 64.39, 65.56, 65.48, 67.36, 68.27, 70.38, 70.73, 70.75, 70.57, 70.37, 70.53, 71.22, 71.17, 69.63, 69.42, 69.64, 69.59, 69.13, 69.93, 69.71, 69.53, 70.07, 70.39, 70.60, 69.93, 68.93, 68.79, 68.60, 69.21, 68.45, 68.16, 68.25, 68.46, 68.12, 67.08, 67.51, 67.31, 66.90, 68.18, 68.45, 69.58, 69.48, 69.96, 70.20, 70.19, 70.86, 71.12, 71.22, 70.81, 70.29, 69.82, 69.06, 68.42, 67.61], name: '大股東持有率(>1000張)', type: 'line', yAxis: 1, color: '#058DC7', allowPointSelect: true, marker: { fillColor: 'whitesmoke', lineColor: 'darkslategray', lineWidth: 1, radius: 2, symbol: 'circle' }, tooltip: { pointFormat: '{series.name}: {point.y} <br/>', valueSuffix: '%' } }]
+
+});
+</script>
+</div>
+<br>
+<div id ='D2' align="center" >
+                                    <table cellpadding="0" cellspacing="1" border="0">
+                                        <tr>
+                                            <td align='center' valign = 'bottom' class="table" style="width:1024px;BORDER-TOP: 1px solid #DFDFDF;">
+                                                <table width='100%' border='0' cellpadding='2' cellspacing='0'  class='display' id='details' ><thead><tr class='lLS'><td colspan = '7'>&nbsp;</td><td colspan = '6' align='right' style='color: #4A4A4A'>* 顏色識別: 紅色-成長, 綠色-下降, 黑色-持平</td><td>&nbsp;</td></tr><tr class=''><th rowspan='1'  colspan='2'>&nbsp;</th><th align='center' style='border-bottom: 1px solid #000;' colspan='3'>20261120</th><th >&nbsp;</th><th align='center' style='border-bottom: 1px solid #000;' colspan='3'>20261113</th><th >&nbsp;</th><th align='center' style='border-bottom: 1px solid #000;' colspan='3'>20261106</th><th >&nbsp;</th></tr><tr class='lDS'><td>&nbsp;</td><td>持股張數分級</td><td style='color: #800000'>人數</td><td>張數</td><td>百分比%</td><td>&nbsp;</td><td style='color: #800000'>人數</td><td>張數</td><td>百分比%</td><td>&nbsp;</td><td style='color: #800000'>人數</td><td>張數</td><td>百分比%</td><td>&nbsp;</td></tr></thead><tbody><tr class='lLS '><td>&nbsp;</td><td style='color: #4A4A4A'>* 400 張以上 </td><td  style='color: #669900'>394</td><td  style='color: #669900'>1,241,149</td><td  style='color: #669900'>75.46</td><td>&nbsp;</td><td  style='color: #669900'>396</td><td  style='color: #669900'>1,252,902</td><td  style='color: #669900'>76.19</td><td>&nbsp;</td><td  style='color: #669900'>398</td><td  style='color: #669900'>1,262,216</td><td  style='color: #669900'>76.75</td><td>&nbsp;</td></tr><tr class='lLS '><td>&nbsp;</td><td style='color: #4A4A4A'>* 600 張以上</td><td  style='color: #669900'>295</td><td  style='color: #669900'>1,192,697</td><td  style='color: #669900'>72.52</td><td>&nbsp;</td><td  style='color: #669900'>301</td><td  style='color: #669900'>1,206,035</td><td  style='color: #669900'>73.34</td><td>&nbsp;</td><td  style='color: #669900'>303</td><td  style='color: #669900'>1,215,226</td><td  style='color: #669900'>73.90</td><td>&nbsp;</td></tr><tr class='lLS '><td>&nbsp;</td><td style='color: #4A4A4A'>* 800 張以上</td><td  style='color: #FF0000'>237</td><td  style='color: #669900'>1,152,834</td><td  style='color: #669900'>70.10</td><td>&nbsp;</td><td  style='color: #669900'>235</td><td  style='color: #669900'>1,160,586</td><td  style='color: #669900'>70.58</td><td>&nbsp;</td><td  style='color: #669900'>239</td><td  style='color: #669900'>1,171,431</td><td  style='color: #669900'>71.24</td><td>&nbsp;</td></tr><tr class='lLS ' ><td>&nbsp;</td><td style='color: #4A4A4A'>* 1000 張以上</td><td  style='color: #669900'>191</td><td  style='color: #669900'>1,111,630</td><td  style='color: #669900'>67.60</td><td>&nbsp;</td><td  style='color: #669900'>195</td><td  style='color: #669900'>1,125,014</td><td  style='color: #669900'>68.42</td><td>&nbsp;</td><td  style='color: #669900'>199</td><td  style='color: #669900'>1,135,351</td><td  style='color: #669900'>69.05</td><td>&nbsp;</td></tr><tr><td style='border-bottom: 1px solid #000; color: #000' colspan='14'></td></tr><tr class='lLS'><td>&nbsp;</td><td>1-999股</td><td  style='color: #FF0000'>283,624</td><td  style='color: #FF0000'>30,473</td><td  style='color: #FF0000'>1.85</td><td>&nbsp;</td><td  style='color: #FF0000'>268,338</td><td  style='color: #FF0000'>27,681</td><td  style='color: #FF0000'>1.68</td><td>&nbsp;</td><td  style='color: #FF0000'>254,058</td><td  style='color: #FF0000'>25,516</td><td  style='color: #FF0000'>1.55</td><td>&nbsp;</td></tr><tr class='lDS'><td>&nbsp;</td><td>1-5張</td><td  style='color: #FF0000'>69,008</td><td  style='color: #FF0000'>115,110</td><td  style='color: #FF0000'>7.00</td><td>&nbsp;</td><td  style='color: #FF0000'>64,420</td><td  style='color: #FF0000'>106,696</td><td  style='color: #FF0000'>6.48</td><td>&nbsp;</td><td  style='color: #FF0000'>61,077</td><td  style='color: #FF0000'>101,117</td><td  style='color: #FF0000'>6.15</td><td>&nbsp;</td></tr><tr class='lLS'><td>&nbsp;</td><td>5-10張</td><td  style='color: #FF0000'>4,932</td><td  style='color: #FF0000'>34,824</td><td  style='color: #FF0000'>2.11</td><td>&nbsp;</td><td  style='color: #FF0000'>4,590</td><td  style='color: #FF0000'>32,350</td><td  style='color: #FF0000'>1.96</td><td>&nbsp;</td><td  style='color: #FF0000'>4,431</td><td  style='color: #FF0000'>31,145</td><td  style='color: #FF0000'>1.89</td><td>&nbsp;</td></tr><tr class='lDS'><td>&nbsp;</td><td>10-15張</td><td  style='color: #FF0000'>1,501</td><td  style='color: #FF0000'>18,122</td><td  style='color: #FF0000'>1.10</td><td>&nbsp;</td><td  style='color: #FF0000'>1,455</td><td  style='color: #FF0000'>17,576</td><td  style='color: #FF0000'>1.06</td><td>&nbsp;</td><td  style='color: #FF0000'>1,414</td><td  style='color: #FF0000'>16,986</td><td  style='color: #FF0000'>1.03</td><td>&nbsp;</td></tr><tr class='lLS'><td>&nbsp;</td><td>15-20張</td><td  style='color: #FF0000'>659</td><td  style='color: #FF0000'>11,604</td><td  style='color: #FF0000'>0.70</td><td>&nbsp;</td><td  style='color: #FF0000'>628</td><td  style='color: #FF0000'>11,025</td><td  style='color: #4A4A4A'>0.67</td><td>&nbsp;</td><td  style='color: #FF0000'>626</td><td  style='color: #FF0000'>11,017</td><td  style='color: #FF0000'>0.67</td><td>&nbsp;</td></tr><tr class='lDS'><td>&nbsp;</td><td>20-30張</td><td  style='color: #FF0000'>683</td><td  style='color: #FF0000'>16,720</td><td  style='color: #FF0000'>1.01</td><td>&nbsp;</td><td  style='color: #FF0000'>655</td><td  style='color: #FF0000'>16,009</td><td  style='color: #FF0000'>0.97</td><td>&nbsp;</td><td  style='color: #FF0000'>646</td><td  style='color: #FF0000'>15,803</td><td  style='color: #FF0000'>0.96</td><td>&nbsp;</td></tr><tr class='lLS'><td>&nbsp;</td><td>30-40張</td><td  style='color: #FF0000'>341</td><td  style='color: #FF0000'>11,871</td><td  style='color: #FF0000'>0.72</td><td>&nbsp;</td><td  style='color: #FF0000'>329</td><td  style='color: #FF0000'>11,417</td><td  style='color: #FF0000'>0.69</td><td>&nbsp;</td><td  style='color: #FF0000'>323</td><td  style='color: #FF0000'>11,239</td><td  style='color: #FF0000'>0.68</td><td>&nbsp;</td></tr><tr class='lDS'><td>&nbsp;</td><td>40-50張</td><td  style='color: #669900'>196</td><td  style='color: #669900'>8,807</td><td  style='color: #669900'>0.53</td><td>&nbsp;</td><td  style='color: #FF0000'>203</td><td  style='color: #FF0000'>9,146</td><td  style='color: #4A4A4A'>0.55</td><td>&nbsp;</td><td  style='color: #669900'>202</td><td  style='color: #669900'>9,093</td><td  style='color: #669900'>0.55</td><td>&nbsp;</td></tr><tr class='lLS'><td>&nbsp;</td><td>50-100張</td><td  style='color: #669900'>553</td><td  style='color: #669900'>39,574</td><td  style='color: #669900'>2.40</td><td>&nbsp;</td><td  style='color: #FF0000'>562</td><td  style='color: #FF0000'>40,230</td><td  style='color: #FF0000'>2.44</td><td>&nbsp;</td><td  style='color: #669900'>547</td><td  style='color: #669900'>38,905</td><td  style='color: #669900'>2.36</td><td>&nbsp;</td></tr><tr class='lDS'><td>&nbsp;</td><td>100-200張</td><td  style='color: #669900'>332</td><td  style='color: #669900'>47,040</td><td  style='color: #669900'>2.86</td><td>&nbsp;</td><td  style='color: #FF0000'>338</td><td  style='color: #FF0000'>47,945</td><td  style='color: #FF0000'>2.91</td><td>&nbsp;</td><td  style='color: #FF0000'>335</td><td  style='color: #FF0000'>47,612</td><td  style='color: #FF0000'>2.89</td><td>&nbsp;</td></tr><tr class='lLS'><td>&nbsp;</td><td>200-400張</td><td  style='color: #669900'>242</td><td  style='color: #669900'>68,954</td><td  style='color: #669900'>4.19</td><td>&nbsp;</td><td  style='color: #669900'>250</td><td  style='color: #669900'>71,265</td><td  style='color: #669900'>4.33</td><td>&nbsp;</td><td  style='color: #FF0000'>257</td><td  style='color: #FF0000'>73,465</td><td  style='color: #FF0000'>4.46</td><td>&nbsp;</td></tr><tr class='lDS'><td>&nbsp;</td><td>400-600張</td><td  style='color: #FF0000'>99</td><td  style='color: #FF0000'>48,452</td><td  style='color: #FF0000'>2.94</td><td>&nbsp;</td><td  style='color: #4A4A4A'>95</td><td  style='color: #669900'>46,867</td><td  style='color: #4A4A4A'>2.85</td><td>&nbsp;</td><td  style='color: #669900'>95</td><td  style='color: #669900'>46,990</td><td  style='color: #669900'>2.85</td><td>&nbsp;</td></tr><tr class='lLS'><td>&nbsp;</td><td>600-800張</td><td  style='color: #669900'>58</td><td  style='color: #669900'>39,863</td><td  style='color: #669900'>2.42</td><td>&nbsp;</td><td  style='color: #FF0000'>66</td><td  style='color: #FF0000'>45,449</td><td  style='color: #FF0000'>2.76</td><td>&nbsp;</td><td  style='color: #669900'>64</td><td  style='color: #669900'>43,795</td><td  style='color: #669900'>2.66</td><td>&nbsp;</td></tr><tr class='lDS'><td>&nbsp;</td><td>800-1,000張</td><td  style='color: #FF0000'>46</td><td  style='color: #FF0000'>41,204</td><td  style='color: #FF0000'>2.50</td><td>&nbsp;</td><td  style='color: #4A4A4A'>40</td><td  style='color: #669900'>35,572</td><td  style='color: #669900'>2.16</td><td>&nbsp;</td><td  style='color: #4A4A4A'>40</td><td  style='color: #669900'>36,080</td><td  style='color: #669900'>2.19</td><td>&nbsp;</td></tr><tr class='lLS'><td>&nbsp;</td><td>1,000張以上</td><td  style='color: #669900'>191</td><td  style='color: #669900'>1,111,630</td><td  style='color: #669900'>67.60</td><td>&nbsp;</td><td  style='color: #669900'>195</td><td  style='color: #669900'>1,125,014</td><td  style='color: #669900'>68.42</td><td>&nbsp;</td><td  style='color: #669900'>199</td><td  style='color: #669900'>1,135,351</td><td  style='color: #669900'>69.05</td><td>&nbsp;</td></tr><tr class='lDS'><td>&nbsp;</td><td>合計</td><td  style='color: #FF0000'>362,465</td><td  style='color: #FF0000'>1,644,246</td><td  style='color: #4A4A4A'>100.00</td><td>&nbsp;</td><td  style='color: #FF0000'>342,164</td><td  style='color: #FF0000'>1,644,241</td><td  style='color: #4A4A4A'>100.00</td><td>&nbsp;</td><td  style='color: #FF0000'>324,314</td><td  style='color: #FF0000'>1,644,109</td><td  style='color: #4A4A4A'>100.00</td><td>&nbsp;</td></tr></tbody></table>                                                  
+                                            </td>
+                                        </tr>
+                                    </table>
+		                        </div>
+<br>
+</div></div>
+<div class="rp-sec-pane" id="sec-goodinfo"><div class="rp-card">  
+  <div align="center"><table><tbody><tr>
+  <td><iframe src="https://www.cmoney.tw/notice/chart/stockchart.aspx?action=v&id=3037" width="600" height="300" frameborder="0" scrolling="no"></iframe></td>
+  <td><iframe src="https://www.cmoney.tw/notice/chart/stockchart.aspx?action=f&id=3037" width="600" height="300" frameborder="0" scrolling="no"></iframe></td>
+  <td><iframe src="https://www.cmoney.tw/notice/chart/stockchart.aspx?action=e&id=3037" width="600" height="300" frameborder="0" scrolling="no"></iframe></td>
+  </tr><tr>
+  <td><iframe src="https://www.cmoney.tw/notice/chart/stockchart.aspx?action=p&id=3037" width="600" height="300" frameborder="0" scrolling="no"></iframe></td>
+  <td><a href="https://goodinfo.tw/tw/StockCashFlow.asp?RPT_CAT=M_YEAR&STOCK_ID=3037" target="_blank" style="display:block;width:600px;height:300px;line-height:300px;text-align:center;font-size:18px;text-decoration:none;color:#333;background:#f5f5f5;border:1px solid #ddd;">💰 現金流量 (GoodInfo)</a></td>
+  <td><a href="https://goodinfo.tw/tw/DayTrading.asp?STOCK_ID=3037" target="_blank" style="display:block;width:600px;height:300px;line-height:300px;text-align:center;font-size:18px;text-decoration:none;color:#333;background:#f5f5f5;border:1px solid #ddd;">📈 現股當沖 (GoodInfo)</a></td>
+  </tr></tbody></table></div>
+</div></div>
+<div class="rp-sec-pane" id="sec-stockdog"><div class="rp-card" align="center"><iframe id="stockdog" src="3037.TW_SD.html" frameborder="0" width="100%" height="1000px" scrolling="no"></iframe></div></div>
+</body>
+</html>

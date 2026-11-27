@@ -1,0 +1,2740 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>BABA — Alibaba Group Holding Limited</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-size: 12px;
+      font-family: Arial, Helvetica, "Microsoft JhengHei", -apple-system, sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 8px 28px 16px;
+      background-color: #faf9f6;
+      color: #1c1917;
+    }
+
+    /* Header Bar */
+    .rp-header {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-top: 3px solid #FA8123;
+      border-radius: 6px;
+      padding: 6px 10px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+    .rp-title-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .rp-ticker {
+      font-size: 17px;
+      font-weight: 800;
+      color: #1c1917;
+      letter-spacing: 0.3px;
+    }
+    .rp-desc {
+      font-size: 15px;
+      font-weight: 700;
+      color: #FA8123;
+    }
+    .rp-time {
+      font-size: 11px;
+      color: #78716c;
+      background: #f5f3ef;
+      padding: 1px 7px;
+      border-radius: 999px;
+    }
+    .rp-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .rp-pill-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: #faf9f6;
+      border: 1px solid #d6d1c7;
+      color: #44403c;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.12s ease;
+    }
+    .rp-pill-link:hover {
+      background: #fff5eb;
+      border-color: #FA8123;
+      color: #d9650f;
+    }
+
+    /* Signal Summary Card & Table (Technical + Chip/SBL) */
+    .rp-sig-card {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 6px 10px 8px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+    .rp-sig-card.rp-sig-empty {
+      padding: 5px 10px;
+      background: #faf9f6;
+    }
+    .rp-sig-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .rp-sig-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1c1917;
+    }
+    .rp-sig-sub {
+      font-size: 11px;
+      font-weight: 500;
+      color: #78716c;
+    }
+    .rp-sig-badges {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+    }
+    .rp-sig-asset, .rp-sig-status {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .rp-sig-asset-tw { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .rp-sig-asset-us { background: #f5f3ff; color: #6d28d9; border: 1px solid #ddd6fe; }
+    .rp-sig-asset-etf { background: #ecfeff; color: #0e7490; border: 1px solid #a5f3fc; }
+    .rp-sig-asset-lev { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+    .rp-sig-st-buy { background: #fef2f2; color: #cc2929; border: 1px solid #fecaca; }
+    .rp-sig-st-sell { background: #f0fdf4; color: #00994d; border: 1px solid #bbf7d0; }
+    .rp-sig-st-both { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+    .rp-sig-st-ref { background: #f5f5f4; color: #57534e; border: 1px solid #d6d3d1; }
+    .rp-sig-st-none { background: #f5f5f4; color: #78716c; border: 1px solid #e7e5e4; font-weight: 500; }
+    .rp-sig-count {
+      font-size: 11px;
+      color: #57534e;
+      margin-left: 2px;
+    }
+    .rp-sig-tbl {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 6px 0 0;
+      font-size: 12px;
+    }
+    .rp-sig-tbl th {
+      background: #f6f4f0;
+      color: #44403c;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border: 1px solid #e6e2dc;
+      text-align: left;
+      white-space: nowrap;
+    }
+    .rp-sig-tbl td {
+      padding: 4px 8px;
+      border: 1px solid #ede9e3;
+      vertical-align: middle;
+    }
+    .rp-sig-tbl tr.rp-sig-row-imp td {
+      background: #fffcf7;
+      font-weight: 600;
+    }
+    .rp-sig-c-dir, .rp-sig-c-src, .rp-sig-c-lvl, .rp-sig-c-tag { white-space: nowrap; }
+    .rp-sig-c-msg { color: #1c1917; word-break: break-word; }
+    .rp-sig-dir {
+      display: inline-block;
+      min-width: 52px;
+      text-align: center;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .rp-sig-dir-buy { background: #fee2e2; color: #b91c1c; }
+    .rp-sig-dir-sell { background: #dcfce7; color: #15803d; }
+    .rp-sig-dir-other { background: #f1f5f9; color: #475569; }
+    .rp-sig-src {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .rp-sig-src-tech { background: #f5f3ef; color: #44403c; }
+    .rp-sig-src-chip { background: #eff6ff; color: #1e40af; }
+    .rp-sig-lvl { font-size: 11px; font-weight: 600; }
+    .rp-sig-lvl-imp { color: #d97706; font-weight: 700; }
+    .rp-sig-lvl-ref { color: #78716c; }
+    .rp-sig-lvl-ctx { color: #64748b; }
+    .rp-sig-tag {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: #f5f3ef;
+      border: 1px solid #e6e2dc;
+      color: #292524;
+      font-family: Consolas, Menlo, monospace;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: help;
+    }
+    .rp-sig-tag-empty { color: #a8a29e; }
+
+    /* Pyecharts Container Card */
+    .rp-chart-box {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 2px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+
+    /* Sub-Tabs Bar */
+    .rp-tabs-bar {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 4px 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      position: sticky;
+      top: 2px;
+      z-index: 50;
+      box-shadow: 0 1px 4px rgba(28, 25, 23, 0.05);
+    }
+    .rp-tab {
+      border: 1px solid transparent;
+      background: #f5f3ef;
+      color: #57534e;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+    .rp-tab:hover {
+      background: #fff5eb;
+      border-color: #fdba8c;
+      color: #d9650f;
+    }
+    .rp-tab.active {
+      background: #FA8123;
+      color: #ffffff;
+      box-shadow: 0 1px 3px rgba(250, 129, 35, 0.35);
+    }
+
+    /* Section Card */
+    .rp-sec-pane {
+      width: 100%;
+      margin: 0 0 4px;
+    }
+    .rp-card {
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 6px 8px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+      overflow-x: auto;
+    }
+    .rp-divider {
+      border: 0;
+      border-top: 1px solid #e6e2dc;
+      margin: 6px 0;
+    }
+
+    /* Modernized Tables (FBS / Pyramid / FinViz) */
+    .is-negative { color: #00994d; font-weight: 600; }
+    .is-positive { color: #cc2929; font-weight: 600; }
+    .snapshot-td2, .snapshot-td2-cp {
+      color: #1c1917;
+      text-decoration: none;
+      border: 1px solid #e6e2dc;
+      white-space: nowrap;
+    }
+    .snapshot-td2-cp { cursor: pointer; }
+    .fullview-ratings-outer, td.fullview-ratings-inner {
+      border: 1px solid #e6e2dc;
+    }
+    .t3r1 { color: #cc2929; font-weight: 700; }
+    .body-table-rating-downgrade { color: #cc2929; background: #fef2f2; }
+    .body-table-rating-upgrade { color: #00994d; background: #f0fdf4; }
+    .body-table-rating-neutral { color: #44403c; background: #faf9f6; }
+
+    table {
+      border-collapse: collapse;
+      margin: 6px auto;
+    }
+    td, th {
+      border: 1px solid #e6e2dc;
+      text-align: left;
+      padding: 6px 8px;
+    }
+    th {
+      background-color: #f6f4f0;
+      color: #1c1917;
+      font-weight: 700;
+    }
+    tr:nth-child(even) {
+      background-color: #fcfbf9;
+    }
+  </style>
+  <script>
+    function switchRpTab(btn) {
+      if (!btn) return;
+      var target = btn.getAttribute("data-target") || "all";
+      document.querySelectorAll(".rp-tab").forEach(function(b) {
+        b.classList.remove("active");
+      });
+      btn.classList.add("active");
+
+      document.querySelectorAll(".rp-sec-pane").forEach(function(pane) {
+        if (target === "all" || pane.id === target) {
+          pane.style.display = "block";
+        } else {
+          pane.style.display = "none";
+        }
+      });
+
+      try {
+        sessionStorage.setItem("sr_active_rp_tab", target);
+      } catch (e) {}
+
+      window.dispatchEvent(new Event("resize"));
+    }
+
+    window.addEventListener("load", function() {
+      try {
+        var saved = sessionStorage.getItem("sr_active_rp_tab");
+        if (saved && saved !== "all") {
+          var btn = document.querySelector('.rp-tab[data-target="' + saved + '"]');
+          if (btn) switchRpTab(btn);
+        }
+      } catch (e) {}
+    });
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/12.3.0/highcharts.min.js"></script>
+</head>
+<body>
+  <div class="rp-header">
+    <div class="rp-title-wrap">
+      <span class="rp-ticker">BABA</span>
+      <span class="rp-desc">Alibaba Group Holding Limited</span>
+      <span class="rp-time">更新: 2026-11-28 06:41</span>
+    </div>
+    <div class="rp-links">
+      <a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=BABA&type=pe-ratio&statement=price-ratios&freq=Q" target="_blank">📈 PE Chart</a><a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=BABA&type=price-book&statement=price-ratios&freq=Q" target="_blank">📊 PB Chart</a><a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=BABA&type=price-sales&statement=price-ratios&freq=Q" target="_blank">📉 PS Chart</a><a class="rp-pill-link" href="https://www.wsj.com/market-data/quotes/BABA/financials/quarter/cash-flow" target="_blank">💵 Finance</a><a class="rp-pill-link" href="https://www.dataroma.com/m/stock.php?sym=BABA" target="_blank">🏛️ Ownership</a><a class="rp-pill-link" href="https://hedgefollow.com/stocks/BABA" target="_blank">🏦 Institute</a><a class="rp-pill-link" href="https://unusualwhales.com/stock/BABA/greek-exposure" target="_blank">⚡ GEX</a><a class="rp-pill-link" href="https://www.ptt.cc/bbs/Stock/search?q=BABA" target="_blank">💬 PTT Search</a>
+    </div>
+  </div>
+
+  <div class="rp-sig-card"><div class="rp-sig-head"><div class="rp-sig-title">🎯 今日訊號總覽 <span class="rp-sig-sub">（技術面 ＋ 籌碼／借券）</span></div><div class="rp-sig-badges"><span class="rp-sig-asset rp-sig-asset-us">🇺🇸 美股個股</span><span class="rp-sig-status rp-sig-st-ref">👀 僅圖表參考</span><span class="rp-sig-count">參考 <b>1</b></span></div></div><table class="rp-sig-tbl"><thead><tr><th style="width:74px">方向</th><th style="width:124px">來源</th><th style="width:104px">層級</th><th style="width:124px">標籤</th><th>訊號內容</th></tr></thead><tbody><tr><td class="rp-sig-c-dir"><span class="rp-sig-dir rp-sig-dir-buy">BUY</span></td><td class="rp-sig-c-src"><span class="rp-sig-src rp-sig-src-tech">📈 技術面</span></td><td class="rp-sig-c-lvl"><span class="rp-sig-lvl rp-sig-lvl-ref">圖表參考</span></td><td class="rp-sig-c-tag"><span class="rp-sig-tag" title="Price Floor/Ceiling：個人目標買賣價界線（剛穿越當日推播，持續在界線外留參考）">[PRICE]</span></td><td class="rp-sig-c-msg">低於買點(200.00)</td></tr></tbody></table></div>
+
+  <div class="rp-chart-box" align="center">
+    <iframe id="stock" src="BABA_EC.html" frameborder="0" width="100%" height="1600px" scrolling="no"></iframe>
+  </div>
+
+  <div class="rp-tabs-bar"><button class="rp-tab active" data-target="all" onclick="switchRpTab(this)">📋 全部展開</button><button class="rp-tab" data-target="sec-quant" onclick="switchRpTab(this)">🧮 量化與主動ETF</button><button class="rp-tab" data-target="sec-stockdog" onclick="switchRpTab(this)">🐶 主力籌碼</button><button class="rp-tab" data-target="sec-finviz" onclick="switchRpTab(this)">🌎 FinViz 美股基本面</button></div>
+  <div class="rp-sec-pane" id="sec-quant"><style>.pq-wrap{width:100%;margin:0;font-family:Arial,Helvetica,"Microsoft JhengHei",sans-serif;color:#222}.pq-sec{background:#fff;border:1px solid #e6e2dc;border-radius:6px;padding:6px 8px;margin-bottom:4px;box-shadow:0 1px 2px rgba(28,25,23,.03)}.pq-sec h2{font-size:14px;color:#1c1917;border-left:4px solid #FA8123;padding-left:6px;margin:0 0 6px}.pq-sec h3{font-size:12px;color:#44403c;margin:6px 0 4px}.pq-banner{background:#fff9f4;border-left:4px solid #FA8123;padding:5px 8px;border-radius:4px;font-size:12px;line-height:1.5;margin-bottom:6px;color:#292524}.pq-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:6px}table.pq-tbl{width:100%;border-collapse:collapse;font-size:12px;font-family:Arial,Helvetica,"Microsoft JhengHei",sans-serif}table.pq-tbl th,table.pq-tbl td{border:1px solid #e6e2dc !important;padding:4px 6px !important;text-align:right}table.pq-tbl th{background:#f6f4f0 !important;color:#1c1917 !important;font-weight:bold}table.pq-tbl tr:nth-child(even){background:#fcfbf9}</style><div class="pq-wrap">
+
+    <div class="pq-sec">
+      <h2>🧮 量化風險、波動率體制與因子 Alpha 拆解 (BABA)</h2>
+      <div class="pq-banner">
+        <b>現價：</b> <b>89.68</b> ｜
+        <b>動能 (1D / 5D / 20D / 60D / 1Y / 12-1M)：</b> <span style="color:#cc2929;font-weight:bold">+3.96%</span> / <span style="color:#cc2929;font-weight:bold">+7.65%</span> / <span style="color:#00994d;font-weight:bold">-9.91%</span> / <span style="color:#00994d;font-weight:bold">-19.79%</span> / <span style="color:#00994d;font-weight:bold">-42.57%</span> / <span style="color:#00994d;font-weight:bold">-35.35%</span> ｜
+        <b>200D Volume Profile：</b> POC <b>109.55</b> (VAH <b>135.99</b> / VAL <b>105.24</b>)<br>
+        <b>尾部風險與風險調整指標 (1Y)：</b> 1Y歷史年化波動率 <b>41.79%</b> vs GARCH 1D條件年化波動預測 <b>49.10%</b> ｜
+        Sortino <b>-1.47</b> ｜ Calmar <b>-0.69</b> ｜
+        最大回撤 (MDD) <span style="color:#00994d;font-weight:bold">-53.82%</span> ｜
+        95% VaR / CVaR: <span style="color:#00994d;font-weight:bold">-3.66% / -5.16%</span><br>
+        <b>↳ GARCH 波動體制與明日振幅推估：</b> <b>【常態波動體制 (1.17x 歷史均態, +7.31%p)】</b>當前短期條件波動率與過去一年歷史平均水準相當，未出現異常恐慌或過度壓縮之波動叢聚現象，可維持標準風控參數。 ｜ <b>隱含振幅推估：</b>明日 (1D) ±1σ (68%機率) 預期波動 <b>±3.09%</b>（約 <b>86.91 ~ 92.45</b>）、±1.96σ (95%極端值) 為 <b>±6.06%</b>；未來一週 (5D) ±1σ 預期波動 <b>±6.92%</b> ｜ <b>20%波動目標部位上限：</b>約 <b>41%</b> 倉位 <span style="color:#666;font-size:11px">（註：GARCH 1D 預測值係以 EWMA λ=0.94 捕捉近期波動叢聚效應，將「下一交易日條件波動率」折算為年化百分比以便與 1Y 年化波動率直接對比；除以 √252 即為明日單日標準差 σ）</span><br>
+        <b>Lo-MacKinlay 序列相關檢定 VR(5/10/20)：</b> 5D: <b style="color:#292524">1.084</b> (z*=+0.77, 正自相關/趨勢·不顯著) ／ 10D: <b style="color:#292524">1.234</b> (z*=+1.42, 正自相關/趨勢·不顯著) ／ 20D: <b style="color:#292524">1.385</b> (z*=+1.63, 正自相關/趨勢·不顯著)<br>
+        <b>↳ 序列體制判讀與交易意涵：</b> <b>【隨機漫步體制 (Random Walk)】</b>各期 VR 數值雖皆 &gt; 1（微幅偏向正自相關/動量延續），但 |z*| 均未達 1.96 顯著門檻，統計上無法拒絕隨機漫步假說；代表單憑歷史價格序列本身缺乏顯著之可預測自相關 Edge，<b>純技術型態之時序預測力有限，交易決策應以基本面估值、法人/主動ETF籌碼或事件催化為主，技術面僅作為支撐壓力（如 POC/VAL）定價工具</b>。 <span style="color:#666;font-size:11px">（原理說明：VR(q) = Var(q日對數報酬) / [q × Var(1日對數報酬)]；VR=1 為隨機漫步、VR&gt;1 為趨勢動量延續、VR&lt;1 為均值回歸反轉；z* 為異質變異數穩健檢定統計量，|z*|&gt;1.96 表達 95% 統計顯著）</span>
+      </div>
+      <table class="pq-tbl" style="margin-top:8px"><thead><tr><th style="text-align:left">Benchmark</th><th>20D (Stock / Bench)</th><th>20D Rel Excess</th><th>60D Rel Excess</th><th>1Y Rel Excess</th><th>1Y Beta (β)</th><th>R²</th><th>1Y Residual Alpha (α)</th></tr></thead><tbody><tr><td style="text-align:left"><b>^GSPC</b></td><td><span style="color:#00994d;font-weight:bold">-9.91%</span> / <span style="color:#00994d;font-weight:bold">-5.48%</span></td><td><span style="color:#00994d;font-weight:bold">-4.43%</span></td><td><span style="color:#00994d;font-weight:bold">-14.98%</span></td><td><span style="color:#00994d;font-weight:bold">-50.22%</span></td><td><b>1.01</b></td><td>0.13</td><td><span style="color:#00994d;font-weight:bold">-50.25%</span></td></tr><tr><td style="text-align:left"><b>QQQ</b></td><td><span style="color:#00994d;font-weight:bold">-9.91%</span> / <span style="color:#00994d;font-weight:bold">-9.00%</span></td><td><span style="color:#00994d;font-weight:bold">-0.91%</span></td><td><span style="color:#00994d;font-weight:bold">-11.58%</span></td><td><span style="color:#00994d;font-weight:bold">-49.27%</span></td><td><b>0.55</b></td><td>0.10</td><td><span style="color:#00994d;font-weight:bold">-48.10%</span></td></tr><tr><td style="text-align:left"><b>SOXX</b></td><td><span style="color:#00994d;font-weight:bold">-9.91%</span> / <span style="color:#00994d;font-weight:bold">-21.73%</span></td><td><span style="color:#cc2929;font-weight:bold">+11.82%</span></td><td><span style="color:#333;font-weight:bold">-0.00%</span></td><td><span style="color:#00994d;font-weight:bold">-84.19%</span></td><td><b>0.18</b></td><td>0.06</td><td><span style="color:#00994d;font-weight:bold">-53.60%</span></td></tr></tbody></table>
+    </div>
+    
+</div></div>
+<div class="rp-sec-pane" id="sec-stockdog"><div class="rp-card" align="center"><iframe id="stockdog" src="BABA_SD.html" frameborder="0" width="100%" height="1000px" scrolling="no"></iframe></div></div>
+<div class="rp-sec-pane" id="sec-finviz"><div class="rp-card"><div align="center"><a href="https://www.marketwatch.com/investing/stock/BABA/analystestimates" target="_blank"><img style="max-height:100%; max-width:100%; object-fit:contain" src=https://app.quotemedia.com/quotetools/getChart?webmasterId=91386&symbol=BABA&chtype=FinancialLine&chcon=on&chdon=on&chfrmon=on&chscale=1d&chton=on&chwid=800&chhig=380&chln=ffa500&chfill=ffa500&chfnts=10&chbdr=000000&chbgch=ffffffff&chgrd=cccccc&svg=false&lang=en&locale=en></a></div>
+
+<hr class="rp-divider">
+<table align="center" class="snapshot-table2" align="center" style="width:100%; border-collapse:collapse; font-size:12px; margin:auto;">
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Major index membership"><div class="snapshot-td-label">Index</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">-</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price-to-Earnings (ttm)"><div class="snapshot-td-label">P/E</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">13.05</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Diluted EPS (ttm)"><div class="snapshot-td-label">EPS (ttm)</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>6.87</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Insider ownership"><div class="snapshot-td-label">Insider Own</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.10%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Shares outstanding"><div class="snapshot-td-label">Shs Outstand</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>2.49B</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Week, Excl. Dividends)"><div class="snapshot-td-label">Perf Week</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">7.65%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Market capitalization"><div class="snapshot-td-label">Market Cap</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>223.10B</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Forward Price-to-Earnings (next fiscal year)"><div class="snapshot-td-label">Forward P/E</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">10.00</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="EPS estimate for next year"><div class="snapshot-td-label">EPS next Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>8.97</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Insider transactions (6-Month change in Insider Ownership)"><div class="snapshot-td-label">Insider Trans</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-4.98%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Shares float"><div class="snapshot-td-label">Shs Float</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>2.49B</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Month, Excl. Dividends)"><div class="snapshot-td-label">Perf Month</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-11.17%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Enterprise Value"><div class="snapshot-td-label">Enterprise Value</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>202.68B</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price-to-Earnings-to-Growth"><div class="snapshot-td-label">PEG</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">0.24</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="EPS estimate for next quarter"><div class="snapshot-td-label">EPS next Q</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>2.25</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Institutional ownership"><div class="snapshot-td-label">Inst Own</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>9.86%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Short interest share"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=BABA&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank">Short Float</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=BABA&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank"><b>1.61%</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Quarter, Excl. Dividends)"><div class="snapshot-td-label">Perf Quarter</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-24.58%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Income (ttm)"><div class="snapshot-td-label">Income</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>17.10B</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price-to-Sales (ttm)"><div class="snapshot-td-label">P/S</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>1.44</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="EPS growth this year"><div class="snapshot-td-label">EPS this Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">57.55%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Institutional transactions (3-Month change in Institutional Ownership)"><div class="snapshot-td-label">Inst Trans</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.51%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Short interest ratio"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=BABA&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank">Short Ratio</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=BABA&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank"><b>3.94</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Half Year, Excl. Dividends)"><div class="snapshot-td-label">Perf Half Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-27.81%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Revenue (ttm)"><div class="snapshot-td-label">Sales</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>155.11B</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price-to-Book (mrq)"><div class="snapshot-td-label">P/B</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>1.27</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="EPS growth next year"><div class="snapshot-td-label">EPS next Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">41.50%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Return on Assets (ttm)"><div class="snapshot-td-label">ROA</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>5.86%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Short interest"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=BABA&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank">Short Interest</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=BABA&amp;ta=1&amp;p=d&amp;ty=si" class="hover:underline" target="_blank"><b data-boxover-html="Settlement Date: 11/13/2026">40.07M</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Year To Date, Excl. Dividends)"><div class="snapshot-td-label">Perf YTD</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-38.82%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Book value per share (mrq)"><div class="snapshot-td-label">Book/sh</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>70.44</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price to cash per share (mrq)"><div class="snapshot-td-label">P/C</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>3.20</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Long term annual growth estimate (5 years)"><div class="snapshot-td-label">EPS next 5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">41.30%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Return on Equity (ttm)"><div class="snapshot-td-label">ROE</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>10.68%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 52-Week High"><div class="snapshot-td-label">52W High</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>181.10 <small class="text-2xs"><span class="color-text is-negative">-50.48%</span></small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Year, Excl. Dividends)"><div class="snapshot-td-label">Perf Year</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-43.10%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Cash per share (mrq)"><div class="snapshot-td-label">Cash/sh</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>28.05</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Price to Free Cash Flow (ttm)"><div class="snapshot-td-label">P/FCF</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Annual EPS growth past 3 and 5 years"><div class="snapshot-td-label">EPS past 3/5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">16.78% <span class="color-text is-negative">-4.77%</span></small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Return on Invested Capital (ttm)"><div class="snapshot-td-label">ROIC</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>8.08%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 52-Week Low"><div class="snapshot-td-label">52W Low</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>80.96 <small class="text-2xs"><span class="color-text is-positive">10.77%</span></small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (3 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 3Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">17.59%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Analysts' Dividend Estimate (Fiscal Year)"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=BABA&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank">Dividend Est.</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=BABA&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank"><b>1.17 (1.30%)</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Enterprise Value to EBITDA"><div class="snapshot-td-label">EV/EBITDA</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>11.85</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Annual sales growth past 3 and 5 years"><div class="snapshot-td-label">Sales past 3/5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">4.38% 6.38%</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Gross Margin (ttm)"><div class="snapshot-td-label">Gross Margin</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>37.46%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Volatility (Week, Month)"><div class="snapshot-td-label">Volatility</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">4.37% 3.05%</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (5 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-31.64%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Trailing 12 Months Dividend"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=BABA&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank">Dividend TTM</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=BABA&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank"><b>1.05 (1.17%)</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Enterprise Value to Revenues"><div class="snapshot-td-label">EV/Sales</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>1.31</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="EPS growth TTM"><div class="snapshot-td-label">EPS Y/Y TTM</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-3.42%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Operating Margin (ttm)"><div class="snapshot-td-label">Oper. Margin</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>6.15%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Average True Range (14)"><div class="snapshot-td-label">ATR (14)</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>3.91</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (10 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 10Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-1.98%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Ex-Dividend Date"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=BABA&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank">Dividend Ex-Date</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=BABA&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank"><b>Jun 11, 2026</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Quick Ratio (mrq)"><div class="snapshot-td-label">Quick Ratio</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>1.50</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Sales growth TTM"><div class="snapshot-td-label">Sales Y/Y TTM</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>10.54%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Net Profit Margin (ttm)"><div class="snapshot-td-label">Profit Margin</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>11.03%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Relative Strength Index"><div class="snapshot-td-label">RSI (14)</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>41.45</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Analysts' mean recommendation (1=Buy 5=Sell)"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=BABA&amp;ta=1&amp;p=d&amp;ty=fc" class="hover:underline" target="_blank">Recom</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=BABA&amp;ta=1&amp;p=d&amp;ty=fc" class="hover:underline" target="_blank"><b><span class="color-text is-positive">1.32</span></b></a></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Dividend growth over 3 and 5 years"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=BABA&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank">Dividend Gr. 3/5Y</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=BABA&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank"><b><small class="text-2xs">1.67% -</small></b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Current Ratio (mrq)"><div class="snapshot-td-label">Current Ratio</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>1.50</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Quarterly earnings growth (YoY)"><div class="snapshot-td-label">EPS Q/Q</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">214.40%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 20-Day Simple Moving Average"><div class="snapshot-td-label">SMA20</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-5.30%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Beta"><div class="snapshot-td-label">Beta</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.46</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Analysts' mean target price"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=BABA&amp;ta=1&amp;p=d&amp;ty=fc" class="hover:underline" target="_blank">Target Price</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=BABA&amp;ta=1&amp;p=d&amp;ty=fc" class="hover:underline" target="_blank"><b><span class="color-text is-positive">160.03</span></b></a></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Dividend Payout Ratio (ttm)"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=BABA&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank">Payout</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=BABA&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank"><b>16.03%</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Total Debt to Equity (mrq)"><div class="snapshot-td-label">Debt/Eq</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.23</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Quarterly revenue growth (YoY)"><div class="snapshot-td-label">Sales Q/Q</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>16.33%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 50-Day Simple Moving Average"><div class="snapshot-td-label">SMA50</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-12.57%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Relative volume"><div class="snapshot-td-label">Rel Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>1.02</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Previous close"><div class="snapshot-td-label">Prev Close</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>86.26</b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Full time employees"><div class="snapshot-td-label">Employees</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>131462</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Long Term Debt to Equity (mrq)"><div class="snapshot-td-label">LT Debt/Eq</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>0.21</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Earnings date&lt;br&gt;&lt;br&gt;BMO = Before Market Open&lt;br&gt;AMC = After Market Close"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=BABA&amp;ta=1&amp;p=d&amp;ty=ea" class="hover:underline" target="_blank">Earnings</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=BABA&amp;ta=1&amp;p=d&amp;ty=ea" class="hover:underline" target="_blank"><b><small class="text-2xs">Nov 19 BMO</small></b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 200-Day Simple Moving Average"><div class="snapshot-td-label">SMA200</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-24.82%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Average volume (3 month)"><div class="snapshot-td-label">Avg Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>10.18M</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Current stock price"><div class="snapshot-td-label">Price</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>89.68</b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="IPO Date"><div class="snapshot-td-label">IPO</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>Sep 19, 2014</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Stock has options trading on a market exchange / Stock is available to sell short"><div class="snapshot-td-label">Option/Short</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">Yes / Yes</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Last quarter EPS and Revenue surprise"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=BABA&amp;ta=1&amp;p=d&amp;ty=ea" class="hover:underline" target="_blank">EPS/Sales Surpr.</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=BABA&amp;ta=1&amp;p=d&amp;ty=ea" class="hover:underline" target="_blank"><b><small class="text-2xs"><span class="color-text is-negative">-25.53%</span> <span class="color-text is-positive">0.59%</span></small></b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Trades"><div class="snapshot-td-label">Trades</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Volume"><div class="snapshot-td-label">Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>10,428,003</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (today)"><div class="snapshot-td-label">Change %</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">3.96%</span></b></div></td>
+</tr>
+</table>
+
+
+<hr class="rp-divider">
+<table align="center" class="styled-table-new is-rounded is-small w-full" cellpadding="0" cellspacing="0">
+  <thead>
+    <tr>
+      <th align="left" class="whitespace-nowrap">Date</th>
+      <th align="left" class="whitespace-nowrap">Action</th>
+      <th align="left" class="whitespace-nowrap">Analyst</th>
+      <th align="left" class="whitespace-nowrap">Rating Change</th>
+      <th align="left" class="whitespace-nowrap">Price Target Change</th>
+      <th align="left" class="whitespace-nowrap">Implied Upside</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Nov 12, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>D</span></span>DZ Bank</div>
+      </td>
+      <td class="text-left color-text is-positive">Hold → Buy</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no">$140</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+56.1%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Apr 29, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Initiated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>B</span></span>BNP Paribas Exane</div>
+      </td>
+      <td class="text-left">Outperform</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$209</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+133.1%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Mar 20, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>D</span></span>DZ Bank</div>
+      </td>
+      <td class="text-left color-text is-negative">Buy → Hold</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no">$135</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+50.5%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Feb 18, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>E</span></span>Erste Group</div>
+      </td>
+      <td class="text-left color-text is-negative">Buy → Hold</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no"/>
+      <td class="whitespace-nowrap"/>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Jan 21, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>A</span></span>Arete</div>
+      </td>
+      <td class="text-left color-text is-positive">Neutral → Buy</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no">$190</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+111.9%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Jan 08, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/MS.svg&quot;)"><img src="https://logo.finviz.com/MS.svg" alt="MS logo" crossorigin="anonymous"/><span>M</span></span>Morgan Stanley</div>
+      </td>
+      <td class="text-left">Overweight</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$200 → $180</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+100.7%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Jan 08, 2026</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/JEF.svg&quot;)"><img src="https://logo.finviz.com/JEF.svg" alt="JEF logo" crossorigin="anonymous"/><span>J</span></span>Jefferies</div>
+      </td>
+      <td class="text-left">Buy</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$231 → $225</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+150.9%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Dec 09, 2025</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>A</span></span>Arete</div>
+      </td>
+      <td class="text-left color-text is-negative">Buy → Neutral</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no">$172</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+91.8%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text">
+      <td class="whitespace-nowrap">Oct 03, 2025</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>E</span></span>Erste Group</div>
+      </td>
+      <td class="text-left color-text is-positive">Hold → Buy</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no"/>
+      <td class="whitespace-nowrap"/>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text is-last">
+      <td class="whitespace-nowrap">Oct 02, 2025</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>C</span></span>CLSA</div>
+      </td>
+      <td class="text-left">Outperform</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$155 → $200</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+123.0%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Sep 03, 2025</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>A</span></span>Arete</div>
+      </td>
+      <td class="text-left color-text is-positive">Neutral → Buy</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no">$152</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+69.5%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Jun 24, 2025</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>A</span></span>Arete</div>
+      </td>
+      <td class="text-left color-text is-negative">Buy → Neutral</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no">$153</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+70.6%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Feb 26, 2025</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>B</span></span>Bernstein</div>
+      </td>
+      <td class="text-left color-text is-positive">Mkt Perform → Outperform</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no"/>
+      <td class="whitespace-nowrap"/>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Feb 25, 2025</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>B</span></span>Bernstein</div>
+      </td>
+      <td class="text-left color-text is-positive">Mkt Perform → Outperform</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no"/>
+      <td class="whitespace-nowrap"/>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Feb 24, 2025</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/MS.svg&quot;)"><img src="https://logo.finviz.com/MS.svg" alt="MS logo" crossorigin="anonymous"/><span>M</span></span>Morgan Stanley</div>
+      </td>
+      <td class="text-left color-text is-positive">Equal-Weight → Overweight</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no">$100 → $180</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+100.7%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Oct 07, 2024</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-positive-200">Upgrade</span>
+      </td>
+      <td class="text-left color-text is-positive" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>M</span></span>Macquarie</div>
+      </td>
+      <td class="text-left color-text is-positive">Neutral → Outperform</td>
+      <td class="text-left color-text is-positive whitespace-nowrap tabular-nums" translate="no">$145</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+61.7%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Feb 08, 2024</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker"><span>M</span></span>Macquarie</div>
+      </td>
+      <td class="text-left color-text is-negative">Outperform → Neutral</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no">$88.50 → $85.40</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-negative)">
+            <span style="color:#cc2929; font-size:11px;">▼ </span>
+          </span>
+          <span class="tabular-nums text-negative">-4.8%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Jan 17, 2024</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Reiterated</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/MFG.svg&quot;)"><img src="https://logo.finviz.com/MFG.svg" alt="MFG logo" crossorigin="anonymous"/><span>M</span></span>Mizuho</div>
+      </td>
+      <td class="text-left">Buy</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no">$120 → $100</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+11.5%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Dec 01, 2023</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-negative-200">Downgrade</span>
+      </td>
+      <td class="text-left color-text is-negative" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/MS.svg&quot;)"><img src="https://logo.finviz.com/MS.svg" alt="MS logo" crossorigin="anonymous"/><span>M</span></span>Morgan Stanley</div>
+      </td>
+      <td class="text-left color-text is-negative">Overweight → Equal-Weight</td>
+      <td class="text-left color-text is-negative whitespace-nowrap tabular-nums" translate="no">$110 → $90</td>
+      <td class="whitespace-nowrap">
+        <span class="inline-flex items-center gap-1.5" translate="no">
+          <span class="inline-flex shrink-0 items-center justify-center rounded-sm text-gray-50 dark:text-gray-900 size-3.5 bg-(--text-color-positive)">
+            <span style="color:#00994d; font-size:11px;">▲ </span>
+          </span>
+          <span class="tabular-nums text-positive">+0.4%</span>
+        </span>
+      </td>
+    </tr>
+    <tr class="styled-row is-hoverable is-bordered is-rounded is-border-top is-hover-borders has-label has-color-text hidden">
+      <td class="whitespace-nowrap">Nov 01, 2023</td>
+      <td class="whitespace-nowrap">
+        <span class="fv-label is-small is-neutral">Resumed</span>
+      </td>
+      <td class="text-left" translate="no">
+        <div class="flex items-center gap-1.5"><span class="company-ticker" style="--hover-color:#F0F3FA;--logo-url:url(&quot;https://logo.finviz.com/UBS.svg&quot;)"><img src="https://logo.finviz.com/UBS.svg" alt="UBS logo" crossorigin="anonymous"/><span>U</span></span>UBS</div>
+      </td>
+      <td class="text-left">Buy</td>
+      <td class="text-left whitespace-nowrap tabular-nums" translate="no"/>
+      <td class="whitespace-nowrap"/>
+    </tr>
+  </tbody>
+</table>
+
+
+<hr class="rp-divider">
+<table align="center" cellpadding="0" cellspacing="0" align="center" width="70%" class="body-table styled-table-new is-rounded p-0 mt-2">
+<thead>
+<tr>
+<th align="left">Insider Trading</th>
+<th align="left">Relationship</th>
+<th align="left">Date</th>
+<th align="center">Transaction</th>
+<th align="right">Cost</th>
+<th align="right">#Shares</th>
+<th align="right">Value ($)</th>
+<th align="right">#Shares Total</th>
+<th align="center">SEC Form 4</th>
+</tr>
+</thead>
+<tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=2114927&amp;tc=7" class="tab-link" target="_blank">Jiang Fang</a></td><td style="white-space:nowrap">Chief People Officer</td><td>Sep 30 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">13.55</td><td class="value" align="right">885,272</td><td class="value" align="right">11,995,436</td><td class="value" align="right">4,679,097</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1577552/000119312526411206/xslF345X06/ownership.xml" class="tab-link" target="_blank">Oct 02 06:01 AM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="https://finviz.com/insidertrading?oc=2114147&amp;tc=7" class="tab-link" target="_blank">Yu Siying</a></td><td style="white-space:nowrap">General Counsel</td><td>Sep 25 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">13.58</td><td class="value" align="right">6,764</td><td class="value" align="right">91,855</td><td class="value" align="right">613,965</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1577552/000119312526405907/xslF345X06/ownership.xml" class="tab-link" target="_blank">Sep 29 06:04 AM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="https://finviz.com/insidertrading?oc=2114927&amp;tc=7" class="tab-link" target="_blank">Jiang Fang</a></td><td style="white-space:nowrap">Chief People Officer</td><td>Sep 25 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">13.57</td><td class="value" align="right">4,889</td><td class="value" align="right">66,344</td><td class="value" align="right">5,564,369</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1577552/000119312526405904/xslF345X06/ownership.xml" class="tab-link" target="_blank">Sep 29 06:03 AM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=2114529&amp;tc=7" class="tab-link" target="_blank">Xu Hong</a></td><td style="white-space:nowrap">Chief Financial Officer</td><td>Sep 25 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">13.68</td><td class="value" align="right">103,046</td><td class="value" align="right">1,409,669</td><td class="value" align="right">406,450</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1577552/000119312526405899/xslF345X06/ownership.xml" class="tab-link" target="_blank">Sep 29 06:02 AM</a></td></tr><tr class="fv-insider-row is-buy-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1633999&amp;tc=7" class="tab-link" target="_blank">Tsai Joseph C</a></td><td style="white-space:nowrap">Director</td><td>Aug 25 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Buy</span></td><td class="value" align="right">14.47</td><td class="value" align="right">720,000</td><td class="value" align="right">10,418,400</td><td class="value" align="right">114,979,168</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1577552/000119312526364044/xslF345X06/ownership.xml" class="tab-link" target="_blank">Aug 25 06:01 AM</a></td></tr><tr class="fv-insider-row is-buy-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1633999&amp;tc=7" class="tab-link" target="_blank">Tsai Joseph C</a></td><td style="white-space:nowrap">Director</td><td>Aug 24 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Buy</span></td><td class="value" align="right">14.29</td><td class="value" align="right">720,000</td><td class="value" align="right">10,288,800</td><td class="value" align="right">114,259,168</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1577552/000119312526361902/xslF345X06/ownership.xml" class="tab-link" target="_blank">Aug 24 08:17 AM</a></td></tr><tr class="fv-insider-row is-buy-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=2121606&amp;tc=7" class="tab-link" target="_blank">Wu Yongming</a></td><td style="white-space:nowrap">Chief Executive Officer</td><td>Aug 24 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Buy</span></td><td class="value" align="right">14.24</td><td class="value" align="right">350,000</td><td class="value" align="right">4,984,000</td><td class="value" align="right">1,364,418</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1577552/000119312526361711/xslF345X06/ownership.xml" class="tab-link" target="_blank">Aug 24 06:04 AM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1428339&amp;tc=7" class="tab-link" target="_blank">EVANS J. MICHAEL</a></td><td style="white-space:nowrap">President</td><td>Jun 29 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">94.95</td><td class="value" align="right">720,000</td><td class="value" align="right">68,360,495</td><td class="value" align="right">28,000</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1428339/000119312526291402/xslF345X06/ownership.xml" class="tab-link" target="_blank">Jul 01 06:02 AM</a></td></tr><tr class="fv-insider-row is-proposedSale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=1428339&amp;tc=7" class="tab-link" target="_blank">John Michael Evans</a></td><td style="white-space:nowrap">Director</td><td>Jun 29 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Proposed Sale</span></td><td class="value" align="right">95.51</td><td class="value" align="right">90,000</td><td class="value" align="right">8,595,900</td><td class="value" align="right"/><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1428339/000195824426000412/xsl144X01/primary_doc.xml" class="tab-link" target="_blank">Jun 29 05:54 PM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=2115804&amp;tc=7" class="tab-link" target="_blank">Jiang Fan (FJ)</a></td><td style="white-space:nowrap">CEO of Business Group</td><td>Jun 25 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">12.10</td><td class="value" align="right">13,579</td><td class="value" align="right">164,306</td><td class="value" align="right">556,617</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1577552/000119312526286750/xslF345X06/ownership.xml" class="tab-link" target="_blank">Jun 29 06:06 AM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=2114529&amp;tc=7" class="tab-link" target="_blank">Xu Hong</a></td><td style="white-space:nowrap">Chief Financial Officer</td><td>Jun 25 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">12.15</td><td class="value" align="right">175,054</td><td class="value" align="right">2,126,906</td><td class="value" align="right">280,496</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1577552/000119312526286743/xslF345X06/ownership.xml" class="tab-link" target="_blank">Jun 29 06:04 AM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="https://finviz.com/insidertrading?oc=2114147&amp;tc=7" class="tab-link" target="_blank">Yu Siying</a></td><td style="white-space:nowrap">General Counsel</td><td>Jun 25 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">12.10</td><td class="value" align="right">6,772</td><td class="value" align="right">81,941</td><td class="value" align="right">607,234</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1577552/000119312526286741/xslF345X06/ownership.xml" class="tab-link" target="_blank">Jun 29 06:03 AM</a></td></tr><tr class="fv-insider-row is-sale-1" valign="top"><td><a href="https://finviz.com/insidertrading?oc=2114927&amp;tc=7" class="tab-link" target="_blank">Jiang Fang</a></td><td style="white-space:nowrap">Chief People Officer</td><td>Jun 25 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">12.09</td><td class="value" align="right">4,898</td><td class="value" align="right">59,217</td><td class="value" align="right">5,559,511</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1577552/000119312526286735/xslF345X06/ownership.xml" class="tab-link" target="_blank">Jun 29 06:02 AM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=2114927&amp;tc=7" class="tab-link" target="_blank">Jiang Fang</a></td><td style="white-space:nowrap">Chief People Officer</td><td>Mar 25 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">16.10</td><td class="value" align="right">16,848</td><td class="value" align="right">271,253</td><td class="value" align="right">5,554,653</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1577552/000211492726000005/xslF345X06/ownership.xml" class="tab-link" target="_blank">Mar 26 11:07 AM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=2114529&amp;tc=7" class="tab-link" target="_blank">Xu Hong</a></td><td style="white-space:nowrap">Chief Financial Officer</td><td>Mar 25 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">16.07</td><td class="value" align="right">54,450</td><td class="value" align="right">875,012</td><td class="value" align="right">66,550</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1577552/000211452926000006/xslF345X06/ownership.xml" class="tab-link" target="_blank">Mar 26 11:06 AM</a></td></tr><tr class="fv-insider-row is-sale-2" valign="top"><td><a href="https://finviz.com/insidertrading?oc=2114147&amp;tc=7" class="tab-link" target="_blank">Yu Siying</a></td><td style="white-space:nowrap">General Counsel</td><td>Mar 25 '26</td><td class="transaction" style="white-space:nowrap" align="center"><span>Sale</span></td><td class="value" align="right">16.06</td><td class="value" align="right">21,472</td><td class="value" align="right">344,840</td><td class="value" align="right">600,503</td><td class="whitespace-nowrap tabular-nums" align="center"><a href="http://www.sec.gov/Archives/edgar/data/1577552/000211414726000005/xslF345X06/ownership.xml" class="tab-link" target="_blank">Mar 26 11:05 AM</a></td></tr></table>
+
+
+
+<hr class="rp-divider">
+<div class="body-table-news-wrapper news-table_wrapper is-collapsed"><table align="center" align="center" width="70%" cellpadding="1" cellspacing="0" border="0" id="news-table" class="fullview-news-outer news-table" data-ticker="BABA">
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/u-ai-chip-curbs-stall-030554065.html', '_blank');">
+        <td width="130" align="right">
+            Nov-26-26 10:05PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/u-ai-chip-curbs-stall-030554065.html" target="_blank" rel="nofollow">
+                        U.S. AI chip curbs stall billions in Asia data center deals, Bloomberg reports
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/jpmorgan-sees-450b-ai-bond-215824242.html', '_blank');">
+        <td width="130" align="right">
+            Nov-25-26 04:58PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/jpmorgan-sees-450b-ai-bond-215824242.html" target="_blank" rel="nofollow">
+                        JPMorgan sees $450B in AI bond issuance in 2027
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                      
+  
+      <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200" title="Nov 27, 2026">
+        <svg width="12" height="12" class="fill-current">&#13;
+    <use href="/assets/dist-icons/icons.1f7da9e4.svg#nextday"/>&#13;
+</svg> +3.96%
+    </span>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/jpmorgan-sees-450-billion-ai-211721263.html', '_blank');">
+        <td width="130" align="right">
+            04:17PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/jpmorgan-sees-450-billion-ai-211721263.html" target="_blank" rel="nofollow">
+                        JPMorgan Sees $450 Billion AI Debt Blitz in 2027 Before Plateau
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Bloomberg)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://qz.com/spcx-stock-spacex-biggest-ipos-ever', '_blank');">
+        <td width="130" align="right">
+            01:42PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://qz.com/spcx-stock-spacex-biggest-ipos-ever" target="_blank" rel="nofollow">
+                        SPCX stock and the 10 biggest IPOs ever: where SpaceX ranks against Anthropic, Aramco and more
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Quartz)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/billions-data-center-deals-grind-160100809.html', '_blank');">
+        <td width="130" align="right">
+            11:01AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/billions-data-center-deals-grind-160100809.html" target="_blank" rel="nofollow">
+                        Billions in Data Center Deals Grind to Halt After AI Chip Curbs
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Bloomberg)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/alibaba-vs-baidu-china-ai-131453070.html', '_blank');">
+        <td width="130" align="right">
+            08:14AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/alibaba-vs-baidu-china-ai-131453070.html" target="_blank" rel="nofollow">
+                        Alibaba vs. Baidu: which China AI stock offers better risk-adjusted returns
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/alibaba-weighs-offshore-bond-sale-042159367.html', '_blank');">
+        <td width="130" align="right">
+            Nov-24-26 11:21PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/alibaba-weighs-offshore-bond-sale-042159367.html" target="_blank" rel="nofollow">
+                        Alibaba weighs offshore bond sale next year to fund AI expansion - Bloomberg
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/articles/u-adds-megaspeed-alibaba-unit-031209716.html', '_blank');">
+        <td width="130" align="right">
+            10:12PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/articles/u-adds-megaspeed-alibaba-unit-031209716.html" target="_blank" rel="nofollow">
+                        U.S. adds Megaspeed, Alibaba unit to export blacklist over chip diversion risks
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/us-blacklists-alibaba-subsidiary-over-120715071.html', '_blank');">
+        <td width="130" align="right">
+            07:07AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/us-blacklists-alibaba-subsidiary-over-120715071.html" target="_blank" rel="nofollow">
+                        US Blacklists Alibaba Subsidiary Over AI Chip Risks. Chinese Tech Giant Vows Legal Fight.
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(International Business Times)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/us-futures-mixed-monday-nvidia-093016990.html', '_blank');">
+        <td width="130" align="right">
+            04:30AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/us-futures-mixed-monday-nvidia-093016990.html" target="_blank" rel="nofollow">
+                        US Futures Mixed After Mondays Nvidia-Led Chip Rally  ZM, HPE, AMD, BABA In Focus
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.digitimes.com/news/a20261124VL222/nvidia-alibaba-probe-entity-list-blacklist.html', '_blank');">
+        <td width="130" align="right">
+            02:55AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.digitimes.com/news/a20261124VL222/nvidia-alibaba-probe-entity-list-blacklist.html" target="_blank" rel="nofollow">
+                        US blacklists Megaspeed amid Nvidia chip smuggling probe; Alibaba disputes affiliate listing
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(DigiTimes)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/baba-stock-drops-overnight-alibaba-060135257.html', '_blank');">
+        <td width="130" align="right">
+            01:01AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/baba-stock-drops-overnight-alibaba-060135257.html" target="_blank" rel="nofollow">
+                        BABA Stock Drops Overnight: Alibaba Reportedly Refutes Chip Rerouting Claims After US Blacklists Subsidiary
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/news/nvidia-reinstates-jensen-huang-ceo-135916841.html', '_blank');">
+        <td width="130" align="right">
+            Nov-23-26 11:40PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/nvidia-reinstates-jensen-huang-ceo-135916841.html" target="_blank" rel="nofollow">
+                        Huang returns as Nvidia CEO after Trump intervention in abrupt board reversal
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Reuters)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">
+         +6.12%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/us-blacklists-alibaba-owned-company-014536273.html', '_blank');">
+        <td width="130" align="right">
+            08:45PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/us-blacklists-alibaba-owned-company-014536273.html" target="_blank" rel="nofollow">
+                        US Blacklists Alibaba-Owned Company in Setback to AI Ambitions
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Bloomberg)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/ant-baba-panw-ttwo-zs-020857155.html', '_blank');">
+        <td width="130" align="right">
+            Nov-22-26 09:08PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/ant-baba-panw-ttwo-zs-020857155.html" target="_blank" rel="nofollow">
+                        ANT, BABA, PANW, TTWO, ZS: Why Retail Traders Couldnt Take Their Eyes Off These Stocks Last Week
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/china-ai-stocks-lose-1-013928656.html', '_blank');">
+        <td width="130" align="right">
+            Nov-21-26 08:39PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/china-ai-stocks-lose-1-013928656.html" target="_blank" rel="nofollow">
+                        Chinas AI stocks lose $1.7 trillion as tech selloff deepens
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/buy-ant-avoid-5-most-000000833.html', '_blank');">
+        <td width="130" align="right">
+            07:00PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/buy-ant-avoid-5-most-000000833.html" target="_blank" rel="nofollow">
+                        Before You Buy ANT: How to Avoid the 5 Most Common Anthropic Ticker Mix-Ups
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Leverage Shares by Themes)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/nvidia-latest-chip-scandal-alibaba-080454559.html', '_blank');">
+        <td width="130" align="right">
+            03:04AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/nvidia-latest-chip-scandal-alibaba-080454559.html" target="_blank" rel="nofollow">
+                        Nvidias latest chip scandal has an Alibaba connection, new report claims
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Digital Trends)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.businesswire.com/news/home/20261120169598/en/', '_blank');">
+        <td width="130" align="right">
+            Nov-20-26 03:30PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20261120169598/en/" target="_blank" rel="nofollow">
+                        Alibaba Group Holding Limited Sued for Securities Law Violations - Contact the DJS Law Group to Discuss Your Rights BABA
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Business Wire)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/everful-gets-48-5-million-162442721.html', '_blank');">
+        <td width="130" align="right">
+            11:24AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/everful-gets-48-5-million-162442721.html" target="_blank" rel="nofollow">
+                        Everful Gets $48.5 Million Funding Boost
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Sourcing Journal)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/alibaba-ai-outlook-draws-mixed-124628022.html', '_blank');">
+        <td width="130" align="right">
+            07:46AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/alibaba-ai-outlook-draws-mixed-124628022.html" target="_blank" rel="nofollow">
+                        Alibabas AI Outlook Draws Mixed Analyst Views: What Citi And Barclays Are Saying
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/alibaba-tencent-put-faith-chinese-124451275.html', '_blank');">
+        <td width="130" align="right">
+            07:44AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/alibaba-tencent-put-faith-chinese-124451275.html" target="_blank" rel="nofollow">
+                        Alibaba and Tencent put their faith in Chinese chips as U.S. curbs threatens to slow down their AI development
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Fortune)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/alibaba-hk-shares-rise-q2-040722533.html', '_blank');">
+        <td width="130" align="right">
+            Nov-19-26 11:07PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/alibaba-hk-shares-rise-q2-040722533.html" target="_blank" rel="nofollow">
+                        Alibaba HK shares rise as Q2 topline beat invites some bargain buying
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/alibaba-earnings-analysis-questions-answered-205334878.html', '_blank');">
+        <td width="130" align="right">
+            03:53PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/alibaba-earnings-analysis-questions-answered-205334878.html" target="_blank" rel="nofollow">
+                        Alibaba earnings analysis: questions answered and next catalysts
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/news/exclusive-trump-administration-weighs-forcing-110405816.html', '_blank');">
+        <td width="130" align="right">
+            02:47PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/exclusive-trump-administration-weighs-forcing-110405816.html" target="_blank" rel="nofollow">
+                        Exclusive-Trump administration weighs forcing US firms to disclose Chinese AI use
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Reuters)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/article/anthropic-stocks-first-trade-was-worth-12-billion--34-above-its-ipo-price-171721561.html', '_blank');">
+        <td width="130" align="right">
+            12:17PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/article/anthropic-stocks-first-trade-was-worth-12-billion--34-above-its-ipo-price-171721561.html" target="_blank" rel="nofollow">
+                        Anthropic stock's first trade was worth $12 billion  34% above its IPO price
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Yahoo Finance)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/small-business/articles/former-alibaba-exec-everful-raises-170000353.html', '_blank');">
+        <td width="130" align="right">
+            12:00PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/small-business/articles/former-alibaba-exec-everful-raises-170000353.html" target="_blank" rel="nofollow">
+                        Former Alibaba execs Everful raises $48.5M to connect retailers with Chinese factories
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(TechCrunch)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/article/ai-trade-soars-with-anthropic-ipo-in-spotlight-alphacheck-145421789.html', '_blank');">
+        <td width="130" align="right">
+            09:54AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/article/ai-trade-soars-with-anthropic-ipo-in-spotlight-alphacheck-145421789.html" target="_blank" rel="nofollow">
+                        Anthropic IPO gives boost to AI trade: AlphaCheck
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Yahoo Finance)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/alibaba-beats-revenue-estimates-misses-135900004.html', '_blank');">
+        <td width="130" align="right">
+            08:59AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/alibaba-beats-revenue-estimates-misses-135900004.html" target="_blank" rel="nofollow">
+                        Alibaba beats revenue estimates but misses earnings forecasts as AI investment weighs
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Proactive)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/baba-stock-edges-lower-premarket-122339446.html', '_blank');">
+        <td width="130" align="right">
+            07:23AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/baba-stock-edges-lower-premarket-122339446.html" target="_blank" rel="nofollow">
+                        BABA Stock Edges Lower Premarket After Q2 Earnings  Alibabas Adjusted Earnings Miss Estimates, AI Cloud Revenue Jumps 53%
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            07:00AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/425055/alibaba-ai-cloud-revenue-surges-53-as-quarterly-earnings-miss-analyst-forecasts" target="_blank">
+                        Alibaba AI Cloud Revenue Surges 53% as Quarterly Earnings Miss Analyst Forecasts
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(InvestorsHub)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.marketwatch.com/story/alibabas-cloud-business-is-thriving-but-those-profits-are-completely-offset-by-losses-from-its-ai-labs-74bf4b3c?mod=mw_FV', '_blank');">
+        <td width="130" align="right">
+            06:54AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/alibabas-cloud-business-is-thriving-but-those-profits-are-completely-offset-by-losses-from-its-ai-labs-74bf4b3c?mod=mw_FV" target="_blank" rel="nofollow">
+                        Alibaba's cloud business is thriving. But those profits are completely offset by losses from its AI labs.
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketWatch)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/articles/stock-movers-ddc27426?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            06:33AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/stock-movers-ddc27426?mod=bar_FV" target="_blank" rel="nofollow">
+                        Anthropic, Google, Palo Alto, Walmart, and More Stocks That Explain Today's Market
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/tsmc-stock-falls-5-china-112721933.html', '_blank');">
+        <td width="130" align="right">
+            06:27AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/tsmc-stock-falls-5-china-112721933.html" target="_blank" rel="nofollow">
+                        TSMC Stock Falls 5% on China Chip Pause: What Is at Risk?
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(BeInCrypto)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/alibaba-revenue-beats-estimates-during-101314383.html', '_blank');">
+        <td width="130" align="right">
+            06:10AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/alibaba-revenue-beats-estimates-during-101314383.html" target="_blank" rel="nofollow">
+                        Alibaba's Revenue Beats Estimates During China's AI Boom
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Bloomberg)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/alibaba-ai-cloud-revenue-jumps-110314481.html', '_blank');">
+        <td width="130" align="right">
+            06:03AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/alibaba-ai-cloud-revenue-jumps-110314481.html" target="_blank" rel="nofollow">
+                        Alibaba AI cloud revenue jumps 53% but earnings fall short of estimates
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/stock-futures-climb-ahead-anthropics-110203603.html', '_blank');">
+        <td width="130" align="right">
+            06:02AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/stock-futures-climb-ahead-anthropics-110203603.html" target="_blank" rel="nofollow">
+                        Stock Futures Climb Ahead Of Anthropic's Nasdaq Debut  NVDA, BABA, TTWO, SLS Stocks In Focus
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/alibaba-fiscal-q2-earnings-snapshot-101400418.html', '_blank');">
+        <td width="130" align="right">
+            05:14AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/alibaba-fiscal-q2-earnings-snapshot-101400418.html" target="_blank" rel="nofollow">
+                        Alibaba: Fiscal Q2 Earnings Snapshot
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Associated Press)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/alibaba-ai-ambitions-face-steep-000021461.html', '_blank');">
+        <td width="130" align="right">
+            05:02AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/alibaba-ai-ambitions-face-steep-000021461.html" target="_blank" rel="nofollow">
+                        Alibaba's AI Ambitions Face Steep Challenge in US Chip Controls
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Bloomberg)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.businesswire.com/news/home/20261118898798/en/', '_blank');">
+        <td width="130" align="right">
+            05:02AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20261118898798/en/" target="_blank" rel="nofollow">
+                        Alibaba Group Announces September Quarter 2026 Results and Interim Results for the Six Months Ended September 30, 2026
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Business Wire)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.marketwatch.com/livecoverage/stock-market-today-nasdaq-leads-dow-sp500-higher-on-anthropic-ai-optimism-walmart-earnings/card/palo-alto-rides-cybersecurity-surge-and-other-early-market-movers-3rtQ4cyzjeIkcqfuY6xH?mod=mw_FV', '_blank');">
+        <td width="130" align="right">
+            05:00AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.marketwatch.com/livecoverage/stock-market-today-nasdaq-leads-dow-sp500-higher-on-anthropic-ai-optimism-walmart-earnings/card/palo-alto-rides-cybersecurity-surge-and-other-early-market-movers-3rtQ4cyzjeIkcqfuY6xH?mod=mw_FV" target="_blank" rel="nofollow">
+                        Palo Alto rides cybersecurity surge, and other early market movers
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketWatch)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.marketwatch.com/livecoverage/stock-market-today-nasdaq-leads-dow-sp500-higher-on-anthropic-ai-optimism-walmart-earnings/card/walmart-headlines-thursday-s-earnings-slate-HtFmSNvTueHOJpnuPJLJ?mod=mw_FV', '_blank');">
+        <td width="130" align="right">
+            04:33AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.marketwatch.com/livecoverage/stock-market-today-nasdaq-leads-dow-sp500-higher-on-anthropic-ai-optimism-walmart-earnings/card/walmart-headlines-thursday-s-earnings-slate-HtFmSNvTueHOJpnuPJLJ?mod=mw_FV" target="_blank" rel="nofollow">
+                        Walmart headlines Thursday's earnings slate
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketWatch)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/baba-stock-dips-further-hitting-085853314.html', '_blank');">
+        <td width="130" align="right">
+            03:58AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/baba-stock-dips-further-hitting-085853314.html" target="_blank" rel="nofollow">
+                        BABA Stock Dips Further After Hitting 22-Month Low  US AI Curbs Weigh Ahead Of Earnings, But Retail Bulls Arent Budging
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.marketwatch.com/livecoverage/stock-market-today-nasdaq-leads-dow-sp500-higher-on-anthropic-ai-optimism-walmart-earnings?mod=mw_FV', '_blank');">
+        <td width="130" align="right">
+            03:36AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.marketwatch.com/livecoverage/stock-market-today-nasdaq-leads-dow-sp500-higher-on-anthropic-ai-optimism-walmart-earnings?mod=mw_FV" target="_blank" rel="nofollow">
+                        Stock Market Today: Nasdaq to lead Dow and S&amp;P 500 higher as tech rallies on Anthropic IPO optimism; Nvidia stock gains; Walmart earnings on tap: live updates
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketWatch)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/why-alibaba-stock-crashing-earnings-073737319.html', '_blank');">
+        <td width="130" align="right">
+            02:37AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/why-alibaba-stock-crashing-earnings-073737319.html" target="_blank" rel="nofollow">
+                        Why Is Alibaba Stock Crashing Before Earnings?
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(BeInCrypto)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/bidu-stock-slumps-fresh-16-185130572.html', '_blank');">
+        <td width="130" align="right">
+            Nov-18-26 01:51PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/bidu-stock-slumps-fresh-16-185130572.html" target="_blank" rel="nofollow">
+                        BIDU Stock Slumps To Fresh 16 Year Low, BABA Shares Down To New 22-Month Low  Heres What Investors Are Watching
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/trump-administration-reportedly-weighs-name-141955396.html', '_blank');">
+        <td width="130" align="right">
+            09:19AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/trump-administration-reportedly-weighs-name-141955396.html" target="_blank" rel="nofollow">
+                        Trump Administration Reportedly Weighs Name And Shame Plan For Companies Using Chinese AI
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/futures-climb-nvidia-earnings-boost-101949738.html', '_blank');">
+        <td width="130" align="right">
+            05:19AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/futures-climb-nvidia-earnings-boost-101949738.html" target="_blank" rel="nofollow">
+                        Futures Climb As Nvidia Earnings Boost AI Trade  BABA, INTC, ASTS, CAPR In Focus
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/tencent-sales-miss-estimates-setback-083654156.html', '_blank');">
+        <td width="130" align="right">
+            05:12AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/tencent-sales-miss-estimates-setback-083654156.html" target="_blank" rel="nofollow">
+                        Tencent's Sales Miss Estimates in Setback for Founder's AI Push
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Bloomberg)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/baba-nosedive-continues-report-says-055321598.html', '_blank');">
+        <td width="130" align="right">
+            12:53AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/baba-nosedive-continues-report-says-055321598.html" target="_blank" rel="nofollow">
+                        BABA Nosedive Continues: Report Says Nvidia Introduced Suspected Chinese Spy To Alibaba, Helping Secure Major Client
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/michael-burry-passed-nvidia-calls-051535966.html', '_blank');">
+        <td width="130" align="right">
+            12:15AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/michael-burry-passed-nvidia-calls-051535966.html" target="_blank" rel="nofollow">
+                        Michael Burry Passed On Nvidia Calls Before Earnings  Heres What Caught His Eye At Alibaba, Netflix And JD
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            Nov-17-26 05:36PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/424391/5-top-earnings-charts-to-watch-this-week" target="_blank">
+                        5 Top Earnings Charts to Watch This Week
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Zacks)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">
+         -4.38%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/livecoverage/nvidia-earnings-stock-huang-departure/card/nvidia-launches-committe-on-export-controls-amid-scrutiny-5vgYFUycUQtdwz460kKe?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            09:10AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/livecoverage/nvidia-earnings-stock-huang-departure/card/nvidia-launches-committe-on-export-controls-amid-scrutiny-5vgYFUycUQtdwz460kKe?mod=bar_FV" target="_blank" rel="nofollow">
+                        Nvidia Launches Committe on Export Controls Amid Scrutiny
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/anthropic-ipo-frenzy-spcx-cbrs-124808402.html', '_blank');">
+        <td width="130" align="right">
+            07:48AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/anthropic-ipo-frenzy-spcx-cbrs-124808402.html" target="_blank" rel="nofollow">
+                        Anthropic IPO Frenzy: SPCX, CBRS, ARM And Other Mega-Listings Show What Happens After The First-Day Pop
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/watch-chinese-chip-stocks-u-060032967.html', '_blank');">
+        <td width="130" align="right">
+            01:00AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/watch-chinese-chip-stocks-u-060032967.html" target="_blank" rel="nofollow">
+                        Watch these Chinese chip stocks as U.S. tightens access to Nvidia hardware
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/baba-nears-2-low-earnings-054742930.html', '_blank');">
+        <td width="130" align="right">
+            12:47AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/baba-nears-2-low-earnings-054742930.html" target="_blank" rel="nofollow">
+                        BABA Nears 2-Year Low Before Earnings  Wall Street Sees 104% Upside, But Michael Burry Is Watching Its AI Rival For Profit Clues
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/china-megacap-tech-stocks-fall-052521839.html', '_blank');">
+        <td width="130" align="right">
+            12:25AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/china-megacap-tech-stocks-fall-052521839.html" target="_blank" rel="nofollow">
+                        China megacap tech stocks fall as U.S. tightens curbs on AI chip access
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/dow-p-500-nasdaq-futures-040622667.html', '_blank');">
+        <td width="130" align="right">
+            Nov-16-26 11:06PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/dow-p-500-nasdaq-futures-040622667.html" target="_blank" rel="nofollow">
+                        Dow, S&amp;P 500, Nasdaq Futures Mixed Ahead Of Much-Anticipated Nvidia Earnings, Anthropic IPO: SLS, BABA, JPM, OMER In Focus
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">
+         -3.98%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/china-ai-stocks-sink-us-032800790.html', '_blank');">
+        <td width="130" align="right">
+            10:28PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/china-ai-stocks-sink-us-032800790.html" target="_blank" rel="nofollow">
+                        China AI Stocks Sink as US Chip Curbs Hit Labs and Hyperscalers
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Bloomberg)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/articles/nvidia-chips-alibaba-stocks-c3fba484?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            11:01AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/nvidia-chips-alibaba-stocks-c3fba484?mod=bar_FV" target="_blank" rel="nofollow">
+                        U.S. Moves to Close Chip Loophole After Nvidia Scandal. Watch These Stocks.
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://qz.com/alibaba-qwen4-max-flagship-ai-model-us-rivals-111626', '_blank');">
+        <td width="130" align="right">
+            08:30AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://qz.com/alibaba-qwen4-max-flagship-ai-model-us-rivals-111626" target="_blank" rel="nofollow">
+                        Alibaba is launching a new flagship AI model, claiming to rival U.S. leaders
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Quartz)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/alibaba-unveils-flagship-ai-model-020000528.html', '_blank');">
+        <td width="130" align="right">
+            06:53AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/alibaba-unveils-flagship-ai-model-020000528.html" target="_blank" rel="nofollow">
+                        Alibaba Unveils New Flagship AI Model in Riposte to US Rivals
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Bloomberg)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/alibaba-ai-model-two-thirds-110000404.html', '_blank');">
+        <td width="130" align="right">
+            06:00AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/alibaba-ai-model-two-thirds-110000404.html" target="_blank" rel="nofollow">
+                        Alibabas New AI Model Is Two-Thirds Cheaper. What Does It Mean for the Stock?
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(BeInCrypto)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/baidu-posts-sixth-straight-sales-090642893.html', '_blank');">
+        <td width="130" align="right">
+            05:54AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/baidu-posts-sixth-straight-sales-090642893.html" target="_blank" rel="nofollow">
+                        Baidu Posts Sixth Straight Sales Drop After AI Drag Persists
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Bloomberg)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/baba-stock-edges-lower-overnight-060258606.html', '_blank');">
+        <td width="130" align="right">
+            01:02AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/baba-stock-edges-lower-overnight-060258606.html" target="_blank" rel="nofollow">
+                        BABA Stock Edges Lower Overnight: Alibaba Reportedly Launches Most-Advanced AI Model That Cuts Task Costs By 60%
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/china-stock-market-woes-deepen-060000250.html', '_blank');">
+        <td width="130" align="right">
+            01:00AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/china-stock-market-woes-deepen-060000250.html" target="_blank" rel="nofollow">
+                        Nobody makes money: Somethings wrong with Chinas stock market
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(The Telegraph)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/china-zai-minimax-tumble-nvidia-050901809.html', '_blank');">
+        <td width="130" align="right">
+            12:09AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/china-zai-minimax-tumble-nvidia-050901809.html" target="_blank" rel="nofollow">
+                        Chinas ZAI, Minimax tumble as Nvidia row drives fears of more chip restrictions
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/10-biggest-stock-market-ipos-012627828.html', '_blank');">
+        <td width="130" align="right">
+            Nov-15-26 08:26PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/10-biggest-stock-market-ipos-012627828.html" target="_blank" rel="nofollow">
+                        The 10 biggest stock market IPOs
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(AFP)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/consumer-defensive-stocks-extend-winning-011320620.html', '_blank');">
+        <td width="130" align="right">
+            08:13PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/consumer-defensive-stocks-extend-winning-011320620.html" target="_blank" rel="nofollow">
+                        Consumer Defensive Stocks Extend Winning Streak To 6 Weeks As SPY, QQQ Rebound: TTD, CHTR, TSLA Lead Gains
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            Nov-13-26 06:08PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/422814/the-dealmaking-3-ai-in-sports-nets-replays-argentina-offside-golf-pricing" target="_blank">
+                        The Dealmaking 3 - AI in Sports: Nets Replays, Argentina Offside &amp; Golf Pricing
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Corp Gov)</span>
+                      
+  
+      <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200" title="Nov 16, 2026">
+        <svg width="12" height="12" class="fill-current">&#13;
+    <use href="/assets/dist-icons/icons.1f7da9e4.svg#nextday"/>&#13;
+</svg> -3.98%
+    </span>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/article/jensen-huang-scandal-trail-leads-to-alibaba-the-king-of-free-chinese-ai-chart-of-the-day-110000329.html', '_blank');">
+        <td width="130" align="right">
+            06:00AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/article/jensen-huang-scandal-trail-leads-to-alibaba-the-king-of-free-chinese-ai-chart-of-the-day-110000329.html" target="_blank" rel="nofollow">
+                        Jensen Huang scandal trail leads to Alibaba, the king of free Chinese AI: Chart of the Day
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Yahoo Finance)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/china-ai-stocks-tumble-nvidia-064035259.html', '_blank');">
+        <td width="130" align="right">
+            01:40AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/china-ai-stocks-tumble-nvidia-064035259.html" target="_blank" rel="nofollow">
+                        China AI stocks tumble as Nvidia fallout fuels fears of tighter U.S. chip curbs
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/asian-stocks-fragile-nvidia-plummets-015524144.html', '_blank');">
+        <td width="130" align="right">
+            Nov-12-26 05:37PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/asian-stocks-fragile-nvidia-plummets-015524144.html" target="_blank" rel="nofollow">
+                        Wall Street ends lower as Nvidia CEO resigns; US yields up
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Reuters)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">
+         -7.05%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/alibaba-shares-slide-7-nvidia-182200566.html', '_blank');">
+        <td width="130" align="right">
+            01:22PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/alibaba-shares-slide-7-nvidia-182200566.html" target="_blank" rel="nofollow">
+                        Alibaba shares slide 7% as Nvidia crisis and US chip curbs threaten AI ambitions
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Proactive)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/nvda-turmoil-weighs-nasdaq-futures-102755297.html', '_blank');">
+        <td width="130" align="right">
+            05:27AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/nvda-turmoil-weighs-nasdaq-futures-102755297.html" target="_blank" rel="nofollow">
+                        NVDA Turmoil Weighs On Nasdaq Futures  INTC, BABA, NBIS, ONDS In Focus
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/nvidia-said-preparing-huang-ouster-093445480.html', '_blank');">
+        <td width="130" align="right">
+            04:34AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/nvidia-said-preparing-huang-ouster-093445480.html" target="_blank" rel="nofollow">
+                        Nvidia said to be preparing Huang ouster; Alibaba slumps - whats moving markets
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/intc-baba-shares-slide-over-080446999.html', '_blank');">
+        <td width="130" align="right">
+            03:04AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/intc-baba-shares-slide-over-080446999.html" target="_blank" rel="nofollow">
+                        INTC, BABA Shares Slide Over Links To Firm Tied To Suspected Chinese Spy
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/china-chip-stocks-rally-u-063831379.html', '_blank');">
+        <td width="130" align="right">
+            01:38AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/china-chip-stocks-rally-u-063831379.html" target="_blank" rel="nofollow">
+                        U.S., Europe chip stocks dip as Nvidia board reportedly weighs ousting Huang
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/alibaba-tencent-shares-fall-report-054436336.html', '_blank');">
+        <td width="130" align="right">
+            12:44AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/alibaba-tencent-shares-fall-report-054436336.html" target="_blank" rel="nofollow">
+                        Alibaba, Tencent shares fall on report U.S. weighs curbs on remote AI chip access
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/u-finalizing-rule-block-china-042215614.html', '_blank');">
+        <td width="130" align="right">
+            Nov-11-26 11:22PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/u-finalizing-rule-block-china-042215614.html" target="_blank" rel="nofollow">
+                        U.S. finalizing rule to block Chinas remote AI chip access- The Information
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/article/hugging-face-cofounder-open-weight-ai-models-were-our-savior-220000916.html', '_blank');">
+        <td width="130" align="right">
+            05:00PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/article/hugging-face-cofounder-open-weight-ai-models-were-our-savior-220000916.html" target="_blank" rel="nofollow">
+                        Hugging Face cofounder: Open-weight AI models were 'our savior'
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Yahoo Finance)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            03:33PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/421184/alibabas-cloud-surge-faces-a-cash-burn-test-as-shares-slide-toward-range-lows" target="_blank">
+                        Alibaba's Cloud Surge Faces A Cash-Burn Test As Shares Slide Toward Range Lows
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Earnings Whispers)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            11:07AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/421153/ai-trade-comes-back-post-coreweave-numbers" target="_blank">
+                        AI Trade Comes Back Post-CoreWeave Numbers
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Zacks)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.digitimes.com/news/a20261111VL216/alibaba-t-head-ipo-spin-off-design.html', '_blank');">
+        <td width="130" align="right">
+            12:43AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.digitimes.com/news/a20261111VL216/alibaba-t-head-ipo-spin-off-design.html" target="_blank" rel="nofollow">
+                        Alibaba files to spin off chip design unit T-Head for Hong Kong IPO
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(DigiTimes)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/asian-stocks-mixed-coreweave-lifts-042658517.html', '_blank');">
+        <td width="130" align="right">
+            Nov-10-26 11:26PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/asian-stocks-mixed-coreweave-lifts-042658517.html" target="_blank" rel="nofollow">
+                        Asian stocks mixed as CoreWeave lifts chipmakers; hot U.S. inflation weighs
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/articles/short-seller-flagged-jensen-huang-204150479.html', '_blank');">
+        <td width="130" align="right">
+            03:41PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/articles/short-seller-flagged-jensen-huang-204150479.html" target="_blank" rel="nofollow">
+                        Short seller flagged Jensen Huangs 'uncomfortably close' ties to alleged Chinese spy months ago
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Fox Business)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/alibaba-advances-hong-kong-ipo-131937151.html', '_blank');">
+        <td width="130" align="right">
+            08:19AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/alibaba-advances-hong-kong-ipo-131937151.html" target="_blank" rel="nofollow">
+                        Alibaba advances Hong Kong IPO plans for chip subsidiary T-Head
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/goldman-sachs-names-top-china-064508768.html', '_blank');">
+        <td width="130" align="right">
+            01:45AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/goldman-sachs-names-top-china-064508768.html" target="_blank" rel="nofollow">
+                        Goldman Sachs names top China internet stocks heading into Q3 earnings
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/moonshot-ai-rents-nvidia-top-054313159.html', '_blank');">
+        <td width="130" align="right">
+            12:43AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/moonshot-ai-rents-nvidia-top-054313159.html" target="_blank" rel="nofollow">
+                        Moonshot AI rents Nvidias top chips in China, Bloomberg reports
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            Nov-09-26 03:33PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/419634/top-research-reports-for-asml-alibaba-intuitive-surgical" target="_blank">
+                        Top Research Reports for ASML, Alibaba &amp; Intuitive Surgical
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Zacks)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">
+         -3.72%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/articles/nvidia-braces-200bn-hit-over-124006109.html', '_blank');">
+        <td width="130" align="right">
+            07:40AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/articles/nvidia-braces-200bn-hit-over-124006109.html" target="_blank" rel="nofollow">
+                        Chinese spy affair triggers $395bn slump at Nvidia
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(The Telegraph)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/chinese-robotics-stock-surge-apple-061332775.html', '_blank');">
+        <td width="130" align="right">
+            01:13AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/chinese-robotics-stock-surge-apple-061332775.html" target="_blank" rel="nofollow">
+                        Chinese robotics stock surge on Apple robotics research
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/news/exclusive-nvidia-chips-pile-hong-112651215.html', '_blank');">
+        <td width="130" align="right">
+            Nov-06-26 05:19AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/exclusive-nvidia-chips-pile-hong-112651215.html" target="_blank" rel="nofollow">
+                        Exclusive-Nvidia chips pile up in Hong Kong as China withholds import approval
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Reuters)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.businesswire.com/news/home/20261106043519/en/', '_blank');">
+        <td width="130" align="right">
+            04:00AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.businesswire.com/news/home/20261106043519/en/" target="_blank" rel="nofollow">
+                        Alibaba Group Will Announce September Quarter 2026 Results on November 19, 2026
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Business Wire)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.digitimes.com/news/a20261106PD230/2026-internet-security-huawei-alibaba.html', '_blank');">
+        <td width="130" align="right">
+            02:40AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.digitimes.com/news/a20261106PD230/2026-internet-security-huawei-alibaba.html" target="_blank" rel="nofollow">
+                        Huawei, Alibaba among 20 Chinese tech firms confronting AI agent security, algorithmic exploitation
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(DigiTimes)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.digitimes.com/news/a20261105PD217/apple-siri-apple-intelligence-testing-alibaba.html', '_blank');">
+        <td width="130" align="right">
+            Nov-04-26 10:49PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.digitimes.com/news/a20261105PD217/apple-siri-apple-intelligence-testing-alibaba.html" target="_blank" rel="nofollow">
+                        Apple opens AI beta in China with Qwen-integrated Siri
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(DigiTimes)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">
+         +4.91%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/nvidia-china-clients-1-70-031424389.html', '_blank');">
+        <td width="130" align="right">
+            06:23AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/nvidia-china-clients-1-70-031424389.html" target="_blank" rel="nofollow">
+                        Nvidia China Clients to Get 1% of $70 Billion RTX Chips Ordered
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Bloomberg)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/articles/google-spend-15-billion-malaysia-090000163.html', '_blank');">
+        <td width="130" align="right">
+            04:00AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/articles/google-spend-15-billion-malaysia-090000163.html" target="_blank" rel="nofollow">
+                        Google to Spend $15 Billion in Malaysia Data Center Expansion
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Bloomberg)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/nvidia-china-clients-1-70-053111298.html', '_blank');">
+        <td width="130" align="right">
+            12:31AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/nvidia-china-clients-1-70-053111298.html" target="_blank" rel="nofollow">
+                        Nvidia China clients to get 1% of $70 bln RTX chips ordered- Bloomberg
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/technology/ai/articles/chinas-lipstick-king-touts-ai-063420436.html', '_blank');">
+        <td width="130" align="right">
+            Nov-03-26 01:41AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/technology/ai/articles/chinas-lipstick-king-touts-ai-063420436.html" target="_blank" rel="nofollow">
+                        China's 'Lipstick King' touts AI tokens in first for Singles' Day festival
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Reuters)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+</div>
+
+</div></div>
+</body>
+</html>

@@ -1,0 +1,2475 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>EWY — iShares MSCI South Korea Capped ETF</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-size: 12px;
+      font-family: Arial, Helvetica, "Microsoft JhengHei", -apple-system, sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 8px 28px 16px;
+      background-color: #faf9f6;
+      color: #1c1917;
+    }
+
+    /* Header Bar */
+    .rp-header {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-top: 3px solid #FA8123;
+      border-radius: 6px;
+      padding: 6px 10px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+    .rp-title-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .rp-ticker {
+      font-size: 17px;
+      font-weight: 800;
+      color: #1c1917;
+      letter-spacing: 0.3px;
+    }
+    .rp-desc {
+      font-size: 15px;
+      font-weight: 700;
+      color: #FA8123;
+    }
+    .rp-time {
+      font-size: 11px;
+      color: #78716c;
+      background: #f5f3ef;
+      padding: 1px 7px;
+      border-radius: 999px;
+    }
+    .rp-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .rp-pill-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: #faf9f6;
+      border: 1px solid #d6d1c7;
+      color: #44403c;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.12s ease;
+    }
+    .rp-pill-link:hover {
+      background: #fff5eb;
+      border-color: #FA8123;
+      color: #d9650f;
+    }
+
+    /* Signal Summary Card & Table (Technical + Chip/SBL) */
+    .rp-sig-card {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 6px 10px 8px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+    .rp-sig-card.rp-sig-empty {
+      padding: 5px 10px;
+      background: #faf9f6;
+    }
+    .rp-sig-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .rp-sig-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1c1917;
+    }
+    .rp-sig-sub {
+      font-size: 11px;
+      font-weight: 500;
+      color: #78716c;
+    }
+    .rp-sig-badges {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+    }
+    .rp-sig-asset, .rp-sig-status {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .rp-sig-asset-tw { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .rp-sig-asset-us { background: #f5f3ff; color: #6d28d9; border: 1px solid #ddd6fe; }
+    .rp-sig-asset-etf { background: #ecfeff; color: #0e7490; border: 1px solid #a5f3fc; }
+    .rp-sig-asset-lev { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+    .rp-sig-st-buy { background: #fef2f2; color: #cc2929; border: 1px solid #fecaca; }
+    .rp-sig-st-sell { background: #f0fdf4; color: #00994d; border: 1px solid #bbf7d0; }
+    .rp-sig-st-both { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+    .rp-sig-st-ref { background: #f5f5f4; color: #57534e; border: 1px solid #d6d3d1; }
+    .rp-sig-st-none { background: #f5f5f4; color: #78716c; border: 1px solid #e7e5e4; font-weight: 500; }
+    .rp-sig-count {
+      font-size: 11px;
+      color: #57534e;
+      margin-left: 2px;
+    }
+    .rp-sig-tbl {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 6px 0 0;
+      font-size: 12px;
+    }
+    .rp-sig-tbl th {
+      background: #f6f4f0;
+      color: #44403c;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border: 1px solid #e6e2dc;
+      text-align: left;
+      white-space: nowrap;
+    }
+    .rp-sig-tbl td {
+      padding: 4px 8px;
+      border: 1px solid #ede9e3;
+      vertical-align: middle;
+    }
+    .rp-sig-tbl tr.rp-sig-row-imp td {
+      background: #fffcf7;
+      font-weight: 600;
+    }
+    .rp-sig-c-dir, .rp-sig-c-src, .rp-sig-c-lvl, .rp-sig-c-tag { white-space: nowrap; }
+    .rp-sig-c-msg { color: #1c1917; word-break: break-word; }
+    .rp-sig-dir {
+      display: inline-block;
+      min-width: 52px;
+      text-align: center;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .rp-sig-dir-buy { background: #fee2e2; color: #b91c1c; }
+    .rp-sig-dir-sell { background: #dcfce7; color: #15803d; }
+    .rp-sig-dir-other { background: #f1f5f9; color: #475569; }
+    .rp-sig-src {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .rp-sig-src-tech { background: #f5f3ef; color: #44403c; }
+    .rp-sig-src-chip { background: #eff6ff; color: #1e40af; }
+    .rp-sig-lvl { font-size: 11px; font-weight: 600; }
+    .rp-sig-lvl-imp { color: #d97706; font-weight: 700; }
+    .rp-sig-lvl-ref { color: #78716c; }
+    .rp-sig-lvl-ctx { color: #64748b; }
+    .rp-sig-tag {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: #f5f3ef;
+      border: 1px solid #e6e2dc;
+      color: #292524;
+      font-family: Consolas, Menlo, monospace;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: help;
+    }
+    .rp-sig-tag-empty { color: #a8a29e; }
+
+    /* Pyecharts Container Card */
+    .rp-chart-box {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 2px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+
+    /* Sub-Tabs Bar */
+    .rp-tabs-bar {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 4px 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      position: sticky;
+      top: 2px;
+      z-index: 50;
+      box-shadow: 0 1px 4px rgba(28, 25, 23, 0.05);
+    }
+    .rp-tab {
+      border: 1px solid transparent;
+      background: #f5f3ef;
+      color: #57534e;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+    .rp-tab:hover {
+      background: #fff5eb;
+      border-color: #fdba8c;
+      color: #d9650f;
+    }
+    .rp-tab.active {
+      background: #FA8123;
+      color: #ffffff;
+      box-shadow: 0 1px 3px rgba(250, 129, 35, 0.35);
+    }
+
+    /* Section Card */
+    .rp-sec-pane {
+      width: 100%;
+      margin: 0 0 4px;
+    }
+    .rp-card {
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 6px 8px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+      overflow-x: auto;
+    }
+    .rp-divider {
+      border: 0;
+      border-top: 1px solid #e6e2dc;
+      margin: 6px 0;
+    }
+
+    /* Modernized Tables (FBS / Pyramid / FinViz) */
+    .is-negative { color: #00994d; font-weight: 600; }
+    .is-positive { color: #cc2929; font-weight: 600; }
+    .snapshot-td2, .snapshot-td2-cp {
+      color: #1c1917;
+      text-decoration: none;
+      border: 1px solid #e6e2dc;
+      white-space: nowrap;
+    }
+    .snapshot-td2-cp { cursor: pointer; }
+    .fullview-ratings-outer, td.fullview-ratings-inner {
+      border: 1px solid #e6e2dc;
+    }
+    .t3r1 { color: #cc2929; font-weight: 700; }
+    .body-table-rating-downgrade { color: #cc2929; background: #fef2f2; }
+    .body-table-rating-upgrade { color: #00994d; background: #f0fdf4; }
+    .body-table-rating-neutral { color: #44403c; background: #faf9f6; }
+
+    table {
+      border-collapse: collapse;
+      margin: 6px auto;
+    }
+    td, th {
+      border: 1px solid #e6e2dc;
+      text-align: left;
+      padding: 6px 8px;
+    }
+    th {
+      background-color: #f6f4f0;
+      color: #1c1917;
+      font-weight: 700;
+    }
+    tr:nth-child(even) {
+      background-color: #fcfbf9;
+    }
+  </style>
+  <script>
+    function switchRpTab(btn) {
+      if (!btn) return;
+      var target = btn.getAttribute("data-target") || "all";
+      document.querySelectorAll(".rp-tab").forEach(function(b) {
+        b.classList.remove("active");
+      });
+      btn.classList.add("active");
+
+      document.querySelectorAll(".rp-sec-pane").forEach(function(pane) {
+        if (target === "all" || pane.id === target) {
+          pane.style.display = "block";
+        } else {
+          pane.style.display = "none";
+        }
+      });
+
+      try {
+        sessionStorage.setItem("sr_active_rp_tab", target);
+      } catch (e) {}
+
+      window.dispatchEvent(new Event("resize"));
+    }
+
+    window.addEventListener("load", function() {
+      try {
+        var saved = sessionStorage.getItem("sr_active_rp_tab");
+        if (saved && saved !== "all") {
+          var btn = document.querySelector('.rp-tab[data-target="' + saved + '"]');
+          if (btn) switchRpTab(btn);
+        }
+      } catch (e) {}
+    });
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/12.3.0/highcharts.min.js"></script>
+</head>
+<body>
+  <div class="rp-header">
+    <div class="rp-title-wrap">
+      <span class="rp-ticker">EWY</span>
+      <span class="rp-desc">iShares MSCI South Korea Capped ETF</span>
+      <span class="rp-time">更新: 2026-11-28 06:41</span>
+    </div>
+    <div class="rp-links">
+      <a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=EWY&type=pe-ratio&statement=price-ratios&freq=Q" target="_blank">📈 PE Chart</a><a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=EWY&type=price-book&statement=price-ratios&freq=Q" target="_blank">📊 PB Chart</a><a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=EWY&type=price-sales&statement=price-ratios&freq=Q" target="_blank">📉 PS Chart</a><a class="rp-pill-link" href="https://www.wsj.com/market-data/quotes/EWY/financials/quarter/cash-flow" target="_blank">💵 Finance</a><a class="rp-pill-link" href="https://www.dataroma.com/m/stock.php?sym=EWY" target="_blank">🏛️ Ownership</a><a class="rp-pill-link" href="https://hedgefollow.com/stocks/EWY" target="_blank">🏦 Institute</a><a class="rp-pill-link" href="https://unusualwhales.com/stock/EWY/greek-exposure" target="_blank">⚡ GEX</a><a class="rp-pill-link" href="https://www.ptt.cc/bbs/Stock/search?q=EWY" target="_blank">💬 PTT Search</a>
+    </div>
+  </div>
+
+  <div class="rp-sig-card"><div class="rp-sig-head"><div class="rp-sig-title">🎯 今日訊號總覽 <span class="rp-sig-sub">（技術面 ＋ 籌碼／借券）</span></div><div class="rp-sig-badges"><span class="rp-sig-asset rp-sig-asset-etf">📊 原型ETF</span><span class="rp-sig-status rp-sig-st-buy">💥 買點</span><span class="rp-sig-count">重要 <b>1</b> · 參考 <b>1</b></span></div></div><table class="rp-sig-tbl"><thead><tr><th style="width:74px">方向</th><th style="width:124px">來源</th><th style="width:104px">層級</th><th style="width:124px">標籤</th><th>訊號內容</th></tr></thead><tbody><tr class="rp-sig-row-imp"><td class="rp-sig-c-dir"><span class="rp-sig-dir rp-sig-dir-buy">BUY</span></td><td class="rp-sig-c-src"><span class="rp-sig-src rp-sig-src-tech">📈 技術面</span></td><td class="rp-sig-c-lvl"><span class="rp-sig-lvl rp-sig-lvl-imp">★ 重要推播</span></td><td class="rp-sig-c-tag"><span class="rp-sig-tag" title="Stochastic KD Crossover：合K上穿合D(&lt;20) 或 週K上穿週D(&lt;20)（美股/ETF 均值回歸）">[KD-CRS]</span></td><td class="rp-sig-c-msg">週K上穿週D(&lt;20)</td></tr><tr><td class="rp-sig-c-dir"><span class="rp-sig-dir rp-sig-dir-sell">SELL</span></td><td class="rp-sig-c-src"><span class="rp-sig-src rp-sig-src-tech">📈 技術面</span></td><td class="rp-sig-c-lvl"><span class="rp-sig-lvl rp-sig-lvl-ref">圖表參考</span></td><td class="rp-sig-c-tag"><span class="rp-sig-tag" title="Price Floor/Ceiling：個人目標買賣價界線（剛穿越當日推播，持續在界線外留參考）">[PRICE]</span></td><td class="rp-sig-c-msg">高於賣點(70.00)</td></tr></tbody></table></div>
+
+  <div class="rp-chart-box" align="center">
+    <iframe id="stock" src="EWY_EC.html" frameborder="0" width="100%" height="1600px" scrolling="no"></iframe>
+  </div>
+
+  <div class="rp-tabs-bar"><button class="rp-tab active" data-target="all" onclick="switchRpTab(this)">📋 全部展開</button><button class="rp-tab" data-target="sec-quant" onclick="switchRpTab(this)">🧮 量化與主動ETF</button><button class="rp-tab" data-target="sec-stockdog" onclick="switchRpTab(this)">🐶 主力籌碼</button><button class="rp-tab" data-target="sec-finviz" onclick="switchRpTab(this)">🌎 FinViz 美股基本面</button></div>
+  <div class="rp-sec-pane" id="sec-quant"><style>.pq-wrap{width:100%;margin:0;font-family:Arial,Helvetica,"Microsoft JhengHei",sans-serif;color:#222}.pq-sec{background:#fff;border:1px solid #e6e2dc;border-radius:6px;padding:6px 8px;margin-bottom:4px;box-shadow:0 1px 2px rgba(28,25,23,.03)}.pq-sec h2{font-size:14px;color:#1c1917;border-left:4px solid #FA8123;padding-left:6px;margin:0 0 6px}.pq-sec h3{font-size:12px;color:#44403c;margin:6px 0 4px}.pq-banner{background:#fff9f4;border-left:4px solid #FA8123;padding:5px 8px;border-radius:4px;font-size:12px;line-height:1.5;margin-bottom:6px;color:#292524}.pq-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:6px}table.pq-tbl{width:100%;border-collapse:collapse;font-size:12px;font-family:Arial,Helvetica,"Microsoft JhengHei",sans-serif}table.pq-tbl th,table.pq-tbl td{border:1px solid #e6e2dc !important;padding:4px 6px !important;text-align:right}table.pq-tbl th{background:#f6f4f0 !important;color:#1c1917 !important;font-weight:bold}table.pq-tbl tr:nth-child(even){background:#fcfbf9}</style><div class="pq-wrap">
+
+    <div class="pq-sec">
+      <h2>🧮 量化風險、波動率體制與因子 Alpha 拆解 (EWY)</h2>
+      <div class="pq-banner">
+        <b>現價：</b> <b>135.86</b> ｜
+        <b>動能 (1D / 5D / 20D / 60D / 1Y / 12-1M)：</b> <span style="color:#cc2929;font-weight:bold">+5.16%</span> / <span style="color:#cc2929;font-weight:bold">+0.94%</span> / <span style="color:#00994d;font-weight:bold">-16.05%</span> / <span style="color:#00994d;font-weight:bold">-24.04%</span> / <span style="color:#cc2929;font-weight:bold">+51.73%</span> / <span style="color:#cc2929;font-weight:bold">+85.29%</span> ｜
+        <b>200D Volume Profile：</b> POC <b>131.88</b> (VAH <b>178.50</b> / VAL <b>119.16</b>)<br>
+        <b>尾部風險與風險調整指標 (1Y)：</b> 1Y歷史年化波動率 <b>61.89%</b> vs GARCH 1D條件年化波動預測 <b>74.92%</b> ｜
+        Sortino <b>1.93</b> ｜ Calmar <b>2.00</b> ｜
+        最大回撤 (MDD) <span style="color:#00994d;font-weight:bold">-43.77%</span> ｜
+        95% VaR / CVaR: <span style="color:#00994d;font-weight:bold">-6.34% / -9.04%</span><br>
+        <b>↳ GARCH 波動體制與明日振幅推估：</b> <b>【常態波動體制 (1.21x 歷史均態, +13.03%p)】</b>當前短期條件波動率與過去一年歷史平均水準相當，未出現異常恐慌或過度壓縮之波動叢聚現象，可維持標準風控參數。 ｜ <b>隱含振幅推估：</b>明日 (1D) ±1σ (68%機率) 預期波動 <b>±4.72%</b>（約 <b>129.45 ~ 142.27</b>）、±1.96σ (95%極端值) 為 <b>±9.25%</b>；未來一週 (5D) ±1σ 預期波動 <b>±10.55%</b> ｜ <b>20%波動目標部位上限：</b>約 <b>27%</b> 倉位 <span style="color:#666;font-size:11px">（註：GARCH 1D 預測值係以 EWMA λ=0.94 捕捉近期波動叢聚效應，將「下一交易日條件波動率」折算為年化百分比以便與 1Y 年化波動率直接對比；除以 √252 即為明日單日標準差 σ）</span><br>
+        <b>Lo-MacKinlay 序列相關檢定 VR(5/10/20)：</b> 5D: <b style="color:#d9650f">0.772</b> (z*=-1.91, 負自相關/回歸·☆90%邊際顯著) ／ 10D: <b style="color:#d9650f">0.683</b> (z*=-1.66, 負自相關/回歸·☆90%邊際顯著) ／ 20D: <b style="color:#292524">0.773</b> (z*=-0.79, 負自相關/回歸·不顯著)<br>
+        <b>↳ 序列體制判讀與交易意涵：</b> <b>【隨機漫步體制 (Random Walk)】</b>各期 VR 數值雖皆 &lt; 1（微幅偏向負自相關/均值回歸震盪），但 |z*| 均未達 1.96 顯著門檻，統計上無法拒絕隨機漫步假說；代表單憑歷史價格序列本身缺乏顯著之可預測自相關 Edge，<b>純技術型態之時序預測力有限，交易決策應以基本面估值、法人/主動ETF籌碼或事件催化為主，技術面僅作為支撐壓力（如 POC/VAL）定價工具</b>。 <span style="color:#666;font-size:11px">（原理說明：VR(q) = Var(q日對數報酬) / [q × Var(1日對數報酬)]；VR=1 為隨機漫步、VR&gt;1 為趨勢動量延續、VR&lt;1 為均值回歸反轉；z* 為異質變異數穩健檢定統計量，|z*|&gt;1.96 表達 95% 統計顯著）</span>
+      </div>
+      <table class="pq-tbl" style="margin-top:8px"><thead><tr><th style="text-align:left">Benchmark</th><th>20D (Stock / Bench)</th><th>20D Rel Excess</th><th>60D Rel Excess</th><th>1Y Rel Excess</th><th>1Y Beta (β)</th><th>R²</th><th>1Y Residual Alpha (α)</th></tr></thead><tbody><tr><td style="text-align:left"><b>^GSPC</b></td><td><span style="color:#00994d;font-weight:bold">-16.05%</span> / <span style="color:#00994d;font-weight:bold">-5.48%</span></td><td><span style="color:#00994d;font-weight:bold">-10.57%</span></td><td><span style="color:#00994d;font-weight:bold">-19.23%</span></td><td><span style="color:#cc2929;font-weight:bold">+46.85%</span></td><td><b>2.85</b></td><td>0.48</td><td><span style="color:#cc2929;font-weight:bold">+40.28%</span></td></tr><tr><td style="text-align:left"><b>QQQ</b></td><td><span style="color:#00994d;font-weight:bold">-16.05%</span> / <span style="color:#00994d;font-weight:bold">-9.00%</span></td><td><span style="color:#00994d;font-weight:bold">-7.05%</span></td><td><span style="color:#00994d;font-weight:bold">-15.83%</span></td><td><span style="color:#cc2929;font-weight:bold">+47.79%</span></td><td><b>2.08</b></td><td>0.62</td><td><span style="color:#cc2929;font-weight:bold">+44.96%</span></td></tr><tr><td style="text-align:left"><b>SOXX</b></td><td><span style="color:#00994d;font-weight:bold">-16.05%</span> / <span style="color:#00994d;font-weight:bold">-21.73%</span></td><td><span style="color:#cc2929;font-weight:bold">+5.68%</span></td><td><span style="color:#00994d;font-weight:bold">-4.25%</span></td><td><span style="color:#cc2929;font-weight:bold">+12.87%</span></td><td><b>0.97</b></td><td>0.69</td><td><span style="color:#cc2929;font-weight:bold">+14.14%</span></td></tr></tbody></table>
+    </div>
+    
+</div></div>
+<div class="rp-sec-pane" id="sec-stockdog"><div class="rp-card" align="center"><iframe id="stockdog" src="EWY_SD.html" frameborder="0" width="100%" height="1000px" scrolling="no"></iframe></div></div>
+<div class="rp-sec-pane" id="sec-finviz"><div class="rp-card"><div align="center"><a href="https://www.marketwatch.com/investing/stock/EWY/analystestimates" target="_blank"><img style="max-height:100%; max-width:100%; object-fit:contain" src=https://app.quotemedia.com/quotetools/getChart?webmasterId=91386&symbol=EWY&chtype=FinancialLine&chcon=on&chdon=on&chfrmon=on&chscale=1d&chton=on&chwid=800&chhig=380&chln=ffa500&chfill=ffa500&chfnts=10&chbdr=000000&chbgch=ffffffff&chgrd=cccccc&svg=false&lang=en&locale=en></a></div>
+
+<hr class="rp-divider">
+<table align="center" class="snapshot-table2" align="center" style="width:100%; border-collapse:collapse; font-size:12px; margin:auto;">
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Single category of the ETF"><div class="snapshot-td-label">Category</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" title="Global or ExUS Equities - Country Specific" style=""><div class="snapshot-td-content"><b>Global or ExUS Equities - Country Specific</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="The asset type of the ETF"><div class="snapshot-td-label">Asset Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" title="Equities (Stocks)" style=""><div class="snapshot-td-content"><b>Equities (Stocks)</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" title="South-Korea" style=""><div class="snapshot-td-content"><a href="https://finviz.com/screener/etf?v=181&amp;ft=4&amp;f=etf_tags_southkorea" class="hover:underline" target="_blank"><b>South-Korea</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="1-Year Annualized Return"><div class="snapshot-td-label">Return% 1Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">46.28%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Total count of all holdings in the ETF"><div class="snapshot-td-label">Total Holdings</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b>83</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Week, Excl. Dividends)"><div class="snapshot-td-label">Perf Week</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">0.94%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="The fund manager (ETF) or issuing bank (ETN)"><div class="snapshot-td-label">Sponsor</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" title="Blackrock (iShares)" style=""><div class="snapshot-td-content"><b>Blackrock (iShares)</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="A simple, broad categorization of each ETF based on its asset class and geographical exposure"><div class="snapshot-td-label">ETF Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" title="equity" style=""><div class="snapshot-td-content"><a href="https://finviz.com/screener/etf?v=181&amp;ft=4&amp;f=etf_tags_equity" class="hover:underline" target="_blank"><b>equity</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="3-Year Annualized Return"><div class="snapshot-td-label">Return% 3Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">29.77%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Assets Under Management"><div class="snapshot-td-label">AUM</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b>18.94B</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Month, Excl. Dividends)"><div class="snapshot-td-label">Perf Month</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-18.11%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Fund family to which the ETF belongs, as categorized by the ETF Sponsor"><div class="snapshot-td-label">Fund Family</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Type of bonds held in the ETF"><div class="snapshot-td-label">Bond Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" title="mid-large-cap" style=""><div class="snapshot-td-content"><a href="https://finviz.com/screener/etf?v=181&amp;ft=4&amp;f=etf_tags_midlargecap" class="hover:underline" target="_blank"><b>mid-large-cap</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="5-Year Annualized Return"><div class="snapshot-td-label">Return% 5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">12.76%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Net Asset Value per Share"><div class="snapshot-td-label">NAV/sh</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Quarter, Excl. Dividends)"><div class="snapshot-td-label">Perf Quarter</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-24.61%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Name of the underlying index tracked by the ETF, if applicable"><div class="snapshot-td-label">Index</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" title="MSCI Korea 25/50 Index" style=""><div class="snapshot-td-content"><b>MSCI Korea 25/50 Index</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Targeted exposure to securities of a specific maturity range of bond ETFs"><div class="snapshot-td-label">Average Maturity</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="10-Year Annualized Return"><div class="snapshot-td-label">Return% 10Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 52-Week High"><div class="snapshot-td-label">52W High</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b>220.89 <small class="text-2xs"><span class="color-text is-negative">-38.49%</span></small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Half Year, Excl. Dividends)"><div class="snapshot-td-label">Perf Half Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-33.99%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="For ETFs that track an underlying index, this field provides detail on the index weighting type"><div class="snapshot-td-label">Index Weighting</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Type of commodities held in the ETF"><div class="snapshot-td-label">Commodity Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Annualized Return Since Inception"><div class="snapshot-td-label">Return% SI</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 52-Week Low"><div class="snapshot-td-label">52W Low</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b>88.40 <small class="text-2xs"><span class="color-text is-positive">53.69%</span></small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Year To Date, Excl. Dividends)"><div class="snapshot-td-label">Perf YTD</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">39.74%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Actively managed or passively index-linked ETF"><div class="snapshot-td-label">Active/Passive</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Proprietary quant model used as the underlying strategy for the ETF"><div class="snapshot-td-label">Quant Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="1-Month Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% 1M</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-0.50%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Volatility (Week, Month)"><div class="snapshot-td-label">Volatility</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">5.44% 4.05%</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Year, Excl. Dividends)"><div class="snapshot-td-label">Perf Year</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">48.40%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Trailing 12 Months Dividend"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=EWY&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank">Dividend TTM</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=EWY&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank"><b>2.04 (1.50%)</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF's strategy involves providing exposure to a specific social or environmental theme"><div class="snapshot-td-label">ESG Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="3-Month Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% 3M</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-6.62%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Average True Range (14)"><div class="snapshot-td-label">ATR (14)</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b>7.80</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (3 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 3Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">117.17%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Ex-Dividend Date"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=EWY&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank">Dividend Ex-Date</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=EWY&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank"><b>Dec 16, 2025</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Intended investment objective of holding dividend-oriented stocks as stated in the ETF prospectus"><div class="snapshot-td-label">Dividend Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Targeted exposure to a sector or theme of the ETF"><div class="snapshot-td-label">Sector/Theme</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Year-to-date Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% YTD</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">74.29%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Relative Strength Index"><div class="snapshot-td-label">RSI (14)</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b>44.19</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (5 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">79.33%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Dividend growth over 3 and 5 years"><div class="snapshot-td-label"><a href="https://finviz.com/stock?t=EWY&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank">Dividend Gr. 3/5Y</a></div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/stock?t=EWY&amp;ta=1&amp;p=d&amp;ty=dv" class="hover:underline" target="_blank"><b><small class="text-2xs"><span class="color-text is-positive">42.97%</span> <span class="color-text is-positive">26.45%</span></small></b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="&lt;span class='font-semibold'&gt;Legal Structure&lt;/span&gt;&lt;br&gt;AST (Active Semi Transparent)&lt;br&gt;ETC&lt;br&gt;ETF (Open end fund)&lt;br&gt;ETN"><div class="snapshot-td-label">Structure Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Targeted exposure to a specific type of geography‐based grouping"><div class="snapshot-td-label">Region</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" title="South Korea" style=""><div class="snapshot-td-content"><b>South Korea</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="1-Year Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% 1Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Beta"><div class="snapshot-td-label">Beta</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b>1.63</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (10 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 10Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">156.19%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Gross expense net of fee waivers, as a % of net assets as published by the ETF Issuer"><div class="snapshot-td-label">Expense</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b>0.59%</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Growth or Value based on the stated style tilt in the ETF prospectus"><div class="snapshot-td-label">Growth/Value</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 20-Day Simple Moving Average"><div class="snapshot-td-label">SMA20</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-2.80%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="3-Year Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% 3Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Relative volume"><div class="snapshot-td-label">Rel Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b>0.77</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Previous close"><div class="snapshot-td-label">Prev Close</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b>129.19</b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Inverse or leveraged ETF"><div class="snapshot-td-label">Inverse/Leveraged</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Market capitalization range of the underlying securities"><div class="snapshot-td-label">Market Cap</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 50-Day Simple Moving Average"><div class="snapshot-td-label">SMA50</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-14.76%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="5-Year Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% 5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Average volume (3 month)"><div class="snapshot-td-label">Avg Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b>15.38M</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Current stock price"><div class="snapshot-td-label">Price</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b>135.86</b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="IPO Date"><div class="snapshot-td-label">IPO</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b>May 12, 2000</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Stock has options trading on a market exchange / Stock is available to sell short"><div class="snapshot-td-label">Option/Short</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">Yes / Yes</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 200-Day Simple Moving Average"><div class="snapshot-td-label">SMA200</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-17.38%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Trades"><div class="snapshot-td-label">Trades</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Volume"><div class="snapshot-td-label">Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b>11,861,398</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (today)"><div class="snapshot-td-label">Change %</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">5.16%</span></b></div></td>
+</tr>
+</table>
+
+
+<hr class="rp-divider">
+<div class="body-table-news-wrapper news-table_wrapper is-collapsed"><table align="center" align="center" width="70%" cellpadding="1" cellspacing="0" border="0" id="news-table" class="fullview-news-outer news-table" data-ticker="EWY">
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/world-indices/articles/us-vs-asia-stocks-china-060357408.html', '_blank');">
+        <td width="130" align="right">
+            Nov-05-26 01:03AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/world-indices/articles/us-vs-asia-stocks-china-060357408.html" target="_blank" rel="nofollow">
+                        US Vs Asia Stocks: China Outpaces Peers As Support Measures Stabilize Markets Amid Midterms-Led Tech Selloff
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">
+         -13.46%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.marketwatch.com/story/your-stock-portfolio-increasingly-hinges-on-the-bond-market-and-the-midterm-elections-dc1abadb?mod=mw_FV', '_blank');">
+        <td width="130" align="right">
+            Oct-31-26 10:03AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/your-stock-portfolio-increasingly-hinges-on-the-bond-market-and-the-midterm-elections-dc1abadb?mod=mw_FV" target="_blank" rel="nofollow">
+                        Your stock portfolio increasingly hinges on the bond market - and the midterm elections
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketWatch)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/xetfs-samsung-group-etf-smng-210200595.html', '_blank');">
+        <td width="130" align="right">
+            Oct-30-26 05:02PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/xetfs-samsung-group-etf-smng-210200595.html" target="_blank" rel="nofollow">
+                        xETFs Samsung Group ETF (SMNG): Targeted Exposure to South Korea's Most Influential Conglomerate
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">
+         -5.52%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/stocktwits-passport-portfolio-spy-dia-064305553.html', '_blank');">
+        <td width="130" align="right">
+            02:43AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/stocktwits-passport-portfolio-spy-dia-064305553.html" target="_blank" rel="nofollow">
+                        Stocktwits Passport Portfolio: SPY, DIA Edge Higher In October, Beating QQQ And Asian Stocks Amid Tech Volatility
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/market-minute-10-20-26-141500236.html', '_blank');">
+        <td width="130" align="right">
+            Oct-20-26 10:15AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/market-minute-10-20-26-141500236.html" target="_blank" rel="nofollow">
+                        Market Minute 10-20-26- AI IPO Slide, Higher Oil Moving Markets
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MoneyShow)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/5-surging-etfs-more-50-184548718.html', '_blank');">
+        <td width="130" align="right">
+            Oct-06-26 02:45PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/5-surging-etfs-more-50-184548718.html" target="_blank" rel="nofollow">
+                        5 Surging ETFs Up More than 50% in 2026
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(TIKR)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/world-indices/articles/international-markets-pulling-ahead-us-045634254.html', '_blank');">
+        <td width="130" align="right">
+            Oct-05-26 12:56AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/world-indices/articles/international-markets-pulling-ahead-us-045634254.html" target="_blank" rel="nofollow">
+                        International Markets Are Pulling Ahead Of US Stocks In 2026: These 4 ETFs Have Left SPY, QQQ, DIA In The Dust
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/now-boarding-single-country-etfs-040100879.html', '_blank');">
+        <td width="130" align="right">
+            12:01AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/now-boarding-single-country-etfs-040100879.html" target="_blank" rel="nofollow">
+                        Now Boarding: Single-Country ETFs
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(The Daily Upside)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/economy/policy/articles/south-korea-tax-windfall-could-045735920.html', '_blank');">
+        <td width="130" align="right">
+            Sep-27-26 12:57AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/economy/policy/articles/south-korea-tax-windfall-could-045735920.html" target="_blank" rel="nofollow">
+                        South Korea tax windfall could top 50 trillion won on chip boom - Yonhap
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/record-etf-takes-shape-inflows-210017196.html', '_blank');">
+        <td width="130" align="right">
+            Sep-21-26 05:00PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/record-etf-takes-shape-inflows-210017196.html" target="_blank" rel="nofollow">
+                        A Record ETF Year Takes Shape as Inflows Near $1.5 Trillion
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">
+         +4.33%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/959aca37-524b-3408-a528-a00422fced80/the-10-most-popular-ai-etfs.html', '_blank');">
+        <td width="130" align="right">
+            Aug-19-26 08:24PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/959aca37-524b-3408-a528-a00422fced80/the-10-most-popular-ai-etfs.html" target="_blank" rel="nofollow">
+                        The 10 Most Popular AI ETFs of 2026
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/market-minute-7-31-26-141500380.html', '_blank');">
+        <td width="130" align="right">
+            Jul-31-26 10:15AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/market-minute-7-31-26-141500380.html" target="_blank" rel="nofollow">
+                        Market Minute 7-31-26- Tech Earnings, AI Fund Fiasco in Focus
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MoneyShow)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/articles/market-minute-7-29-26-141500738.html', '_blank');">
+        <td width="130" align="right">
+            Jul-29-26 10:15AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/articles/market-minute-7-29-26-141500738.html" target="_blank" rel="nofollow">
+                        Market Minute 7-29-26- Wall Street Waits on Warsh, While Oil Spikes
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MoneyShow)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">
+         -4.78%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/world-indices/articles/south-korea-know-youre-investing-050100079.html', '_blank');">
+        <td width="130" align="right">
+            Jul-28-26 01:01AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/world-indices/articles/south-korea-know-youre-investing-050100079.html" target="_blank" rel="nofollow">
+                        South Korea- What to Know if You're Investing in that Market
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MoneyShow)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">
+         -6.05%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/730204fb-4c29-344b-9b11-c434cf1955e9/the-tech-bet-hiding-inside.html', '_blank');">
+        <td width="130" align="right">
+            Jul-27-26 09:04PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/730204fb-4c29-344b-9b11-c434cf1955e9/the-tech-bet-hiding-inside.html" target="_blank" rel="nofollow">
+                        The Tech Bet Hiding Inside EWY ETF
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Trefis)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/a5e17707-ae82-3aa5-9a04-b3f60ec09d48/investors-added-%2446b-to-etfs.html', '_blank');">
+        <td width="130" align="right">
+            Jul-20-26 05:00PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/a5e17707-ae82-3aa5-9a04-b3f60ec09d48/investors-added-%2446b-to-etfs.html" target="_blank" rel="nofollow">
+                        Investors Added $46B To ETFs Last Week
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                      
+  
+      <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200" title="Jul 21, 2026">
+        <svg width="12" height="12" class="fill-current">&#13;
+    <use href="/assets/dist-icons/icons.1f7da9e4.svg#nextday"/>&#13;
+</svg> +6.16%
+    </span>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/435d9e60-871b-3569-a3a7-14cadef67411/daily-etf-flows%3A-ewy-enters.html', '_blank');">
+        <td width="130" align="right">
+            05:00PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/435d9e60-871b-3569-a3a7-14cadef67411/daily-etf-flows%3A-ewy-enters.html" target="_blank" rel="nofollow">
+                        Daily ETF Flows: EWY Enters Top 10
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/8b36a50e-5572-3642-a63f-aaa754e741fe/ewy%27s-dip-history-comes-with.html', '_blank');">
+        <td width="130" align="right">
+            Jul-06-26 03:51PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/8b36a50e-5572-3642-a63f-aaa754e741fe/ewy%27s-dip-history-comes-with.html" target="_blank" rel="nofollow">
+                        EWY's Dip History Comes With A Catch
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Trefis)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">
+         +5.39%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/6e6b5174-8429-3b69-985f-57f39c65bb4a/ewy%27s-dip-looks-familiar%2C-but.html', '_blank');">
+        <td width="130" align="right">
+            Jul-03-26 08:55AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/6e6b5174-8429-3b69-985f-57f39c65bb4a/ewy%27s-dip-looks-familiar%2C-but.html" target="_blank" rel="nofollow">
+                        EWY's Dip Looks Familiar, But Is It A Trap?
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Trefis)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/09913eda-a015-3777-bcf5-9357e1e022a6/best-performing-etfs-of-2026.html', '_blank');">
+        <td width="130" align="right">
+            Jul-01-26 05:50PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/09913eda-a015-3777-bcf5-9357e1e022a6/best-performing-etfs-of-2026.html" target="_blank" rel="nofollow">
+                        Best Performing ETFs of 2026
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">
+         -8.12%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/7fbbb067-8b22-378a-8f43-10096ca516c9/the-leveraged-tail-wags-the.html', '_blank');">
+        <td width="130" align="right">
+            Jun-25-26 03:50PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/7fbbb067-8b22-378a-8f43-10096ca516c9/the-leveraged-tail-wags-the.html" target="_blank" rel="nofollow">
+                        The Leveraged Tail Wags the Dog: Samsung  SK Hynix
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">
+         +3.92%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/articles/sk-hynix-stock-us-listing-funds-etfs-korea-1c2dcb12?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            09:53AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/sk-hynix-stock-us-listing-funds-etfs-korea-1c2dcb12?mod=bar_FV" target="_blank" rel="nofollow">
+                        What SK Hynix's U.S. Listing in Means for the Stock and the Markets
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/articles/sk-hynix-stock-chips-south-korea-funds-1c2dcb12?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            Jun-24-26 03:15PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/sk-hynix-stock-chips-south-korea-funds-1c2dcb12?mod=bar_FV" target="_blank" rel="nofollow">
+                        SK Hynix Stock Will List in the U.S. What That Means for South Korea and Chip Funds.
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/market-minute-6-23-26-141500626.html', '_blank');">
+        <td width="130" align="right">
+            Jun-23-26 10:15AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/market-minute-6-23-26-141500626.html" target="_blank" rel="nofollow">
+                        Market Minute 6-23-26- Chip Stocks Crack as AI Worries Grow
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MoneyShow)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">
+         -12.25%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/articles/south-korea-taiwan-asia-stock-market-ai-341d3e1c?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            Jun-19-26 01:15AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/south-korea-taiwan-asia-stock-market-ai-341d3e1c?mod=bar_FV" target="_blank" rel="nofollow">
+                        Asia's Stock Market Boom Isn't Over. Why the Blockbuster Gains Can Continue.
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/1cff657e-301a-3f97-835d-1b368268516c/after-dram%2C-investors-want-a.html', '_blank');">
+        <td width="130" align="right">
+            Jun-18-26 08:49PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/1cff657e-301a-3f97-835d-1b368268516c/after-dram%2C-investors-want-a.html" target="_blank" rel="nofollow">
+                        After DRAM, Investors Want a Photonics ETF
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">
+         +6.89%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/8994410c-2529-32bb-9b17-1785e558f969/semiconductor-etfs-101%3A-dram%2C.html', '_blank');">
+        <td width="130" align="right">
+            Jun-12-26 02:38PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/8994410c-2529-32bb-9b17-1785e558f969/semiconductor-etfs-101%3A-dram%2C.html" target="_blank" rel="nofollow">
+                        Semiconductor ETFs 101: DRAM, EUV, SMH, SOXX, SOXL  The Complete Guide for 2026
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/ebd10da8-8184-3300-b55a-3f305ac6032f/best-etfs-for-h1-2026%3A.html', '_blank');">
+        <td width="130" align="right">
+            Jun-02-26 06:46PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/ebd10da8-8184-3300-b55a-3f305ac6032f/best-etfs-for-h1-2026%3A.html" target="_blank" rel="nofollow">
+                        Best ETFs for H1 2026: Winners, Losers, and What to Watch
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/sectors/technology/articles/moneymasters-podcast-5-28-26-163000334.html', '_blank');">
+        <td width="130" align="right">
+            May-28-26 12:30PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/sectors/technology/articles/moneymasters-podcast-5-28-26-163000334.html" target="_blank" rel="nofollow">
+                        MoneyMasters Podcast 5-28-26- US-China Relations and the Race for Innovation
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MoneyShow)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">
+         +4.10%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/why-stocks-rallying-despite-hormuz-133206132.html', '_blank');">
+        <td width="130" align="right">
+            May-19-26 09:32AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/why-stocks-rallying-despite-hormuz-133206132.html" target="_blank" rel="nofollow">
+                        Why are stocks rallying despite Hormuz closure and stagflation risks? GS answers
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/aafad82d-f0c2-3ad4-b3ee-1b026ae69356/japan-and-south-korea-set-a.html', '_blank');">
+        <td width="130" align="right">
+            May-17-26 12:39AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/aafad82d-f0c2-3ad4-b3ee-1b026ae69356/japan-and-south-korea-set-a.html" target="_blank" rel="nofollow">
+                        Japan and South Korea set a critical summit amid market volatility
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.marketwatch.com/story/the-years-best-tech-trade-is-hiding-in-plain-sight-and-no-its-not-the-nasdaq-e11287c9?mod=mw_FV', '_blank');">
+        <td width="130" align="right">
+            May-07-26 03:59PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/the-years-best-tech-trade-is-hiding-in-plain-sight-and-no-its-not-the-nasdaq-e11287c9?mod=mw_FV" target="_blank" rel="nofollow">
+                        The year's best tech trade is hiding in plain sight - and no, it's not the Nasdaq
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketWatch)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.marketwatch.com/story/south-korean-stocks-just-enjoyed-their-second-best-month-ever-and-now-the-market-is-bigger-than-the-u-k-b926267b?mod=mw_FV', '_blank');">
+        <td width="130" align="right">
+            Apr-30-26 08:28AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/south-korean-stocks-just-enjoyed-their-second-best-month-ever-and-now-the-market-is-bigger-than-the-u-k-b926267b?mod=mw_FV" target="_blank" rel="nofollow">
+                        South Korean stocks just enjoyed their second-best month ever - and now the market is bigger than the U.K.
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketWatch)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">
+         +4.42%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/ae7da8ba-6688-3c63-ac04-81c1d4c04d9e/dram-hits-%241-billion%2C-but-ewy.html', '_blank');">
+        <td width="130" align="right">
+            Apr-20-26 11:32PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/ae7da8ba-6688-3c63-ac04-81c1d4c04d9e/dram-hits-%241-billion%2C-but-ewy.html" target="_blank" rel="nofollow">
+                        DRAM Hits $1 Billion, But EWY Keeps Rolling
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/articles/korea-stock-market-hottest-kospi-sk-hynix-stock-samsung-record-f8037144?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            01:38PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/korea-stock-market-hottest-kospi-sk-hynix-stock-samsung-record-f8037144?mod=bar_FV" target="_blank" rel="nofollow">
+                        The World's Hottest Stock Market Can Jump Another 37%, JPMorgan Says. How to Play It.
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/news/the-dollar-is-losing-its-war-premium-and-emerging-markets-are-loving-it-chart-of-the-day-152058874.html', '_blank');">
+        <td width="130" align="right">
+            Apr-08-26 11:20AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/news/the-dollar-is-losing-its-war-premium-and-emerging-markets-are-loving-it-chart-of-the-day-152058874.html" target="_blank" rel="nofollow">
+                        The dollar is losing its war premium, and emerging markets are loving it: Chart of the Day
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Yahoo Finance)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">
+         +10.13%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/articles/iran-war-china-taiwan-chips-70c76cf1?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            Mar-26-26 01:00AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/iran-war-china-taiwan-chips-70c76cf1?mod=bar_FV" target="_blank" rel="nofollow">
+                        The Iran War Puts a Spotlight on Taiwan Risk. There's More at Stake for Your Portfolio.
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">
+         -6.07%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/articles/iran-war-oil-shocks-stocks-emerging-markets-0319d225?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            Mar-22-26 06:55AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/iran-war-oil-shocks-stocks-emerging-markets-0319d225?mod=bar_FV" target="_blank" rel="nofollow">
+                        Oil Shocks and What Comes Next for Emerging Markets
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/7d0fd863-9545-375b-ba85-fb0d7572aefd/ewy%2C-ieur-see-inflows-amidst.html', '_blank');">
+        <td width="130" align="right">
+            Mar-09-26 05:00PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/7d0fd863-9545-375b-ba85-fb0d7572aefd/ewy%2C-ieur-see-inflows-amidst.html" target="_blank" rel="nofollow">
+                        EWY, IEUR See Inflows Amidst Ongoing Tensions
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">
+         +5.65%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/articles/south-korea-stocks-a4846ce9?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            Mar-06-26 12:30AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/south-korea-stocks-a4846ce9?mod=bar_FV" target="_blank" rel="nofollow">
+                        South Korea's Stocks Go on a Wild Ride
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            Mar-05-26 01:00PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/331281/stocks-fall-treasury-yields-jump-as-iran-conflict-fires-up-oil-to-80-whats-moving-markets-thursday" target="_blank">
+                        Stocks Fall, Treasury Yields Jump As Iran Conflict Fires Up Oil To $80: What's Moving Markets Thursday?
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Benzinga)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">
+         -6.42%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/9fea2126-c5c1-3b54-836d-067953168e36/south-korea%E2%80%99s-stock-market.html', '_blank');">
+        <td width="130" align="right">
+            12:21PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/9fea2126-c5c1-3b54-836d-067953168e36/south-korea%E2%80%99s-stock-market.html" target="_blank" rel="nofollow">
+                        South Koreas Stock Market Just Fell 12% in 1 Day. Here's What It Means for Investors.
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barchart)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/d476bdb5-30a2-3599-9a50-c9601a91d09e/a-1%2C012%25-one-year-return.html', '_blank');">
+        <td width="130" align="right">
+            07:41AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/d476bdb5-30a2-3599-9a50-c9601a91d09e/a-1%2C012%25-one-year-return.html" target="_blank" rel="nofollow">
+                        A 1,012% One Year Return Could Not Protect KORU From Its Own Structure
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(24/7 Wall St.)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.marketwatch.com/story/selloff-descends-into-a-rout-in-south-korea-with-biggest-one-day-drop-since-2008-911de87c?mod=mw_FV', '_blank');">
+        <td width="130" align="right">
+            Mar-04-26 05:00PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/selloff-descends-into-a-rout-in-south-korea-with-biggest-one-day-drop-since-2008-911de87c?mod=mw_FV" target="_blank" rel="nofollow">
+                        This fund signals investor demand for South Korean stocks may be returning after ugly rout
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketWatch)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/articles/south-korea-stock-market-iran-war-oil-11517702?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            02:51PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/south-korea-stock-market-iran-war-oil-11517702?mod=bar_FV" target="_blank" rel="nofollow">
+                        The World's Hottest Stock Market Is Getting Crushed. Why the War in Iran Has Been Bad News.
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/505c5a03-d426-3599-b2c3-435ab093d1e0/south-korea%E2%80%99s-kospi-just-had.html', '_blank');">
+        <td width="130" align="right">
+            08:35AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/505c5a03-d426-3599-b2c3-435ab093d1e0/south-korea%E2%80%99s-kospi-just-had.html" target="_blank" rel="nofollow">
+                        South Koreas KOSPI Just Had its Worst Crash Ever  Is the S&amp;P 500 In Trouble?
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(24/7 Wall St.)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            Mar-03-26 05:02PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/328886/iran-war-how-global-markets-are-repricing-a-new-energy-shock" target="_blank">
+                        Iran War: How Global Markets Are Repricing A New Energy Shock
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Benzinga)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">
+         -10.30%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/c181f721-869d-3cba-b5e1-88d7a71829ba/one-of-the-best-trades-of.html', '_blank');">
+        <td width="130" align="right">
+            04:12PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/c181f721-869d-3cba-b5e1-88d7a71829ba/one-of-the-best-trades-of.html" target="_blank" rel="nofollow">
+                        One Of The Best Trades Of 2025 Just Got Crushed
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investor's Business Daily)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            03:23PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/328717/iran-war-escalation-oil-spike-rattle-wall-street-whats-moving-markets-tuesday" target="_blank">
+                        Iran War Escalation, Oil Spike Rattle Wall Street: What's Moving Markets Tuesday?
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Benzinga)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            Feb-27-26 03:14PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/325661/the-trend-is-your-friend-7-charts-most-investors-are-missing" target="_blank">
+                        The Trend Is Your Friend: 7 Charts Most Investors Are Missing
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Benzinga)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            Feb-25-26 08:00AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/321681/south-korea-etfs-quiet-ai-winners" target="_blank">
+                        South Korea ETFs: Quiet AI Winners
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Zacks)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">
+         +3.00%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            06:41AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/321536/south-korea-etf-ewy-hits-a-52-week-high" target="_blank">
+                        South Korea ETF (EWY) Hits a 52-Week High
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Zacks)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.marketwatch.com/story/the-milestones-keep-coming-for-the-worlds-hottest-stock-market-66800f58?mod=mw_FV', '_blank');">
+        <td width="130" align="right">
+            05:48AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/the-milestones-keep-coming-for-the-worlds-hottest-stock-market-66800f58?mod=mw_FV" target="_blank" rel="nofollow">
+                        The milestones keep coming for the world's hottest stock market
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketWatch)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/28172a08-5342-3bd1-8ef1-7009702b60b7/what-a-%2420-million-horse-race.html', '_blank');">
+        <td width="130" align="right">
+            Feb-24-26 04:39PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/28172a08-5342-3bd1-8ef1-7009702b60b7/what-a-%2420-million-horse-race.html" target="_blank" rel="nofollow">
+                        What a $20 Million Horse Race and the Stock Market Have in Common: The Emerging Market Derby of 2026
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barchart)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">
+         +3.77%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            04:13PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/320887/sandisk-isnt-nvidia-and-that-distinction-matters-for-etfs" target="_blank">
+                        SanDisk Isn't Nvidia - And That Distinction Matters For ETFs
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Benzinga)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            Feb-23-26 04:06PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/319363/something-rare-is-happening-in-emerging-markets-and-you-are-still-missing-it" target="_blank">
+                        Something Rare Is Happening In Emerging Markets - And You Are Still Missing It
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Benzinga)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            10:52AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/318924/trump-tariffs-reshaped-by-supreme-court-which-countries-gain-which-lose" target="_blank">
+                        Trump Tariffs Reshaped By Supreme Court: Which Countries Gain, Which Lose?
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Benzinga)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/articles/micron-stock-price-memory-chips-sandisk-c5e101df?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            09:58AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/micron-stock-price-memory-chips-sandisk-c5e101df?mod=bar_FV" target="_blank" rel="nofollow">
+                        Micron Stock Is Riding the AI Surge. How the Memory Trade Could Sour.
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            Feb-19-26 10:11AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/316168/should-you-bet-on-south-korea-etfs-after-the-kospi-rally" target="_blank">
+                        Should You Bet on South Korea ETFs After the Kospi Rally?
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Zacks)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/articles/david-tepper-appaloosa-micron-alibaba-alphabet-f3f56579?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            Feb-18-26 02:20PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/david-tepper-appaloosa-micron-alibaba-alphabet-f3f56579?mod=bar_FV" target="_blank" rel="nofollow">
+                        David Tepper's Appaloosa Trims Alibaba and Adds Micron, Alphabet in Stock Reshuffle
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/video/why-etf-investors-flocking-emerging-173000668.html', '_blank');">
+        <td width="130" align="right">
+            12:30PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/video/why-etf-investors-flocking-emerging-173000668.html" target="_blank" rel="nofollow">
+                        Why ETF investors are flocking to these emerging markets
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Yahoo Finance Video)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            Feb-12-26 10:44AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/309479/south-korea-etf-ewy-hits-new-52-week-high" target="_blank">
+                        South Korea ETF (EWY) Hits New 52-Week High
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Zacks)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            Feb-10-26 10:16AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/305828/emerging-markets-are-roaring-back-and-wall-streets-starting-to-chase" target="_blank">
+                        Emerging Markets Are Roaring Back - And Wall Street's Starting To Chase
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Benzinga)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/ed023030-b448-3d0f-8508-da90c5646ac0/some-big-hedge-funds-bought.html', '_blank');">
+        <td width="130" align="right">
+            Feb-06-26 09:43AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/ed023030-b448-3d0f-8508-da90c5646ac0/some-big-hedge-funds-bought.html" target="_blank" rel="nofollow">
+                        Some Big Hedge Funds Bought This ETFUp 117% in a Year
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(24/7 Wall St.)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">
+         +3.74%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            Feb-04-26 10:50AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/299641/nan-fung-trinity-loads-up-kt-corp-stock-with-149-million-shares-bought" target="_blank">
+                        NAN FUNG TRINITY Loads Up KT Corp Stock With 1.49 Million Shares Bought
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Motley Fool)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">
+         -3.27%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.marketwatch.com/story/the-one-market-where-volatility-is-rising-even-as-stocks-surge-4b225b9e?mod=mw_FV', '_blank');">
+        <td width="130" align="right">
+            05:07AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/the-one-market-where-volatility-is-rising-even-as-stocks-surge-4b225b9e?mod=mw_FV" target="_blank" rel="nofollow">
+                        The one market where volatility is rising even as stocks surge
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketWatch)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/b2e26d52-d435-3dd7-b20f-306f58a283c4/this-asian-stock-market.html', '_blank');">
+        <td width="130" align="right">
+            Feb-03-26 04:14PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/b2e26d52-d435-3dd7-b20f-306f58a283c4/this-asian-stock-market.html" target="_blank" rel="nofollow">
+                        This Asian Stock Market Leaves S&amp;P 500 In Shame
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investor's Business Daily)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/b2e26d52-d435-3dd7-b20f-306f58a283c4/as-u.s.-stock-market-wobbles%2C.html', '_blank');">
+        <td width="130" align="right">
+            04:14PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/b2e26d52-d435-3dd7-b20f-306f58a283c4/as-u.s.-stock-market-wobbles%2C.html" target="_blank" rel="nofollow">
+                        As U.S. Stock Market Wobbles, This Asian Market Knocks It Out Of The Ballpark
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investor's Business Daily)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            10:17AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/297513/south-korea-surfs-nvidias-ai-wave-whats-powering-2026s-best-stock-market" target="_blank">
+                        South Korea Surfs Nvidia's AI Wave - What's Powering 2026's Best Stock Market?
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Benzinga)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/90a00eea-c8e8-30ba-91cf-7f3f03e3df53/samsung-stock-leaps-by-most.html', '_blank');">
+        <td width="130" align="right">
+            05:32AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/90a00eea-c8e8-30ba-91cf-7f3f03e3df53/samsung-stock-leaps-by-most.html" target="_blank" rel="nofollow">
+                        Samsung Stock Leaps By Most Since 2008
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(The Wall Street Journal)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            Jan-28-26 12:00PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/290527/tap-the-super-hot-memory-market-with-these-etfs" target="_blank">
+                        Tap the Super-Hot Memory Market With These ETFs
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Zacks)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            10:51AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/290262/texas-instruments-forecast-shows-semiconductor-etfs-are-no-longer-just-an-nvidia-trade" target="_blank">
+                        Texas Instruments' Forecast Shows Semiconductor ETFs Are No Longer Just An Nvidia Trade
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Benzinga)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            07:13AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/289693/this-countrys-stock-market-was-the-worlds-top-performer-in-2025" target="_blank">
+                        This Country's Stock Market Was the World's Top Performer in 2025
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketBeat)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            Jan-27-26 04:53PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/289085/the-brazil-trade-is-back-why-analysts-see-more-upside-ahead" target="_blank">
+                        The 'Brazil Trade' Is Back - Why Analysts See More Upside Ahead
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Benzinga)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">
+         +4.59%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            12:06PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/288703/from-tokyo-to-oslo-country-etfs-are-running-hot-as-global-markets-ride-policy-shifts-ai-buzz" target="_blank">
+                        From Tokyo To Oslo, Country ETFs Are Running Hot As Global Markets Ride Policy Shifts, AI Buzz
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Benzinga)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            11:40AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/288656/why-trumps-south-korea-tariffs-add-fuel-to-memory-chip-crunch" target="_blank">
+                        Why Trump's South Korea Tariffs Add Fuel To Memory-Chip Crunch
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Benzinga)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            09:15AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/288443/are-south-korean-etfs-under-fire-post-trumps-25-tariff-threat" target="_blank">
+                        Are South Korean ETFs Under Fire Post Trump's 25% Tariff Threat?
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Zacks)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/articles/trump-raises-tariffs-south-korean-goods-d454c7eb?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            Jan-26-26 05:17PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/trump-raises-tariffs-south-korean-goods-d454c7eb?mod=bar_FV" target="_blank" rel="nofollow">
+                        Trump Raises Tariffs on South Korean Goods to 25%
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/articles/emerging-markets-index-review-global-a2e4b8a8?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            02:36PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/emerging-markets-index-review-global-a2e4b8a8?mod=bar_FV" target="_blank" rel="nofollow">
+                        Emerging Markets Expected to Outperform This Year Despite Global Volatility
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            09:00AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/286924/4-country-etfs-hovering-around-a-52-week-high" target="_blank">
+                        4 Country ETFs Hovering Around a 52-Week High
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Zacks)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            Jan-20-26 03:51PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/281489/trumps-1-year-mark-two-country-etfs-crush-sp-500-by-nearly-90" target="_blank">
+                        Trump's 1-Year Mark: Two Country ETFs Crush S&amp;P 500 By Nearly 90%
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Benzinga)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            Jan-14-26 02:35AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/275662/international-etfs-2-global-funds-that-surged-an-average-of-30" target="_blank">
+                        International ETFs: 2 Global Funds That Surged an Average of 30%
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Motley Fool)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/c1a6070d-2cfd-3a4f-be93-4258fa499779/2-international-etfs-that-are.html', '_blank');">
+        <td width="130" align="right">
+            Jan-13-26 12:59PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/c1a6070d-2cfd-3a4f-be93-4258fa499779/2-international-etfs-that-are.html" target="_blank" rel="nofollow">
+                        2 International ETFs That are Crushing the SPY
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(24/7 Wall St.)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/bdad7c5f-db4c-382d-bdc6-5500cf45a583/international-equity-etf.html', '_blank');">
+        <td width="130" align="right">
+            Jan-12-26 12:01AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/bdad7c5f-db4c-382d-bdc6-5500cf45a583/international-equity-etf.html" target="_blank" rel="nofollow">
+                        International Equity ETF Flows More than Doubled 2024 Totals
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(The Daily Upside)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            Dec-29-25 08:00AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/263398/best-performing-country-etfs-of-2025" target="_blank">
+                        Best-Performing Country ETFs of 2025
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Zacks)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">
+         +3.01%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/8eac46cf-24e4-3dbd-9bfb-4a354ade8dd7/the-s%26p-is-up-16%25-this-year..html', '_blank');">
+        <td width="130" align="right">
+            Dec-22-25 02:02PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/8eac46cf-24e4-3dbd-9bfb-4a354ade8dd7/the-s%26p-is-up-16%25-this-year..html" target="_blank" rel="nofollow">
+                        The S&amp;P is Up 16% This Year. These International ETFs are Up More Than 70%
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(24/7 Wall St.)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/video/global-markets-outperform-us-2025-110059047.html', '_blank');">
+        <td width="130" align="right">
+            Nov-24-25 06:00AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/video/global-markets-outperform-us-2025-110059047.html" target="_blank" rel="nofollow">
+                        Global markets outperform US in 2025: How to trade foreign stocks
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Yahoo Finance Video)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            Oct-30-25 03:07PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/212079/the-smartest-etf-to-buy-with-1000-right-now" target="_blank">
+                        The Smartest ETF to Buy With $1,000 Right Now
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Motley Fool)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            Oct-20-25 06:35AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/197225/5-best-performing-etf-areas-of-last-week" target="_blank">
+                        5 Best-Performing ETF Areas of Last Week
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Zacks)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            Oct-09-25 06:32AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/187862/this-nations-stocks-are-beating-the-world-should-you-invest-1000" target="_blank">
+                        This Nation's Stocks Are Beating the World. Should You Invest $1,000?
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Motley Fool)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/425fa4e9-3634-3a5f-adcc-8c5182052908/qqq-attracts-%242.4b-in-assets.html', '_blank');">
+        <td width="130" align="right">
+            Jun-09-25 05:30PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/425fa4e9-3634-3a5f-adcc-8c5182052908/qqq-attracts-%242.4b-in-assets.html" target="_blank" rel="nofollow">
+                        QQQ Attracts $2.4B in Assets as S 500 Hits 6,000
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://seekingalpha.com/article/4782883-the-reason-diversifying-away-from-the-us-currently-makes-sense?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">
+        <td width="130" align="right">
+            May-07-25 10:18AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4782883-the-reason-diversifying-away-from-the-us-currently-makes-sense?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">
+                        The Reason Diversifying Away From The U.S. Currently Makes Sense
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Seeking Alpha)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://seekingalpha.com/article/4780329-global-monetary-base-update-through-march-2025-forecast?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">
+        <td width="130" align="right">
+            May-01-25 04:00AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4780329-global-monetary-base-update-through-march-2025-forecast?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">
+                        Global Monetary Base - Update Through March 2025 And 2025 Forecast
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Seeking Alpha)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://seekingalpha.com/article/4780295-south-korean-exports-rise-strong-chip-demand-but-slowdown-looms?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">
+        <td width="130" align="right">
+            12:25AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4780295-south-korean-exports-rise-strong-chip-demand-but-slowdown-looms?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">
+                        South Korean Exports Rise On Strong Chip Demand, But Slowdown Looms
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Seeking Alpha)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://seekingalpha.com/article/4779538-south-korean-manufacturing-jumps-on-frontloading-ahead-of-tariffs?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">
+        <td width="130" align="right">
+            Apr-29-25 11:57PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4779538-south-korean-manufacturing-jumps-on-frontloading-ahead-of-tariffs?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">
+                        South Korean Manufacturing Jumps On Frontloading Ahead Of Tariffs
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Seeking Alpha)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://seekingalpha.com/article/4778069-south-korea-gdp-contracts-more-than-expected-increasing-odds-recession-rate-cuts?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">
+        <td width="130" align="right">
+            Apr-25-25 03:00AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4778069-south-korea-gdp-contracts-more-than-expected-increasing-odds-recession-rate-cuts?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">
+                        South Korea GDP Contracts More Than Expected, Increasing Odds Of Recession And Rate Cuts
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Seeking Alpha)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://seekingalpha.com/article/4777527-ewjv-a-near-4-percent-value-dividend-fund-for-a-rising-japanese-yen?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">
+        <td width="130" align="right">
+            Apr-24-25 08:14AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4777527-ewjv-a-near-4-percent-value-dividend-fund-for-a-rising-japanese-yen?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">
+                        EWJV: A Near 4% Value Dividend Fund For A Rising Japanese Yen
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Seeking Alpha)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://seekingalpha.com/article/4777111-reversal-of-fortune?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">
+        <td width="130" align="right">
+            Apr-23-25 07:30AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4777111-reversal-of-fortune?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">
+                        Reversal Of Fortune
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Seeking Alpha)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://seekingalpha.com/article/4777079-south-korean-consumer-sentiment-remains-weak-weighing-on-growth?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">
+        <td width="130" align="right">
+            04:10AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4777079-south-korean-consumer-sentiment-remains-weak-weighing-on-growth?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">
+                        South Korean Consumer Sentiment Remains Weak, Weighing On Growth
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Seeking Alpha)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://seekingalpha.com/article/4776450-south-korea-trade-slowdown-suggests-us-tariffs-starting-to-hit-global-economy?utm_source=finviz.com\u0026utm_medium=referral\u0026feed_item_type=article', '_blank');">
+        <td width="130" align="right">
+            Apr-20-25 11:10PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://seekingalpha.com/article/4776450-south-korea-trade-slowdown-suggests-us-tariffs-starting-to-hit-global-economy?utm_source=finviz.com&amp;utm_medium=referral&amp;feed_item_type=article" target="_blank" rel="nofollow">
+                        South Korea's Trade Slowdown Suggests U.S. Tariffs Starting To Hit Global Economy
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Seeking Alpha)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+</div>
+
+</div></div>
+</body>
+</html>

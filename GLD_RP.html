@@ -1,0 +1,2427 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>GLD — SPRD Gold Shares</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-size: 12px;
+      font-family: Arial, Helvetica, "Microsoft JhengHei", -apple-system, sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 8px 28px 16px;
+      background-color: #faf9f6;
+      color: #1c1917;
+    }
+
+    /* Header Bar */
+    .rp-header {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-top: 3px solid #FA8123;
+      border-radius: 6px;
+      padding: 6px 10px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+    .rp-title-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .rp-ticker {
+      font-size: 17px;
+      font-weight: 800;
+      color: #1c1917;
+      letter-spacing: 0.3px;
+    }
+    .rp-desc {
+      font-size: 15px;
+      font-weight: 700;
+      color: #FA8123;
+    }
+    .rp-time {
+      font-size: 11px;
+      color: #78716c;
+      background: #f5f3ef;
+      padding: 1px 7px;
+      border-radius: 999px;
+    }
+    .rp-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .rp-pill-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: #faf9f6;
+      border: 1px solid #d6d1c7;
+      color: #44403c;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.12s ease;
+    }
+    .rp-pill-link:hover {
+      background: #fff5eb;
+      border-color: #FA8123;
+      color: #d9650f;
+    }
+
+    /* Signal Summary Card & Table (Technical + Chip/SBL) */
+    .rp-sig-card {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 6px 10px 8px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+    .rp-sig-card.rp-sig-empty {
+      padding: 5px 10px;
+      background: #faf9f6;
+    }
+    .rp-sig-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .rp-sig-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1c1917;
+    }
+    .rp-sig-sub {
+      font-size: 11px;
+      font-weight: 500;
+      color: #78716c;
+    }
+    .rp-sig-badges {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+    }
+    .rp-sig-asset, .rp-sig-status {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .rp-sig-asset-tw { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .rp-sig-asset-us { background: #f5f3ff; color: #6d28d9; border: 1px solid #ddd6fe; }
+    .rp-sig-asset-etf { background: #ecfeff; color: #0e7490; border: 1px solid #a5f3fc; }
+    .rp-sig-asset-lev { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+    .rp-sig-st-buy { background: #fef2f2; color: #cc2929; border: 1px solid #fecaca; }
+    .rp-sig-st-sell { background: #f0fdf4; color: #00994d; border: 1px solid #bbf7d0; }
+    .rp-sig-st-both { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+    .rp-sig-st-ref { background: #f5f5f4; color: #57534e; border: 1px solid #d6d3d1; }
+    .rp-sig-st-none { background: #f5f5f4; color: #78716c; border: 1px solid #e7e5e4; font-weight: 500; }
+    .rp-sig-count {
+      font-size: 11px;
+      color: #57534e;
+      margin-left: 2px;
+    }
+    .rp-sig-tbl {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 6px 0 0;
+      font-size: 12px;
+    }
+    .rp-sig-tbl th {
+      background: #f6f4f0;
+      color: #44403c;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border: 1px solid #e6e2dc;
+      text-align: left;
+      white-space: nowrap;
+    }
+    .rp-sig-tbl td {
+      padding: 4px 8px;
+      border: 1px solid #ede9e3;
+      vertical-align: middle;
+    }
+    .rp-sig-tbl tr.rp-sig-row-imp td {
+      background: #fffcf7;
+      font-weight: 600;
+    }
+    .rp-sig-c-dir, .rp-sig-c-src, .rp-sig-c-lvl, .rp-sig-c-tag { white-space: nowrap; }
+    .rp-sig-c-msg { color: #1c1917; word-break: break-word; }
+    .rp-sig-dir {
+      display: inline-block;
+      min-width: 52px;
+      text-align: center;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .rp-sig-dir-buy { background: #fee2e2; color: #b91c1c; }
+    .rp-sig-dir-sell { background: #dcfce7; color: #15803d; }
+    .rp-sig-dir-other { background: #f1f5f9; color: #475569; }
+    .rp-sig-src {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .rp-sig-src-tech { background: #f5f3ef; color: #44403c; }
+    .rp-sig-src-chip { background: #eff6ff; color: #1e40af; }
+    .rp-sig-lvl { font-size: 11px; font-weight: 600; }
+    .rp-sig-lvl-imp { color: #d97706; font-weight: 700; }
+    .rp-sig-lvl-ref { color: #78716c; }
+    .rp-sig-lvl-ctx { color: #64748b; }
+    .rp-sig-tag {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: #f5f3ef;
+      border: 1px solid #e6e2dc;
+      color: #292524;
+      font-family: Consolas, Menlo, monospace;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: help;
+    }
+    .rp-sig-tag-empty { color: #a8a29e; }
+
+    /* Pyecharts Container Card */
+    .rp-chart-box {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 2px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+    }
+
+    /* Sub-Tabs Bar */
+    .rp-tabs-bar {
+      width: 100%;
+      margin: 0 0 4px;
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 4px 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      position: sticky;
+      top: 2px;
+      z-index: 50;
+      box-shadow: 0 1px 4px rgba(28, 25, 23, 0.05);
+    }
+    .rp-tab {
+      border: 1px solid transparent;
+      background: #f5f3ef;
+      color: #57534e;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+    .rp-tab:hover {
+      background: #fff5eb;
+      border-color: #fdba8c;
+      color: #d9650f;
+    }
+    .rp-tab.active {
+      background: #FA8123;
+      color: #ffffff;
+      box-shadow: 0 1px 3px rgba(250, 129, 35, 0.35);
+    }
+
+    /* Section Card */
+    .rp-sec-pane {
+      width: 100%;
+      margin: 0 0 4px;
+    }
+    .rp-card {
+      background: #ffffff;
+      border: 1px solid #e6e2dc;
+      border-radius: 6px;
+      padding: 6px 8px;
+      box-shadow: 0 1px 2px rgba(28, 25, 23, 0.03);
+      overflow-x: auto;
+    }
+    .rp-divider {
+      border: 0;
+      border-top: 1px solid #e6e2dc;
+      margin: 6px 0;
+    }
+
+    /* Modernized Tables (FBS / Pyramid / FinViz) */
+    .is-negative { color: #00994d; font-weight: 600; }
+    .is-positive { color: #cc2929; font-weight: 600; }
+    .snapshot-td2, .snapshot-td2-cp {
+      color: #1c1917;
+      text-decoration: none;
+      border: 1px solid #e6e2dc;
+      white-space: nowrap;
+    }
+    .snapshot-td2-cp { cursor: pointer; }
+    .fullview-ratings-outer, td.fullview-ratings-inner {
+      border: 1px solid #e6e2dc;
+    }
+    .t3r1 { color: #cc2929; font-weight: 700; }
+    .body-table-rating-downgrade { color: #cc2929; background: #fef2f2; }
+    .body-table-rating-upgrade { color: #00994d; background: #f0fdf4; }
+    .body-table-rating-neutral { color: #44403c; background: #faf9f6; }
+
+    table {
+      border-collapse: collapse;
+      margin: 6px auto;
+    }
+    td, th {
+      border: 1px solid #e6e2dc;
+      text-align: left;
+      padding: 6px 8px;
+    }
+    th {
+      background-color: #f6f4f0;
+      color: #1c1917;
+      font-weight: 700;
+    }
+    tr:nth-child(even) {
+      background-color: #fcfbf9;
+    }
+  </style>
+  <script>
+    function switchRpTab(btn) {
+      if (!btn) return;
+      var target = btn.getAttribute("data-target") || "all";
+      document.querySelectorAll(".rp-tab").forEach(function(b) {
+        b.classList.remove("active");
+      });
+      btn.classList.add("active");
+
+      document.querySelectorAll(".rp-sec-pane").forEach(function(pane) {
+        if (target === "all" || pane.id === target) {
+          pane.style.display = "block";
+        } else {
+          pane.style.display = "none";
+        }
+      });
+
+      try {
+        sessionStorage.setItem("sr_active_rp_tab", target);
+      } catch (e) {}
+
+      window.dispatchEvent(new Event("resize"));
+    }
+
+    window.addEventListener("load", function() {
+      try {
+        var saved = sessionStorage.getItem("sr_active_rp_tab");
+        if (saved && saved !== "all") {
+          var btn = document.querySelector('.rp-tab[data-target="' + saved + '"]');
+          if (btn) switchRpTab(btn);
+        }
+      } catch (e) {}
+    });
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/12.3.0/highcharts.min.js"></script>
+</head>
+<body>
+  <div class="rp-header">
+    <div class="rp-title-wrap">
+      <span class="rp-ticker">GLD</span>
+      <span class="rp-desc">SPRD Gold Shares</span>
+      <span class="rp-time">更新: 2026-11-28 06:41</span>
+    </div>
+    <div class="rp-links">
+      <a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=GLD&type=pe-ratio&statement=price-ratios&freq=Q" target="_blank">📈 PE Chart</a><a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=GLD&type=price-book&statement=price-ratios&freq=Q" target="_blank">📊 PB Chart</a><a class="rp-pill-link" href="https://www.macrotrends.net/assets/php/fundamental_iframe.php?t=GLD&type=price-sales&statement=price-ratios&freq=Q" target="_blank">📉 PS Chart</a><a class="rp-pill-link" href="https://www.wsj.com/market-data/quotes/GLD/financials/quarter/cash-flow" target="_blank">💵 Finance</a><a class="rp-pill-link" href="https://www.dataroma.com/m/stock.php?sym=GLD" target="_blank">🏛️ Ownership</a><a class="rp-pill-link" href="https://hedgefollow.com/stocks/GLD" target="_blank">🏦 Institute</a><a class="rp-pill-link" href="https://unusualwhales.com/stock/GLD/greek-exposure" target="_blank">⚡ GEX</a><a class="rp-pill-link" href="https://www.ptt.cc/bbs/Stock/search?q=GLD" target="_blank">💬 PTT Search</a>
+    </div>
+  </div>
+
+  <div class="rp-sig-card"><div class="rp-sig-head"><div class="rp-sig-title">🎯 今日訊號總覽 <span class="rp-sig-sub">（技術面 ＋ 籌碼／借券）</span></div><div class="rp-sig-badges"><span class="rp-sig-asset rp-sig-asset-etf">📊 原型ETF</span><span class="rp-sig-status rp-sig-st-ref">👀 僅圖表參考</span><span class="rp-sig-count">參考 <b>1</b></span></div></div><table class="rp-sig-tbl"><thead><tr><th style="width:74px">方向</th><th style="width:124px">來源</th><th style="width:104px">層級</th><th style="width:124px">標籤</th><th>訊號內容</th></tr></thead><tbody><tr><td class="rp-sig-c-dir"><span class="rp-sig-dir rp-sig-dir-buy">BUY</span></td><td class="rp-sig-c-src"><span class="rp-sig-src rp-sig-src-tech">📈 技術面</span></td><td class="rp-sig-c-lvl"><span class="rp-sig-lvl rp-sig-lvl-ref">圖表參考</span></td><td class="rp-sig-c-tag"><span class="rp-sig-tag" title="Price Floor/Ceiling：個人目標買賣價界線（剛穿越當日推播，持續在界線外留參考）">[PRICE]</span></td><td class="rp-sig-c-msg">低於買點(367.00)</td></tr></tbody></table></div>
+
+  <div class="rp-chart-box" align="center">
+    <iframe id="stock" src="GLD_EC.html" frameborder="0" width="100%" height="1600px" scrolling="no"></iframe>
+  </div>
+
+  <div class="rp-tabs-bar"><button class="rp-tab active" data-target="all" onclick="switchRpTab(this)">📋 全部展開</button><button class="rp-tab" data-target="sec-quant" onclick="switchRpTab(this)">🧮 量化與主動ETF</button><button class="rp-tab" data-target="sec-stockdog" onclick="switchRpTab(this)">🐶 主力籌碼</button><button class="rp-tab" data-target="sec-finviz" onclick="switchRpTab(this)">🌎 FinViz 美股基本面</button></div>
+  <div class="rp-sec-pane" id="sec-quant"><style>.pq-wrap{width:100%;margin:0;font-family:Arial,Helvetica,"Microsoft JhengHei",sans-serif;color:#222}.pq-sec{background:#fff;border:1px solid #e6e2dc;border-radius:6px;padding:6px 8px;margin-bottom:4px;box-shadow:0 1px 2px rgba(28,25,23,.03)}.pq-sec h2{font-size:14px;color:#1c1917;border-left:4px solid #FA8123;padding-left:6px;margin:0 0 6px}.pq-sec h3{font-size:12px;color:#44403c;margin:6px 0 4px}.pq-banner{background:#fff9f4;border-left:4px solid #FA8123;padding:5px 8px;border-radius:4px;font-size:12px;line-height:1.5;margin-bottom:6px;color:#292524}.pq-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:6px}table.pq-tbl{width:100%;border-collapse:collapse;font-size:12px;font-family:Arial,Helvetica,"Microsoft JhengHei",sans-serif}table.pq-tbl th,table.pq-tbl td{border:1px solid #e6e2dc !important;padding:4px 6px !important;text-align:right}table.pq-tbl th{background:#f6f4f0 !important;color:#1c1917 !important;font-weight:bold}table.pq-tbl tr:nth-child(even){background:#fcfbf9}</style><div class="pq-wrap">
+
+    <div class="pq-sec">
+      <h2>🧮 量化風險、波動率體制與因子 Alpha 拆解 (GLD)</h2>
+      <div class="pq-banner">
+        <b>現價：</b> <b>334.40</b> ｜
+        <b>動能 (1D / 5D / 20D / 60D / 1Y / 12-1M)：</b> <span style="color:#cc2929;font-weight:bold">+2.12%</span> / <span style="color:#00994d;font-weight:bold">-0.23%</span> / <span style="color:#00994d;font-weight:bold">-9.27%</span> / <span style="color:#00994d;font-weight:bold">-16.98%</span> / <span style="color:#00994d;font-weight:bold">-12.72%</span> / <span style="color:#00994d;font-weight:bold">-2.51%</span> ｜
+        <b>200D Volume Profile：</b> POC <b>399.49</b> (VAH <b>442.26</b> / VAL <b>368.60</b>)<br>
+        <b>尾部風險與風險調整指標 (1Y)：</b> 1Y歷史年化波動率 <b>29.57%</b> vs GARCH 1D條件年化波動預測 <b>31.68%</b> ｜
+        Sortino <b>-0.55</b> ｜ Calmar <b>-0.23</b> ｜
+        最大回撤 (MDD) <span style="color:#00994d;font-weight:bold">-34.89%</span> ｜
+        95% VaR / CVaR: <span style="color:#00994d;font-weight:bold">-3.22% / -4.35%</span><br>
+        <b>↳ GARCH 波動體制與明日振幅推估：</b> <b>【常態波動體制 (1.07x 歷史均態, +2.11%p)】</b>當前短期條件波動率與過去一年歷史平均水準相當，未出現異常恐慌或過度壓縮之波動叢聚現象，可維持標準風控參數。 ｜ <b>隱含振幅推估：</b>明日 (1D) ±1σ (68%機率) 預期波動 <b>±2.00%</b>（約 <b>327.73 ~ 341.07</b>）、±1.96σ (95%極端值) 為 <b>±3.91%</b>；未來一週 (5D) ±1σ 預期波動 <b>±4.46%</b> ｜ <b>20%波動目標部位上限：</b>約 <b>63%</b> 倉位 <span style="color:#666;font-size:11px">（註：GARCH 1D 預測值係以 EWMA λ=0.94 捕捉近期波動叢聚效應，將「下一交易日條件波動率」折算為年化百分比以便與 1Y 年化波動率直接對比；除以 √252 即為明日單日標準差 σ）</span><br>
+        <b>Lo-MacKinlay 序列相關檢定 VR(5/10/20)：</b> 5D: <b style="color:#292524">0.917</b> (z*=-0.58, 負自相關/回歸·不顯著) ／ 10D: <b style="color:#292524">0.834</b> (z*=-0.79, 負自相關/回歸·不顯著) ／ 20D: <b style="color:#292524">0.843</b> (z*=-0.54, 負自相關/回歸·不顯著)<br>
+        <b>↳ 序列體制判讀與交易意涵：</b> <b>【隨機漫步體制 (Random Walk)】</b>各期 VR 數值雖皆 &lt; 1（微幅偏向負自相關/均值回歸震盪），但 |z*| 均未達 1.96 顯著門檻，統計上無法拒絕隨機漫步假說；代表單憑歷史價格序列本身缺乏顯著之可預測自相關 Edge，<b>純技術型態之時序預測力有限，交易決策應以基本面估值、法人/主動ETF籌碼或事件催化為主，技術面僅作為支撐壓力（如 POC/VAL）定價工具</b>。 <span style="color:#666;font-size:11px">（原理說明：VR(q) = Var(q日對數報酬) / [q × Var(1日對數報酬)]；VR=1 為隨機漫步、VR&gt;1 為趨勢動量延續、VR&lt;1 為均值回歸反轉；z* 為異質變異數穩健檢定統計量，|z*|&gt;1.96 表達 95% 統計顯著）</span>
+      </div>
+      <table class="pq-tbl" style="margin-top:8px"><thead><tr><th style="text-align:left">Benchmark</th><th>20D (Stock / Bench)</th><th>20D Rel Excess</th><th>60D Rel Excess</th><th>1Y Rel Excess</th><th>1Y Beta (β)</th><th>R²</th><th>1Y Residual Alpha (α)</th></tr></thead><tbody><tr><td style="text-align:left"><b>^GSPC</b></td><td><span style="color:#00994d;font-weight:bold">-9.27%</span> / <span style="color:#00994d;font-weight:bold">-5.48%</span></td><td><span style="color:#00994d;font-weight:bold">-3.79%</span></td><td><span style="color:#00994d;font-weight:bold">-12.16%</span></td><td><span style="color:#00994d;font-weight:bold">-19.88%</span></td><td><b>0.82</b></td><td>0.17</td><td><span style="color:#00994d;font-weight:bold">-19.22%</span></td></tr><tr><td style="text-align:left"><b>QQQ</b></td><td><span style="color:#00994d;font-weight:bold">-9.27%</span> / <span style="color:#00994d;font-weight:bold">-9.00%</span></td><td><span style="color:#00994d;font-weight:bold">-0.28%</span></td><td><span style="color:#00994d;font-weight:bold">-8.76%</span></td><td><span style="color:#00994d;font-weight:bold">-18.93%</span></td><td><b>0.48</b></td><td>0.15</td><td><span style="color:#00994d;font-weight:bold">-17.58%</span></td></tr><tr><td style="text-align:left"><b>SOXX</b></td><td><span style="color:#00994d;font-weight:bold">-9.27%</span> / <span style="color:#00994d;font-weight:bold">-21.73%</span></td><td><span style="color:#cc2929;font-weight:bold">+12.46%</span></td><td><span style="color:#cc2929;font-weight:bold">+2.81%</span></td><td><span style="color:#00994d;font-weight:bold">-53.85%</span></td><td><b>0.19</b></td><td>0.12</td><td><span style="color:#00994d;font-weight:bold">-23.55%</span></td></tr></tbody></table>
+    </div>
+    
+</div></div>
+<div class="rp-sec-pane" id="sec-stockdog"><div class="rp-card" align="center"><iframe id="stockdog" src="GLD_SD.html" frameborder="0" width="100%" height="1000px" scrolling="no"></iframe></div></div>
+<div class="rp-sec-pane" id="sec-finviz"><div class="rp-card"><div align="center"><a href="https://www.marketwatch.com/investing/stock/GLD/analystestimates" target="_blank"><img style="max-height:100%; max-width:100%; object-fit:contain" src=https://app.quotemedia.com/quotetools/getChart?webmasterId=91386&symbol=GLD&chtype=FinancialLine&chcon=on&chdon=on&chfrmon=on&chscale=1d&chton=on&chwid=800&chhig=380&chln=ffa500&chfill=ffa500&chfnts=10&chbdr=000000&chbgch=ffffffff&chgrd=cccccc&svg=false&lang=en&locale=en></a></div>
+
+<hr class="rp-divider">
+<table align="center" class="snapshot-table2" align="center" style="width:100%; border-collapse:collapse; font-size:12px; margin:auto;">
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Single category of the ETF"><div class="snapshot-td-label">Category</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" title="Commodities &amp; Metals - Gold / Metals" style=""><div class="snapshot-td-content"><b>Commodities &amp; Metals - Gold / Metals</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="The asset type of the ETF"><div class="snapshot-td-label">Asset Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" title="Commodities &amp; Metals" style=""><div class="snapshot-td-content"><b>Commodities &amp; Metals</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" title="commodity" style=""><div class="snapshot-td-content"><a href="https://finviz.com/screener/etf?v=181&amp;ft=4&amp;f=etf_tags_commodity" class="hover:underline" target="_blank"><b>commodity</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="1-Year Annualized Return"><div class="snapshot-td-label">Return% 1Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-13.87%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Total count of all holdings in the ETF"><div class="snapshot-td-label">Total Holdings</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b>1</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Week, Excl. Dividends)"><div class="snapshot-td-label">Perf Week</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-0.23%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="The fund manager (ETF) or issuing bank (ETN)"><div class="snapshot-td-label">Sponsor</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" title="State Street (SPDR)" style=""><div class="snapshot-td-content"><b>State Street (SPDR)</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="A simple, broad categorization of each ETF based on its asset class and geographical exposure"><div class="snapshot-td-label">ETF Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" title="physical" style=""><div class="snapshot-td-content"><a href="https://finviz.com/screener/etf?v=181&amp;ft=4&amp;f=etf_tags_physical" class="hover:underline" target="_blank"><b>physical</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="3-Year Annualized Return"><div class="snapshot-td-label">Return% 3Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">21.32%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Assets Under Management"><div class="snapshot-td-label">AUM</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b>114.52B</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Month, Excl. Dividends)"><div class="snapshot-td-label">Perf Month</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-10.47%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Fund family to which the ETF belongs, as categorized by the ETF Sponsor"><div class="snapshot-td-label">Fund Family</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Type of bonds held in the ETF"><div class="snapshot-td-label">Bond Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" title="gold" style=""><div class="snapshot-td-content"><a href="https://finviz.com/screener/etf?v=181&amp;ft=4&amp;f=etf_tags_gold" class="hover:underline" target="_blank"><b>gold</b></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="5-Year Annualized Return"><div class="snapshot-td-label">Return% 5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">13.41%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Net Asset Value per Share"><div class="snapshot-td-label">NAV/sh</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Quarter, Excl. Dividends)"><div class="snapshot-td-label">Perf Quarter</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-18.22%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Name of the underlying index tracked by the ETF, if applicable"><div class="snapshot-td-label">Index</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" title="LBMA Gold Price PM" style=""><div class="snapshot-td-content"><b>LBMA Gold Price PM</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Targeted exposure to securities of a specific maturity range of bond ETFs"><div class="snapshot-td-label">Average Maturity</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="10-Year Annualized Return"><div class="snapshot-td-label">Return% 10Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 52-Week High"><div class="snapshot-td-label">52W High</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b>509.70 <small class="text-2xs"><span class="color-text is-negative">-34.39%</span></small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Half Year, Excl. Dividends)"><div class="snapshot-td-label">Perf Half Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-19.83%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="For ETFs that track an underlying index, this field provides detail on the index weighting type"><div class="snapshot-td-label">Index Weighting</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Type of commodities held in the ETF"><div class="snapshot-td-label">Commodity Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Annualized Return Since Inception"><div class="snapshot-td-label">Return% SI</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 52-Week Low"><div class="snapshot-td-label">52W Low</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b>313.96 <small class="text-2xs"><span class="color-text is-positive">6.51%</span></small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Year To Date, Excl. Dividends)"><div class="snapshot-td-label">Perf YTD</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-15.62%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Actively managed or passively index-linked ETF"><div class="snapshot-td-label">Active/Passive</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Proprietary quant model used as the underlying strategy for the ETF"><div class="snapshot-td-label">Quant Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="1-Month Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% 1M</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-1.30%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Volatility (Week, Month)"><div class="snapshot-td-label">Volatility</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">2.55% 1.53%</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (Year, Excl. Dividends)"><div class="snapshot-td-label">Perf Year</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-12.72%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Trailing 12 Months Dividend"><div class="snapshot-td-label">Dividend TTM</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF's strategy involves providing exposure to a specific social or environmental theme"><div class="snapshot-td-label">ESG Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="ETF tags"><div class="snapshot-td-label">Tags</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="3-Month Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% 3M</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-1.72%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Average True Range (14)"><div class="snapshot-td-label">ATR (14)</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b>8.36</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (3 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 3Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">79.04%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Ex-Dividend Date"><div class="snapshot-td-label">Dividend Ex-Date</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Intended investment objective of holding dividend-oriented stocks as stated in the ETF prospectus"><div class="snapshot-td-label">Dividend Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Targeted exposure to a sector or theme of the ETF"><div class="snapshot-td-label">Sector/Theme</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Year-to-date Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% YTD</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-4.23%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Relative Strength Index"><div class="snapshot-td-label">RSI (14)</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b>37.45</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (5 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">100.42%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Dividend growth over 3 and 5 years"><div class="snapshot-td-label">Dividend Gr. 3/5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">- -</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="&lt;span class='font-semibold'&gt;Legal Structure&lt;/span&gt;&lt;br&gt;AST (Active Semi Transparent)&lt;br&gt;ETC&lt;br&gt;ETF (Open end fund)&lt;br&gt;ETN"><div class="snapshot-td-label">Structure Type</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Targeted exposure to a specific type of geography‐based grouping"><div class="snapshot-td-label">Region</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><b>-</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="1-Year Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% 1Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Beta"><div class="snapshot-td-label">Beta</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b>0.24</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (10 Years, Excl. Dividends)"><div class="snapshot-td-label">Perf 10Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">196.95%</span></b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Gross expense net of fee waivers, as a % of net assets as published by the ETF Issuer"><div class="snapshot-td-label">Expense</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">0.40%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Growth or Value based on the stated style tilt in the ETF prospectus"><div class="snapshot-td-label">Growth/Value</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 20-Day Simple Moving Average"><div class="snapshot-td-label">SMA20</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-5.09%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="3-Year Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% 3Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Relative volume"><div class="snapshot-td-label">Rel Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b>0.69</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Previous close"><div class="snapshot-td-label">Prev Close</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b>327.45</b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Inverse or leveraged ETF"><div class="snapshot-td-label">Inverse/Leveraged</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Market capitalization range of the underlying securities"><div class="snapshot-td-label">Market Cap</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full xl:max-w-0" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 50-Day Simple Moving Average"><div class="snapshot-td-label">SMA50</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-9.56%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="5-Year Net Fund Flows of the ETF as percentage of Assets Under Management"><div class="snapshot-td-label">Flows% 5Y</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Average volume (3 month)"><div class="snapshot-td-label">Avg Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b>9.72M</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Current stock price"><div class="snapshot-td-label">Price</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b>334.40</b></div></td>
+</tr>
+  <tr><td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="IPO Date"><div class="snapshot-td-label">IPO</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b>Nov 18, 2004</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Stock has options trading on a market exchange / Stock is available to sell short"><div class="snapshot-td-label">Option/Short</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><small class="text-2xs">Yes / Yes</small></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Distance from 200-Day Simple Moving Average"><div class="snapshot-td-label">SMA200</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-negative">-17.06%</span></b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Trades"><div class="snapshot-td-label">Trades</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><a href="https://finviz.com/elite?utm_source=finviz&amp;utm_medium=banner&amp;utm_campaign=etf-fundamentals" target="_blank"><span style="font-size:11px;">🔒 </span></a></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Volume"><div class="snapshot-td-label">Volume</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b>6,707,602</b></div></td>
+<td class="snapshot-td2 cursor-pointer max-xl:w-[4%] xl:w-px" align="left" data-boxover-html="Performance (today)"><div class="snapshot-td-label">Change %</div></td><td class="snapshot-td2 max-xl:w-[8%] xl:w-full" align="left" style=""><div class="snapshot-td-content"><b><span class="color-text is-positive">2.12%</span></b></div></td>
+</tr>
+</table>
+
+
+<hr class="rp-divider">
+<div class="body-table-news-wrapper news-table_wrapper is-collapsed"><table align="center" align="center" width="70%" cellpadding="1" cellspacing="0" border="0" id="news-table" class="fullview-news-outer news-table" data-ticker="GLD">
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/gold-etfs-lose-2-2-102022788.html', '_blank');">
+        <td width="130" align="right">
+            Nov-25-26 05:20AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/gold-etfs-lose-2-2-102022788.html" target="_blank" rel="nofollow">
+                        Gold ETFs Lose $2.2 Billion in a Week, Their Fastest Exit Since June
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(BeInCrypto)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/gld-slv-sink-near-14-104632506.html', '_blank');">
+        <td width="130" align="right">
+            Nov-18-26 05:46AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/gld-slv-sink-near-14-104632506.html" target="_blank" rel="nofollow">
+                        GLD, SLV Sink To Near 14-Month Lows  But This Commodities Expert Sees A Relative Bright Spot
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">
+         -3.20%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.marketwatch.com/story/gold-is-in-a-bear-market-and-hackproof-in-an-increasingly-digital-world-is-this-a-good-time-to-buy-fabfd528?mod=mw_FV', '_blank');">
+        <td width="130" align="right">
+            Nov-17-26 03:24PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/gold-is-in-a-bear-market-and-hackproof-in-an-increasingly-digital-world-is-this-a-good-time-to-buy-fabfd528?mod=mw_FV" target="_blank" rel="nofollow">
+                        Gold is in a bear market - and hackproof in an increasingly digital world. Is this a good time to buy?
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketWatch)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/crypto/articles/tether-gold-passes-kpmg-audit-134207332.html', '_blank');">
+        <td width="130" align="right">
+            Nov-12-26 08:42AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/crypto/articles/tether-gold-passes-kpmg-audit-134207332.html" target="_blank" rel="nofollow">
+                        Tether Gold Passes KPMG Audit: Can It Beat Americas Biggest Gold Fund?
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(BeInCrypto)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/options/articles/defiance-goes-mad-maxx-single-050100119.html', '_blank');">
+        <td width="130" align="right">
+            Nov-09-26 12:01AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/options/articles/defiance-goes-mad-maxx-single-050100119.html" target="_blank" rel="nofollow">
+                        Defiance Goes Mad Maxx on Single-Stock ETFs
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(The Daily Upside)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/articles/us-world-debt-borrowing-frenzy-53ee93e4?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            Nov-06-26 06:00AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/us-world-debt-borrowing-frenzy-53ee93e4?mod=bar_FV" target="_blank" rel="nofollow">
+                        The World's Debt Is at Record Levels. 6 Ways to Protect Your Portfolio.
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/slv-crashes-near-52-week-114150546.html', '_blank');">
+        <td width="130" align="right">
+            Nov-03-26 06:41AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/slv-crashes-near-52-week-114150546.html" target="_blank" rel="nofollow">
+                        SLV Crashes To Near 52-Week Lows, GLD Falls Pre-Market  World Gold Council Cuts 2026 Gold Investment Forecast By Half
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/etfs-pull-204b-october-despite-014544652.html', '_blank');">
+        <td width="130" align="right">
+            Nov-02-26 08:45PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/etfs-pull-204b-october-despite-014544652.html" target="_blank" rel="nofollow">
+                        ETFs Pull In $204B in October Despite a Rocky Month
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/gold-silver-spotlight-gld-hits-171058200.html', '_blank');">
+        <td width="130" align="right">
+            Oct-30-26 01:10PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/gold-silver-spotlight-gld-hits-171058200.html" target="_blank" rel="nofollow">
+                        Gold, Silver In Spotlight After GLD Hits 52-Week Low, SLV Sinks To 11-Month Low  Peter Brandt Sees Signs Of A Potential Bottom
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">
+         -3.47%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/investors-buy-dip-chip-etfs-003817916.html', '_blank');">
+        <td width="130" align="right">
+            Oct-26-26 08:38PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/investors-buy-dip-chip-etfs-003817916.html" target="_blank" rel="nofollow">
+                        Investors Buy the Dip in Chip ETFs as Inflows Top $44B
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/options/articles/daily-etf-flows-gld-loses-003806670.html', '_blank');">
+        <td width="130" align="right">
+            08:38PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/options/articles/daily-etf-flows-gld-loses-003806670.html" target="_blank" rel="nofollow">
+                        Daily ETF Flows: GLD Loses Assets
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/crypto/articles/jim-cramer-prefers-gold-bitcoin-011941894.html', '_blank');">
+        <td width="130" align="right">
+            Oct-20-26 09:19PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/crypto/articles/jim-cramer-prefers-gold-bitcoin-011941894.html" target="_blank" rel="nofollow">
+                        Jim Cramer Prefers Gold to Bitcoin for Portfolio Insurance, but Backs 2 Vetted Cryptos
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(BeInCrypto)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            Oct-19-26 08:15AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/403934/chinas-treasury-pile-is-shrinking-on-paper-the-custody-data-tell-a-different-story" target="_blank">
+                        China's Treasury Pile Is Shrinking on Paper. The Custody Data Tell a Different Story
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(PR Newswire)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/economy/policy/articles/exclusive-us-may-ai-boom-135732533.html', '_blank');">
+        <td width="130" align="right">
+            Oct-05-26 09:57AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/economy/policy/articles/exclusive-us-may-ai-boom-135732533.html" target="_blank" rel="nofollow">
+                        EXCLUSIVE: US May Need AI Boom to Grow Out of Debt Crisis, American Hartford Gold President Says
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Benzinga Prediction Markets)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.marketwatch.com/story/here-are-3-alternatives-for-investors-looking-to-dodge-the-bond-market-beatdown-ec8fda43?mod=mw_FV', '_blank');">
+        <td width="130" align="right">
+            Sep-24-26 02:07PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/here-are-3-alternatives-for-investors-looking-to-dodge-the-bond-market-beatdown-ec8fda43?mod=mw_FV" target="_blank" rel="nofollow">
+                        Here are 3 alternatives for investors looking to dodge the bond-market beatdown
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketWatch)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/gold-etfs-just-had-2nd-193240565.html', '_blank');">
+        <td width="130" align="right">
+            Sep-23-26 03:32PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/gold-etfs-just-had-2nd-193240565.html" target="_blank" rel="nofollow">
+                        Gold ETFs Just Had Their 2nd-Biggest Month Ever
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            01:31PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/394875/rejoice-the-summer-stock-slump-is-over" target="_blank">
+                        Rejoice! The Summer Stock Slump is Over
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Zacks)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/gold-slides-fed-fears-over-221516465.html', '_blank');">
+        <td width="130" align="right">
+            Sep-22-26 06:15PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/gold-slides-fed-fears-over-221516465.html" target="_blank" rel="nofollow">
+                        Gold Slides as Fed Fears Take Over
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(GuruFocus.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/fidelity-sees-gold-climbing-toward-150910738.html', '_blank');">
+        <td width="130" align="right">
+            Sep-21-26 11:09AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/fidelity-sees-gold-climbing-toward-150910738.html" target="_blank" rel="nofollow">
+                        Fidelity Sees Gold Climbing Toward $5,000
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(GuruFocus.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/rare-earth-stocks-soar-trumps-122522935.html', '_blank');">
+        <td width="130" align="right">
+            08:25AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/rare-earth-stocks-soar-trumps-122522935.html" target="_blank" rel="nofollow">
+                        Rare Earth Stocks Soar After Trump's Greenland Security Announcement
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(GuruFocus.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/gold-silver-just-sent-investors-152142817.html', '_blank');">
+        <td width="130" align="right">
+            Sep-17-26 11:21AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/gold-silver-just-sent-investors-152142817.html" target="_blank" rel="nofollow">
+                        Gold and Silver Just Sent Investors a Strong Signal
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(GuruFocus.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/options/articles/debasement-trade-splits-gold-bitcoin-120000749.html', '_blank');">
+        <td width="130" align="right">
+            Sep-15-26 08:00AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/options/articles/debasement-trade-splits-gold-bitcoin-120000749.html" target="_blank" rel="nofollow">
+                        The Debasement Trade Splits as Gold and Bitcoin Bets Diverge
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Bloomberg)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/gold-yields-every-metals-investor-050100543.html', '_blank');">
+        <td width="130" align="right">
+            Sep-14-26 01:01AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/gold-yields-every-metals-investor-050100543.html" target="_blank" rel="nofollow">
+                        Gold and Yields- What Every Metals Investor Needs to Know
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MoneyShow)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/gold-prices-flash-strong-signal-130828877.html', '_blank');">
+        <td width="130" align="right">
+            Sep-09-26 09:08AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/gold-prices-flash-strong-signal-130828877.html" target="_blank" rel="nofollow">
+                        Gold Prices Flash Strong Signal as Major Buyer Doubles Down
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(GuruFocus.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/gold-rally-driven-investment-demand-163107026.html', '_blank');">
+        <td width="130" align="right">
+            Sep-03-26 12:31PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/gold-rally-driven-investment-demand-163107026.html" target="_blank" rel="nofollow">
+                        Gold rally driven by investment demand, not just Treasury move, says analyst
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/best-performing-commodity-etfs-2026-232617565.html', '_blank');">
+        <td width="130" align="right">
+            Sep-02-26 07:26PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/best-performing-commodity-etfs-2026-232617565.html" target="_blank" rel="nofollow">
+                        The Best-Performing Commodity ETFs of 2026: Oil and Broad Baskets Lead the Pack
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/e432a004-b514-360b-bcf7-6737f9654b0e/daily-etf-flows%3A-%24628m-flows.html', '_blank');">
+        <td width="130" align="right">
+            05:00PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/e432a004-b514-360b-bcf7-6737f9654b0e/daily-etf-flows%3A-%24628m-flows.html" target="_blank" rel="nofollow">
+                        Daily ETF Flows: $628M Flows Into GLD
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/articles/gld-options-trade-fed-interest-rates-elections-ad74ee3a?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            08:16AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/gld-options-trade-fed-interest-rates-elections-ad74ee3a?mod=bar_FV" target="_blank" rel="nofollow">
+                        Political Pressure Is Setting Gold Up for a Major Comeback-the Options Trade to Play It
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/837c9a06-fea4-3295-bb3c-402f265234d2/these-etfs-generate-the-most.html', '_blank');">
+        <td width="130" align="right">
+            Sep-01-26 06:24PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/837c9a06-fea4-3295-bb3c-402f265234d2/these-etfs-generate-the-most.html" target="_blank" rel="nofollow">
+                        These ETFs Generate the Most Revenue
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/golds-powerful-rally-runs-wall-190359442.html', '_blank');">
+        <td width="130" align="right">
+            03:03PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/golds-powerful-rally-runs-wall-190359442.html" target="_blank" rel="nofollow">
+                        Gold's Powerful Rally Runs Into a New Wall
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(GuruFocus.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/cfaefca2-77a9-3f2a-940e-67ffef33476e/gold-drops-5.5%25-from-3-month.html', '_blank');">
+        <td width="130" align="right">
+            02:54AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/cfaefca2-77a9-3f2a-940e-67ffef33476e/gold-drops-5.5%25-from-3-month.html" target="_blank" rel="nofollow">
+                        Gold Drops 5.5% From 3-Month High but Goldman Sachs Still Sees 10% Upside
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(BeInCrypto)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/bank-america-spots-major-shift-014820983.html', '_blank');">
+        <td width="130" align="right">
+            Aug-31-26 09:48PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/bank-america-spots-major-shift-014820983.html" target="_blank" rel="nofollow">
+                        Bank of America Spots Major Shift in Gold
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(GuruFocus.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/60090be5-9d5b-34d8-a609-dd6fe7c8f348/etf-investors-chase-higher.html', '_blank');">
+        <td width="130" align="right">
+            05:31PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/60090be5-9d5b-34d8-a609-dd6fe7c8f348/etf-investors-chase-higher.html" target="_blank" rel="nofollow">
+                        ETF Investors Chase Higher Yields as Bonds Sell Off
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.marketwatch.com/story/how-to-profit-from-september-stock-market-weakness-34f69ef4?mod=mw_FV', '_blank');">
+        <td width="130" align="right">
+            04:50PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/how-to-profit-from-september-stock-market-weakness-34f69ef4?mod=mw_FV" target="_blank" rel="nofollow">
+                        How to profit from September stock-market weakness
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketWatch)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="">
+        <td width="130" align="right">
+            Aug-27-26 05:30PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finviz.com/news/386492/how-to-invest-in-gold-stocks-and-etfs-right-now" target="_blank">
+                        How to Invest in Gold Stocks and ETFs Right Now
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Zacks)</span>
+                      
+  
+      <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200" title="Aug 28, 2026">
+        <svg width="12" height="12" class="fill-current">&#13;
+    <use href="/assets/dist-icons/icons.1f7da9e4.svg#nextday"/>&#13;
+</svg> -3.24%
+    </span>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/articles/retirement-planning-gold-taxes-etfs-miners-7ef20769?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            11:14AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/retirement-planning-gold-taxes-etfs-miners-7ef20769?mod=bar_FV" target="_blank" rel="nofollow">
+                        The Best Way to Own Gold in a Retirement Account-and Why You Should
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.barrons.com/articles/gold-is-on-a-roll-how-much-is-too-much-for-retirees-7ef20769?mod=bar_FV', '_blank');">
+        <td width="130" align="right">
+            12:30AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.barrons.com/articles/gold-is-on-a-roll-how-much-is-too-much-for-retirees-7ef20769?mod=bar_FV" target="_blank" rel="nofollow">
+                        Gold Is on a Roll. How Much Is Too Much for Retirees?
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Barrons.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/gold-sends-powerful-market-signal-195108715.html', '_blank');">
+        <td width="130" align="right">
+            Aug-26-26 03:51PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/gold-sends-powerful-market-signal-195108715.html" target="_blank" rel="nofollow">
+                        Gold Sends Powerful New Market Signal
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(GuruFocus.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/gold-makes-powerful-move-154010992.html', '_blank');">
+        <td width="130" align="right">
+            11:40AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/gold-makes-powerful-move-154010992.html" target="_blank" rel="nofollow">
+                        Gold Makes a Powerful New Move
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(GuruFocus.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/f75703bc-0a62-3efc-9a19-b71a14a80846/your-60%2F40-portfolio-may-be.html', '_blank');">
+        <td width="130" align="right">
+            11:34AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/f75703bc-0a62-3efc-9a19-b71a14a80846/your-60%2F40-portfolio-may-be.html" target="_blank" rel="nofollow">
+                        Your 60/40 Portfolio May Be 100% Exposed to a Dying Dollar, Bitwise Says
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(BeInCrypto)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/a823d010-6f4e-330a-81b9-f728c2b029b2/blackrock%27s-ibit-and-gld.html', '_blank');">
+        <td width="130" align="right">
+            05:26AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/a823d010-6f4e-330a-81b9-f728c2b029b2/blackrock%27s-ibit-and-gld.html" target="_blank" rel="nofollow">
+                        BlackRock's IBIT And GLD Rejoin Top 10 Most-Traded ETFs As 'Debasement Trade' Challenges AI Mania
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/5100947d-123c-3b18-adfa-66664db62410/gold-bitcoin-rally-together.html', '_blank');">
+        <td width="130" align="right">
+            Aug-25-26 11:23PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/5100947d-123c-3b18-adfa-66664db62410/gold-bitcoin-rally-together.html" target="_blank" rel="nofollow">
+                        Gold  Bitcoin Rally Together as the Debasement Trade Returns
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/options/article/golds-rally-just-hit-a-wall--how-to-play-a-tactical-pullback-with-limited-risk-alpha-options-playbook-162841841.html', '_blank');">
+        <td width="130" align="right">
+            12:28PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/options/article/golds-rally-just-hit-a-wall--how-to-play-a-tactical-pullback-with-limited-risk-alpha-options-playbook-162841841.html" target="_blank" rel="nofollow">
+                        Gold's rally just hit a wall  how to play a tactical pullback with limited risk: Alpha Options Playbook
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Yahoo Finance)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/20043a11-5cd6-35ef-b1f0-eace55a107cc/daily-etf-flows%3A-gld-ibit.html', '_blank');">
+        <td width="130" align="right">
+            Aug-24-26 05:00PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/20043a11-5cd6-35ef-b1f0-eace55a107cc/daily-etf-flows%3A-gld-ibit.html" target="_blank" rel="nofollow">
+                        Daily ETF Flows: GLD  IBIT Pick Up Assets
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/f8694e63-4bd8-3cfe-88e5-1ba74cd2a6f8/investors-pour-%2456b-into-etfs.html', '_blank');">
+        <td width="130" align="right">
+            05:00PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/f8694e63-4bd8-3cfe-88e5-1ba74cd2a6f8/investors-pour-%2456b-into-etfs.html" target="_blank" rel="nofollow">
+                        Investors Pour $56B Into ETFs as Gold and Bitcoin Roar Back
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.marketwatch.com/story/why-an-announcement-from-the-treasury-sparked-a-rally-in-gold-and-bitcoin-this-week-d9d5972b?mod=mw_FV', '_blank');">
+        <td width="130" align="right">
+            Aug-22-26 09:00AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/why-an-announcement-from-the-treasury-sparked-a-rally-in-gold-and-bitcoin-this-week-d9d5972b?mod=mw_FV" target="_blank" rel="nofollow">
+                        Why an announcement from the Treasury sparked a rally in gold and bitcoin this week
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketWatch)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/7e5a2db1-0138-338d-b970-95f58d501072/daily-etf-flows%3A-%24614m-flows.html', '_blank');">
+        <td width="130" align="right">
+            Aug-21-26 05:00PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/7e5a2db1-0138-338d-b970-95f58d501072/daily-etf-flows%3A-%24614m-flows.html" target="_blank" rel="nofollow">
+                        Daily ETF Flows: $614M Flows Into GLD
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/morgan-stanley-doubles-down-gold-201259751.html', '_blank');">
+        <td width="130" align="right">
+            04:12PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/morgan-stanley-doubles-down-gold-201259751.html" target="_blank" rel="nofollow">
+                        Morgan Stanley Doubles Down on Gold After Breakout
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(GuruFocus.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/articles/market-minute-8-21-26-141500743.html', '_blank');">
+        <td width="130" align="right">
+            10:15AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/articles/market-minute-8-21-26-141500743.html" target="_blank" rel="nofollow">
+                        Market Minute 8-21-26- Markets Mull Bessent's Next Move
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MoneyShow)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/gold-jumps-surprise-treasury-move-165903080.html', '_blank');">
+        <td width="130" align="right">
+            Aug-20-26 12:59PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/gold-jumps-surprise-treasury-move-165903080.html" target="_blank" rel="nofollow">
+                        Gold Jumps After Surprise Treasury Move
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(GuruFocus.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/c64d6399-0139-3533-b7ea-dae72e09dc38/u.s.-debt-nears-%2440-trillion%3A.html', '_blank');">
+        <td width="130" align="right">
+            Aug-19-26 03:02PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/c64d6399-0139-3533-b7ea-dae72e09dc38/u.s.-debt-nears-%2440-trillion%3A.html" target="_blank" rel="nofollow">
+                        U.S. Debt Nears $40 Trillion: The ETFs Getting Hit  and the Ones Investors Are Fleeing To
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">
+         +3.84%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/42c5cb48-cedf-392f-b66f-d7ff9ddc3436/gold-jumps-3%25-as-bessent%27s.html', '_blank');">
+        <td width="130" align="right">
+            02:46PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/42c5cb48-cedf-392f-b66f-d7ff9ddc3436/gold-jumps-3%25-as-bessent%27s.html" target="_blank" rel="nofollow">
+                        Gold Jumps 3% as Bessent's Treasury Steps Into Bond Rout
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Benzinga Prediction Markets)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/479f2dd3-3da7-36a3-891a-2445000a3a38/daily-etf-flows%3A-gld-takes-in.html', '_blank');">
+        <td width="130" align="right">
+            Aug-18-26 05:00PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/479f2dd3-3da7-36a3-891a-2445000a3a38/daily-etf-flows%3A-gld-takes-in.html" target="_blank" rel="nofollow">
+                        Daily ETF Flows: GLD Takes In $1B
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/gold-rally-missing-one-key-181859656.html', '_blank');">
+        <td width="130" align="right">
+            Aug-14-26 02:18PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/gold-rally-missing-one-key-181859656.html" target="_blank" rel="nofollow">
+                        Gold Rally Is Missing One Key Ingredient
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(GuruFocus.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/gold-rally-faces-moment-truth-165917278.html', '_blank');">
+        <td width="130" align="right">
+            Aug-13-26 12:59PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/gold-rally-faces-moment-truth-165917278.html" target="_blank" rel="nofollow">
+                        Gold Rally Faces Moment of Truth
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(GuruFocus.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/moneymasters-podcast-8-13-26-163200205.html', '_blank');">
+        <td width="130" align="right">
+            12:32PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/moneymasters-podcast-8-13-26-163200205.html" target="_blank" rel="nofollow">
+                        MoneyMasters Podcast 8-13-26- SP 500 Vs. TSX - Which Leads Next
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MoneyShow)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/9b5a2a93-a24e-307f-8b35-297d6694d260/bank-of-korea-breaks-13-year.html', '_blank');">
+        <td width="130" align="right">
+            03:06AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/9b5a2a93-a24e-307f-8b35-297d6694d260/bank-of-korea-breaks-13-year.html" target="_blank" rel="nofollow">
+                        Bank of Korea Breaks 13-Year Streak With Gold ETF Purchase
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(BeInCrypto)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/bank-korea-makes-first-gold-043913070.html', '_blank');">
+        <td width="130" align="right">
+            12:39AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/bank-korea-makes-first-gold-043913070.html" target="_blank" rel="nofollow">
+                        Bank of Korea Makes First Gold-Linked Investment in 13 Years
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Bloomberg)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.marketwatch.com/story/investors-are-chasing-the-latest-rally-in-gold-as-the-yellow-metal-hits-strongest-level-in-2-months-dd0d5b18?mod=mw_FV', '_blank');">
+        <td width="130" align="right">
+            Aug-12-26 04:58PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/investors-are-chasing-the-latest-rally-in-gold-as-the-yellow-metal-hits-strongest-level-in-2-months-dd0d5b18?mod=mw_FV" target="_blank" rel="nofollow">
+                        Investors are chasing the latest rally in gold as the yellow metal hits strongest level in 2 months
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketWatch)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/gold-makes-surprising-move-fed-140200002.html', '_blank');">
+        <td width="130" align="right">
+            10:02AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/gold-makes-surprising-move-fed-140200002.html" target="_blank" rel="nofollow">
+                        Gold Makes Surprising Move on Fed Expectations
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(GuruFocus.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/e8602c43-b17a-31d7-ab95-2a81cb9493eb/semiconductor-etfs-see.html', '_blank');">
+        <td width="130" align="right">
+            Aug-10-26 05:16PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/e8602c43-b17a-31d7-ab95-2a81cb9493eb/semiconductor-etfs-see.html" target="_blank" rel="nofollow">
+                        Semiconductor ETFs See Profit-Taking as Investors Pile Into QQQ
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/95cbe037-b73a-3c05-8fa3-06cd0e988ac9/the-20-most-actively-traded.html', '_blank');">
+        <td width="130" align="right">
+            Aug-07-26 03:46PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/95cbe037-b73a-3c05-8fa3-06cd0e988ac9/the-20-most-actively-traded.html" target="_blank" rel="nofollow">
+                        The 20 Most Actively Traded ETFs
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/citadel-rubner-says-time-start-161835992.html', '_blank');">
+        <td width="130" align="right">
+            12:18PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/citadel-rubner-says-time-start-161835992.html" target="_blank" rel="nofollow">
+                        Citadel Securities Rubner says its time to start buying gold again
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/b43ab4da-1eb9-3deb-a7cd-26f88f6a7438/daily-etf-flows%3A-gld-makes.html', '_blank');">
+        <td width="130" align="right">
+            Aug-06-26 05:00PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/b43ab4da-1eb9-3deb-a7cd-26f88f6a7438/daily-etf-flows%3A-gld-makes.html" target="_blank" rel="nofollow">
+                        Daily ETF Flows: GLD Makes Appearance
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.marketwatch.com/story/gold-prices-are-breaking-higher-after-a-tough-stretch-could-fresh-records-be-within-reach-1e1a872f?mod=mw_FV', '_blank');">
+        <td width="130" align="right">
+            04:57PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/gold-prices-are-breaking-higher-after-a-tough-stretch-could-fresh-records-be-within-reach-1e1a872f?mod=mw_FV" target="_blank" rel="nofollow">
+                        Gold prices are breaking higher after a tough stretch. Could fresh records be within reach?
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketWatch)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/golds-historic-rally-masks-uneven-172925047.html', '_blank');">
+        <td width="130" align="right">
+            01:29PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/golds-historic-rally-masks-uneven-172925047.html" target="_blank" rel="nofollow">
+                        Gold's Historic Rally Masks Uneven Long-Term Record
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(GuruFocus.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/gold-silver-break-market-makes-191934563.html', '_blank');">
+        <td width="130" align="right">
+            Aug-05-26 03:19PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/gold-silver-break-market-makes-191934563.html" target="_blank" rel="nofollow">
+                        Gold and Silver Break Out as Market Makes Surprise Shift
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(GuruFocus.com)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">
+         +4.14%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/7f0fa235-c151-3b47-8a84-6cb7caeaccb9/gold-breaks-out-from-a.html', '_blank');">
+        <td width="130" align="right">
+            02:59PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/7f0fa235-c151-3b47-8a84-6cb7caeaccb9/gold-breaks-out-from-a.html" target="_blank" rel="nofollow">
+                        Gold Breaks Out From a Downtrend That Started in January 2026, Whats Next?
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(BeInCrypto)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/163259d5-0c14-3a5f-94a2-f95243aa33a6/gld-sees-biggest-single-day.html', '_blank');">
+        <td width="130" align="right">
+            02:05PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/163259d5-0c14-3a5f-94a2-f95243aa33a6/gld-sees-biggest-single-day.html" target="_blank" rel="nofollow">
+                        GLD Sees Biggest Single-Day Gains Since February  But YTD Returns Still Remain In Negative Territory
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/gold-jumps-1-8-above-152246134.html', '_blank');">
+        <td width="130" align="right">
+            Jul-21-26 11:22AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/gold-jumps-1-8-above-152246134.html" target="_blank" rel="nofollow">
+                        Gold Jumps 1.8% Above $4,080 as Middle East Tensions Intensify
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(GuruFocus.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/a5e17707-ae82-3aa5-9a04-b3f60ec09d48/investors-added-%2446b-to-etfs.html', '_blank');">
+        <td width="130" align="right">
+            Jul-20-26 05:00PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/a5e17707-ae82-3aa5-9a04-b3f60ec09d48/investors-added-%2446b-to-etfs.html" target="_blank" rel="nofollow">
+                        Investors Added $46B To ETFs Last Week
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/d2857f23-2a1b-3b72-ad12-d0d81e0750ef/gold-etfs-as-an-inflation.html', '_blank');">
+        <td width="130" align="right">
+            Jul-14-26 01:53PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/d2857f23-2a1b-3b72-ad12-d0d81e0750ef/gold-etfs-as-an-inflation.html" target="_blank" rel="nofollow">
+                        Gold ETFs as an Inflation Hedge: The Best Funds to Own in 2026
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/articles/geopolitical-risks-reshaping-investment-strategies-061330104.html', '_blank');">
+        <td width="130" align="right">
+            Jul-12-26 02:13AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/articles/geopolitical-risks-reshaping-investment-strategies-061330104.html" target="_blank" rel="nofollow">
+                        Geopolitical risks are reshaping investment strategies, WSJ analysis says
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/gold-drops-over-20-since-194650126.html', '_blank');">
+        <td width="130" align="right">
+            Jul-10-26 03:46PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/gold-drops-over-20-since-194650126.html" target="_blank" rel="nofollow">
+                        Gold Drops Over 20% Since Iran War as HSBC Cuts 2026 Forecast
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(GuruFocus.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/poland-buys-82-tons-gold-131012186.html', '_blank');">
+        <td width="130" align="right">
+            09:10AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/poland-buys-82-tons-gold-131012186.html" target="_blank" rel="nofollow">
+                        Poland Buys 82 Tons of Gold as Prices Fall Over 10%
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(GuruFocus.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/e2604c9f-74bb-3aa4-95c7-b05e1e274c58/these-precious-metals-etfs.html', '_blank');">
+        <td width="130" align="right">
+            01:15AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/e2604c9f-74bb-3aa4-95c7-b05e1e274c58/these-precious-metals-etfs.html" target="_blank" rel="nofollow">
+                        These Precious Metals ETFs Beat The S&amp;P 500 Over The Past Year  Can The Rally Survive The Iran Whiplash?
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Stocktwits)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/22572562-82c1-31ab-8d01-f6ba33fd6b94/the-precious-metals-trade-has.html', '_blank');">
+        <td width="130" align="right">
+            Jul-07-26 10:29PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/22572562-82c1-31ab-8d01-f6ba33fd6b94/the-precious-metals-trade-has.html" target="_blank" rel="nofollow">
+                        The Precious Metals Trade Has Gone Into Reverse
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/gold-slides-below-4-120-134436758.html', '_blank');">
+        <td width="130" align="right">
+            09:44AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/gold-slides-below-4-120-134436758.html" target="_blank" rel="nofollow">
+                        Gold Slides Below $4,120 as Rate-Hike Bets Shift
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(GuruFocus.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/f8c37341-e3c2-38f1-806e-22b2fbae9cb8/etf-inflows-top-%241-trillion.html', '_blank');">
+        <td width="130" align="right">
+            Jul-03-26 05:00PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/f8c37341-e3c2-38f1-806e-22b2fbae9cb8/etf-inflows-top-%241-trillion.html" target="_blank" rel="nofollow">
+                        ETF Inflows Top $1 Trillion at the Halfway Point of 2026
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/gold-jumps-fed-hike-odds-161431739.html', '_blank');">
+        <td width="130" align="right">
+            12:14PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/gold-jumps-fed-hike-odds-161431739.html" target="_blank" rel="nofollow">
+                        Gold Jumps as Fed Hike Odds Drop to 18%
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(GuruFocus.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/gold-jumps-weak-jobs-report-125834663.html', '_blank');">
+        <td width="130" align="right">
+            08:58AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/gold-jumps-weak-jobs-report-125834663.html" target="_blank" rel="nofollow">
+                        Gold Jumps After Weak Jobs Report
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(GuruFocus.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/85a3c58a-2776-3406-9d08-812b0007e0ce/the-gld-etf-has-a-history-of.html', '_blank');">
+        <td width="130" align="right">
+            Jul-02-26 01:48PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/85a3c58a-2776-3406-9d08-812b0007e0ce/the-gld-etf-has-a-history-of.html" target="_blank" rel="nofollow">
+                        The GLD ETF Has A History Of Not Falling With Stocks
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Trefis)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/gold-rebounds-above-4-000-181652178.html', '_blank');">
+        <td width="130" align="right">
+            Jul-01-26 02:16PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/gold-rebounds-above-4-000-181652178.html" target="_blank" rel="nofollow">
+                        Gold Rebounds Above $4,000 After 14% Quarterly Drop as Fed Signals Loom
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(GuruFocus.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.marketwatch.com/story/gold-is-on-the-verge-of-a-death-cross-that-could-surprisingly-foreshadow-gains-2605e99d?mod=mw_FV', '_blank');">
+        <td width="130" align="right">
+            Jun-30-26 01:03PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/gold-is-on-the-verge-of-a-death-cross-that-could-surprisingly-foreshadow-gains-2605e99d?mod=mw_FV" target="_blank" rel="nofollow">
+                        Gold is on the verge of a 'death cross' that could surprisingly foreshadow gains
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketWatch)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/stocks/articles/market-minute-6-30-26-141500577.html', '_blank');">
+        <td width="130" align="right">
+            10:15AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/stocks/articles/market-minute-6-30-26-141500577.html" target="_blank" rel="nofollow">
+                        Market Minute 6-30-26- Chips Rip, Dollar Spikes in Raucous Q2
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MoneyShow)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/1a740f7d-b7cc-3e60-b68e-020023821f46/why-gold-etfs-are-suddenly.html', '_blank');">
+        <td width="130" align="right">
+            Jun-29-26 12:01AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/1a740f7d-b7cc-3e60-b68e-020023821f46/why-gold-etfs-are-suddenly.html" target="_blank" rel="nofollow">
+                        Why Gold ETFs Are Suddenly Tarnishing
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(The Daily Upside)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/gold-extends-longest-weekly-losing-130707007.html', '_blank');">
+        <td width="130" align="right">
+            Jun-26-26 09:07AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/gold-extends-longest-weekly-losing-130707007.html" target="_blank" rel="nofollow">
+                        Gold Extends Longest Weekly Losing Streak Since August 2023
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(GuruFocus.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/silver-selloff-tests-key-support-184810631.html', '_blank');">
+        <td width="130" align="right">
+            Jun-25-26 02:48PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/silver-selloff-tests-key-support-184810631.html" target="_blank" rel="nofollow">
+                        Silver Selloff Tests Key Support Zone
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(GuruFocus.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/gold-tops-4-220-us-132158605.html', '_blank');">
+        <td width="130" align="right">
+            Jun-22-26 09:21AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/gold-tops-4-220-us-132158605.html" target="_blank" rel="nofollow">
+                        Gold Tops $4,220 As US-Iran Talks Show Progress
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(GuruFocus.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/gold-faces-hurdle-path-5-122241269.html', '_blank');">
+        <td width="130" align="right">
+            Jun-21-26 08:22AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/gold-faces-hurdle-path-5-122241269.html" target="_blank" rel="nofollow">
+                        Gold faces hurdle on path to $5,200 as hawkish Fed dampens ETF demand, MS says
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(Investing.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/economy/policy/articles/chart-day-6-19-26-050200837.html', '_blank');">
+        <td width="130" align="right">
+            Jun-19-26 01:02AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/economy/policy/articles/chart-day-6-19-26-050200837.html" target="_blank" rel="nofollow">
+                        Chart of the Day 6-19-26- In Warsh's Wake, Hike Odds Spike
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MoneyShow)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/9688a53b-b1d3-3efb-92ab-886ccc4bfcba/gld-vs-gldm-vs-iau%3A-which.html', '_blank');">
+        <td width="130" align="right">
+            Jun-17-26 05:27PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/9688a53b-b1d3-3efb-92ab-886ccc4bfcba/gld-vs-gldm-vs-iau%3A-which.html" target="_blank" rel="nofollow">
+                        GLD vs GLDM vs IAU: Which Gold ETF Should You Actually Buy?
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/25c6117b-cf84-3878-8ce4-1b25995184aa/u.s.-equities-draw-in-%2422.8b.html', '_blank');">
+        <td width="130" align="right">
+            Jun-15-26 05:00PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/25c6117b-cf84-3878-8ce4-1b25995184aa/u.s.-equities-draw-in-%2422.8b.html" target="_blank" rel="nofollow">
+                        U.S. Equities Draw In $22.8B During SpaceX IPO Week
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/gold-jumps-benchmark-debate-builds-142632352.html', '_blank');">
+        <td width="130" align="right">
+            10:26AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/gold-jumps-benchmark-debate-builds-142632352.html" target="_blank" rel="nofollow">
+                        Gold Jumps as Benchmark Debate Builds
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(GuruFocus.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/gold-rebounds-iran-strike-fears-135355260.html', '_blank');">
+        <td width="130" align="right">
+            09:53AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/gold-rebounds-iran-strike-fears-135355260.html" target="_blank" rel="nofollow">
+                        Gold Rebounds as Iran Strike Fears Ease
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(GuruFocus.com)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://www.marketwatch.com/story/an-inflation-storm-is-brewing-in-the-pacific-ocean-and-your-portfolio-isnt-ready-f200fc60?mod=mw_FV', '_blank');">
+        <td width="130" align="right">
+            Jun-13-26 02:52PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://www.marketwatch.com/story/an-inflation-storm-is-brewing-in-the-pacific-ocean-and-your-portfolio-isnt-ready-f200fc60?mod=mw_FV" target="_blank" rel="nofollow">
+                        A powerful inflation storm is brewing - and your portfolio isn't ready
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MarketWatch)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/c81ebce9-2cc8-322f-af98-e11c7c4e3b97/gold-etfs-in-2026%3A-how-to-own.html', '_blank');">
+        <td width="130" align="right">
+            Jun-11-26 05:12PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/c81ebce9-2cc8-322f-af98-e11c7c4e3b97/gold-etfs-in-2026%3A-how-to-own.html" target="_blank" rel="nofollow">
+                        Gold ETFs in 2026: How to Own the World's Oldest Safe Haven
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(etf.com)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-gain is-positive-200">
+         +3.13%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/m/1aad4378-5b04-3bdc-a93e-7fdab2dbc3ce/gold-options-reveal-a-wager.html', '_blank');">
+        <td width="130" align="right">
+            01:08AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/m/1aad4378-5b04-3bdc-a93e-7fdab2dbc3ce/gold-options-reveal-a-wager.html" target="_blank" rel="nofollow">
+                        Gold Options Reveal a Wager on Another 40% Collapse by 2028
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(BeInCrypto)</span>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/gold-drops-2-us-iran-182637706.html', '_blank');">
+        <td width="130" align="right">
+            Jun-10-26 02:26PM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/gold-drops-2-us-iran-182637706.html" target="_blank" rel="nofollow">
+                        Gold Drops 2% as US-Iran Escalation Lifts Oil Above $93
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(GuruFocus.com)</span>
+                          <span class="fv-label flex items-center leading-none h-4 gap-1 body-table-news-loss is-negative-200">
+         -4.15%
+    </span>
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="cursor-pointer has-label" data-news-row="" onclick="window.open('https://finance.yahoo.com/markets/commodities/articles/gold-advantage-dip-narrative-shifts-050100757.html', '_blank');">
+        <td width="130" align="right">
+            Jun-09-26 01:01AM
+        </td>
+        <td align="left">
+            <div class="news-link-container">
+                <div class="news-link-left">
+                    <a class="tab-link-news" href="https://finance.yahoo.com/markets/commodities/articles/gold-advantage-dip-narrative-shifts-050100757.html" target="_blank" rel="nofollow">
+                        Gold- Take Advantage of the Dip Before the Narrative Shifts
+                    </a>
+                </div>
+                <div class="news-link-right">
+                    <span>(MoneyShow)</span>
+                      
+  
+  
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+</div>
+
+</div></div>
+</body>
+</html>
